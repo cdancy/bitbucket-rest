@@ -1,0 +1,7 @@
+com.cdancy.bitbucket.rest
+com.cdancy.bitbucket.rest.config
+com.cdancy.bitbucket.rest.domain.system
+com.cdancy.bitbucket.rest.fallbacks
+com.cdancy.bitbucket.rest.features
+com.cdancy.bitbucket.rest.filters
+com.cdancy.bitbucket.rest.handlers
