@@ -1,3 +1,3 @@
-### Version 0.0.1 (TBA)
+### Version 0.0.1 (5/20/16)
 
-* TODO
+* project init
