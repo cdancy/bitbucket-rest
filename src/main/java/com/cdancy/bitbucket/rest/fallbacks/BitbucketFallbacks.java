@@ -17,25 +17,54 @@
 package com.cdancy.bitbucket.rest.fallbacks;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.equalTo;
 import static com.google.common.base.Throwables.propagate;
-import static org.jclouds.http.HttpUtils.returnValueOnCodeOrNull;
+
+import java.util.Iterator;
+import java.util.List;
 
 import org.jclouds.Fallback;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.error.Error;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public final class BitbucketFallbacks {
 
    private static final JsonParser parser = new JsonParser();
 
-   public static final class FalseOn503 implements Fallback<Boolean> {
-      public Boolean createOrPropagate(Throwable t) throws Exception {
-         if (checkNotNull(t, "throwable") != null && t.getMessage().contains("{\"health\": \"false\"}")
-               && returnValueOnCodeOrNull(t, true, equalTo(503)) != null) {
-            return Boolean.FALSE;
+   public static final class PullRequestOnError implements Fallback<Object> {
+      public Object createOrPropagate(Throwable t) throws Exception {
+         if (checkNotNull(t, "throwable") != null) {
+            return createPullRequestFromErrors(t.getMessage());
          }
+
          throw propagate(t);
       }
+   }
+
+   public static PullRequest createPullRequestFromErrors(String output) {
+      JsonElement element = parser.parse(output);
+      JsonObject object = element.getAsJsonObject();
+      JsonArray errorsArray = object.get("errors").getAsJsonArray();
+
+      List<Error> errors = Lists.newArrayList();
+      Iterator<JsonElement> it = errorsArray.iterator();
+      while (it.hasNext()) {
+         JsonObject obj = it.next().getAsJsonObject();
+         JsonElement context = obj.get("context");
+         JsonElement message = obj.get("message");
+         JsonElement exceptionName = obj.get("exceptionName");
+         Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
+               !message.isJsonNull() ? message.getAsString() : null,
+               !exceptionName.isJsonNull() ? exceptionName.getAsString() : null);
+         errors.add(error);
+      }
+
+      return PullRequest.create(-1, -1, null, null, null, false, false, 0, 0, null, null, false, null, null, null, null,
+            errors);
    }
 }

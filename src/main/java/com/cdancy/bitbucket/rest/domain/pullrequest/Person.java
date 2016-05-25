@@ -15,20 +15,28 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest;
+package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import java.io.Closeable;
+import org.jclouds.json.SerializedNames;
 
-import org.jclouds.rest.annotations.Delegate;
+import com.google.auto.value.AutoValue;
 
-import com.cdancy.bitbucket.rest.features.PullRequestApi;
-import com.cdancy.bitbucket.rest.features.SystemApi;
+@AutoValue
+public abstract class Person {
 
-public interface BitbucketApi extends Closeable {
+   public abstract User user();
 
-   @Delegate
-   PullRequestApi pullRequestApi();
+   public abstract String role();
 
-   @Delegate
-   SystemApi systemApi();
+   public abstract boolean approved();
+
+   public abstract String status();
+
+   Person() {
+   }
+
+   @SerializedNames({ "user", "role", "approved", "status" })
+   public static Person create(User user, String role, boolean approved, String status) {
+      return new AutoValue_Person(user, role, approved, status);
+   }
 }

@@ -27,10 +27,14 @@ import org.jclouds.http.HttpErrorHandler;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.http.HttpResponseException;
 import org.jclouds.logging.Logger;
+import org.jclouds.rest.AuthorizationException;
 import org.jclouds.rest.ResourceAlreadyExistsException;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.jclouds.util.Strings2;
 
+import com.cdancy.bitbucket.rest.exception.ForbiddenException;
+import com.cdancy.bitbucket.rest.exception.MethodNotAllowedException;
+import com.cdancy.bitbucket.rest.exception.UnsupportedMediaTypeException;
 import com.google.common.base.Throwables;
 
 /**
@@ -53,30 +57,24 @@ public class BitbucketErrorHandler implements HttpErrorHandler {
             case 400:
                exception = new IllegalArgumentException(message);
                break;
+            case 401:
+               exception = new AuthorizationException(message);
+               break;
             case 403:
-               if (command.getCurrentRequest().getMethod().equals("PUT")) {
-                  if (command.getCurrentRequest().getRequestLine().contains("/keys/")) {
-                     if (message.contains("Not a file")) {
-                        exception = new ResourceAlreadyExistsException(message);
-                        break;
-                     }
-                  }
-               }
+               exception = new ForbiddenException(message);
+               break;
             case 404:
                exception = new ResourceNotFoundException(message);
+               break;
+            case 405:
+               exception = new MethodNotAllowedException(message);
                break;
             case 409:
                exception = new ResourceAlreadyExistsException(message);
                break;
-            case 412:
-               if (command.getCurrentRequest().getMethod().matches("DELETE|PUT")) {
-                  if (command.getCurrentRequest().getRequestLine().contains("/keys/")) {
-                     if (message.contains("Compare failed") || message.contains("Key already exists")) {
-                        exception = new IllegalArgumentException(message);
-                        break;
-                     }
-                  }
-               }
+            case 415:
+               exception = new UnsupportedMediaTypeException(message);
+               break;
          }
       } catch (Exception e) {
          exception = new HttpResponseException(command, response, e);

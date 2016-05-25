@@ -15,20 +15,30 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest;
+package com.cdancy.bitbucket.rest.error;
 
-import java.io.Closeable;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-import org.jclouds.rest.annotations.Delegate;
+import com.google.auto.value.AutoValue;
 
-import com.cdancy.bitbucket.rest.features.PullRequestApi;
-import com.cdancy.bitbucket.rest.features.SystemApi;
+@AutoValue
+public abstract class Error {
 
-public interface BitbucketApi extends Closeable {
+   @Nullable
+   public abstract String context();
 
-   @Delegate
-   PullRequestApi pullRequestApi();
+   @Nullable
+   public abstract String message();
 
-   @Delegate
-   SystemApi systemApi();
+   @Nullable
+   public abstract String exceptionName();
+
+   Error() {
+   }
+
+   @SerializedNames({ "context", "message", "exceptionName" })
+   public static Error create(String context, String message, String exceptionName) {
+      return new AutoValue_Error(context, message, exceptionName);
+   }
 }

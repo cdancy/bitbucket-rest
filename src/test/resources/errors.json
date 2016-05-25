@@ -1,0 +1,14 @@
+{
+    "errors": [
+        {
+            "context": "name",
+            "message": "The name should be between 1 and 255 characters.",
+            "exceptionName": null
+        },
+        {
+            "context": "email",
+            "message": "The email should be a valid email address.",
+            "exceptionName": null
+        }
+    ]
+}

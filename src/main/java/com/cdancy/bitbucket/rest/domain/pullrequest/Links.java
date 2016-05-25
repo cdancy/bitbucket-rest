@@ -15,20 +15,26 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest;
+package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import java.io.Closeable;
+import java.util.List;
+import java.util.Map;
 
-import org.jclouds.rest.annotations.Delegate;
+import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.features.PullRequestApi;
-import com.cdancy.bitbucket.rest.features.SystemApi;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 
-public interface BitbucketApi extends Closeable {
+@AutoValue
+public abstract class Links {
 
-   @Delegate
-   PullRequestApi pullRequestApi();
+   public abstract List<Map<String, String>> self();
 
-   @Delegate
-   SystemApi systemApi();
+   Links() {
+   }
+
+   @SerializedNames({ "self" })
+   public static Links create(List<Map<String, String>> self) {
+      return new AutoValue_Links(self != null ? ImmutableList.copyOf(self) : ImmutableList.<Map<String, String>> of());
+   }
 }

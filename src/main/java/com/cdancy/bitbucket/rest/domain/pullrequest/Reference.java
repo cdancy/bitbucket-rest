@@ -15,20 +15,24 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest;
+package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import java.io.Closeable;
+import org.jclouds.json.SerializedNames;
 
-import org.jclouds.rest.annotations.Delegate;
+import com.google.auto.value.AutoValue;
 
-import com.cdancy.bitbucket.rest.features.PullRequestApi;
-import com.cdancy.bitbucket.rest.features.SystemApi;
+@AutoValue
+public abstract class Reference {
 
-public interface BitbucketApi extends Closeable {
+   public abstract String id();
 
-   @Delegate
-   PullRequestApi pullRequestApi();
+   public abstract Repository repository();
 
-   @Delegate
-   SystemApi systemApi();
+   Reference() {
+   }
+
+   @SerializedNames({ "id", "repository" })
+   public static Reference create(String id, Repository repository) {
+      return new AutoValue_Reference(id, repository);
+   }
 }
