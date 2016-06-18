@@ -16,6 +16,7 @@
  */
 package com.cdancy.bitbucket.rest.features;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -34,14 +35,14 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 @Test(groups = "unit", testName = "PullRequestApiMockTest")
 public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
-   public void testGetPullRequest() throws Exception {
-      MockWebServer server = mockEtcdJavaWebServer();
+    public void testGetPullRequest() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
 
-      server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
-      BitbucketApi etcdJavaApi = api(server.getUrl("/"));
-      PullRequestApi api = etcdJavaApi.pullRequestApi();
-      try {
-         PullRequest pr = api.getPullRequest("PRJ", "my-repo", 101);
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
+        BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+        PullRequestApi api = etcdJavaApi.pullRequestApi();
+        try {
+         PullRequest pr = api.get("PRJ", "my-repo", 101);
          assertNotNull(pr);
          assertTrue(pr.errors().size() == 0);
          assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
@@ -49,13 +50,82 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
          assertTrue(pr.id() == 101);
          assertSent(server, "GET",
                "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101");
+        } finally {
+         etcdJavaApi.close();
+         server.shutdown();
+        }
+    }
+
+    public void testDeclinePullRequest() throws Exception {
+      MockWebServer server = mockEtcdJavaWebServer();
+
+      server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-decline.json")).setResponseCode(200));
+      BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+      PullRequestApi api = etcdJavaApi.pullRequestApi();
+      try {
+         PullRequest pr = api.decline("PRJ", "my-repo", 101, 1);
+         assertNotNull(pr);
+         assertTrue(pr.errors().size() == 0);
+         assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
+         assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
+         assertTrue(pr.id() == 101);
+          assertTrue(pr.state().equalsIgnoreCase("DECLINED"));
+          assertFalse(pr.open());
+         assertSent(server, "POST",
+                 "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/decline?version=1");
       } finally {
          etcdJavaApi.close();
          server.shutdown();
       }
-   }
+    }
 
-   public void testGetPullRequestNonExistent() throws Exception {
+    public void testReopenPullRequest() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
+        BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+        PullRequestApi api = etcdJavaApi.pullRequestApi();
+        try {
+            PullRequest pr = api.reopen("PRJ", "my-repo", 101, 1);
+            assertNotNull(pr);
+            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
+            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
+            assertTrue(pr.id() == 101);
+            assertTrue(pr.state().equalsIgnoreCase("OPEN"));
+            assertTrue(pr.open());
+            assertSent(server, "POST",
+                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/reopen?version=1");
+        } finally {
+            etcdJavaApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testMergePullRequest() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-merge.json")).setResponseCode(200));
+        BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+        PullRequestApi api = etcdJavaApi.pullRequestApi();
+        try {
+            PullRequest pr = api.merge("PRJ", "my-repo", 101, 1);
+            assertNotNull(pr);
+            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
+            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
+            assertTrue(pr.id() == 101);
+            assertTrue(pr.state().equalsIgnoreCase("MERGED"));
+            assertFalse(pr.open());
+            assertSent(server, "POST",
+                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/merge?version=1");
+        } finally {
+            etcdJavaApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestNonExistent() throws Exception {
       MockWebServer server = mockEtcdJavaWebServer();
 
       server.enqueue(
@@ -63,7 +133,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
       BitbucketApi etcdJavaApi = api(server.getUrl("/"));
       PullRequestApi api = etcdJavaApi.pullRequestApi();
       try {
-         PullRequest pr = api.getPullRequest("PRJ", "my-repo", 101);
+         PullRequest pr = api.get("PRJ", "my-repo", 101);
          assertNotNull(pr);
          assertTrue(pr.errors().size() > 0);
          assertTrue(pr.errors().get(0).exceptionName().endsWith("NoSuchPullRequestException"));
@@ -73,5 +143,5 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
          etcdJavaApi.close();
          server.shutdown();
       }
-   }
+    }
 }

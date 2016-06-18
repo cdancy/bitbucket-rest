@@ -18,11 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import org.jclouds.rest.annotations.Fallback;
@@ -37,11 +33,43 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 @Path("/rest/api/{jclouds.api-version}/projects")
 public interface PullRequestApi {
 
-   @Named("pull-request:get")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}")
-   @Fallback(PullRequestOnError.class)
-   @GET
-   PullRequest getPullRequest(@PathParam("project") String project, @PathParam("repo") String repo,
-         @PathParam("pullRequestId") int pullRequestId);
+    @Named("pull-request:get")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    PullRequest get(@PathParam("project") String project, @PathParam("repo") String repo,
+                     @PathParam("pullRequestId") int pullRequestId);
+
+    @Named("pull-request:create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    PullRequest create(@PathParam("project") String project, @PathParam("repo") String repo,
+                       @PathParam("pullRequestId") int pullRequestId);
+
+    @Named("pull-request:merge")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/merge")
+    @Fallback(PullRequestOnError.class)
+    @POST
+    PullRequest merge(@PathParam("project") String project, @PathParam("repo") String repo,
+                      @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
+
+    @Named("pull-request:decline")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/decline")
+    @Fallback(PullRequestOnError.class)
+    @POST
+    PullRequest decline(@PathParam("project") String project, @PathParam("repo") String repo,
+                        @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
+
+    @Named("pull-request:reopen")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/reopen")
+    @Fallback(PullRequestOnError.class)
+    @POST
+    PullRequest reopen(@PathParam("project") String project, @PathParam("repo") String repo,
+                        @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
 }

@@ -47,6 +47,7 @@ public final class BitbucketFallbacks {
    }
 
    public static PullRequest createPullRequestFromErrors(String output) {
+
       JsonElement element = parser.parse(output);
       JsonObject object = element.getAsJsonObject();
       JsonArray errorsArray = object.get("errors").getAsJsonArray();
