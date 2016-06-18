@@ -80,6 +80,7 @@ Running integration tests without invoking docker can be done like so:
 	
 # Additional Resources
 
+* [Bitbucket docker setup](https://bitbucket.org/atlassian/docker-atlassian-bitbucket-server)
 * [Bitbucket REST API](https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html)
 * [Bitbucket Auth API](https://developer.atlassian.com/bitbucket/server/docs/latest/how-tos/example-basic-authentication.html)
 * [Apache jclouds](https://jclouds.apache.org/start/)
