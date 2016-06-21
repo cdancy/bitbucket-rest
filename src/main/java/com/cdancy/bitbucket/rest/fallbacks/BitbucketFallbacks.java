@@ -22,6 +22,8 @@ import static com.google.common.base.Throwables.propagate;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.sun.scenario.effect.Merge;
 import org.jclouds.Fallback;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
@@ -39,33 +41,52 @@ public final class BitbucketFallbacks {
    public static final class PullRequestOnError implements Fallback<Object> {
       public Object createOrPropagate(Throwable t) throws Exception {
          if (checkNotNull(t, "throwable") != null) {
-            return createPullRequestFromErrors(t.getMessage());
+            return createPullRequestFromErrors(getErrors(t.getMessage()));
          }
 
          throw propagate(t);
       }
    }
 
-   public static PullRequest createPullRequestFromErrors(String output) {
+   public static final class MergeStatusOnError implements Fallback<Object> {
+      public Object createOrPropagate(Throwable t) throws Exception {
+         if (checkNotNull(t, "throwable") != null) {
+            return createMergeStatusFromErrors(getErrors(t.getMessage()));
+         }
 
-      JsonElement element = parser.parse(output);
-      JsonObject object = element.getAsJsonObject();
-      JsonArray errorsArray = object.get("errors").getAsJsonArray();
-
-      List<Error> errors = Lists.newArrayList();
-      Iterator<JsonElement> it = errorsArray.iterator();
-      while (it.hasNext()) {
-         JsonObject obj = it.next().getAsJsonObject();
-         JsonElement context = obj.get("context");
-         JsonElement message = obj.get("message");
-         JsonElement exceptionName = obj.get("exceptionName");
-         Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
-               !message.isJsonNull() ? message.getAsString() : null,
-               !exceptionName.isJsonNull() ? exceptionName.getAsString() : null);
-         errors.add(error);
+         throw propagate(t);
       }
-
-      return PullRequest.create(-1, -1, null, null, null, false, false, 0, 0, null, null, false, null, null, null, null,
-            errors);
    }
+
+    public static List<Error> getErrors(String output) {
+        JsonElement element = parser.parse(output);
+        JsonObject object = element.getAsJsonObject();
+        JsonArray errorsArray = object.get("errors").getAsJsonArray();
+
+        List<Error> errors = Lists.newArrayList();
+        Iterator<JsonElement> it = errorsArray.iterator();
+        while (it.hasNext()) {
+            JsonObject obj = it.next().getAsJsonObject();
+            JsonElement context = obj.get("context");
+            JsonElement message = obj.get("message");
+            JsonElement exceptionName = obj.get("exceptionName");
+            Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
+                    !message.isJsonNull() ? message.getAsString() : null,
+                    !exceptionName.isJsonNull() ? exceptionName.getAsString() : null);
+            errors.add(error);
+        }
+
+        return errors;
+    }
+
+    public static PullRequest createPullRequestFromErrors(List<Error> errors) {
+      return PullRequest.create(-1, -1, null, null, null,
+              false, false, 0, 0, null,
+              null, false, null, null, null,
+              null, errors);
+    }
+
+    public static MergeStatus createMergeStatusFromErrors(List<Error> errors) {
+        return MergeStatus.create(false, false, null, errors);
+    }
 }

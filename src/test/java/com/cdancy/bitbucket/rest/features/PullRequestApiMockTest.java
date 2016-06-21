@@ -20,15 +20,12 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.Project;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Repository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.*;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -131,6 +128,46 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.open());
             assertSent(server, "POST",
                     "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/reopen?version=1");
+        } finally {
+            etcdJavaApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testCanMergePullRequest() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-can-merge-succeed.json")).setResponseCode(200));
+        BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+        PullRequestApi api = etcdJavaApi.pullRequestApi();
+        try {
+            MergeStatus pr = api.canMerge("PRJ", "my-repo", 101);
+            assertNotNull(pr);
+            assertTrue(pr.canMerge());
+            assertTrue(pr.vetoes().size() == 0);
+            assertTrue(pr.errors().size() == 0);
+            assertSent(server, "GET",
+                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
+        } finally {
+            etcdJavaApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testCanMergePullRequestFail() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-can-merge-fail.json")).setResponseCode(200));
+        BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+        PullRequestApi api = etcdJavaApi.pullRequestApi();
+        try {
+            MergeStatus pr = api.canMerge("PRJ", "my-repo", 101);
+            assertNotNull(pr);
+            assertFalse(pr.canMerge());
+            assertTrue(pr.vetoes().size() == 1);
+            assertTrue(pr.errors().size() == 0);
+            assertSent(server, "GET",
+                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
             etcdJavaApi.close();
             server.shutdown();

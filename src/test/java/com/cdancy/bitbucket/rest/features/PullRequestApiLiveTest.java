@@ -20,20 +20,18 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.Project;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Repository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.*;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 
 @Test(groups = "live", testName = "PullRequestApiLiveTest", singleThreaded = true)
 public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String project = "TEST";
     String repo = "dev";
+    String branchToMerge = "lion";
     int prId = -1;
     int version = -1;
 
@@ -43,7 +41,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         Project proj = Project.create(project);
         Repository repository = Repository.create(repo, null, proj);
 
-        Reference fromRef = Reference.create("refs/heads/chicken", repository);
+        Reference fromRef = Reference.create("refs/heads/" + branchToMerge, repository);
         Reference toRef = Reference.create(null, repository);
         CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         PullRequest pr = api().create(project, repo, cpr);
@@ -52,7 +50,6 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(pr.fromRef().repository().slug().equals(repo));
         prId = pr.id();
         version = pr.version();
-
     }
 
     @Test (dependsOnMethods = "createGetPullRequest")
@@ -83,6 +80,13 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test (dependsOnMethods = "testReopenPullRequest")
+    public void testCanMergePullRequest() {
+        MergeStatus mergeStatus = api().canMerge(project, repo, prId);
+        assertNotNull(mergeStatus);
+        assertTrue(mergeStatus.canMerge());
+    }
+
+    @Test (dependsOnMethods = "testCanMergePullRequest")
     public void testMergePullRequest() {
         PullRequest pr = api().get(project, repo, prId);
         pr = api().merge(project, repo, prId, pr.version());

@@ -21,6 +21,7 @@ import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -28,6 +29,7 @@ import org.jclouds.rest.annotations.RequestFilters;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
@@ -59,6 +61,14 @@ public interface PullRequestApi {
     @POST
     PullRequest merge(@PathParam("project") String project, @PathParam("repo") String repo,
                       @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
+
+    @Named("pull-request:can-merge")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/merge")
+    @Fallback(MergeStatusOnError.class)
+    @GET
+    MergeStatus canMerge(@PathParam("project") String project, @PathParam("repo") String repo,
+                         @PathParam("pullRequestId") int pullRequestId);
 
     @Named("pull-request:decline")
     @Consumes(MediaType.APPLICATION_JSON)
