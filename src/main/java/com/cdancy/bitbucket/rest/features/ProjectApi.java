@@ -50,12 +50,10 @@ public interface ProjectApi {
     @GET
     Project get(@PathParam("project") String project);
 
-    /*
     @Named("project:delete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @DELETE
     boolean delete(@PathParam("project") String project);
-    */
 }

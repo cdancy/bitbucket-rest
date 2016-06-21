@@ -18,11 +18,11 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.domain.system.Version;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "ProjectApiLiveTest", singleThreaded = true)
@@ -47,6 +47,18 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(project.errors().size() == 0);
         assertTrue(project.key().equalsIgnoreCase(projectKey));
         assertTrue(project.name().equalsIgnoreCase(projectKey));
+    }
+
+    @Test (dependsOnMethods = "testGetProject")
+    public void testDeleteProject() {
+        boolean success = api().delete(projectKey);
+        assertTrue(success);
+    }
+
+    @Test
+    public void testDeleteProjectNonExistent() {
+        boolean success = api().delete(randomStringLettersOnly());
+        assertFalse(success);
     }
 
     @Test

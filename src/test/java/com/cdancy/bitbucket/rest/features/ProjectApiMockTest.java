@@ -26,6 +26,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -97,7 +98,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
     public void testGetProjectNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-get-fail.json")).setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-not-exist.json")).setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         ProjectApi api = baseApi.projectApi();
         try {
@@ -106,6 +107,40 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             assertNotNull(project);
             assertTrue(project.errors().size() == 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteProject() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        ProjectApi api = baseApi.projectApi();
+        try {
+            String projectKey = "HELLO";
+            boolean success = api.delete(projectKey);
+            assertTrue(success);
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteProjectNonExistent() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-not-exist.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        ProjectApi api = baseApi.projectApi();
+        try {
+            String projectKey = "NOTEXIST";
+            boolean success = api.delete(projectKey);
+            assertFalse(success);
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
             server.shutdown();
