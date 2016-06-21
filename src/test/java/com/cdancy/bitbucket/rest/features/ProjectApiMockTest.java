@@ -19,7 +19,6 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.domain.system.Version;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -38,7 +37,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
     public void testCreateProject() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-create.json")).setResponseCode(201));
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project.json")).setResponseCode(201));
         BitbucketApi baseApi = api(server.getUrl("/"));
         ProjectApi api = baseApi.projectApi();
         try {
@@ -69,6 +68,44 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             assertNotNull(project);
             assertTrue(project.errors().size() == 1);
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetProject() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        ProjectApi api = baseApi.projectApi();
+        try {
+            String projectKey = "HELLO";
+            Project project = api.get(projectKey);
+            assertNotNull(project);
+            assertTrue(project.errors().size() == 0);
+            assertTrue(project.key().equalsIgnoreCase(projectKey));
+            assertTrue(project.name().equalsIgnoreCase(projectKey));
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetProjectNonExistent() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-get-fail.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        ProjectApi api = baseApi.projectApi();
+        try {
+            String projectKey = "HelloWorld";
+            Project project = api.get(projectKey);
+            assertNotNull(project);
+            assertTrue(project.errors().size() == 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
             server.shutdown();

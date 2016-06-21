@@ -71,7 +71,7 @@ task mockTest(type: Test) {
 
 task integTest(type: Test, dependsOn: ['mockTest']) {
     useTestNG() 
-    include "**/**LiveTest.class"
+    include "**/ProjectApiLiveTest.class"
     testLogging {
 		showStandardStreams = true
         events 'started', 'passed', 'failed'

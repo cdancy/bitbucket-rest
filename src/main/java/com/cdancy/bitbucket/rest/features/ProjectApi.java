@@ -42,7 +42,7 @@ public interface ProjectApi {
     @POST
     Project create(@BinderParam(BindToJsonPayload.class) CreateProject createProject);
 
-    /*
+
     @Named("project:get")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}")
@@ -50,6 +50,7 @@ public interface ProjectApi {
     @GET
     Project get(@PathParam("project") String project);
 
+    /*
     @Named("project:delete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}")

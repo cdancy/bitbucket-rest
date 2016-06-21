@@ -40,6 +40,22 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(project.name().equalsIgnoreCase(projectKey));
     }
 
+    @Test (dependsOnMethods = "testCreateProject")
+    public void testGetProject() {
+        Project project = api().get(projectKey);
+        assertNotNull(project);
+        assertTrue(project.errors().size() == 0);
+        assertTrue(project.key().equalsIgnoreCase(projectKey));
+        assertTrue(project.name().equalsIgnoreCase(projectKey));
+    }
+
+    @Test
+    public void testGetProjectNonExistent() {
+        Project project = api().get(randomStringLettersOnly());
+        assertNotNull(project);
+        assertTrue(project.errors().size() == 1);
+    }
+
     @Test
     public void testCreateProjectWithIllegalName() {
         String projectKey = "9999";

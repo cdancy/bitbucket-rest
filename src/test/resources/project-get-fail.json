@@ -1,0 +1,9 @@
+{
+  "errors":[
+    {
+      "context":null,
+      "message":"Project HelloWorld does not exist.",
+      "exceptionName":"com.atlassian.bitbucket.project.NoSuchProjectException"
+    }
+  ]
+}
