@@ -20,6 +20,10 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.Project;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Repository;
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -34,6 +38,37 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
  */
 @Test(groups = "unit", testName = "PullRequestApiMockTest")
 public class PullRequestApiMockTest extends BaseBitbucketMockTest {
+
+    public void testCreatePullRequest() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(201));
+        BitbucketApi etcdJavaApi = api(server.getUrl("/"));
+        PullRequestApi api = etcdJavaApi.pullRequestApi();
+        try {
+
+            Project proj1 = Project.create("PRJ");
+            Project proj2 = Project.create("PRJ");
+            Repository repository1 = Repository.create("my-repo", null, proj1);
+            Repository repository2 = Repository.create("my-repo", null, proj2);
+
+            Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1);
+            Reference toRef = Reference.create("refs/heads/master", repository2);
+            CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
+            PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
+
+            assertNotNull(pr);
+            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
+            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
+            assertTrue(pr.id() == 101);
+            assertSent(server, "POST",
+                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests");
+        } finally {
+            etcdJavaApi.close();
+            server.shutdown();
+        }
+    }
 
     public void testGetPullRequest() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();

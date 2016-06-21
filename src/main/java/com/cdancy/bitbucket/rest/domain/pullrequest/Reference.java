@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
@@ -24,6 +25,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Reference {
 
+   // default to 'refs/heads/master' if null
+   @Nullable
    public abstract String id();
 
    public abstract Repository repository();
@@ -33,6 +36,6 @@ public abstract class Reference {
 
    @SerializedNames({ "id", "repository" })
    public static Reference create(String id, Repository repository) {
-      return new AutoValue_Reference(id, repository);
+      return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository);
    }
 }

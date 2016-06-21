@@ -21,12 +21,15 @@ import javax.inject.Named;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import org.jclouds.rest.binders.BindToJsonPayload;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -45,9 +48,9 @@ public interface PullRequestApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests")
     @Fallback(PullRequestOnError.class)
-    @GET
+    @POST
     PullRequest create(@PathParam("project") String project, @PathParam("repo") String repo,
-                       @PathParam("pullRequestId") int pullRequestId);
+                       @BinderParam(BindToJsonPayload.class) CreatePullRequest createPullRequest);
 
     @Named("pull-request:merge")
     @Consumes(MediaType.APPLICATION_JSON)

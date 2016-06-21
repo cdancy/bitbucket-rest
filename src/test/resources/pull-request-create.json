@@ -1,99 +1,32 @@
 {
-  "id": 101,
-  "version": 1,
-  "title": "Talking Nerdy",
-  "description": "It’s a kludge, but put the tuple from the database in the cache.",
+  "title": "ISSUE-123",
+  "description": "Fix for issue 123",
   "state": "OPEN",
   "open": true,
   "closed": false,
-  "createdDate": 1359075920,
-  "updatedDate": 1359085920,
   "fromRef": {
     "id": "refs/heads/feature-ABC-123",
     "repository": {
-      "slug": "my-repo",
+      "slug": "my-pesonal-repo",
       "name": null,
       "project": {
-        "key": "PRJ"
+        "key": "PRJ1"
       }
     }
   },
   "toRef": {
     "id": "refs/heads/master",
     "repository": {
-      "slug": "my-repo",
+      "slug": "my-target-repo",
       "name": null,
       "project": {
-        "key": "PRJ"
+        "key": "PRJ2"
       }
     }
   },
   "locked": false,
-  "author": {
-    "user": {
-      "name": "tom",
-      "emailAddress": "tom@example.com",
-      "id": 115026,
-      "displayName": "Tom",
-      "active": true,
-      "slug": "tom",
-      "type": "NORMAL"
-    },
-    "role": "AUTHOR",
-    "approved": true,
-    "status": "APPROVED"
-  },
-  "reviewers": [
-    {
-      "user": {
-        "name": "jcitizen",
-        "emailAddress": "jane@example.com",
-        "id": 101,
-        "displayName": "Jane Citizen",
-        "active": true,
-        "slug": "jcitizen",
-        "type": "NORMAL"
-      },
-      "role": "REVIEWER",
-      "approved": true,
-      "status": "APPROVED"
-    }
-  ],
-  "participants": [
-    {
-      "user": {
-        "name": "dick",
-        "emailAddress": "dick@example.com",
-        "id": 3083181,
-        "displayName": "Dick",
-        "active": true,
-        "slug": "dick",
-        "type": "NORMAL"
-      },
-      "role": "PARTICIPANT",
-      "approved": false,
-      "status": "UNAPPROVED"
-    },
-    {
-      "user": {
-        "name": "harry",
-        "emailAddress": "harry@example.com",
-        "id": 99049120,
-        "displayName": "Harry",
-        "active": true,
-        "slug": "harry",
-        "type": "NORMAL"
-      },
-      "role": "PARTICIPANT",
-      "approved": true,
-      "status": "APPROVED"
-    }
-  ],
+  "reviewers": [],
   "links": {
-    "self": [
-      {
-        "href": "http://link/to/pullrequest"
-      }
-    ]
+    "self": []
   }
 }

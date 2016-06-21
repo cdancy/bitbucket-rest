@@ -2,7 +2,7 @@
     "id": 101,
     "version": 1,
     "title": "Talking Nerdy",
-    "description": "It’s a kludge, but put the tuple from the database in the cache.",
+    "description": "Some description",
     "state": "OPEN",
     "open": true,
     "closed": false,

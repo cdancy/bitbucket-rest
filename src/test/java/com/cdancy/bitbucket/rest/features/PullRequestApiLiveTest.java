@@ -20,6 +20,10 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.Project;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Repository;
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
@@ -30,17 +34,35 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String project = "TEST";
     String repo = "dev";
-    int prId = 4;
+    int prId = -1;
     int version = -1;
 
     @Test
+    public void createGetPullRequest() {
+        String randomChars = randomString();
+        Project proj = Project.create(project);
+        Repository repository = Repository.create(repo, null, proj);
+
+        Reference fromRef = Reference.create("refs/heads/chicken", repository);
+        Reference toRef = Reference.create(null, repository);
+        CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
+        PullRequest pr = api().create(project, repo, cpr);
+        assertNotNull(pr);
+        assertTrue(pr.fromRef().repository().project().key().equals(project));
+        assertTrue(pr.fromRef().repository().slug().equals(repo));
+        prId = pr.id();
+        version = pr.version();
+
+    }
+
+    @Test (dependsOnMethods = "createGetPullRequest")
     public void testGetPullRequest() {
         PullRequest pr = api().get(project, repo, prId);
         assertNotNull(pr);
         assertTrue(pr.errors().size() == 0);
         assertTrue(pr.fromRef().repository().project().key().equals(project));
         assertTrue(pr.fromRef().repository().slug().equals(repo));
-        version = pr.version();
+        assertTrue(version == pr.version());
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")
