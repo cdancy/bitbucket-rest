@@ -15,22 +15,32 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
-
-import org.jclouds.json.SerializedNames;
+package com.cdancy.bitbucket.rest.options;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Project {
+public abstract class CreateProject {
 
-   public abstract String key();
+    public abstract String key();
 
-   Project() {
-   }
+    // defaults to value of key if null
+    @Nullable
+    public abstract String name();
 
-   @SerializedNames({ "key" })
-   public static Project create(String key) {
-      return new AutoValue_Project(key);
-   }
+    @Nullable
+    public abstract String description();
+
+    @Nullable
+    public abstract String avatar();
+
+    CreateProject() {
+    }
+
+    @SerializedNames({ "key", "name", "description", "avatar" })
+    public static CreateProject create(String key, String name, String description, String avatar) {
+      return new AutoValue_CreateProject(key, name != null ? name : key, description, avatar);
+    }
 }

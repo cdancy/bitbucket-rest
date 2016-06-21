@@ -17,6 +17,7 @@
 package com.cdancy.bitbucket.rest;
 
 import java.util.Properties;
+import java.util.Random;
 import java.util.UUID;
 
 import org.jclouds.Constants;
@@ -43,6 +44,17 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
       Properties overrides = super.setupProperties();
       overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
       return overrides;
+   }
+
+   protected String randomStringLettersOnly() {
+       char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+       StringBuilder sb = new StringBuilder();
+       Random random = new Random();
+       for (int i = 0; i < 10; i++) {
+           char c = chars[random.nextInt(chars.length)];
+           sb.append(c);
+       }
+       return sb.toString().toUpperCase();
    }
 
    protected String randomString() {

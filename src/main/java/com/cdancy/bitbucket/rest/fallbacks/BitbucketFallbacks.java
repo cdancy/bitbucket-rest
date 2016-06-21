@@ -22,6 +22,7 @@ import static com.google.common.base.Throwables.propagate;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.sun.scenario.effect.Merge;
 import org.jclouds.Fallback;
@@ -38,12 +39,29 @@ public final class BitbucketFallbacks {
 
    private static final JsonParser parser = new JsonParser();
 
+    public static final class FalseOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable t) throws Exception {
+            if (checkNotNull(t, "throwable") != null) {
+                return Boolean.FALSE;
+            }
+            throw propagate(t);
+        }
+    }
+
+    public static final class ProjectOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable t) throws Exception {
+            if (checkNotNull(t, "throwable") != null) {
+                return createProjectFromErrors(getErrors(t.getMessage()));
+            }
+            throw propagate(t);
+        }
+    }
+
    public static final class PullRequestOnError implements Fallback<Object> {
       public Object createOrPropagate(Throwable t) throws Exception {
          if (checkNotNull(t, "throwable") != null) {
             return createPullRequestFromErrors(getErrors(t.getMessage()));
          }
-
          throw propagate(t);
       }
    }
@@ -53,7 +71,6 @@ public final class BitbucketFallbacks {
          if (checkNotNull(t, "throwable") != null) {
             return createMergeStatusFromErrors(getErrors(t.getMessage()));
          }
-
          throw propagate(t);
       }
    }
@@ -77,6 +94,10 @@ public final class BitbucketFallbacks {
         }
 
         return errors;
+    }
+
+    public static Project createProjectFromErrors(List<Error> errors) {
+        return Project.create(null, -1, null, null, false, null, null, errors);
     }
 
     public static PullRequest createPullRequestFromErrors(List<Error> errors) {

@@ -1,0 +1,14 @@
+{
+  "key":"HELLO",
+  "id":42,
+  "name":"HELLO",
+  "public":false,
+  "type":"NORMAL",
+  "links":{
+    "self":[
+      {
+        "href":"http://127.0.0.1:7990/projects/HELLO"
+      }
+    ]
+  }
+}

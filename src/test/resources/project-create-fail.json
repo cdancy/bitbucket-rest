@@ -1,0 +1,9 @@
+{
+  "errors":[
+    {
+      "context":"key",
+      "message":"Project keys must start with a letter and may only consist of ASCII letters, numbers and underscores (A-Z, a-z, 0-9, _)",
+      "exceptionName":null
+    }
+  ]
+}

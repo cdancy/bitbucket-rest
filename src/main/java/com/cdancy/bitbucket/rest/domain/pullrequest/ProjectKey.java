@@ -17,26 +17,20 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Repository {
+public abstract class ProjectKey {
 
-   public abstract String slug();
+   public abstract String key();
 
-   @Nullable
-   public abstract String name();
-
-   public abstract ProjectKey project();
-
-   Repository() {
+   ProjectKey() {
    }
 
-   @SerializedNames({ "slug", "name", "project" })
-   public static Repository create(String slug, String name, ProjectKey project) {
-      return new AutoValue_Repository(slug, name, project);
+   @SerializedNames({ "key" })
+   public static ProjectKey create(String key) {
+      return new AutoValue_ProjectKey(key);
    }
 }
