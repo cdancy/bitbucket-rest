@@ -18,91 +18,141 @@
 package com.cdancy.bitbucket.rest;
 
 import org.jclouds.ContextBuilder;
+import org.jclouds.javax.annotation.Nullable;
 
 public class BitbucketClient {
 
-   private String endPoint;
-   private String credentials;
-   private final BitbucketApi bitbucketApi;
+    private static String[] endPointProperties = { "bitbucket.rest.endpoint", "bitbucketRestEndpoint", "BITBUCKET_REST_ENDPOINT" };
+    private static String[] credentialsProperties = { "bitbucket.rest.credentials", "bitbucketRestCredentials", "BITBUCKET_REST_CREDENTIALS" };
+    private String endPoint;
+    private String credentials;
+    private final BitbucketApi bitbucketApi;
 
-   public BitbucketClient(final String endPoint, final String credentials) {
-      this.endPoint = endPoint;
-      this.credentials = credentials;
+    /**
+     * Create an BitbucketClient. We will query system properties and environment
+     * variables for the endPoint and credentials.
+     */
+    public BitbucketClient() {
+        this.endPoint = initEndPoint();
+        this.credentials = initCredentials();
+        this.bitbucketApi = createApi(this.endPoint(), this.credentials());
+    }
 
-      configureParameters();
+    /**
+     * Create an BitbucketClient.
+     *
+     * @param endPoint
+     *            url of Bitbucket instance
+     */
+    public BitbucketClient(@Nullable final String endPoint) {
+        this.endPoint = endPoint != null ? endPoint : initEndPoint();
+        this.credentials = initCredentials();
+        this.bitbucketApi = createApi(this.endPoint(), this.credentials());
+    }
 
-      this.bitbucketApi = ContextBuilder.newBuilder(new BitbucketApiMetadata.Builder().build()).endpoint(endPoint())
-            .credentials("N/A", credentials()).buildApi(BitbucketApi.class);
-   }
+    /**
+     * Create an BitbucketClient.
+     *
+     * @param endPoint
+     *            url of Bitbucket instance
+     * @param credentials
+     *            the optional credentials for the etcd instance
+     */
+    public BitbucketClient(@Nullable final String endPoint, @Nullable final String credentials) {
+        this.endPoint = endPoint != null ? endPoint : initEndPoint();
+        this.credentials = credentials != null ? credentials : initCredentials();
+        this.bitbucketApi = createApi(this.endPoint(), this.credentials());
+    }
 
-   private void configureParameters() {
+    /**
+     * Initialize endPoint.
+     *
+     * @return found endpoint or null
+     */
+    private String initEndPoint() {
+        String possibleValue = retrivePropertyValue(endPointProperties);
+        return possibleValue != null ? possibleValue : "http://127.0.0.1:7990";
+    }
 
-      // query system for endPoint value
-      if (endPoint == null) {
-         if ((endPoint = retrivePropertyValue("BitbucketApi.rest.endpoint")) == null) {
-            if ((endPoint = retrivePropertyValue("bitbucketRestEndpoint")) == null) {
-               if ((endPoint = retrivePropertyValue("BITBUCKET_REST_ENDPOINT")) == null) {
-                  endPoint = "http://127.0.0.1:7990";
-                  System.out.println("Bitbucket REST endpoint was not found. Defaulting to: " + endPoint);
-               }
-            }
-         }
-      }
+    /**
+     * Initialize credentials.
+     *
+     * @return found credentials or empty String
+     */
+    private String initCredentials() {
+        String possibleValue = retrivePropertyValue(credentialsProperties);
+        return possibleValue != null ? possibleValue : "";
+    }
 
-      // query system for credentials value
-      if (credentials == null) {
-         if ((credentials = retrivePropertyValue("bitbucket.rest.credentials")) == null) {
-            if ((credentials = retrivePropertyValue("bitbucketRestCredentials")) == null) {
-               if ((credentials = retrivePropertyValue("BITBUCKET_REST_CREDENTIALS")) == null) {
-                  credentials = "";
-                  System.out.println("Bitbucket REST credentials was not found. Assuming anonymous usage.");
-               }
-            }
-         }
-      }
-   }
+    public BitbucketApi createApi(String endPoint, String credentials) {
+        return ContextBuilder.newBuilder(new BitbucketApiMetadata.Builder().build()).endpoint(endPoint)
+                .credentials("N/A", credentials).buildApi(BitbucketApi.class);
+    }
 
-   private String retrivePropertyValue(String key) {
-      String value = System.getProperty(key);
-      return value != null ? value : System.getenv(key);
-   }
+    /**
+     * Retrieve property value from list of keys.
+     *
+     * @param keys
+     *            list of keys to search
+     * @return the first value found from list of keys
+     */
+    private String retrivePropertyValue(String... keys) {
+        String value = null;
+        for (String possibleKey : keys) {
+            value = retrivePropertyValue(possibleKey);
+            if (value != null) { break; }
+        }
+        return value;
+    }
 
-   public String endPoint() {
+    /**
+     * Retrieve property value from key.
+     *
+     * @param key
+     *            the key to search for
+     * @return the value of key or null if not found
+     */
+    private String retrivePropertyValue(String key) {
+        String value = System.getProperty(key);
+        return value != null ? value : System.getenv(key);
+    }
+
+    public String endPoint() {
       return endPoint;
    }
 
-   public String credentials() {
+    public String credentials() {
       return credentials;
-   }
+    }
 
-   public BitbucketApi api() {
+    public BitbucketApi api() {
       return bitbucketApi;
-   }
+    }
 
-   public static class Builder {
-      private String endPoint;
-      private String credentials;
+    public static class Builder {
+        private String endPoint;
+        private String credentials;
 
-      public Builder() {
-      }
+        public Builder() {
+        }
 
-      public Builder(final String endPoint, final String credentials) {
-         this.endPoint = endPoint;
-         this.credentials = credentials;
-      }
+        public Builder(final String endPoint, final String credentials) {
+            this.endPoint = endPoint;
+            this.credentials = credentials;
+        }
 
-      public Builder endPoint(String endPoint) {
-         this.endPoint = endPoint;
-         return this;
-      }
+        public Builder endPoint(String endPoint) {
+            this.endPoint = endPoint;
+            return this;
+        }
 
-      public Builder credentials(String credentials) {
-         this.credentials = credentials;
-         return this;
-      }
+        public Builder credentials(String credentials) {
+            this.credentials = credentials;
+            return this;
+        }
 
-      public BitbucketClient build() {
+        public BitbucketClient build() {
          return new BitbucketClient(endPoint, credentials);
-      }
-   }
+        }
+    }
 }
