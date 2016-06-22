@@ -7,6 +7,7 @@
 * ADDED: ProjectApi endpoint `get` - [Commit 0d02](https://github.com/cdancy/bitbucket-rest/commit/0d02095dbadcc405136ba96fc9ba84ae21054bac)
 * ADDED: ProjectApi endpoint `delete` - [Commit b10d](https://github.com/cdancy/bitbucket-rest/commit/b10df1291119e09e54e5003cf3d49359e1001512)
 * ADDED: RepositoryApi with endpoints `create`, `get`, and `delete` - [Commit 0b61](https://github.com/cdancy/bitbucket-rest/commit/0b615e32fef40f4503e16e7035a8453ce3ad6169)
+* ADDED: Will now publish fat/shadow jar - [Commit a9e6](https://github.com/cdancy/bitbucket-rest/commit/a9e69dea188a8675dcf1e0d2973a963b5a67d5fa)
 
 ### Version 0.0.1 (5/20/16)
 
