@@ -15,27 +15,28 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest;
+package com.cdancy.bitbucket.rest.options;
 
-import java.io.Closeable;
+import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.features.*;
-import org.jclouds.rest.annotations.Delegate;
+@AutoValue
+public abstract class CreateTag {
 
-public interface BitbucketApi extends Closeable {
+    public abstract String name();
 
-    @Delegate
-    ProjectApi projectApi();
+    public abstract String startPoint();
 
-    @Delegate
-    PullRequestApi pullRequestApi();
+    // defaults to value of name if null
+    @Nullable
+    public abstract String message();
 
-    @Delegate
-    RepositoryApi repositoryApi();
+    CreateTag() {
+    }
 
-    @Delegate
-    SystemApi systemApi();
-
-    @Delegate
-    TagApi tagApi();
+    @SerializedNames({ "name", "startPoint", "message" })
+    public static CreateTag create(String name, String startPoint, String message) {
+      return new AutoValue_CreateTag(name, startPoint, message != null ? message : name);
+    }
 }
