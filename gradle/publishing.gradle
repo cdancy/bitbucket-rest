@@ -17,6 +17,7 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocJar
+            artifact shadowJar
 
             pom.withXml {
                 def root = asNode()
@@ -41,6 +42,21 @@ publishing {
                 cdancy.appendNode('name', 'Christopher Dancy')
                 cdancy.appendNode('email', 'christoforever@gmail.com')
             }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = artifactoryURL
+    publish {
+        repository {
+            repoKey = version.endsWith('-SNAPSHOT') ? snapshotRepository : releaseRepository
+            username = artifactoryUser
+            password = artifactoryPassword
+            maven = true
+        }
+        defaults {
+            publications ('mavenJava')
         }
     }
 }
