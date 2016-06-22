@@ -1,4 +1,4 @@
-
+[![Build Status](https://travis-ci.org/cdancy/bitbucket-rest.svg?branch=master)](https://travis-ci.org/cdancy/bitbucket-rest)
 # bitbucket-rest
 ![alt tag](https://wac-cdn.atlassian.com/dam/jcr:e2a6f06f-b3d5-4002-aed3-73539c56a2eb/bitbucket_rgb_blue.png?cdnVersion=cm)
 
