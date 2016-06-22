@@ -1,4 +1,8 @@
-### Version 0.0.2 (TBA)
+### Version 0.0.3 (TBA)
+
+* ADDED: basic travis-ci support - [Commit 48c4](https://github.com/cdancy/bitbucket-rest/commit/48c407b897e48b376f3fa88b02f797a347e0f376)
+
+### Version 0.0.2 (6/21/16)
 
 * ADDED: PullRequestApi endpoints `merge`, `decline`, and `reopen` - [Commit 6abf](https://github.com/cdancy/bitbucket-rest/commit/6abf1c2d291ef0e4093d57affbe33099dd9be668)
 * ADDED: PullRequestApi endpoint `create` - [Commit dba6](https://github.com/cdancy/bitbucket-rest/commit/dba66c524173b6d2928e7be21e84b603fc052a15)
