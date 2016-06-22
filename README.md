@@ -16,12 +16,13 @@ Client's can be built like so:
       
 ## Latest release
 
-Can be found in jcenter:
+Can be sourced from jcenter like so:
 
 	<dependency>
 	  <groupId>com.cdancy</groupId>
 	  <artifactId>bitbucket-rest</artifactId>
 	  <version>0.0.1</version>
+	  <classifier>sources|javadoc|all</classifier> (Optional)
 	</dependency>
 	
 ## Documentation
@@ -73,10 +74,6 @@ Running mock tests can be done like so:
 Running integration tests can be done like so (requires docker):
 
 	./gradlew clean build integTest
-	
-Running integration tests without invoking docker can be done like so:
-
-	./gradlew clean build integTest -PbootstrapDocker=false -PtestBitbucketEndpoint=http://127.0.0.1:7990 
 	
 # Additional Resources
 
