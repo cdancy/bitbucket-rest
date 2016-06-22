@@ -39,7 +39,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     public void createGetPullRequest() {
         String randomChars = randomString();
         ProjectKey proj = ProjectKey.create(project);
-        Repository repository = Repository.create(repo, null, proj);
+        MinimalRepository repository = MinimalRepository.create(repo, null, proj);
 
         Reference fromRef = Reference.create("refs/heads/" + branchToMerge, repository);
         Reference toRef = Reference.create(null, repository);

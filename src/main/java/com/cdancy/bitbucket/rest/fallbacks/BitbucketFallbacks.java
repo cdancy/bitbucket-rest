@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.sun.scenario.effect.Merge;
 import org.jclouds.Fallback;
 
@@ -43,6 +44,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable t) throws Exception {
             if (checkNotNull(t, "throwable") != null) {
                 return Boolean.FALSE;
+            }
+            throw propagate(t);
+        }
+    }
+
+    public static final class RepositoryOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable t) throws Exception {
+            if (checkNotNull(t, "throwable") != null) {
+                return createRepositoryFromErrors(getErrors(t.getMessage()));
             }
             throw propagate(t);
         }
@@ -94,6 +104,10 @@ public final class BitbucketFallbacks {
         }
 
         return errors;
+    }
+
+    public static Repository createRepositoryFromErrors(List<Error> errors) {
+        return Repository.create(null, -1, null, null, null, null, false, null, false, null, errors);
     }
 
     public static Project createProjectFromErrors(List<Error> errors) {

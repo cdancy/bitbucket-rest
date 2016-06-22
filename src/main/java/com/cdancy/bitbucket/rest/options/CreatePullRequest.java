@@ -67,6 +67,6 @@ public abstract class CreatePullRequest {
                                           Reference toRef, List<Person> reviewers, Links links) {
       return new AutoValue_CreatePullRequest(title, description, "OPEN", true, false,
               fromRef, toRef, false, reviewers != null ? ImmutableList.copyOf(reviewers) :
-              ImmutableList.<Person> of(), links != null ? links : Links.create(null));
+              ImmutableList.<Person> of(), links != null ? links : Links.create(null, null));
    }
 }

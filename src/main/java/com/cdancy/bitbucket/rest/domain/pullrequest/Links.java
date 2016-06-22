@@ -28,13 +28,16 @@ import com.google.common.collect.ImmutableList;
 @AutoValue
 public abstract class Links {
 
-   public abstract List<Map<String, String>> self();
+    public abstract List<Map<String, String>> clone();
 
-   Links() {
-   }
+    public abstract List<Map<String, String>> self();
 
-   @SerializedNames({ "self" })
-   public static Links create(List<Map<String, String>> self) {
-      return new AutoValue_Links(self != null ? ImmutableList.copyOf(self) : ImmutableList.<Map<String, String>> of());
-   }
+    Links() {
+    }
+
+    @SerializedNames({ "clone", "self" })
+    public static Links create(List<Map<String, String>> clone, List<Map<String, String>> self) {
+      return new AutoValue_Links(clone != null ? ImmutableList.copyOf(clone) : ImmutableList.<Map<String, String>> of(),
+              self != null ? ImmutableList.copyOf(self) : ImmutableList.<Map<String, String>> of());
+    }
 }

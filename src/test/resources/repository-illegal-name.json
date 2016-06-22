@@ -1,0 +1,14 @@
+{
+  "errors":[
+    {
+      "context":"name",
+      "message":"Repository names are limited to 128 characters. They must start with a letter or number and may contain spaces, hyphens, underscores and periods",
+      "exceptionName":null
+    },
+    {
+      "context":"slug",
+      "message":"Please enter a non-empty value less than 128 characters",
+      "exceptionName":null
+    }
+  ]
+}

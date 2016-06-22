@@ -40,15 +40,15 @@ public class SystemApiMockTest extends BaseBitbucketMockTest {
       MockWebServer server = mockEtcdJavaWebServer();
 
       server.enqueue(new MockResponse().setBody(payloadFromResource("/version.json")).setResponseCode(200));
-      BitbucketApi etcdJavaApi = api(server.getUrl("/"));
-      SystemApi api = etcdJavaApi.systemApi();
+      BitbucketApi baseApi = api(server.getUrl("/"));
+      SystemApi api = baseApi.systemApi();
       try {
          Version version = api.version();
          assertNotNull(version);
          assertTrue(version.version().matches(versionRegex));
          assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/application-properties");
       } finally {
-         etcdJavaApi.close();
+         baseApi.close();
          server.shutdown();
       }
    }

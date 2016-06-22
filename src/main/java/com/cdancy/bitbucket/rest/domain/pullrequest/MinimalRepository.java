@@ -23,19 +23,20 @@ import org.jclouds.json.SerializedNames;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Reference {
+public abstract class MinimalRepository {
 
-   // default to 'refs/heads/master' if null
+   public abstract String slug();
+
    @Nullable
-   public abstract String id();
+   public abstract String name();
 
-   public abstract MinimalRepository repository();
+   public abstract ProjectKey project();
 
-   Reference() {
+   MinimalRepository() {
    }
 
-   @SerializedNames({ "id", "repository" })
-   public static Reference create(String id, MinimalRepository repository) {
-      return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository);
+   @SerializedNames({ "slug", "name", "project" })
+   public static MinimalRepository create(String slug, String name, ProjectKey project) {
+      return new AutoValue_MinimalRepository(slug, name, project);
    }
 }

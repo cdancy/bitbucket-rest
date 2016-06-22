@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest;
 import java.io.Closeable;
 
 import com.cdancy.bitbucket.rest.features.ProjectApi;
+import com.cdancy.bitbucket.rest.features.RepositoryApi;
 import org.jclouds.rest.annotations.Delegate;
 
 import com.cdancy.bitbucket.rest.features.PullRequestApi;
@@ -32,6 +33,9 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     PullRequestApi pullRequestApi();
+
+    @Delegate
+    RepositoryApi repositoryApi();
 
     @Delegate
     SystemApi systemApi();

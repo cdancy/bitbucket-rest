@@ -1,0 +1,9 @@
+{
+  "errors":[
+    {
+      "context":null,
+      "message":"Repository CFSTLRYHBN/JKXATTQLOT does not exist.",
+      "exceptionName":"com.atlassian.bitbucket.repository.NoSuchRepositoryException"
+    }
+  ]
+}
