@@ -70,11 +70,11 @@ that you can use in your own code.
 
 Running mock tests can be done like so:
 
-	./gradlew clean build mockTest
+	./gradlew mockTest
 	
-Running integration tests can be done like so (requires docker):
+Running integration tests can be done like so (requires Bitbucket instance):
 
-	./gradlew clean build integTest
+	./gradlew integTest
 	
 # Additional Resources
 
