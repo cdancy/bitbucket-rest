@@ -25,7 +25,6 @@ import java.util.List;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.sun.scenario.effect.Merge;
 import org.jclouds.Fallback;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
