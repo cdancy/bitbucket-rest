@@ -1,0 +1,8 @@
+{
+  "id": "refs/heads/dev-branch",
+  "displayId": "dev-branch",
+  "type": "BRANCH",
+  "latestCommit": "8d351a10fb428c0c1239530256e21cf24f136e73",
+  "latestChangeset": "8d351a10fb428c0c1239530256e21cf24f136e73",
+  "isDefault": false
+}
