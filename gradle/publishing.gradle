@@ -63,8 +63,8 @@ artifactory {
 
 bintray {
 
-    user = project.bintrayUsername
-    key = project.bintrayKey
+    user = resolveProperty('bintrayUsername')
+    key = resolveProperty('bintrayKey')
     publications = ['mavenJava']
     publish = true
 
@@ -94,8 +94,8 @@ bintray {
     }
 }
 
-String resolveProperty(String envVarKey, String projectPropKey) {
-    String propValue = System.getenv()[envVarKey]
+String resolveProperty(String propKey) {
+    String propValue = System.getenv()[propKey]
     if(propValue) { return propValue }
-    hasProperty(projectPropKey) ? getProperty(projectPropKey) : null
+    hasProperty(propKey) ? getProperty(propKey) : null
 }
