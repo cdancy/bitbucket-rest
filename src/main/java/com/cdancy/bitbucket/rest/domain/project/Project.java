@@ -57,7 +57,7 @@ public abstract class Project {
     @SerializedNames({ "key", "id", "name", "description", "public", "type", "links", "errors" })
     public static Project create(String key, int id, String name, String description,
                                  boolean _public, String type, Links links, List<Error> errors) {
-      return new AutoValue_Project(key, id, name, description, _public, type, links,
-              errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_Project(key, id, name, description, _public, type, links,
+                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
     }
 }

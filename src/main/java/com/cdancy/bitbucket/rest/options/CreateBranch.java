@@ -37,6 +37,6 @@ public abstract class CreateBranch {
 
     @SerializedNames({ "name", "startPoint", "message" })
     public static CreateBranch create(String name, String startPoint, String message) {
-      return new AutoValue_CreateBranch(name, startPoint, message != null ? message : name);
+        return new AutoValue_CreateBranch(name, startPoint, message != null ? message : name);
     }
 }

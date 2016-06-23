@@ -104,7 +104,7 @@
              value="Member name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="ParameterName">
-            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <property name="format" value="^_?[a-z][a-z0-9][a-zA-Z0-9]*$"/>
             <message key="name.invalidPattern"
              value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -144,7 +144,7 @@
         <module name="Indentation">
             <property name="basicOffset" value="4"/>
             <property name="braceAdjustment" value="0"/>
-            <property name="caseIndent" value="0"/>
+            <property name="caseIndent" value="4"/>
             <property name="throwsIndent" value="8"/>
             <property name="lineWrappingIndentation" value="8"/>
             <property name="arrayInitIndent" value="4"/>
@@ -189,10 +189,10 @@
             <property name="minLineCount" value="2"/>
             <property name="allowedAnnotations" value="Override, Test"/>
             <property name="allowThrowsTagsForSubclasses" value="true"/>
-            <property name="ignoreMethodNamesRegex" value=".*(create|test).*"/>
+            <property name="ignoreMethodNamesRegex" value=".*(create|test|init|fin).*"/>
         </module>
         <module name="MethodName">
-            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+            <property name="format" value="^_?[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
             <message key="name.invalidPattern"
              value="Method name ''{0}'' must match pattern ''{1}''."/>
         </module>

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import static org.testng.Assert.assertNotNull;
@@ -27,11 +28,11 @@ import com.cdancy.bitbucket.rest.domain.system.Version;
 @Test(groups = "live", testName = "BitbucketClientLiveTest")
 public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
 
-   @Test
-   public void testCreateClient() {
-      BitbucketClient client = new BitbucketClient.Builder().endPoint(this.endpoint).build();
+    @Test
+    public void testCreateClient() {
+        BitbucketClient client = new BitbucketClient.Builder().endPoint(this.endpoint).build();
 
-      Version version = client.api().systemApi().version();
-      assertNotNull(version);
-   }
+        Version version = client.api().systemApi().version();
+        assertNotNull(version);
+    }
 }

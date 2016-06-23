@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.fallbacks;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -42,66 +43,66 @@ public final class BitbucketFallbacks {
     private static final JsonParser parser = new JsonParser();
 
     public static final class FalseOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable t) throws Exception {
-            if (checkNotNull(t, "throwable") != null) {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
                 return Boolean.FALSE;
             }
-            throw propagate(t);
+            throw propagate(throwable);
         }
     }
 
     public static final class BranchOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable t) throws Exception {
-            if (checkNotNull(t, "throwable") != null) {
-                return createBranchFromErrors(getErrors(t.getMessage()));
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createBranchFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(t);
+            throw propagate(throwable);
         }
     }
 
     public static final class TagOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable t) throws Exception {
-            if (checkNotNull(t, "throwable") != null) {
-                return createTagFromErrors(getErrors(t.getMessage()));
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createTagFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(t);
+            throw propagate(throwable);
         }
     }
 
     public static final class RepositoryOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable t) throws Exception {
-            if (checkNotNull(t, "throwable") != null) {
-                return createRepositoryFromErrors(getErrors(t.getMessage()));
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createRepositoryFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(t);
+            throw propagate(throwable);
         }
     }
 
     public static final class ProjectOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable t) throws Exception {
-            if (checkNotNull(t, "throwable") != null) {
-                return createProjectFromErrors(getErrors(t.getMessage()));
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createProjectFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(t);
+            throw propagate(throwable);
         }
     }
 
     public static final class PullRequestOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable t) throws Exception {
-            if (checkNotNull(t, "throwable") != null) {
-                return createPullRequestFromErrors(getErrors(t.getMessage()));
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createPullRequestFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(t);
+            throw propagate(throwable);
         }
     }
 
     public static final class MergeStatusOnError implements Fallback<Object> {
-      public Object createOrPropagate(Throwable t) throws Exception {
-         if (checkNotNull(t, "throwable") != null) {
-            return createMergeStatusFromErrors(getErrors(t.getMessage()));
-         }
-         throw propagate(t);
-      }
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createMergeStatusFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
     }
 
     public static Branch createBranchFromErrors(List<Error> errors) {
@@ -121,16 +122,22 @@ public final class BitbucketFallbacks {
     }
 
     public static PullRequest createPullRequestFromErrors(List<Error> errors) {
-      return PullRequest.create(-1, -1, null, null, null,
-              false, false, 0, 0, null,
-              null, false, null, null, null,
-              null, errors);
+        return PullRequest.create(-1, -1, null, null, null,
+                false, false, 0, 0, null,
+                null, false, null, null, null,
+                null, errors);
     }
 
     public static MergeStatus createMergeStatusFromErrors(List<Error> errors) {
         return MergeStatus.create(false, false, null, errors);
     }
 
+    /**
+     * Parse list of Error's from output.
+     *
+     * @param output json containing errors hash
+     * @return List of Error's or empty list if none could be found
+     */
     public static List<Error> getErrors(String output) {
         JsonElement element = parser.parse(output);
         JsonObject object = element.getAsJsonObject();

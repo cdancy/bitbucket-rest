@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
@@ -25,7 +26,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "RepositoryApiLiveTest", singleThreaded = true)
 public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -93,6 +95,6 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     private RepositoryApi api() {
-      return api.repositoryApi();
+        return api.repositoryApi();
     }
 }

@@ -35,6 +35,6 @@ public abstract class CreateRepository {
 
     @SerializedNames({ "name", "scmId", "forkable" })
     public static CreateRepository create(String name, boolean forkable) {
-      return new AutoValue_CreateRepository(name, "git", forkable);
+        return new AutoValue_CreateRepository(name, "git", forkable);
     }
 }

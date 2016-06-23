@@ -68,8 +68,8 @@ public abstract class Repository {
     public static Repository create(String slug, int id, String name, String scmId,
                                     String state, String statusMessage, boolean forkable,
                                     Project project, boolean _public, Links links, List<Error> errors) {
-      return new AutoValue_Repository(slug, id, name, scmId, state, statusMessage,
-                                    forkable, project, _public, links,
-                                    errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_Repository(slug, id, name, scmId, state, statusMessage,
+                forkable, project, _public, links,
+                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
     }
 }

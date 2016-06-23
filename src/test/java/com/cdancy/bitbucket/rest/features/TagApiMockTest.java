@@ -14,14 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
-import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.cdancy.bitbucket.rest.options.CreateTag;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -55,7 +54,8 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             assertTrue(tag.errors().size() == 0);
             assertTrue(tag.id().endsWith(tagName));
             assertTrue(tag.latestCommit().equalsIgnoreCase(commitHash));
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey + "/tags");
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/tags");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -72,14 +72,14 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
             String tagName = "release-2.0.0";
-            String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
 
             Tag tag = api.get(projectKey, repoKey, tagName);
             assertNotNull(tag);
             assertTrue(tag.errors().size() == 0);
             assertTrue(tag.id().endsWith(tagName));
-            assertTrue(tag.latestCommit().equalsIgnoreCase(commitHash));
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
+            assertTrue(tag.latestCommit().equalsIgnoreCase("8d351a10fb428c0c1239530256e21cf24f136e73"));
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -99,7 +99,8 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
 
             Tag tag = api.get(projectKey, repoKey, tagName);
             assertNull(tag);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
         } finally {
             baseApi.close();
             server.shutdown();

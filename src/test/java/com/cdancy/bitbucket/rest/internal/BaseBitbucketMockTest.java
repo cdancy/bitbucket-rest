@@ -44,71 +44,83 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
  */
 public class BaseBitbucketMockTest {
 
-   protected String provider;
-   private final JsonParser parser = new JsonParser();
+    protected String provider;
+    private final JsonParser parser = new JsonParser();
 
-   public BaseBitbucketMockTest() {
-      provider = "bitbucket";
-   }
+    public BaseBitbucketMockTest() {
+        provider = "bitbucket";
+    }
 
-   public BitbucketApi api(URL url) {
-      return ContextBuilder.newBuilder(provider).endpoint(url.toString()).overrides(setupProperties())
-            .buildApi(BitbucketApi.class);
-   }
+    public BitbucketApi api(URL url) {
+        return ContextBuilder.newBuilder(provider).endpoint(url.toString()).overrides(setupProperties())
+                .buildApi(BitbucketApi.class);
+    }
 
-   protected Properties setupProperties() {
-      Properties properties = new Properties();
-      properties.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
-      return properties;
-   }
+    protected Properties setupProperties() {
+        Properties properties = new Properties();
+        properties.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
+        return properties;
+    }
 
-   public static MockWebServer mockEtcdJavaWebServer() throws IOException {
-      MockWebServer server = new MockWebServer();
-      server.play();
-      return server;
-   }
+    /**
+     * Create a MockWebServer.
+     *
+     * @return instance of MockWebServer
+     * @throws IOException if unable to start/play server
+     */
+    public static MockWebServer mockEtcdJavaWebServer() throws IOException {
+        MockWebServer server = new MockWebServer();
+        server.play();
+        return server;
+    }
 
-   public String payloadFromResource(String resource) {
-      try {
-         return new String(toStringAndClose(getClass().getResourceAsStream(resource)).getBytes(Charsets.UTF_8));
-      } catch (IOException e) {
-         throw Throwables.propagate(e);
-      }
-   }
+    /**
+     * Get the String representation of some resource to be used as payload.
+     *
+     * @param resource String representation of a given resource
+     * @return payload in String form
+     */
+    public String payloadFromResource(String resource) {
+        try {
+            return new String(toStringAndClose(getClass().getResourceAsStream(resource)).getBytes(Charsets.UTF_8));
+        } catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
+    }
 
-   protected RecordedRequest assertSent(MockWebServer server, String method, String path) throws InterruptedException {
-      RecordedRequest request = server.takeRequest();
-      assertThat(request.getMethod()).isEqualTo(method);
-      assertThat(request.getPath()).isEqualTo(path);
-      assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
-      return request;
-   }
+    protected RecordedRequest assertSent(MockWebServer server, String method, String path) throws InterruptedException {
+        RecordedRequest request = server.takeRequest();
+        assertThat(request.getMethod()).isEqualTo(method);
+        assertThat(request.getPath()).isEqualTo(path);
+        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
+        return request;
+    }
 
-   protected RecordedRequest assertSentWithFormData(MockWebServer server, String method, String path, String body)
-         throws InterruptedException {
-      RecordedRequest request = server.takeRequest();
-      assertThat(request.getMethod()).isEqualTo(method);
-      assertThat(request.getPath()).isEqualTo(path);
-      assertThat(request.getUtf8Body()).isEqualTo(body);
-      assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
-      assertThat(request.getHeader(HttpHeaders.CONTENT_TYPE)).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
-      return request;
-   }
+    protected RecordedRequest assertSent(MockWebServer server, String method, String path, String json)
+            throws InterruptedException {
+        RecordedRequest request = assertSent(server, method, path);
+        assertEquals(request.getHeader("Content-Type"), APPLICATION_JSON);
+        assertEquals(parser.parse(request.getUtf8Body()), parser.parse(json));
+        return request;
+    }
 
-   protected RecordedRequest assertSentAcceptText(MockWebServer server, String method, String path)
-         throws InterruptedException {
-      RecordedRequest request = server.takeRequest();
-      assertThat(request.getMethod()).isEqualTo(method);
-      assertThat(request.getPath()).isEqualTo(path);
-      assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.TEXT_PLAIN);
-      return request;
-   }
+    protected RecordedRequest assertSentWithFormData(MockWebServer server, String method, String path, String body)
+            throws InterruptedException {
+        RecordedRequest request = server.takeRequest();
+        assertThat(request.getMethod()).isEqualTo(method);
+        assertThat(request.getPath()).isEqualTo(path);
+        assertThat(request.getUtf8Body()).isEqualTo(body);
+        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
+        assertThat(request.getHeader(HttpHeaders.CONTENT_TYPE)).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
+        return request;
+    }
 
-   protected RecordedRequest assertSent(MockWebServer server, String method, String path, String json)
-         throws InterruptedException {
-      RecordedRequest request = assertSent(server, method, path);
-      assertEquals(request.getHeader("Content-Type"), APPLICATION_JSON);
-      assertEquals(parser.parse(request.getUtf8Body()), parser.parse(json));
-      return request;
-   }
+    protected RecordedRequest assertSentAcceptText(MockWebServer server, String method, String path)
+            throws InterruptedException {
+        RecordedRequest request = server.takeRequest();
+        assertThat(request.getMethod()).isEqualTo(method);
+        assertThat(request.getPath()).isEqualTo(path);
+        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.TEXT_PLAIN);
+        return request;
+    }
 }

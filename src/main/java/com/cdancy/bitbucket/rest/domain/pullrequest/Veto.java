@@ -24,17 +24,17 @@ import org.jclouds.json.SerializedNames;
 @AutoValue
 public abstract class Veto {
 
-   @Nullable
-   public abstract String summaryMessage();
+    @Nullable
+    public abstract String summaryMessage();
 
-   @Nullable
-   public abstract String detailedMessage();
+    @Nullable
+    public abstract String detailedMessage();
 
-   Veto() {
-   }
+    Veto() {
+    }
 
-   @SerializedNames({ "summaryMessage", "detailedMessage" })
-   public static Veto create(String summaryMessage, String detailedMessage) {
-      return new AutoValue_Veto(summaryMessage, detailedMessage);
-   }
+    @SerializedNames({ "summaryMessage", "detailedMessage" })
+    public static Veto create(String summaryMessage, String detailedMessage) {
+        return new AutoValue_Veto(summaryMessage, detailedMessage);
+    }
 }

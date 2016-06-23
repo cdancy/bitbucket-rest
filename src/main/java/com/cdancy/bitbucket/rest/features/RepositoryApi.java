@@ -27,7 +27,15 @@ import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
-import javax.ws.rs.*;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -40,19 +48,22 @@ public interface RepositoryApi {
     @Path("/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
     @POST
-    Repository create(@PathParam("project") String project, @BinderParam(BindToJsonPayload.class) CreateRepository createRepository);
+    Repository create(@PathParam("project") String project,
+                      @BinderParam(BindToJsonPayload.class) CreateRepository createRepository);
 
     @Named("repository:get")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
     @GET
-    Repository get(@PathParam("project") String project, @PathParam("repo") String repo);
+    Repository get(@PathParam("project") String project,
+                   @PathParam("repo") String repo);
 
     @Named("repository:delete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @DELETE
-    boolean delete(@PathParam("project") String project, @PathParam("repo") String repo);
+    boolean delete(@PathParam("project") String project,
+                   @PathParam("repo") String repo);
 }

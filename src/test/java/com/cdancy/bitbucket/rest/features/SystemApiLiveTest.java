@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import static org.testng.Assert.assertNotNull;
@@ -27,16 +28,16 @@ import com.cdancy.bitbucket.rest.domain.system.Version;
 @Test(groups = "live", testName = "SystemApiLiveTest", singleThreaded = true)
 public class SystemApiLiveTest extends BaseBitbucketApiLiveTest {
 
-   private final String versionRegex = "^\\d+\\.\\d+\\.\\d+$";
+    private final String versionRegex = "^\\d+\\.\\d+\\.\\d+$";
 
-   @Test
-   public void testGetVersion() {
-      Version version = api().version();
-      assertNotNull(version);
-      assertTrue(version.version().matches(versionRegex));
-   }
+    @Test
+    public void testGetVersion() {
+        Version version = api().version();
+        assertNotNull(version);
+        assertTrue(version.version().matches(versionRegex));
+    }
 
-   private SystemApi api() {
-      return api.systemApi();
-   }
+    private SystemApi api() {
+        return api.systemApi();
+    }
 }

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.filters;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -33,44 +34,44 @@ import com.google.common.net.HttpHeaders;
 
 @Singleton
 public class BitbucketAuthentication implements HttpRequestFilter {
-   private final Supplier<Credentials> creds;
+    private final Supplier<Credentials> creds;
 
-   private final String REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
+    public static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
-   @Inject
-   BitbucketAuthentication(@Provider Supplier<Credentials> creds) {
-      this.creds = creds;
-   }
+    @Inject
+    BitbucketAuthentication(@Provider Supplier<Credentials> creds) {
+        this.creds = creds;
+    }
 
-   @Override
-   public HttpRequest filter(HttpRequest request) throws HttpException {
-      Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
-      if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {
-         /*
-          * client can pass in credential string in 1 of 2 ways:
-          * 
-          * 1.) As colon delimited username and password: admin:password
-          * 
-          * 2.) As base64 encoded value of colon delimited username and
-          * password: YWRtaW46cGFzc3dvcmQ=
-          * 
-          */
-         String foundCredential = currentCreds.credential;
-         if (foundCredential.contains(":")) {
-            foundCredential = base64().encode(foundCredential.getBytes());
-         }
+    @Override
+    public HttpRequest filter(HttpRequest request) throws HttpException {
+        Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
+        if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {
+            /*
+            * client can pass in credential string in 1 of 2 ways:
+            *
+            * 1.) As colon delimited username and password: admin:password
+            *
+            * 2.) As base64 encoded value of colon delimited username and
+            * password: YWRtaW46cGFzc3dvcmQ=
+            *
+            */
+            String foundCredential = currentCreds.credential;
+            if (foundCredential.contains(":")) {
+                foundCredential = base64().encode(foundCredential.getBytes());
+            }
 
-         if (isBase64Encoded(foundCredential)) {
-            return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, "Basic " + foundCredential).build();
-         } else {
-            throw new IllegalArgumentException("Credential is not in base64 format: credential=" + foundCredential);
-         }
-      } else {
-         return request.toBuilder().build();
-      }
-   }
+            if (isBase64Encoded(foundCredential)) {
+                return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, "Basic " + foundCredential).build();
+            } else {
+                throw new IllegalArgumentException("Credential is not in base64 format: credential=" + foundCredential);
+            }
+        } else {
+            return request.toBuilder().build();
+        }
+    }
 
-   private boolean isBase64Encoded(String possiblyEncodedString) {
-      return possiblyEncodedString.matches(REGEX) ? true : false;
-   }
+    private boolean isBase64Encoded(String possiblyEncodedString) {
+        return possiblyEncodedString.matches(BASE64_REGEX) ? true : false;
+    }
 }

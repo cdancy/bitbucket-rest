@@ -25,17 +25,17 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Reference {
 
-   // default to 'refs/heads/master' if null
-   @Nullable
-   public abstract String id();
+    // default to 'refs/heads/master' if null
+    @Nullable
+    public abstract String id();
 
-   public abstract MinimalRepository repository();
+    public abstract MinimalRepository repository();
 
-   Reference() {
-   }
+    Reference() {
+    }
 
-   @SerializedNames({ "id", "repository" })
-   public static Reference create(String id, MinimalRepository repository) {
-      return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository);
-   }
+    @SerializedNames({ "id", "repository" })
+    public static Reference create(String id, MinimalRepository repository) {
+        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository);
+    }
 }

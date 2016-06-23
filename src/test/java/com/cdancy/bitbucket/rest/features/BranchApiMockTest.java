@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -27,7 +28,8 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link BranchApi} class.
@@ -53,7 +55,8 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertTrue(branch.errors().size() == 0);
             assertTrue(branch.id().endsWith(branchName));
             assertTrue(branch.latestCommit().equalsIgnoreCase(commitHash));
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -74,7 +77,8 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertNotNull(branch);
             assertTrue(branch.errors().size() == 0);
             assertNotNull(branch.id());
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -93,7 +97,8 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
             boolean success = api.updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
             assertTrue(success);
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
+            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
         } finally {
             baseApi.close();
             server.shutdown();

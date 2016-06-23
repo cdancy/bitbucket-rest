@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
-import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
-import com.cdancy.bitbucket.rest.options.CreateTag;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -82,5 +82,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(success);
     }
 
-    private BranchApi api() { return api.branchApi(); }
+    private BranchApi api() {
+        return api.branchApi();
+    }
 }

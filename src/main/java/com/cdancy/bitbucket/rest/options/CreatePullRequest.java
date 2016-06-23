@@ -30,43 +30,44 @@ import java.util.List;
 @AutoValue
 public abstract class CreatePullRequest {
 
-   public abstract String title();
+    public abstract String title();
 
-   @Nullable
-   public abstract String description();
+    @Nullable
+    public abstract String description();
 
-   // set to "OPEN" for creating new PR's
-   public abstract String state();
+    // set to "OPEN" for creating new PR's
+    public abstract String state();
 
-   // set to TRUE for creating new PR's
-   public abstract boolean open();
+    // set to TRUE for creating new PR's
+    public abstract boolean open();
 
-   // set to FALSE for creating new PR's
-   public abstract boolean closed();
+    // set to FALSE for creating new PR's
+    public abstract boolean closed();
 
-   public abstract Reference fromRef();
+    public abstract Reference fromRef();
 
-   public abstract Reference toRef();
+    public abstract Reference toRef();
 
-   // set to FALSE for creating new PR's
-   public abstract boolean locked();
+    // set to FALSE for creating new PR's
+    public abstract boolean locked();
 
-   // default to empty List if null
-   @Nullable
-   public abstract List<Person> reviewers();
+    // default to empty List if null
+    @Nullable
+    public abstract List<Person> reviewers();
 
-   // default to eventually empty list Link if null
-   @Nullable
-   public abstract Links links();
+    // default to eventually empty list Link if null
+    @Nullable
+    public abstract Links links();
 
-   CreatePullRequest() {
-   }
+    CreatePullRequest() {
+    }
 
-   @SerializedNames({ "title", "description", "state", "open", "closed", "fromRef", "toRef", "locked", "reviewers", "links" })
-   public static CreatePullRequest create(String title, String description, Reference fromRef,
-                                          Reference toRef, List<Person> reviewers, Links links) {
-      return new AutoValue_CreatePullRequest(title, description, "OPEN", true, false,
+
+    @SerializedNames({ "title", "description", "state", "open", "closed", "fromRef", "toRef", "locked", "reviewers", "links" })
+    public static CreatePullRequest create(String title, String description, Reference fromRef,
+                                           Reference toRef, List<Person> reviewers, Links links) {
+        return new AutoValue_CreatePullRequest(title, description, "OPEN", true, false,
               fromRef, toRef, false, reviewers != null ? ImmutableList.copyOf(reviewers) :
               ImmutableList.<Person> of(), links != null ? links : Links.create(null, null));
-   }
+    }
 }

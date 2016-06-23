@@ -14,13 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.*;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
@@ -59,8 +65,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
             assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
             assertTrue(pr.id() == 101);
-            assertSent(server, "POST",
-                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests");
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -80,8 +86,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
             assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
             assertTrue(pr.id() == 101);
-            assertSent(server, "GET",
-               "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -103,8 +109,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.id() == 101);
             assertTrue(pr.state().equalsIgnoreCase("DECLINED"));
             assertFalse(pr.open());
-            assertSent(server, "POST",
-             "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/decline?version=1");
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/decline?version=1");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -126,8 +132,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.id() == 101);
             assertTrue(pr.state().equalsIgnoreCase("OPEN"));
             assertTrue(pr.open());
-            assertSent(server, "POST",
-                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/reopen?version=1");
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/reopen?version=1");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -146,8 +152,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.canMerge());
             assertTrue(pr.vetoes().size() == 0);
             assertTrue(pr.errors().size() == 0);
-            assertSent(server, "GET",
-                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -166,8 +172,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertFalse(pr.canMerge());
             assertTrue(pr.vetoes().size() == 1);
             assertTrue(pr.errors().size() == 0);
-            assertSent(server, "GET",
-                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -189,8 +195,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.id() == 101);
             assertTrue(pr.state().equalsIgnoreCase("MERGED"));
             assertFalse(pr.open());
-            assertSent(server, "POST",
-                    "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101/merge?version=1");
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge?version=1");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -208,8 +214,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertNotNull(pr);
             assertTrue(pr.errors().size() > 0);
             assertTrue(pr.errors().get(0).exceptionName().endsWith("NoSuchPullRequestException"));
-            assertSent(server, "GET",
-               "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/PRJ/repos/my-repo/pull-requests/101");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101");
         } finally {
             baseApi.close();
             server.shutdown();

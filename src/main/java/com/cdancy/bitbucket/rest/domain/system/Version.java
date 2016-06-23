@@ -24,19 +24,19 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Version {
 
-   public abstract String version();
+    public abstract String version();
 
-   public abstract String buildNumber();
+    public abstract String buildNumber();
 
-   public abstract String buildDate();
+    public abstract String buildDate();
 
-   public abstract String displayName();
+    public abstract String displayName();
 
-   Version() {
-   }
+    Version() {
+    }
 
-   @SerializedNames({ "version", "buildNumber", "buildDate", "displayName" })
-   public static Version create(String version, String buildNumber, String buildDate, String displayName) {
-      return new AutoValue_Version(version, buildNumber, buildDate, displayName);
-   }
+    @SerializedNames({ "version", "buildNumber", "buildDate", "displayName" })
+    public static Version create(String version, String buildNumber, String buildDate, String displayName) {
+        return new AutoValue_Version(version, buildNumber, buildDate, displayName);
+    }
 }

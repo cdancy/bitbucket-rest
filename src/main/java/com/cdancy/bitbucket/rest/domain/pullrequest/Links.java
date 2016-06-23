@@ -37,7 +37,7 @@ public abstract class Links {
 
     @SerializedNames({ "clone", "self" })
     public static Links create(List<Map<String, String>> clone, List<Map<String, String>> self) {
-      return new AutoValue_Links(clone != null ? ImmutableList.copyOf(clone) : ImmutableList.<Map<String, String>> of(),
-              self != null ? ImmutableList.copyOf(self) : ImmutableList.<Map<String, String>> of());
+        return new AutoValue_Links(clone != null ? ImmutableList.copyOf(clone) : ImmutableList.<Map<String, String>> of(),
+                self != null ? ImmutableList.copyOf(self) : ImmutableList.<Map<String, String>> of());
     }
 }

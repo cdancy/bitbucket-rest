@@ -37,6 +37,6 @@ public abstract class CreateTag {
 
     @SerializedNames({ "name", "startPoint", "message" })
     public static CreateTag create(String name, String startPoint, String message) {
-      return new AutoValue_CreateTag(name, startPoint, message != null ? message : name);
+        return new AutoValue_CreateTag(name, startPoint, message != null ? message : name);
     }
 }

@@ -29,60 +29,60 @@ import com.google.common.collect.ImmutableList;
 @AutoValue
 public abstract class PullRequest {
 
-   public abstract int id();
+    public abstract int id();
 
-   public abstract int version();
+    public abstract int version();
 
-   @Nullable
-   public abstract String title();
+    @Nullable
+    public abstract String title();
 
-   @Nullable
-   public abstract String description();
+    @Nullable
+    public abstract String description();
 
-   @Nullable
-   public abstract String state();
+    @Nullable
+    public abstract String state();
 
-   public abstract boolean open();
+    public abstract boolean open();
 
-   public abstract boolean closed();
+    public abstract boolean closed();
 
-   public abstract long createdDate();
+    public abstract long createdDate();
 
-   public abstract long updatedDate();
+    public abstract long updatedDate();
 
-   @Nullable
-   public abstract Reference fromRef();
+    @Nullable
+    public abstract Reference fromRef();
 
-   @Nullable
-   public abstract Reference toRef();
+    @Nullable
+    public abstract Reference toRef();
 
-   public abstract boolean locked();
+    public abstract boolean locked();
 
-   @Nullable
-   public abstract Person author();
+    @Nullable
+    public abstract Person author();
 
-   public abstract List<Person> reviewers();
+    public abstract List<Person> reviewers();
 
-   public abstract List<Person> participants();
+    public abstract List<Person> participants();
 
-   @Nullable
-   public abstract Links links();
+    @Nullable
+    public abstract Links links();
 
-   @Nullable
-   public abstract List<Error> errors();
+    @Nullable
+    public abstract List<Error> errors();
 
-   PullRequest() {
-   }
+    PullRequest() {
+    }
 
-   @SerializedNames({ "id", "version", "title", "description", "state", "open", "closed", "createdDate", "updatedDate",
-         "fromRef", "toRef", "locked", "author", "reviewers", "participants", "links", "errors" })
-   public static PullRequest create(int id, int version, String title, String description, String state, boolean open,
-         boolean closed, long createdDate, long updatedDate, Reference fromRef, Reference toRef, boolean locked,
-         Person author, List<Person> reviewers, List<Person> participants, Links links, List<Error> errors) {
-      return new AutoValue_PullRequest(id, version, title, description, state, open, closed, createdDate, updatedDate,
-            fromRef, toRef, locked, author,
-            reviewers != null ? ImmutableList.copyOf(reviewers) : ImmutableList.<Person> of(),
-            participants != null ? ImmutableList.copyOf(participants) : ImmutableList.<Person> of(), links,
-            errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
-   }
+    @SerializedNames({ "id", "version", "title", "description", "state", "open", "closed", "createdDate", "updatedDate",
+            "fromRef", "toRef", "locked", "author", "reviewers", "participants", "links", "errors" })
+    public static PullRequest create(int id, int version, String title, String description, String state, boolean open,
+                                     boolean closed, long createdDate, long updatedDate, Reference fromRef, Reference toRef, boolean locked,
+                                     Person author, List<Person> reviewers, List<Person> participants, Links links, List<Error> errors) {
+        return new AutoValue_PullRequest(id, version, title, description, state, open, closed, createdDate, updatedDate,
+                fromRef, toRef, locked, author,
+                reviewers != null ? ImmutableList.copyOf(reviewers) : ImmutableList.<Person> of(),
+                participants != null ? ImmutableList.copyOf(participants) : ImmutableList.<Person> of(), links,
+                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+    }
 }

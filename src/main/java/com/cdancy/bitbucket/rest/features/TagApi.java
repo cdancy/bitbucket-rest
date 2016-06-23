@@ -28,7 +28,13 @@ import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -41,12 +47,16 @@ public interface TagApi {
     @Path("/{project}/repos/{repo}/tags")
     @Fallback(BitbucketFallbacks.TagOnError.class)
     @POST
-    Tag create(@PathParam("project") String project, @PathParam("repo") String repo, @BinderParam(BindToJsonPayload.class) CreateTag createTag);
+    Tag create(@PathParam("project") String project,
+               @PathParam("repo") String repo,
+               @BinderParam(BindToJsonPayload.class) CreateTag createTag);
 
     @Named("tag:get")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/tags/{tag}")
     @Fallback(Fallbacks.NullOnNotFoundOr404.class)
     @GET
-    Tag get(@PathParam("project") String project, @PathParam("repo") String repo, @PathParam("tag") String tag);
+    Tag get(@PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @PathParam("tag") String tag);
 }

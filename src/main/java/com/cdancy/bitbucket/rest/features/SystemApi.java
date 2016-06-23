@@ -34,9 +34,9 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 @Path("/rest/api/{jclouds.api-version}")
 public interface SystemApi {
 
-   @Named("system:version")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Path("/application-properties")
-   @GET
-   Version version();
+    @Named("system:version")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/application-properties")
+    @GET
+    Version version();
 }

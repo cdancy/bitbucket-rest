@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest;
 
 import java.util.Properties;
@@ -30,34 +31,34 @@ import com.google.inject.Module;
 @Test(groups = "live")
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
-   public BaseBitbucketApiLiveTest() {
-      provider = "bitbucket";
-   }
+    public BaseBitbucketApiLiveTest() {
+        provider = "bitbucket";
+    }
 
-   @Override
-   protected Iterable<Module> setupModules() {
-      return ImmutableSet.<Module> of(getLoggingModule());
-   }
+    @Override
+    protected Iterable<Module> setupModules() {
+        return ImmutableSet.<Module> of(getLoggingModule());
+    }
 
-   @Override
-   protected Properties setupProperties() {
-      Properties overrides = super.setupProperties();
-      overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
-      return overrides;
-   }
+    @Override
+    protected Properties setupProperties() {
+        Properties overrides = super.setupProperties();
+        overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
+        return overrides;
+    }
 
-   protected String randomStringLettersOnly() {
-       char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-       StringBuilder sb = new StringBuilder();
-       Random random = new Random();
-       for (int i = 0; i < 10; i++) {
-           char c = chars[random.nextInt(chars.length)];
-           sb.append(c);
-       }
-       return sb.toString().toUpperCase();
-   }
+    protected String randomStringLettersOnly() {
+        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            char randomChar = chars[random.nextInt(chars.length)];
+            sb.append(randomChar);
+        }
+        return sb.toString().toUpperCase();
+    }
 
-   protected String randomString() {
-      return UUID.randomUUID().toString().replaceAll("-", "");
-   }
+    protected String randomString() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
 }

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import static org.testng.Assert.assertNotNull;
@@ -34,22 +35,22 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 @Test(groups = "unit", testName = "SystemApiMockTest")
 public class SystemApiMockTest extends BaseBitbucketMockTest {
 
-   private final String versionRegex = "^\\d+\\.\\d+\\.\\d+$";
+    private final String versionRegex = "^\\d+\\.\\d+\\.\\d+$";
 
-   public void testGetVersion() throws Exception {
-      MockWebServer server = mockEtcdJavaWebServer();
+    public void testGetVersion() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
 
-      server.enqueue(new MockResponse().setBody(payloadFromResource("/version.json")).setResponseCode(200));
-      BitbucketApi baseApi = api(server.getUrl("/"));
-      SystemApi api = baseApi.systemApi();
-      try {
-         Version version = api.version();
-         assertNotNull(version);
-         assertTrue(version.version().matches(versionRegex));
-         assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/application-properties");
-      } finally {
-         baseApi.close();
-         server.shutdown();
-      }
-   }
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/version.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        SystemApi api = baseApi.systemApi();
+        try {
+            Version version = api.version();
+            assertNotNull(version);
+            assertTrue(version.version().matches(versionRegex));
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/application-properties");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 }

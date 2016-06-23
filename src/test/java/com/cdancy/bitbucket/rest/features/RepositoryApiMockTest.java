@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
-import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link RepositoryApi} class.

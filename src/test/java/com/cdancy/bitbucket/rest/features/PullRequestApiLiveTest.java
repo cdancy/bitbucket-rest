@@ -14,13 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.cdancy.bitbucket.rest.features;
 
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.*;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
@@ -103,6 +109,6 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     private PullRequestApi api() {
-      return api.pullRequestApi();
+        return api.pullRequestApi();
     }
 }

@@ -31,53 +31,54 @@ import com.google.inject.Module;
 @AutoService(ApiMetadata.class)
 public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
 
-   public static final String API_VERSION = "1.0";
-   public static final String BUILD_VERSION = "4.5";
+    public static final String API_VERSION = "1.0";
+    public static final String BUILD_VERSION = "4.5";
 
-   @Override
-   public Builder toBuilder() {
-      return new Builder().fromApiMetadata(this);
-   }
+    @Override
+    public Builder toBuilder() {
+        return new Builder().fromApiMetadata(this);
+    }
 
-   public BitbucketApiMetadata() {
-      this(new Builder());
-   }
+    public BitbucketApiMetadata() {
+        this(new Builder());
+    }
 
-   protected BitbucketApiMetadata(Builder builder) {
-      super(builder);
-   }
+    protected BitbucketApiMetadata(Builder builder) {
+        super(builder);
+    }
 
-   public static Properties defaultProperties() {
-      Properties properties = BaseHttpApiMetadata.defaultProperties();
-      return properties;
-   }
+    public static Properties defaultProperties() {
+        Properties properties = BaseHttpApiMetadata.defaultProperties();
+        return properties;
+    }
 
-   public static class Builder extends BaseHttpApiMetadata.Builder<BitbucketApi, Builder> {
+    public static class Builder extends BaseHttpApiMetadata.Builder<BitbucketApi, Builder> {
 
-      protected Builder() {
-         super(BitbucketApi.class);
-         id("bitbucket").name("Bitbucket API").identityName("Optional Username").credentialName("Optional Password")
-               .defaultIdentity("").defaultCredential("")
-               .documentation(URI
-                     .create("https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html"))
-               .version(API_VERSION).buildVersion(BUILD_VERSION).defaultEndpoint("http://127.0.0.1:7990")
-               .defaultProperties(BitbucketApiMetadata.defaultProperties())
-               .defaultModules(ImmutableSet.<Class<? extends Module>> of(BitbucketHttpApiModule.class));
-      }
+        protected Builder() {
+            super(BitbucketApi.class);
+            id("bitbucket").name("Bitbucket API")
+                    .identityName("Optional Username")
+                    .credentialName("Optional Password")
+                    .defaultIdentity("").defaultCredential("")
+                    .documentation(URI.create("https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html"))
+                    .version(API_VERSION).buildVersion(BUILD_VERSION).defaultEndpoint("http://127.0.0.1:7990")
+                    .defaultProperties(BitbucketApiMetadata.defaultProperties())
+                    .defaultModules(ImmutableSet.<Class<? extends Module>> of(BitbucketHttpApiModule.class));
+        }
 
-      @Override
-      public BitbucketApiMetadata build() {
-         return new BitbucketApiMetadata(this);
-      }
+        @Override
+        public BitbucketApiMetadata build() {
+            return new BitbucketApiMetadata(this);
+        }
 
-      @Override
-      protected Builder self() {
-         return this;
-      }
+        @Override
+        protected Builder self() {
+            return this;
+        }
 
-      @Override
-      public Builder fromApiMetadata(ApiMetadata in) {
-         return this;
-      }
-   }
+        @Override
+        public Builder fromApiMetadata(ApiMetadata in) {
+            return this;
+        }
+    }
 }

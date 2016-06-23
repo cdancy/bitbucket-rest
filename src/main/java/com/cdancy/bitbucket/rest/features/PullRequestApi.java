@@ -18,7 +18,15 @@
 package com.cdancy.bitbucket.rest.features;
 
 import javax.inject.Named;
-import javax.ws.rs.*;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+
 import javax.ws.rs.core.MediaType;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
@@ -43,15 +51,17 @@ public interface PullRequestApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}")
     @Fallback(PullRequestOnError.class)
     @GET
-    PullRequest get(@PathParam("project") String project, @PathParam("repo") String repo,
-                     @PathParam("pullRequestId") int pullRequestId);
+    PullRequest get(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @PathParam("pullRequestId") int pullRequestId);
 
     @Named("pull-request:create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests")
     @Fallback(PullRequestOnError.class)
     @POST
-    PullRequest create(@PathParam("project") String project, @PathParam("repo") String repo,
+    PullRequest create(@PathParam("project") String project,
+                       @PathParam("repo") String repo,
                        @BinderParam(BindToJsonPayload.class) CreatePullRequest createPullRequest);
 
     @Named("pull-request:merge")
@@ -59,15 +69,18 @@ public interface PullRequestApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/merge")
     @Fallback(PullRequestOnError.class)
     @POST
-    PullRequest merge(@PathParam("project") String project, @PathParam("repo") String repo,
-                      @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
+    PullRequest merge(@PathParam("project") String project,
+                      @PathParam("repo") String repo,
+                      @PathParam("pullRequestId") int pullRequestId,
+                      @QueryParam("version") int version);
 
     @Named("pull-request:can-merge")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/merge")
     @Fallback(MergeStatusOnError.class)
     @GET
-    MergeStatus canMerge(@PathParam("project") String project, @PathParam("repo") String repo,
+    MergeStatus canMerge(@PathParam("project") String project,
+                         @PathParam("repo") String repo,
                          @PathParam("pullRequestId") int pullRequestId);
 
     @Named("pull-request:decline")
@@ -75,14 +88,18 @@ public interface PullRequestApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/decline")
     @Fallback(PullRequestOnError.class)
     @POST
-    PullRequest decline(@PathParam("project") String project, @PathParam("repo") String repo,
-                        @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
+    PullRequest decline(@PathParam("project") String project,
+                        @PathParam("repo") String repo,
+                        @PathParam("pullRequestId") int pullRequestId,
+                        @QueryParam("version") int version);
 
     @Named("pull-request:reopen")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/reopen")
     @Fallback(PullRequestOnError.class)
     @POST
-    PullRequest reopen(@PathParam("project") String project, @PathParam("repo") String repo,
-                        @PathParam("pullRequestId") int pullRequestId, @QueryParam("version") int version);
+    PullRequest reopen(@PathParam("project") String project,
+                       @PathParam("repo") String repo,
+                       @PathParam("pullRequestId") int pullRequestId,
+                       @QueryParam("version") int version);
 }

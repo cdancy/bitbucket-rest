@@ -100,7 +100,9 @@ public class BitbucketClient {
         String value = null;
         for (String possibleKey : keys) {
             value = retrivePropertyValue(possibleKey);
-            if (value != null) { break; }
+            if (value != null) {
+                break;
+            }
         }
         return value;
     }
@@ -118,15 +120,15 @@ public class BitbucketClient {
     }
 
     public String endPoint() {
-      return endPoint;
-   }
+        return endPoint;
+    }
 
     public String credentials() {
-      return credentials;
+        return credentials;
     }
 
     public BitbucketApi api() {
-      return bitbucketApi;
+        return bitbucketApi;
     }
 
     public static class Builder {
@@ -152,7 +154,7 @@ public class BitbucketClient {
         }
 
         public BitbucketClient build() {
-         return new BitbucketClient(endPoint, credentials);
+            return new BitbucketClient(endPoint, credentials);
         }
     }
 }

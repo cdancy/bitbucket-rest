@@ -25,20 +25,20 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Error {
 
-   @Nullable
-   public abstract String context();
+    @Nullable
+    public abstract String context();
 
-   @Nullable
-   public abstract String message();
+    @Nullable
+    public abstract String message();
 
-   @Nullable
-   public abstract String exceptionName();
+    @Nullable
+    public abstract String exceptionName();
 
-   Error() {
-   }
+    Error() {
+    }
 
-   @SerializedNames({ "context", "message", "exceptionName" })
-   public static Error create(String context, String message, String exceptionName) {
-      return new AutoValue_Error(context, message, exceptionName);
-   }
+    @SerializedNames({ "context", "message", "exceptionName" })
+    public static Error create(String context, String message, String exceptionName) {
+        return new AutoValue_Error(context, message, exceptionName);
+    }
 }

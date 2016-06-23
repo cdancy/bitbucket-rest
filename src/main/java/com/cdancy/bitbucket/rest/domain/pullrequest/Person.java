@@ -24,19 +24,19 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Person {
 
-   public abstract User user();
+    public abstract User user();
 
-   public abstract String role();
+    public abstract String role();
 
-   public abstract boolean approved();
+    public abstract boolean approved();
 
-   public abstract String status();
+    public abstract String status();
 
-   Person() {
-   }
+    Person() {
+    }
 
-   @SerializedNames({ "user", "role", "approved", "status" })
-   public static Person create(User user, String role, boolean approved, String status) {
-      return new AutoValue_Person(user, role, approved, status);
-   }
+    @SerializedNames({ "user", "role", "approved", "status" })
+    public static Person create(User user, String role, boolean approved, String status) {
+        return new AutoValue_Person(user, role, approved, status);
+    }
 }

@@ -24,13 +24,13 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class ProjectKey {
 
-   public abstract String key();
+    public abstract String key();
 
-   ProjectKey() {
-   }
+    ProjectKey() {
+    }
 
-   @SerializedNames({ "key" })
-   public static ProjectKey create(String key) {
-      return new AutoValue_ProjectKey(key);
-   }
+    @SerializedNames({ "key" })
+    public static ProjectKey create(String key) {
+        return new AutoValue_ProjectKey(key);
+    }
 }
