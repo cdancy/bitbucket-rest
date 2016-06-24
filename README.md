@@ -22,7 +22,7 @@ Can be sourced from jcenter like so:
 	<dependency>
 	  <groupId>com.cdancy</groupId>
 	  <artifactId>bitbucket-rest</artifactId>
-	  <version>0.0.2</version>
+	  <version>0.0.3</version>
 	  <classifier>sources|javadoc|all</classifier> (Optional)
 	</dependency>
 	
