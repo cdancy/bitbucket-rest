@@ -1,6 +1,9 @@
-### Version 0.0.3 (TBA)
+### Version 0.0.3 (6/23/16)
 
 * ADDED: basic travis-ci support - [Commit 48c4](https://github.com/cdancy/bitbucket-rest/commit/48c407b897e48b376f3fa88b02f797a347e0f376)
+* ADDED: checkstyle plugin - [Commit 6b1f](https://github.com/cdancy/bitbucket-rest/commit/6b1fcf842bb87a2053b6d97ea81bc7aaf98c1317)
+* ADDED: BranchApi with endpoints `create`, `getDefault`, and `updateDefault` - [Commit cd70](https://github.com/cdancy/bitbucket-rest/commit/cd70952f4a83f910b25e56da0e8cc4befb9283e8)
+* ADDED: TagApi with endpoints `create` and `get` - [Commit 0553](https://github.com/cdancy/bitbucket-rest/commit/055397b3b46779354b9d8b26fac314d28e905dd5)
 
 ### Version 0.0.2 (6/21/16)
 
