@@ -1,9 +1,11 @@
 com.cdancy.bitbucket.rest
 com.cdancy.bitbucket.rest.config
+com.cdancy.bitbucket.rest.domain.branch
 com.cdancy.bitbucket.rest.domain.project
 com.cdancy.bitbucket.rest.domain.pullrequest
 com.cdancy.bitbucket.rest.domain.repository
 com.cdancy.bitbucket.rest.domain.system
+com.cdancy.bitbucket.rest.domain.tags
 com.cdancy.bitbucket.rest.error
 com.cdancy.bitbucket.rest.exception
 com.cdancy.bitbucket.rest.fallbacks
