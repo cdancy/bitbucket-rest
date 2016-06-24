@@ -2,7 +2,7 @@
 # bitbucket-rest
 ![alt tag](https://wac-cdn.atlassian.com/dam/jcr:e2a6f06f-b3d5-4002-aed3-73539c56a2eb/bitbucket_rgb_blue.png?cdnVersion=cm)
 
-java-based client to interact with Bitbucket's REST API. 
+java client, based on jclouds, to interact with Bitbucket's REST API. 
 
 ## Setup
 
