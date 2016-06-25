@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
@@ -26,10 +27,12 @@ public abstract class Person {
 
     public abstract User user();
 
+    @Nullable
     public abstract String role();
 
     public abstract boolean approved();
 
+    @Nullable
     public abstract String status();
 
     Person() {
