@@ -1,8 +1,12 @@
-[![Build Status](https://travis-ci.org/cdancy/bitbucket-rest.svg?branch=master)](https://travis-ci.org/cdancy/bitbucket-rest)
 # bitbucket-rest
 ![alt tag](https://wac-cdn.atlassian.com/dam/jcr:e2a6f06f-b3d5-4002-aed3-73539c56a2eb/bitbucket_rgb_blue.png?cdnVersion=cm)
 
-java-based client to interact with Bitbucket's REST API. 
+java client, based on jclouds, to interact with Bitbucket's REST API. 
+
+## Status
+<a href='https://bintray.com/cdancy/java-libraries/bitbucket-rest/view?source=watch' alt='Get automatic notifications about new "bitbucket-rest" versions'><img src='https://www.bintray.com/docs/images/bintray_badge_color.png'></a>
+[ ![Download](https://api.bintray.com/packages/cdancy/java-libraries/bitbucket-rest/images/download.png) ](https://bintray.com/cdancy/java-libraries/bitbucket-rest/_latestVersion)
+[![Build Status](https://travis-ci.org/cdancy/bitbucket-rest.svg?branch=master)](https://travis-ci.org/cdancy/bitbucket-rest)
 
 ## Setup
 
