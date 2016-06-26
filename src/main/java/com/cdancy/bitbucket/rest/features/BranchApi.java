@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
@@ -76,5 +77,13 @@ public interface BranchApi {
     @Fallback(BitbucketFallbacks.BranchOnError.class)
     @GET
     Branch getDefault(@PathParam("project") String project,
+                      @PathParam("repo") String repo);
+
+    @Named("branch:model")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel")
+    @Fallback(BitbucketFallbacks.BranchOnError.class)
+    @GET
+    BranchModel model(@PathParam("project") String project,
                       @PathParam("repo") String repo);
 }

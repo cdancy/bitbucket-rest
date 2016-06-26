@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -37,10 +38,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     String commitHash = "";
     */
 
-    String projectKey = "TEST";
-    String repoKey = "dev";
+    String projectKey = "BUILD";
+    String repoKey = "dancc-test";
     String branchName = randomStringLettersOnly();
-    String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
+    String commitHash = "5284b6cec569346855710b535dafb915423110c2";
 
     String defaultBranchId = "refs/heads/master";
 
@@ -63,6 +64,13 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test (dependsOnMethods = "testCreateBranch")
+    public void testGetBranchModel() {
+        BranchModel branchModel = api().model(projectKey, repoKey);
+        assertNotNull(branchModel);
+        assertTrue(branchModel.errors().size() == 0);
+    }
+
+    @Test (dependsOnMethods = "testGetBranchModel")
     public void testUpdateDefaultBranch() {
         boolean success = api().updateDefault(projectKey, repoKey, "refs/heads/" + branchName);
         assertTrue(success);

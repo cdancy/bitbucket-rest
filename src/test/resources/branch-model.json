@@ -1,0 +1,32 @@
+{
+  "development":{
+    "id":"refs/heads/master",
+    "displayId":"master",
+    "type":"BRANCH",
+    "latestCommit":"d90ca08fa076e2e4c076592fce3832aba80a494f",
+    "latestChangeset":"d90ca08fa076e2e4c076592fce3832aba80a494f",
+    "isDefault":true
+  },
+  "types":[
+    {
+      "id":"BUGFIX",
+      "displayName":"Bugfix",
+      "prefix":"bugfix/"
+    },
+    {
+      "id":"FEATURE",
+      "displayName":"Feature",
+      "prefix":"feature/"
+    },
+    {
+      "id":"HOTFIX",
+      "displayName":"Hotfix",
+      "prefix":"hotfix/"
+    },
+    {
+      "id":"RELEASE",
+      "displayName":"Release",
+      "prefix":"release/"
+    }
+  ]
+}
