@@ -32,33 +32,37 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
-@Path("/rest/api/{jclouds.api-version}/projects")
+@Path("/rest")
 public interface BranchApi {
 
     @Named("branch:create")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/branches")
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
     @Fallback(BitbucketFallbacks.BranchOnError.class)
     @POST
     Branch create(@PathParam("project") String project,
                   @PathParam("repo") String repo,
                   @BinderParam(BindToJsonPayload.class) CreateBranch createBranch);
 
+    @Named("branch:delete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Payload("%7B \"name\": \"{branchPath}\" %7D")
+    @DELETE
+    boolean delete(@PathParam("project") String project,
+                   @PathParam("repo") String repo,
+                   @PayloadParam("branchPath") String branchPath);
+
     @Named("branch:update-default")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/branches/default")
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/default")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @Payload("%7B \"id\": \"{id}\" %7D")
     @PUT
@@ -68,7 +72,7 @@ public interface BranchApi {
 
     @Named("branch:get-default")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/branches/default")
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/default")
     @Fallback(BitbucketFallbacks.BranchOnError.class)
     @GET
     Branch getDefault(@PathParam("project") String project,

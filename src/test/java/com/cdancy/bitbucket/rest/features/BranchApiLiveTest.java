@@ -59,7 +59,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertNotNull(branch);
         assertTrue(branch.errors().size() == 0);
         assertTrue(branch.id().endsWith(branchName));
-        assertTrue(branch.latestCommit().equalsIgnoreCase(commitHash));
+        assertTrue(branch.latestChangeset().equalsIgnoreCase(commitHash));
     }
 
     @Test (dependsOnMethods = "testCreateBranch")
@@ -79,6 +79,8 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @AfterClass
     public void fin() {
         boolean success = api().updateDefault(projectKey, repoKey, defaultBranchId);
+        assertTrue(success);
+        success = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
         assertTrue(success);
     }
 

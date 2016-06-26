@@ -54,8 +54,27 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertNotNull(branch);
             assertTrue(branch.errors().size() == 0);
             assertTrue(branch.id().endsWith(branchName));
-            assertTrue(branch.latestCommit().equalsIgnoreCase(commitHash));
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertTrue(branch.latestChangeset().equalsIgnoreCase(commitHash));
+            assertSent(server, "POST", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteBranch() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            boolean success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
+            assertTrue(success);
+            assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
             baseApi.close();
