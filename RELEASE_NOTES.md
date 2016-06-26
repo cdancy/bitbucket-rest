@@ -1,3 +1,11 @@
+### Version 0.0.5 (TBA)
+
+### Version 0.0.4 (6/26/16)
+
+* ADDED: BranchApi endpoint `delete` - [Commit 6833](https://github.com/cdancy/bitbucket-rest/commit/68338ac2a196b0c363da900e8b18ff758f45b7aa)
+* ADDED: BranchApi endpoint `model` - [Commit 057d](https://github.com/cdancy/bitbucket-rest/commit/057d68fb04ff13e9d1d8c286174bd8fea8577d05)
+* BUG: `role` and `status` properties of `Person` can be null on older version of bitbucket - [Commit abd9](https://github.com/cdancy/bitbucket-rest/commit/abd911916c58056fc62de056dc791245bf306b15)
+
 ### Version 0.0.3 (6/23/16)
 
 * ADDED: basic travis-ci support - [Commit 48c4](https://github.com/cdancy/bitbucket-rest/commit/48c407b897e48b376f3fa88b02f797a347e0f376)
