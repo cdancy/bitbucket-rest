@@ -10,6 +10,7 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.artifactory'
@@ -45,6 +46,29 @@ dependencies {
 ext.compatibilityVersion = '1.7'
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
+
+sourceSets {
+    main.java.srcDirs = ['src/main/java'
+                        ,'src/generated/java' ]
+}
+
+compileJava.doFirst {
+ File generatedDir = file("${rootDir}/src/generated/java")
+ if (generatedDir.exists()) {
+  delete generatedDir
+ }
+ generatedDir.mkdirs()
+}
+
+clean.doFirst {
+ File generatedDir = file("${rootDir}/src/generated/java")
+ if (generatedDir.exists()) {
+  delete generatedDir
+ }
+ generatedDir.mkdirs()
+}
+
+compileJava.options.compilerArgs += ['-s', 'src/generated/java' ]
 
 jar {
     manifest {

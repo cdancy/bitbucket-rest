@@ -3,6 +3,7 @@
 build
 bin
 out 
+src/generated
 .gradle
 
 # OS generated files #
