@@ -85,6 +85,8 @@ checkstyle {
     toolVersion = "6.13"
 }
 
+checkstyleMain.source = "src/main/java"
+
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-Xlint:-options"]
 }
