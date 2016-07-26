@@ -1,4 +1,5 @@
 ### Version 0.0.5 (TBA)
+* ADDED: eclipse configuration - [Pull Request 8](https://github.com/cdancy/bitbucket-rest/pull/8)
 
 ### Version 0.0.4 (6/26/16)
 
