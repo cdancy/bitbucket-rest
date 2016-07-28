@@ -17,13 +17,9 @@
 
 package com.cdancy.bitbucket.rest.domain.branch;
 
-import com.cdancy.bitbucket.rest.error.Error;
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
+import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Type {
