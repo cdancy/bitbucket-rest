@@ -23,6 +23,7 @@ import static org.testng.Assert.assertTrue;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
@@ -69,6 +70,14 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")
+    public void testGetPullRequestChanges() {
+        PagedChangeResponse pr = api().changes(project, repo, prId, null, null);
+        assertNotNull(pr);
+        assertTrue(pr.errors().size() == 0);
+        assertTrue(pr.values().size() > 0);
+    }
+
+    @Test (dependsOnMethods = "testGetPullRequestChanges")
     public void testDeclinePullRequest() {
         PullRequest pr = api().decline(project, repo, prId, version);
         assertNotNull(pr);
