@@ -28,11 +28,19 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    provided
+    compile.extendsFrom provided
+}
+
 dependencies {
     compile ('org.apache.jclouds:jclouds-core:1.9.2') 
     compile ('org.apache.jclouds.driver:jclouds-okhttp:1.9.2') 
     compile ('com.google.auto.service:auto-service:1.0-rc2') 
     compile ('com.google.auto.value:auto-value:1.1')
+    compile ('se.bjurr.jmib:java-method-invocation-builder-annotations:1.0')
+ 
+    provided ('se.bjurr.jmib:java-method-invocation-builder:1.2')
     
     testCompile ('org.apache.jclouds:jclouds-core:1.9.2:tests')
     testCompile ('org.testng:testng:6.8.21') 
@@ -68,7 +76,8 @@ clean.doFirst {
  generatedDir.mkdirs()
 }
 
-compileJava.options.compilerArgs += ['-s', 'src/generated/java' ]
+compileJava.options.compilerArgs += ['-s', 'src/generated/java'
+                                    ,'-parameters']
 
 jar {
     manifest {

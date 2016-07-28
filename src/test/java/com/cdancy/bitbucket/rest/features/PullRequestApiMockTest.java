@@ -21,18 +21,17 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
-import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
-
-import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -80,7 +79,12 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.get("PRJ", "my-repo", 101);
+            PullRequest pr = PullRequestApiGetBuilder.get()
+                    .withProject("PRJ")
+                    .withRepo("my-repo")
+                    .withPullRequestId(101)
+                    .invoke(api);
+
             assertNotNull(pr);
             assertTrue(pr.errors().size() == 0);
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
