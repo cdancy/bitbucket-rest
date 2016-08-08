@@ -30,16 +30,22 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.Change;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import org.jclouds.rest.annotations.SelectJson;
 import org.jclouds.rest.binders.BindToJsonPayload;
+
+import java.util.List;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -102,4 +108,15 @@ public interface PullRequestApi {
                        @PathParam("repo") String repo,
                        @PathParam("pullRequestId") int pullRequestId,
                        @QueryParam("version") int version);
+
+    @Named("pull-request:changes")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/changes")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    PagedChangeResponse changes(@PathParam("project") String project,
+                                @PathParam("repo") String repo,
+                                @PathParam("pullRequestId") int pullRequestId,
+                                @Nullable @QueryParam("withComments") Boolean withComments,
+                                @Nullable @QueryParam("limit") Integer limit);
 }

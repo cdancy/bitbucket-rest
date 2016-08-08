@@ -1,0 +1,47 @@
+{
+   "size": 1,
+   "limit": 25,
+   "isLastPage": true,
+   "values": [
+      {
+         "contentId": "abcdef0123abcdef4567abcdef8987abcdef6543",
+         "fromContentId": "bcdef0123abcdef4567abcdef8987abcdef6543a",
+         "path": {
+            "components": [
+               "new",
+               "path",
+               "to",
+               "file.txt"
+            ],
+            "parent": "new/path/to",
+            "name": "file.txt",
+            "extension": "txt",
+            "toString": "new/path/to/file.txt"
+         },
+         "executable": false,
+         "percentUnchanged": 98,
+         "type": "MOVE",
+         "nodeType": "FILE",
+         "srcPath": {
+            "components": [
+               "path",
+               "to",
+               "file.txt"
+            ],
+            "parent": "path/to",
+            "name": "file.txt",
+            "extension": "txt",
+            "toString": "path/to/file.txt"
+         },
+         "srcExecutable": false,
+         "links": {
+            "self": [
+               {
+                  "href": "http://link/to/restchange"
+               }
+            ]
+         }
+      }
+   ],
+   "start": 0
+}
