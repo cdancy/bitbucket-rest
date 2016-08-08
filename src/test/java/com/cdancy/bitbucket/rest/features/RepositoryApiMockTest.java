@@ -17,6 +17,11 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.Test;
+
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -24,10 +29,6 @@ import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link RepositoryApi} class.
@@ -85,7 +86,6 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            CreateRepository createRepository = CreateRepository.create(repoKey, true);
             Repository repository = api.get(projectKey, repoKey);
             assertNotNull(repository);
             assertTrue(repository.errors().size() == 0);
@@ -106,7 +106,6 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "notexist";
-            CreateRepository createRepository = CreateRepository.create(repoKey, true);
             Repository repository = api.get(projectKey, repoKey);
             assertNotNull(repository);
             assertTrue(repository.errors().size() == 1);
