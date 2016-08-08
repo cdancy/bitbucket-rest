@@ -18,7 +18,6 @@
 package com.cdancy.bitbucket.rest.features;
 
 import javax.inject.Named;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,21 +25,23 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
 import javax.ws.rs.core.MediaType;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
-
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
+import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
+
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+
+@GenerateMethodInvocationBuilder
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}/projects")

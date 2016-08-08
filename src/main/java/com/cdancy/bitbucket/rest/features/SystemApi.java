@@ -26,9 +26,12 @@ import javax.ws.rs.core.MediaType;
 
 import org.jclouds.rest.annotations.RequestFilters;
 
+import se.bjurr.jmib.anotations.GenerateMethodInvocationBuilder;
+
 import com.cdancy.bitbucket.rest.domain.system.Version;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 
+@GenerateMethodInvocationBuilder
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}")
