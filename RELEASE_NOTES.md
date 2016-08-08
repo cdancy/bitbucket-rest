@@ -2,6 +2,7 @@
 * ADDED: eclipse configuration - [Pull Request 8](https://github.com/cdancy/bitbucket-rest/pull/8)
 * ADDED: avoid star import and force checkstyle to `src/main/java` to avoid generated source - [Pull Request 10](https://github.com/cdancy/bitbucket-rest/pull/10)
 * REFACTOR: remove unused variables and imports - [Pull Request 14](https://github.com/cdancy/bitbucket-rest/pull/14)
+* ADDED: PullRequestApi endpoint `changes` - [Pull Request 15](https://github.com/cdancy/bitbucket-rest/pull/15)
 
 ### Version 0.0.4 (6/26/16)
 
