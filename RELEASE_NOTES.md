@@ -1,4 +1,7 @@
-### Version 0.0.5 (TBA)
+### Version 0.0.6 (8/9/2016)
+* Bug fix release for malformed artifacts - [Commit 4aeb](4aebcaade85cd9c73a09ac9ea061a82b4b45e7f6)
+
+### Version 0.0.5 (N/A) (DON'T USE)
 * ADDED: eclipse configuration - [Pull Request 8](https://github.com/cdancy/bitbucket-rest/pull/8)
 * ADDED: avoid star import and force checkstyle to `src/main/java` to avoid generated source - [Pull Request 10](https://github.com/cdancy/bitbucket-rest/pull/10)
 * REFACTOR: remove unused variables and imports - [Pull Request 14](https://github.com/cdancy/bitbucket-rest/pull/14)
