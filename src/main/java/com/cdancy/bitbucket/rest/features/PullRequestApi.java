@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PagedCommitResponse;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
@@ -118,5 +119,18 @@ public interface PullRequestApi {
                                 @PathParam("repo") String repo,
                                 @PathParam("pullRequestId") int pullRequestId,
                                 @Nullable @QueryParam("withComments") Boolean withComments,
-                                @Nullable @QueryParam("limit") Integer limit);
+                                @Nullable @QueryParam("limit") Integer limit,
+                                @Nullable @QueryParam("start") Integer start);
+
+    @Named("pull-request:commits")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/commits")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    PagedCommitResponse commits(@PathParam("project") String project,
+                                @PathParam("repo") String repo,
+                                @PathParam("pullRequestId") int pullRequestId,
+                                @Nullable @QueryParam("withCounts") Boolean withCounts,
+                                @Nullable @QueryParam("limit") Integer limit,
+                                @Nullable @QueryParam("start") Integer start);
 }

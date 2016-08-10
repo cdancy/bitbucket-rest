@@ -22,6 +22,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PagedCommitResponse;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -136,6 +137,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertTrue(pr.open());
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/reopen?version=1");
+
         } finally {
             baseApi.close();
             server.shutdown();
@@ -233,14 +235,35 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedChangeResponse pr = api.changes("PRJ", "my-repo", 101, true, 12);
+            PagedChangeResponse pr = api.changes("PRJ", "my-repo", 101, true, 12, null);
             assertNotNull(pr);
             assertTrue(pr.errors().size() == 0);
             assertTrue(pr.values().size() == 1);
             assertNotNull(pr);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/changes?withComments=true&limit=12");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 
+    public void testGetPullRequestCommits() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-commits.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            PagedCommitResponse pr = api.commits("PRJ", "my-repo", 101, true, 1, null);
+            assertNotNull(pr);
+            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.values().size() == 1);
+            assertTrue(pr.totalCount() == 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/commits?withCounts=true&limit=1");
         } finally {
             baseApi.close();
             server.shutdown();
