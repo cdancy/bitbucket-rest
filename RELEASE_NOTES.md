@@ -1,3 +1,6 @@
+### Version 0.0.7 (8/10/2016)
+* ADDED: PullRequestApi endpoint `commits` - [Commit feb7](feb70bf3fdfcdca23b82360e6fa9e441360e923c)
+
 ### Version 0.0.6 (8/9/2016)
 * Bug fix release for malformed artifacts - [Commit 4aeb](4aebcaade85cd9c73a09ac9ea061a82b4b45e7f6)
 
