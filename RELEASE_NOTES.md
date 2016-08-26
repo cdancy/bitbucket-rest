@@ -1,3 +1,6 @@
+### Version 0.0.9 (8/26/2016)
+* REFACTOR: Disabled OkHttp client supplier - [Commit 5c64](5c641b2f5a38abb36ba67e2e20720a6f634b760e)
+
 ### Version 0.0.8 (8/26/2016)
 * REFACTOR: Nullable annotation added to `Path.extension` - [Commit 8ef4](8ef42312a4bedf2e5c1e6ec6f63f5c82e63b4563)
 
