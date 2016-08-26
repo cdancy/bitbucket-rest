@@ -1,3 +1,6 @@
+### Version 0.0.8 (8/26/2016)
+* REFACTOR: Nullable annotation added to `Path.extension` - [Commit 8ef4](8ef42312a4bedf2e5c1e6ec6f63f5c82e63b4563)
+
 ### Version 0.0.7 (8/10/2016)
 * ADDED: PullRequestApi endpoint `commits` - [Commit feb7](feb70bf3fdfcdca23b82360e6fa9e441360e923c)
 
