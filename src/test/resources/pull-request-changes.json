@@ -11,12 +11,11 @@
                "new",
                "path",
                "to",
-               "file.txt"
+               "file"
             ],
             "parent": "new/path/to",
-            "name": "file.txt",
-            "extension": "txt",
-            "toString": "new/path/to/file.txt"
+            "name": "file",
+            "toString": "new/path/to/file"
          },
          "executable": false,
          "percentUnchanged": 98,

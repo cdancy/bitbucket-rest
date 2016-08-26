@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public abstract class Path {
 
     public abstract String name();
 
+    @Nullable
     public abstract String extension();
 
     public abstract String _toString();
