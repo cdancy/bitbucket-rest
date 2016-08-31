@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.cdancy.bitbucket.rest.domain.comment.Link;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -28,11 +29,52 @@ public abstract class Author {
 
     public abstract String emailAddress();
 
+    @Nullable
+    public abstract Integer id();
+
+    @Nullable
+    public abstract String displayName();
+
+    @Nullable
+    public abstract Boolean active();
+
+    @Nullable
+    public abstract String slug();
+
+    @Nullable
+    public abstract String type();
+
+    @Nullable
+    public abstract Link link();
+
+    @Nullable
+    public abstract Links links();
+
     Author() {
     }
 
-    @SerializedNames({ "name", "emailAddress" })
-    public static Author create(String name, String emailAddress) {
-        return new AutoValue_Author(name, emailAddress);
+    @SerializedNames({ "name", "emailAddress",
+            "id", "displayName",
+            "active", "slug",
+            "type", "link",
+            "links" })
+    public static Author create(String name,
+                                String emailAddress,
+                                Integer id,
+                                String displayName,
+                                Boolean active,
+                                String slug,
+                                String type,
+                                Link link,
+                                Links links) {
+        return new AutoValue_Author(name,
+                emailAddress,
+                id,
+                displayName,
+                active,
+                slug,
+                type,
+                link,
+                links);
     }
 }

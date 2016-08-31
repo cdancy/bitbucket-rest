@@ -1,0 +1,51 @@
+{
+  "properties": {
+    "key": "value"
+  },
+  "id": 1,
+  "version": 1,
+  "text": "A measured reply.",
+  "author": {
+    "name": "jcitizen",
+    "emailAddress": "jane@example.com",
+    "id": 101,
+    "displayName": "Jane Citizen",
+    "active": true,
+    "slug": "jcitizen",
+    "type": "NORMAL"
+  },
+  "createdDate": 1471844240957,
+  "updatedDate": 1471844240957,
+  "comments": [
+    {
+      "properties": {
+        "key": "value"
+      },
+      "id": 1,
+      "version": 1,
+      "text": "An insightful comment.",
+      "author": {
+        "name": "jcitizen",
+        "emailAddress": "jane@example.com",
+        "id": 101,
+        "displayName": "Jane Citizen",
+        "active": true,
+        "slug": "jcitizen",
+        "type": "NORMAL"
+      },
+      "createdDate": 1471844240950,
+      "updatedDate": 1471844240950,
+      "comments": [],
+      "tasks": [],
+      "permittedOperations": {
+        "editable": true,
+        "deletable": true
+      }
+    }
+  ],
+  "tasks": [],
+  "permittedOperations": {
+    "editable": true,
+    "deletable": true
+  }
+}

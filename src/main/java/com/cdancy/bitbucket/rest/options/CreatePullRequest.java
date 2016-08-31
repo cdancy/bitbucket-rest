@@ -62,7 +62,6 @@ public abstract class CreatePullRequest {
     CreatePullRequest() {
     }
 
-
     @SerializedNames({ "title", "description", "state", "open", "closed", "fromRef", "toRef", "locked", "reviewers", "links" })
     public static CreatePullRequest create(String title, String description, Reference fromRef,
                                            Reference toRef, List<Person> reviewers, Links links) {
