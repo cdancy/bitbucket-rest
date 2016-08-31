@@ -102,4 +102,22 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+
+    public void testDeleteComment() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        CommentsApi api = baseApi.commentsApi();
+        try {
+            boolean pr = api.delete("PRJ", "my-repo", 101, 1, 1);
+            assertNotNull(pr);
+            assertTrue(pr);
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1?version=1");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 }

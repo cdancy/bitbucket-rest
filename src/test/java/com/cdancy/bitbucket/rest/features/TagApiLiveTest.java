@@ -30,13 +30,6 @@ import static org.testng.Assert.assertTrue;
 @Test(groups = "live", testName = "TagApiLiveTest", singleThreaded = true)
 public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    /*
-    String projectKey = randomStringLettersOnly();
-    String repoKey = randomStringLettersOnly();
-    String tagName = randomStringLettersOnly();
-    String commitHash = "";
-    */
-
     String projectKey = "TEST";
     String repoKey = "dev";
     String tagName = randomStringLettersOnly();

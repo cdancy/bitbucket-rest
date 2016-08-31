@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateComment;
@@ -31,6 +32,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -74,4 +76,15 @@ public interface CommentsApi {
                  @PathParam("repo") String repo,
                  @PathParam("pullRequestId") int pullRequestId,
                  @PathParam("commentId") int commentId);
+
+    @Named("comments:delete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments/{commentId}")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean delete(@PathParam("project") String project,
+                   @PathParam("repo") String repo,
+                   @PathParam("pullRequestId") int pullRequestId,
+                   @PathParam("commentId") int commentId,
+                   @QueryParam("version") int version);
 }
