@@ -15,37 +15,23 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
-
 @AutoValue
-public abstract class Commit {
+public abstract class Link {
 
-    public abstract String id();
+    public abstract String url();
 
-    public abstract String displayId();
+    public abstract String rel();
 
-    public abstract Author author();
-
-    public abstract long authorTimestamp();
-
-    public abstract String message();
-
-    public abstract List<Parents> parents();
-
-    Commit() {
+    Link() {
     }
 
-    @SerializedNames({ "id", "displayId", "author", "authorTimestamp",
-            "message", "parents" })
-    public static Commit create(String id, String displayId, Author author,
-                                long authorTimestamp, String message, List<Parents> parents) {
-        return new AutoValue_Commit(id, displayId, author, authorTimestamp, message,
-                parents != null ? ImmutableList.copyOf(parents) : ImmutableList.<Parents>of());
+    @SerializedNames({ "url", "rel" })
+    public static Link create(String url, String rel) {
+        return new AutoValue_Link(url, rel);
     }
 }

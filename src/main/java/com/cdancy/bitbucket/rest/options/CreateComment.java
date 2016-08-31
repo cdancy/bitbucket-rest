@@ -15,23 +15,30 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.options;
 
+import com.cdancy.bitbucket.rest.domain.comment.Anchor;
+import com.cdancy.bitbucket.rest.domain.comment.Parent;
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Parent {
+public abstract class CreateComment {
 
-    public abstract String id();
+    public abstract String text();
 
-    public abstract String displayId();
+    @Nullable
+    public abstract Parent parent();
 
-    Parent() {
+    @Nullable
+    public abstract Anchor anchor();
+
+    CreateComment() {
     }
 
-    @SerializedNames({ "id", "displayId" })
-    public static Parent create(String id, String displayId) {
-        return new AutoValue_Parent(id, displayId);
+    @SerializedNames({ "text", "parent", "anchor" })
+    public static CreateComment create(String text, Parent parent, Anchor anchor) {
+        return new AutoValue_CreateComment(text, parent, anchor);
     }
 }
