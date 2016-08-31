@@ -1,3 +1,7 @@
+### Version 0.0.10 (8/26/2016)
+* ADDED: CommentsApi gained endpoint `comment`, `createComment`, and `get` - [PR 16](https://github.com/cdancy/bitbucket-rest/pull/16)
+* ADDED: CommentsApi gained endpoint `delete` - [PR 17](https://github.com/cdancy/bitbucket-rest/pull/17)
+
 ### Version 0.0.9 (8/26/2016)
 * REFACTOR: Disabled OkHttp client supplier - [Commit 5c64](5c641b2f5a38abb36ba67e2e20720a6f634b760e)
 
