@@ -1,4 +1,4 @@
 language: java
-jdk: oraclejdk8
+jdk: oraclejdk7
 script: ./gradlew --stacktrace clean build mockTest
 
