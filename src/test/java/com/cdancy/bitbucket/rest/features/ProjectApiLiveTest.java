@@ -17,19 +17,32 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.options.CreateProject;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.List;
+
+import org.assertj.core.api.Condition;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
+import com.cdancy.bitbucket.rest.options.CreateProject;
 
 @Test(groups = "live", testName = "ProjectApiLiveTest", singleThreaded = true)
 public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String projectKey = randomStringLettersOnly();
+
+    Condition<Project> withProjectKey = new Condition<Project>() {
+        @Override
+        public boolean matches(Project value) {
+            return value.key().equals(projectKey);
+        }
+    };
 
     @Test
     public void testCreateProject() {
@@ -54,6 +67,19 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testDeleteProject() {
         boolean success = api().delete(projectKey);
         assertTrue(success);
+    }
+
+    @Test(dependsOnMethods = "testGetProject")
+    public void testListProjects() {
+        ProjectPage projectPage = api().list(0, 100, null, null);
+
+        assertNotNull(projectPage);
+        assertThat(projectPage.errors()).isEmpty();
+        assertThat(projectPage.size()).isGreaterThan(0);
+
+        List<Project> projects = projectPage.values();
+        assertThat(projects).isNotEmpty();
+        assertThat(projects).areExactly(1, withProjectKey);
     }
 
     @Test
