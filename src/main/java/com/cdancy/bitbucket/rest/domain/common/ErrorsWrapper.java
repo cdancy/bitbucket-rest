@@ -19,17 +19,9 @@ package com.cdancy.bitbucket.rest.domain.common;
 
 import java.util.List;
 
-public interface Page<T> {
+import com.cdancy.bitbucket.rest.error.Error;
 
-    public abstract int start();
+public interface ErrorsWrapper {
 
-    public abstract int limit();
-
-    public abstract int size();
-
-    public abstract int nextPageStart();
-
-    public abstract boolean isLastPage();
-
-    public abstract List<T> values();
+    public abstract List<Error> errors();
 }
