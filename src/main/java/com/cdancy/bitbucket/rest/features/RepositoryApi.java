@@ -34,8 +34,8 @@ import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
-import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
@@ -74,7 +74,7 @@ public interface RepositoryApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
-    ProjectPage list(@PathParam("project") String project,
-                     @Nullable @QueryParam("start") Integer start,
-                     @Nullable @QueryParam("limit") Integer limit);
+    RepositoryPage list(@PathParam("project") String project,
+                        @Nullable @QueryParam("start") Integer start,
+                        @Nullable @QueryParam("limit") Integer limit);
 }
