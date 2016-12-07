@@ -74,7 +74,7 @@ public interface RepositoryApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
-    ProjectPage list(@PathParam("project") String project,
-                     @Nullable @QueryParam("start") Integer start,
-                     @Nullable @QueryParam("limit") Integer limit);
+    RepositoryPage list(@PathParam("project") String project,
+                        @Nullable @QueryParam("start") Integer start,
+                        @Nullable @QueryParam("limit") Integer limit);
 }
