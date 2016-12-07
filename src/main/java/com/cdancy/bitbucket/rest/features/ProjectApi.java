@@ -69,8 +69,7 @@ public interface ProjectApi {
     @Named("project:list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(BitbucketFallbacks.ProjectOnError.class)
-    ProjectPage list(
-                     @Nullable @QueryParam("start") Integer start,
+    ProjectPage list(@Nullable @QueryParam("start") Integer start,
                      @Nullable @QueryParam("limit") Integer limit,
                      @Nullable @QueryParam("name") String name,
                      @Nullable @QueryParam("permission") String permission);
