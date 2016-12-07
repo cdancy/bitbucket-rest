@@ -70,7 +70,8 @@ public class BaseBitbucketMockTest {
      * Create a MockWebServer.
      *
      * @return instance of MockWebServer
-     * @throws IOException if unable to start/play server
+     * @throws IOException
+     *             if unable to start/play server
      */
     public static MockWebServer mockEtcdJavaWebServer() throws IOException {
         MockWebServer server = new MockWebServer();
@@ -81,7 +82,8 @@ public class BaseBitbucketMockTest {
     /**
      * Get the String representation of some resource to be used as payload.
      *
-     * @param resource String representation of a given resource
+     * @param resource
+     *            String representation of a given resource
      * @return payload in String form
      */
     public String payloadFromResource(String resource) {
@@ -99,17 +101,17 @@ public class BaseBitbucketMockTest {
             return ImmutableMap.of();
         }
 
-        ImmutableMap.Builder<String, String> b = ImmutableMap.builder();
+        ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
 
         String[] params = path.substring(qmIndex + 1).split("&");
         for (int i = 0; i < params.length; i++) {
             String[] keyValue = params[i].split("=", 2);
             if (keyValue.length > 1) {
-                b.put(keyValue[0], keyValue[1]);
+                builder.put(keyValue[0], keyValue[1]);
             }
         }
 
-        return b.build();
+        return builder.build();
     }
 
     protected RecordedRequest assertSent(MockWebServer server, String method, String path) throws InterruptedException {
