@@ -17,18 +17,24 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Map;
+
+import org.testng.annotations.Test;
+
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateProject;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link ProjectApi} class.
@@ -144,6 +150,66 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetProjectList() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-page-full.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            ProjectApi api = baseApi.projectApi();
+
+            ProjectPage projectPage = api.list(null, null, null, null);
+
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
+
+            assertNotNull(projectPage);
+            assertThat(projectPage.errors()).isEmpty();
+
+            int size = projectPage.size();
+            int limit = projectPage.limit();
+
+            assertThat(size).isLessThanOrEqualTo(limit);
+            assertThat(projectPage.start()).isEqualTo(0);
+            assertThat(projectPage.isLastPage()).isTrue();
+
+            assertThat(projectPage.values()).hasSize(size);
+            assertThat(projectPage.values()).hasOnlyElementsOfType(Project.class);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetProjectListWithLimit() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-page-truncated.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            ProjectApi api = baseApi.projectApi();
+
+            int start = 0;
+            int limit = 2;
+            ProjectPage projectPage = api.list(start, limit, null, null);
+
+            Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects", queryParams);
+
+            assertNotNull(projectPage);
+            assertThat(projectPage.errors()).isEmpty();
+
+            int size = projectPage.size();
+
+            assertThat(size).isEqualTo(limit);
+            assertThat(projectPage.start()).isEqualTo(start);
+            assertThat(projectPage.limit()).isEqualTo(limit);
+            assertThat(projectPage.isLastPage()).isFalse();
+            assertThat(projectPage.nextPageStart()).isEqualTo(size);
+
+            assertThat(projectPage.values()).hasSize(size);
+            assertThat(projectPage.values()).hasOnlyElementsOfType(Project.class);
+        } finally {
             server.shutdown();
         }
     }
