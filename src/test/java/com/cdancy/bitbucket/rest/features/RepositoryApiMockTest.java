@@ -17,16 +17,21 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+
+import java.util.Map;
 
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
@@ -148,6 +153,68 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetRepositoryList() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-full.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            RepositoryApi api = baseApi.repositoryApi();
+
+            String projectKey = "PRJ1";
+            RepositoryPage repositoryPage = api.list(projectKey, null, null);
+
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
+
+            assertNotNull(repositoryPage);
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            int size = repositoryPage.size();
+            int limit = repositoryPage.limit();
+
+            assertThat(size).isLessThanOrEqualTo(limit);
+            assertThat(repositoryPage.start()).isEqualTo(0);
+            assertThat(repositoryPage.isLastPage()).isTrue();
+
+            assertThat(repositoryPage.values()).hasSize(size);
+            assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetRepositoryListWithLimit() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-truncated.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            RepositoryApi api = baseApi.repositoryApi();
+
+            String projectKey = "PRJ1";
+            int start = 0;
+            int limit = 2;
+            RepositoryPage repositoryPage = api.list(projectKey, start, limit);
+
+            Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos", queryParams);
+
+            assertNotNull(repositoryPage);
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            int size = repositoryPage.size();
+
+            assertThat(size).isEqualTo(limit);
+            assertThat(repositoryPage.start()).isEqualTo(start);
+            assertThat(repositoryPage.limit()).isEqualTo(limit);
+            assertThat(repositoryPage.isLastPage()).isFalse();
+            assertThat(repositoryPage.nextPageStart()).isEqualTo(size);
+
+            assertThat(repositoryPage.values()).hasSize(size);
+            assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
+        } finally {
             server.shutdown();
         }
     }

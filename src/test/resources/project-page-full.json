@@ -1,0 +1,53 @@
+{
+  "size": 3,
+  "limit": 25,
+  "start": 0,
+  "isLastPage": true,
+  "values": [
+    {
+      "key": "PRJ1",
+      "id": 1,
+      "name": "Project 1",
+      "description": "Mock project #1",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ1"
+          }
+        ]
+      }
+    },
+    {
+      "key": "PRJ2",
+      "id": 2,
+      "name": "Project 2",
+      "description": "Mock project #2",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ2"
+          }
+        ]
+      }
+    },
+    {
+      "key": "PRJ3",
+      "id": 3,
+      "name": "Project 3",
+      "description": "Mock project #3",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ3"
+          }
+        ]
+      }
+    }
+  ]
+}

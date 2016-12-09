@@ -24,6 +24,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.ws.rs.core.HttpHeaders;
@@ -34,7 +35,10 @@ import org.jclouds.ContextBuilder;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.google.common.base.Charsets;
+import com.google.common.base.Functions;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonParser;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -66,7 +70,8 @@ public class BaseBitbucketMockTest {
      * Create a MockWebServer.
      *
      * @return instance of MockWebServer
-     * @throws IOException if unable to start/play server
+     * @throws IOException
+     *             if unable to start/play server
      */
     public static MockWebServer mockEtcdJavaWebServer() throws IOException {
         MockWebServer server = new MockWebServer();
@@ -77,7 +82,8 @@ public class BaseBitbucketMockTest {
     /**
      * Get the String representation of some resource to be used as payload.
      *
-     * @param resource String representation of a given resource
+     * @param resource
+     *            String representation of a given resource
      * @return payload in String form
      */
     public String payloadFromResource(String resource) {
@@ -88,11 +94,44 @@ public class BaseBitbucketMockTest {
         }
     }
 
+    private static Map<String, String> extractParams(String path) {
+
+        int qmIndex = path.indexOf('?');
+        if (qmIndex <= 0) {
+            return ImmutableMap.of();
+        }
+
+        ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+
+        String[] params = path.substring(qmIndex + 1).split("&");
+        for (int i = 0; i < params.length; i++) {
+            String[] keyValue = params[i].split("=", 2);
+            if (keyValue.length > 1) {
+                builder.put(keyValue[0], keyValue[1]);
+            }
+        }
+
+        return builder.build();
+    }
+
     protected RecordedRequest assertSent(MockWebServer server, String method, String path) throws InterruptedException {
+        return assertSent(server, method, path, ImmutableMap.<String, Void> of());
+    }
+
+    protected RecordedRequest assertSent(MockWebServer server, String method, String expectedPath, Map<String, ?> queryParams)
+            throws InterruptedException {
+
         RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
-        assertThat(request.getPath()).isEqualTo(path);
         assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
+
+        String path = request.getPath();
+        String rawPath = path.contains("?") ? path.substring(0, path.indexOf('?')) : path;
+        assertThat(rawPath).isEqualTo(expectedPath);
+
+        Map<String, String> normalizedParams = Maps.transformValues(queryParams, Functions.toStringFunction());
+        assertThat(normalizedParams).isEqualTo(extractParams(path));
+
         return request;
     }
 

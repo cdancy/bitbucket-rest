@@ -17,6 +17,13 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.Map;
+
+import org.testng.annotations.Test;
+
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
@@ -24,13 +31,9 @@ import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateComment;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link CommentsApi} class.
@@ -113,8 +116,10 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             boolean pr = api.delete("PRJ", "my-repo", 101, 1, 1);
             assertNotNull(pr);
             assertTrue(pr);
+
+            Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1?version=1");
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();

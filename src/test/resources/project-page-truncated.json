@@ -1,0 +1,39 @@
+{
+  "size": 2,
+  "limit": 2,
+  "start": 0,
+  "isLastPage": false,
+  "nextPageStart": 2,
+  "values": [
+    {
+      "key": "PRJ1",
+      "id": 1,
+      "name": "Project 1",
+      "description": "Mock project #1",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ1"
+          }
+        ]
+      }
+    },
+    {
+      "key": "PRJ2",
+      "id": 2,
+      "name": "Project 2",
+      "description": "Mock project #2",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ2"
+          }
+        ]
+      }
+    }
+  ]
+}

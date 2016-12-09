@@ -17,23 +17,36 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.options.CreateProject;
-import com.cdancy.bitbucket.rest.options.CreateRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import java.util.List;
+
+import org.assertj.core.api.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
+import com.cdancy.bitbucket.rest.options.CreateProject;
+import com.cdancy.bitbucket.rest.options.CreateRepository;
 
 @Test(groups = "live", testName = "RepositoryApiLiveTest", singleThreaded = true)
 public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String projectKey = randomStringLettersOnly();
     String repoKey = randomStringLettersOnly();
+
+    Condition<Repository> withRepositorySlug = new Condition<Repository>() {
+        @Override
+        public boolean matches(Repository value) {
+            return value.slug().equals(repoKey);
+        }
+    };
 
     @BeforeClass
     public void init() {
@@ -65,6 +78,19 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testDeleteRepository() {
         boolean success = api().delete(projectKey, repoKey);
         assertTrue(success);
+    }
+
+    @Test(dependsOnMethods = "testGetRepository")
+    public void testListProjects() {
+        RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
+
+        assertNotNull(repositoryPage);
+        assertThat(repositoryPage.errors()).isEmpty();
+        assertThat(repositoryPage.size()).isGreaterThan(0);
+
+        List<Repository> repositories = repositoryPage.values();
+        assertThat(repositories).isNotEmpty();
+        assertThat(repositories).areExactly(1, withRepositorySlug);
     }
 
     @Test

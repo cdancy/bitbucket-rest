@@ -1,0 +1,134 @@
+{
+  "size": 3,
+  "limit": 25,
+  "start": 0,
+  "isLastPage": true,
+  "values": [
+    {
+      "slug": "repo-1",
+      "id": 101,
+      "name": "repo-1",
+      "scmId": "git",
+      "state": "AVAILABLE",
+      "statusMessage": "Available",
+      "forkable": true,
+      "project": {
+        "key": "PRJ1",
+        "id": 1,
+        "name": "Project 1",
+        "description": "Mock project #1",
+        "public": false,
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://127.0.0.1:7990/projects/PRJ1"
+            }
+          ]
+        }
+      },
+      "public": false,
+      "links": {
+        "clone": [
+          {
+            "href": "https://127.0.0.1/scm/PRJ1/repo-1.git",
+            "name": "http"
+          },
+          {
+            "href": "ssh://git@127.0.0.1/PRJ1/repo-1.git",
+            "name": "ssh"
+          }
+        ],
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ1/repos/repo-1/browse"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "repo-2",
+      "id": 102,
+      "name": "repo-2",
+      "scmId": "git",
+      "state": "AVAILABLE",
+      "statusMessage": "Available",
+      "forkable": true,
+      "project": {
+        "key": "PRJ1",
+        "id": 1,
+        "name": "Project 1",
+        "description": "Mock project #1",
+        "public": false,
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://127.0.0.1:7990/projects/PRJ1"
+            }
+          ]
+        }
+      },
+      "public": false,
+      "links": {
+        "clone": [
+          {
+            "href": "https://127.0.0.1/scm/PRJ1/repo-2.git",
+            "name": "http"
+          },
+          {
+            "href": "ssh://git@127.0.0.1/PRJ1/repo-2.git",
+            "name": "ssh"
+          }
+        ],
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ1/repos/repo-2/browse"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "repo-3",
+      "id": 103,
+      "name": "repo-3",
+      "scmId": "git",
+      "state": "AVAILABLE",
+      "statusMessage": "Available",
+      "forkable": true,
+      "project": {
+        "key": "PRJ1",
+        "id": 1,
+        "name": "Project 1",
+        "description": "Mock project #1",
+        "public": false,
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://127.0.0.1:7990/projects/PRJ1"
+            }
+          ]
+        }
+      },
+      "public": false,
+      "links": {
+        "clone": [
+          {
+            "href": "https://127.0.0.1/scm/PRJ1/repo-3.git",
+            "name": "http"
+          },
+          {
+            "href": "ssh://git@127.0.0.1/PRJ1/repo-3.git",
+            "name": "ssh"
+          }
+        ],
+        "self": [
+          {
+            "href": "http://127.0.0.1:7990/projects/PRJ1/repos/repo-3/browse"
+          }
+        ]
+      }
+    }
+  ]
+}
