@@ -24,7 +24,6 @@ import com.cdancy.bitbucket.rest.options.CreateComment;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -45,7 +44,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testComment() {
         Comments comm = api().comment(project, repo, prId, commentText);
         assertNotNull(comm);
-        assertTrue(comm.errors().size() == 0);
+        assertTrue(comm.errors().isEmpty());
         assertTrue(comm.text().equals(commentText));
         commentId = comm.id();
         commentIdVersion = comm.version();
@@ -58,7 +57,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
         Comments comm = api().create(project, repo, prId, createComment);
         assertNotNull(comm);
-        assertTrue(comm.errors().size() == 0);
+        assertTrue(comm.errors().isEmpty());
         assertTrue(comm.text().equals(commentReplyText));
         commentReplyId = comm.id();
         commentReplyIdVersion = comm.version();
@@ -68,7 +67,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetComment() {
         Comments comm = api().get(project, repo, prId, commentReplyId);
         assertNotNull(comm);
-        assertTrue(comm.errors().size() == 0);
+        assertTrue(comm.errors().isEmpty());
         assertTrue(comm.text().equals(commentReplyText));
     }
 

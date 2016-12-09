@@ -74,7 +74,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             CreateProject createProject = CreateProject.create(projectKey, null, null, null);
             Project project = api.create(createProject);
             assertNotNull(project);
-            assertTrue(project.errors().size() == 1);
+            assertFalse(project.errors().isEmpty());
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
         } finally {
             baseApi.close();
@@ -92,9 +92,8 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "HELLO";
             Project project = api.get(projectKey);
             assertNotNull(project);
-            assertTrue(project.errors().size() == 0);
-            assertTrue(project.key().equalsIgnoreCase(projectKey));
-            assertTrue(project.name().equalsIgnoreCase(projectKey));
+            assertTrue(project.errors().isEmpty());
+            assertTrue(projectKey.equalsIgnoreCase(project.key()));
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
@@ -112,7 +111,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "HelloWorld";
             Project project = api.get(projectKey);
             assertNotNull(project);
-            assertTrue(project.errors().size() == 1);
+            assertFalse(project.errors().isEmpty());
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();

@@ -49,7 +49,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     public void init() {
         Branch branch = api().getDefault(projectKey, repoKey);
         assertNotNull(branch);
-        assertTrue(branch.errors().size() == 0);
+        assertTrue(branch.errors().isEmpty());
         defaultBranchId = branch.id();
     }
 
@@ -58,16 +58,16 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
         Branch branch = api().create(projectKey, repoKey, createBranch);
         assertNotNull(branch);
-        assertTrue(branch.errors().size() == 0);
+        assertTrue(branch.errors().isEmpty());
         assertTrue(branch.id().endsWith(branchName));
-        assertTrue(branch.latestChangeset().equalsIgnoreCase(commitHash));
+        assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));
     }
 
     @Test (dependsOnMethods = "testCreateBranch")
     public void testGetBranchModel() {
         BranchModel branchModel = api().model(projectKey, repoKey);
         assertNotNull(branchModel);
-        assertTrue(branchModel.errors().size() == 0);
+        assertTrue(branchModel.errors().isEmpty());
     }
 
     @Test (dependsOnMethods = "testGetBranchModel")
@@ -80,7 +80,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetNewDefaultBranch() {
         Branch branch = api().getDefault(projectKey, repoKey);
         assertNotNull(branch);
-        assertTrue(branch.errors().size() == 0);
+        assertTrue(branch.errors().isEmpty());
         assertNotNull(branch.id());
     }
 
