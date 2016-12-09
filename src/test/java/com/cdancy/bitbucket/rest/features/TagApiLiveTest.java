@@ -40,18 +40,18 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateTag createTag = CreateTag.create(tagName, commitHash, null);
         Tag tag = api().create(projectKey, repoKey, createTag);
         assertNotNull(tag);
-        assertTrue(tag.errors().size() == 0);
+        assertTrue(tag.errors().isEmpty());
         assertTrue(tag.id().endsWith(tagName));
-        assertTrue(tag.latestCommit().equalsIgnoreCase(commitHash));
+        assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
     }
 
     @Test (dependsOnMethods = "testCreateTag")
     public void testGetTag() {
         Tag tag = api().get(projectKey, repoKey, tagName);
         assertNotNull(tag);
-        assertTrue(tag.errors().size() == 0);
+        assertTrue(tag.errors().isEmpty());
         assertTrue(tag.id().endsWith(tagName));
-        assertTrue(tag.latestCommit().equalsIgnoreCase(commitHash));
+        assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
     }
 
     @Test

@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.testng.Assert.assertFalse;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -53,8 +55,8 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             CreateRepository createRepository = CreateRepository.create(repoKey, true);
             Repository repository = api.create(projectKey, createRepository);
             assertNotNull(repository);
-            assertTrue(repository.errors().size() == 0);
-            assertTrue(repository.name().equalsIgnoreCase(repoKey));
+            assertTrue(repository.errors().isEmpty());
+            assertTrue(repoKey.equalsIgnoreCase(repository.name()));
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
         } finally {
             baseApi.close();
@@ -74,7 +76,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             CreateRepository createRepository = CreateRepository.create(repoKey, true);
             Repository repository = api.create(projectKey, createRepository);
             assertNotNull(repository);
-            assertTrue(repository.errors().size() > 0);
+            assertFalse(repository.errors().isEmpty());
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
         } finally {
             baseApi.close();
@@ -93,8 +95,8 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Repository repository = api.get(projectKey, repoKey);
             assertNotNull(repository);
-            assertTrue(repository.errors().size() == 0);
-            assertTrue(repository.name().equalsIgnoreCase(repoKey));
+            assertTrue(repository.errors().isEmpty());
+            assertTrue(repoKey.equalsIgnoreCase(repository.name()));
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();
@@ -113,7 +115,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "notexist";
             Repository repository = api.get(projectKey, repoKey);
             assertNotNull(repository);
-            assertTrue(repository.errors().size() == 1);
+            assertFalse(repository.errors().isEmpty());
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();

@@ -51,9 +51,9 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             CreateTag createTag = CreateTag.create(tagName, commitHash, null);
             Tag tag = api.create(projectKey, repoKey, createTag);
             assertNotNull(tag);
-            assertTrue(tag.errors().size() == 0);
+            assertTrue(tag.errors().isEmpty());
             assertTrue(tag.id().endsWith(tagName));
-            assertTrue(tag.latestCommit().equalsIgnoreCase(commitHash));
+            assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags");
         } finally {
@@ -75,9 +75,11 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
 
             Tag tag = api.get(projectKey, repoKey, tagName);
             assertNotNull(tag);
-            assertTrue(tag.errors().size() == 0);
+            assertTrue(tag.errors().isEmpty());
             assertTrue(tag.id().endsWith(tagName));
-            assertTrue(tag.latestCommit().equalsIgnoreCase("8d351a10fb428c0c1239530256e21cf24f136e73"));
+            
+            String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
+            assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
         } finally {

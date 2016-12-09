@@ -46,6 +46,9 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 @Test(groups = "unit", testName = "PullRequestApiMockTest")
 public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
+    final String project = "PRJ";
+    final String repo = "my-repo";
+            
     public void testCreatePullRequest() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -65,7 +68,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
 
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
             assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
             assertTrue(pr.id() == 101);
@@ -84,11 +87,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.get("PRJ", "my-repo", 101);
+            PullRequest pr = api.get(project, repo, 101);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
-            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
-            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
+            assertTrue(pr.errors().isEmpty());
+            assertTrue(project.equals(pr.fromRef().repository().project().key()));
+            assertTrue(repo.equals(pr.fromRef().repository().slug()));
             assertTrue(pr.id() == 101);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101");
@@ -105,9 +108,9 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.decline("PRJ", "my-repo", 101, 1);
+            PullRequest pr = api.decline(project, repo, 101, 1);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
             assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
             assertTrue(pr.id() == 101);
@@ -130,9 +133,9 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.reopen("PRJ", "my-repo", 101, 1);
+            PullRequest pr = api.reopen(project, repo, 101, 1);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
             assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
             assertTrue(pr.id() == 101);
@@ -156,11 +159,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            MergeStatus pr = api.canMerge("PRJ", "my-repo", 101);
+            MergeStatus pr = api.canMerge(project, repo, 101);
             assertNotNull(pr);
             assertTrue(pr.canMerge());
             assertTrue(pr.vetoes().size() == 0);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
@@ -176,11 +179,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            MergeStatus pr = api.canMerge("PRJ", "my-repo", 101);
+            MergeStatus pr = api.canMerge(project, repo, 101);
             assertNotNull(pr);
             assertFalse(pr.canMerge());
             assertTrue(pr.vetoes().size() == 1);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
@@ -196,9 +199,9 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.merge("PRJ", "my-repo", 101, 1);
+            PullRequest pr = api.merge(project, repo, 101, 1);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
             assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
             assertTrue(pr.id() == 101);
@@ -221,7 +224,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.get("PRJ", "my-repo", 101);
+            PullRequest pr = api.get(project, repo, 101);
             assertNotNull(pr);
             assertTrue(pr.errors().size() > 0);
             assertTrue(pr.errors().get(0).exceptionName().endsWith("NoSuchPullRequestException"));
@@ -242,9 +245,9 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedChangeResponse pr = api.changes("PRJ", "my-repo", 101, true, 12, null);
+            PagedChangeResponse pr = api.changes(project, repo, 101, true, 12, null);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.values().size() == 1);
             assertNotNull(pr);
 
@@ -266,9 +269,9 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedCommitResponse pr = api.commits("PRJ", "my-repo", 101, true, 1, null);
+            PagedCommitResponse pr = api.commits(project, repo, 101, true, 1, null);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.values().size() == 1);
             assertTrue(pr.totalCount() == 1);
 

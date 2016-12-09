@@ -52,7 +52,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
             Comments pr = api.comment("PRJ", "my-repo", 101, "A measured reply.");
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.text().equals("A measured reply."));
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
@@ -76,7 +76,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             CreateComment createComment = CreateComment.create("A measured reply.", parent, anchor);
             Comments pr = api.create("PRJ", "my-repo", 101, createComment);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.text().equals("A measured reply."));
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
@@ -96,7 +96,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         try {
             Comments pr = api.get("PRJ", "my-repo", 101, 1);
             assertNotNull(pr);
-            assertTrue(pr.errors().size() == 0);
+            assertTrue(pr.errors().isEmpty());
             assertTrue(pr.text().equals("A measured reply."));
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");

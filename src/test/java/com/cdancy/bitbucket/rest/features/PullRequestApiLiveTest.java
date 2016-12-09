@@ -54,8 +54,8 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         PullRequest pr = api().create(project, repo, cpr);
         assertNotNull(pr);
-        assertTrue(pr.fromRef().repository().project().key().equals(project));
-        assertTrue(pr.fromRef().repository().slug().equals(repo));
+        assertTrue(project.equals(pr.fromRef().repository().project().key()));
+        assertTrue(repo.equals(pr.fromRef().repository().slug()));
         prId = pr.id();
         version = pr.version();
     }
@@ -64,9 +64,9 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetPullRequest() {
         PullRequest pr = api().get(project, repo, prId);
         assertNotNull(pr);
-        assertTrue(pr.errors().size() == 0);
-        assertTrue(pr.fromRef().repository().project().key().equals(project));
-        assertTrue(pr.fromRef().repository().slug().equals(repo));
+        assertTrue(pr.errors().isEmpty());
+        assertTrue(project.equals(pr.fromRef().repository().project().key()));
+        assertTrue(repo.equals(pr.fromRef().repository().slug()));
         assertTrue(version == pr.version());
     }
 
@@ -74,7 +74,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetPullRequestChanges() {
         PagedChangeResponse pr = api().changes(project, repo, prId, null, null, null);
         assertNotNull(pr);
-        assertTrue(pr.errors().size() == 0);
+        assertTrue(pr.errors().isEmpty());
         assertTrue(pr.values().size() > 0);
     }
 
@@ -82,7 +82,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetPullRequestCommits() {
         PagedCommitResponse pr = api().commits(project, repo, prId, true, 1, null);
         assertNotNull(pr);
-        assertTrue(pr.errors().size() == 0);
+        assertTrue(pr.errors().isEmpty());
         assertTrue(pr.values().size() == 1);
         assertTrue(pr.totalCount() > 0);
     }
@@ -91,7 +91,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testDeclinePullRequest() {
         PullRequest pr = api().decline(project, repo, prId, version);
         assertNotNull(pr);
-        assertTrue(pr.state().equalsIgnoreCase("DECLINED"));
+        assertTrue("DECLINED".equalsIgnoreCase(pr.state()));
         assertFalse(pr.open());
     }
 
@@ -100,7 +100,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         PullRequest pr = api().get(project, repo, prId);
         pr = api().reopen(project, repo, prId, pr.version());
         assertNotNull(pr);
-        assertTrue(pr.state().equalsIgnoreCase("OPEN"));
+        assertTrue("OPEN".equalsIgnoreCase(pr.state()));
         assertTrue(pr.open());
     }
 
@@ -116,7 +116,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         PullRequest pr = api().get(project, repo, prId);
         pr = api().merge(project, repo, prId, pr.version());
         assertNotNull(pr);
-        assertTrue(pr.state().equalsIgnoreCase("MERGED"));
+        assertTrue("MERGED".equalsIgnoreCase(pr.state()));
         assertFalse(pr.open());
     }
 
@@ -124,7 +124,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetNonExistentPullRequest() {
         PullRequest pr = api().get(randomString(), randomString(), 999);
         assertNotNull(pr);
-        assertTrue(pr.errors().size() > 0);
+        assertFalse(pr.errors().isEmpty());
     }
 
     private PullRequestApi api() {

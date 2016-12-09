@@ -104,8 +104,8 @@ public class BaseBitbucketMockTest {
         ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
 
         String[] params = path.substring(qmIndex + 1).split("&");
-        for (int i = 0; i < params.length; i++) {
-            String[] keyValue = params[i].split("=", 2);
+        for (String param : params) {
+            String[] keyValue = param.split("=", 2);
             if (keyValue.length > 1) {
                 builder.put(keyValue[0], keyValue[1]);
             }

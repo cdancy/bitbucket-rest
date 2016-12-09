@@ -52,9 +52,9 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
             Branch branch = api.create(projectKey, repoKey, createBranch);
             assertNotNull(branch);
-            assertTrue(branch.errors().size() == 0);
+            assertTrue(branch.errors().isEmpty());
             assertTrue(branch.id().endsWith(branchName));
-            assertTrue(branch.latestChangeset().equalsIgnoreCase(commitHash));
+            assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));
             assertSent(server, "POST", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
@@ -74,7 +74,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             BranchModel branchModel = api.model(projectKey, repoKey);
             assertNotNull(branchModel);
-            assertTrue(branchModel.errors().size() == 0);
+            assertTrue(branchModel.errors().isEmpty());
             assertTrue(branchModel.types().size() > 0);
             assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel");
@@ -93,8 +93,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
-            assertTrue(success);
+            api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
@@ -115,7 +114,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
             Branch branch = api.getDefault(projectKey, repoKey);
             assertNotNull(branch);
-            assertTrue(branch.errors().size() == 0);
+            assertTrue(branch.errors().isEmpty());
             assertNotNull(branch.id());
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");

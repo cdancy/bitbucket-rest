@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.testng.Assert.assertFalse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
@@ -62,16 +63,16 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateRepository createRepository = CreateRepository.create(repoKey, true);
         Repository repository = api().create(projectKey, createRepository);
         assertNotNull(repository);
-        assertTrue(repository.errors().size() == 0);
-        assertTrue(repository.name().equalsIgnoreCase(repoKey));
+        assertTrue(repository.errors().isEmpty());
+        assertTrue(repoKey.equalsIgnoreCase(repository.name()));
     }
 
     @Test (dependsOnMethods = "testCreateRepository")
     public void testGetRepository() {
         Repository repository = api().get(projectKey, repoKey);
         assertNotNull(repository);
-        assertTrue(repository.errors().size() == 0);
-        assertTrue(repository.name().equalsIgnoreCase(repoKey));
+        assertTrue(repository.errors().isEmpty());
+        assertTrue(repoKey.equalsIgnoreCase(repository.name()));
     }
 
     @Test (dependsOnMethods = "testGetRepository")
@@ -103,7 +104,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetRepositoryNonExistent() {
         Repository repository = api().get(projectKey, randomStringLettersOnly());
         assertNotNull(repository);
-        assertTrue(repository.errors().size() == 1);
+        assertFalse(repository.errors().isEmpty());
     }
 
     @Test
@@ -111,7 +112,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
         Repository repository = api().create(projectKey, createRepository);
         assertNotNull(repository);
-        assertTrue(repository.errors().size() > 0);
+        assertFalse(repository.errors().isEmpty());
     }
 
     @AfterClass

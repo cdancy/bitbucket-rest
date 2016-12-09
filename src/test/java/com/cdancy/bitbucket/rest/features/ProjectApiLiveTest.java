@@ -49,18 +49,16 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateProject createProject = CreateProject.create(projectKey, null, null, null);
         Project project = api().create(createProject);
         assertNotNull(project);
-        assertTrue(project.errors().size() == 0);
-        assertTrue(project.key().equalsIgnoreCase(projectKey));
-        assertTrue(project.name().equalsIgnoreCase(projectKey));
+        assertTrue(project.errors().isEmpty());
+        assertTrue(projectKey.equalsIgnoreCase(project.key()));
     }
 
     @Test (dependsOnMethods = "testCreateProject")
     public void testGetProject() {
         Project project = api().get(projectKey);
         assertNotNull(project);
-        assertTrue(project.errors().size() == 0);
-        assertTrue(project.key().equalsIgnoreCase(projectKey));
-        assertTrue(project.name().equalsIgnoreCase(projectKey));
+        assertTrue(project.errors().isEmpty());
+        assertTrue(projectKey.equalsIgnoreCase(project.key()));
     }
 
     @Test (dependsOnMethods = "testGetProject")
@@ -92,16 +90,16 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetProjectNonExistent() {
         Project project = api().get(randomStringLettersOnly());
         assertNotNull(project);
-        assertTrue(project.errors().size() == 1);
+        assertTrue(project.errors().isEmpty());
     }
 
     @Test
     public void testCreateProjectWithIllegalName() {
-        String projectKey = "9999";
-        CreateProject createProject = CreateProject.create(projectKey, null, null, null);
+        String illegalProjectKey = "9999";
+        CreateProject createProject = CreateProject.create(illegalProjectKey, null, null, null);
         Project project = api().create(createProject);
         assertNotNull(project);
-        assertTrue(project.errors().size() == 1);
+        assertFalse(project.errors().isEmpty());
     }
 
     private ProjectApi api() {
