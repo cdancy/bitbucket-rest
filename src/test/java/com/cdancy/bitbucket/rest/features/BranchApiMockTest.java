@@ -93,7 +93,8 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
+            boolean success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
+            assertTrue(success);
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
