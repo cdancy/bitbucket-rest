@@ -20,3 +20,4 @@ src/generated
 *.iml 
 *.ipr
 *.iws
+/.nb-gradle/
