@@ -15,14 +15,21 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.common;
+package com.cdancy.bitbucket.rest.features;
 
-import java.util.List;
+import static org.testng.Assert.assertNotNull;
 
-import com.google.common.collect.ImmutableList;
+import org.testng.annotations.Test;
 
-public class Utils {
-    public static <T> List<T> nullToEmpty(Iterable<? extends T> input) {
-        return (List<T>) (input == null ? ImmutableList.<T> of() : ImmutableList.copyOf(input));
+import com.cdancy.bitbucket.rest.BitbucketClient;
+import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+
+@Test(groups = "unit", testName = "BitbucketClientMockTest")
+public class BitbucketClientMockTest extends BaseBitbucketMockTest {
+
+    @Test
+    public void testCreateClient() {
+        BitbucketClient client = BitbucketClient.builder().build();
+        assertNotNull(client);
     }
 }

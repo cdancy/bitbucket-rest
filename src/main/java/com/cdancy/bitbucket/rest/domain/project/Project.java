@@ -48,7 +48,6 @@ public abstract class Project {
     @Nullable
     public abstract Links links();
 
-    @Nullable
     public abstract List<Error> errors();
 
     Project() {

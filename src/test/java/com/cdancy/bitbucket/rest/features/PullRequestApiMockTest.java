@@ -162,7 +162,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             MergeStatus pr = api.canMerge(project, repo, 101);
             assertNotNull(pr);
             assertTrue(pr.canMerge());
-            assertTrue(pr.vetoes().size() == 0);
+            assertTrue(pr.vetoes().isEmpty());
             assertTrue(pr.errors().isEmpty());
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");

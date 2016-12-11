@@ -68,7 +68,6 @@ public abstract class PullRequest {
     @Nullable
     public abstract Links links();
 
-    @Nullable
     public abstract List<Error> errors();
 
     PullRequest() {

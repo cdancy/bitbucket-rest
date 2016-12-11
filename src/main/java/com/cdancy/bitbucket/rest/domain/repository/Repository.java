@@ -58,7 +58,6 @@ public abstract class Repository {
     @Nullable
     public abstract Links links();
 
-    @Nullable
     public abstract List<Error> errors();
 
     Repository() {

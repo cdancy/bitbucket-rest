@@ -20,12 +20,12 @@ package com.cdancy.bitbucket.rest;
 import org.jclouds.ContextBuilder;
 import org.jclouds.javax.annotation.Nullable;
 
-public class BitbucketClient {
+public final class BitbucketClient {
 
-    private static String[] endPointProperties = { "bitbucket.rest.endpoint", "bitbucketRestEndpoint", "BITBUCKET_REST_ENDPOINT" };
-    private static String[] credentialsProperties = { "bitbucket.rest.credentials", "bitbucketRestCredentials", "BITBUCKET_REST_CREDENTIALS" };
-    private String endPoint;
-    private String credentials;
+    private static final String[] ENDPOINT_PROPERTIES = { "bitbucket.rest.endpoint", "bitbucketRestEndpoint", "BITBUCKET_REST_ENDPOINT" };
+    private static final String[] CREDENTIALS_PROPERTIES = { "bitbucket.rest.credentials", "bitbucketRestCredentials", "BITBUCKET_REST_CREDENTIALS" };
+    private final String endPoint;
+    private final String credentials;
     private final BitbucketApi bitbucketApi;
 
     /**
@@ -41,8 +41,7 @@ public class BitbucketClient {
     /**
      * Create an BitbucketClient.
      *
-     * @param endPoint
-     *            url of Bitbucket instance
+     * @param endPoint url of Bitbucket instance
      */
     public BitbucketClient(@Nullable final String endPoint) {
         this.endPoint = endPoint != null ? endPoint : initEndPoint();
@@ -53,10 +52,8 @@ public class BitbucketClient {
     /**
      * Create an BitbucketClient.
      *
-     * @param endPoint
-     *            url of Bitbucket instance
-     * @param credentials
-     *            the optional credentials for the etcd instance
+     * @param endPoint url of Bitbucket instance
+     * @param credentials the optional credentials for the etcd instance
      */
     public BitbucketClient(@Nullable final String endPoint, @Nullable final String credentials) {
         this.endPoint = endPoint != null ? endPoint : initEndPoint();
@@ -70,7 +67,7 @@ public class BitbucketClient {
      * @return found endpoint or null
      */
     private String initEndPoint() {
-        String possibleValue = retrivePropertyValue(endPointProperties);
+        String possibleValue = retrivePropertyValue(ENDPOINT_PROPERTIES);
         return possibleValue != null ? possibleValue : "http://127.0.0.1:7990";
     }
 
@@ -80,7 +77,7 @@ public class BitbucketClient {
      * @return found credentials or empty String
      */
     private String initCredentials() {
-        String possibleValue = retrivePropertyValue(credentialsProperties);
+        String possibleValue = retrivePropertyValue(CREDENTIALS_PROPERTIES);
         return possibleValue != null ? possibleValue : "";
     }
 
@@ -92,8 +89,7 @@ public class BitbucketClient {
     /**
      * Retrieve property value from list of keys.
      *
-     * @param keys
-     *            list of keys to search
+     * @param keys list of keys to search
      * @return the first value found from list of keys
      */
     private String retrivePropertyValue(String... keys) {
@@ -110,8 +106,7 @@ public class BitbucketClient {
     /**
      * Retrieve property value from key.
      *
-     * @param key
-     *            the key to search for
+     * @param key the key to search for
      * @return the value of key or null if not found
      */
     private String retrivePropertyValue(String key) {
@@ -130,18 +125,15 @@ public class BitbucketClient {
     public BitbucketApi api() {
         return bitbucketApi;
     }
+    
+    public static Builder builder() {
+        return new Builder();
+    }
 
     public static class Builder {
+        
         private String endPoint;
         private String credentials;
-
-        public Builder() {
-        }
-
-        public Builder(final String endPoint, final String credentials) {
-            this.endPoint = endPoint;
-            this.credentials = credentials;
-        }
 
         public Builder endPoint(String endPoint) {
             this.endPoint = endPoint;
