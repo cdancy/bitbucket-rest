@@ -10,7 +10,7 @@ java client, based on jclouds, to interact with Bitbucket's REST API.
 
 Client's can be built like so:
 
-      BitbucketClient client = new BitbucketClient.Builder()
+      BitbucketClient client = new BitbucketClient.builder()
       .endPoint("http://127.0.0.1:7990") // Optional. Defaults to http://127.0.0.1:7990
       .credentials("admin:password") // Optional.
       .build();
