@@ -34,10 +34,8 @@ public abstract class BranchModel {
     @Nullable
     public abstract Branch production();
 
-    @Nullable
     public abstract List<Type> types();
 
-    @Nullable
     public abstract List<Error> errors();
 
     BranchModel() {

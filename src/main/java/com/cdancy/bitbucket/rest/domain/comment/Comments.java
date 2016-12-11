@@ -54,7 +54,6 @@ public abstract class Comments {
     @Nullable
     public abstract Links links();
 
-    @Nullable
     public abstract List<Error> errors();
 
     Comments() {

@@ -47,7 +47,6 @@ public abstract class PagedCommitResponse {
 
     public abstract int nextPageStart();
 
-    @Nullable
     public abstract List<Error> errors();
 
     public PagedCommitResponse() {

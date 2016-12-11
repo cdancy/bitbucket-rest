@@ -54,7 +54,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateProject createProject = CreateProject.create(projectKey, null, null, null);
         Project project = api.projectApi().create(createProject);
         assertNotNull(project);
-        assertTrue(project.errors().size() == 0);
+        assertTrue(project.errors().isEmpty());
         assertTrue(project.key().equalsIgnoreCase(projectKey));
     }
 

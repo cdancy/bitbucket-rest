@@ -45,7 +45,6 @@ public abstract class Branch {
 
     public abstract boolean isDefault();
 
-    @Nullable
     public abstract List<Error> errors();
 
     Branch() {

@@ -43,7 +43,6 @@ public abstract class PagedChangeResponse {
 
     public abstract int nextPageStart();
 
-    @Nullable
     public abstract List<Error> errors();
 
     public PagedChangeResponse() {

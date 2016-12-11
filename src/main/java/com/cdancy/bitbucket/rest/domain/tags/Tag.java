@@ -46,7 +46,6 @@ public abstract class Tag {
     @Nullable
     public abstract String hash();
 
-    @Nullable
     public abstract List<Error> errors();
 
     Tag() {
