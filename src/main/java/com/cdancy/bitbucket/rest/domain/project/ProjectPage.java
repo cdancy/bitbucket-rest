@@ -22,14 +22,14 @@ import java.util.List;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.domain.common.ErrorsWrapper;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
 import com.cdancy.bitbucket.rest.domain.common.Utils;
 import com.cdancy.bitbucket.rest.error.Error;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class ProjectPage implements Page<Project>, ErrorsWrapper {
+public abstract class ProjectPage implements Page<Project>, ErrorsHolder {
 
     @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
     public static ProjectPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
