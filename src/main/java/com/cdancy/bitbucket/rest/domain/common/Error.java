@@ -17,11 +17,28 @@
 
 package com.cdancy.bitbucket.rest.domain.common;
 
-import java.util.List;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.error.Error;
+import com.google.auto.value.AutoValue;
 
-public interface ErrorsWrapper {
+@AutoValue
+public abstract class Error {
 
-    public abstract List<Error> errors();
+    @Nullable
+    public abstract String context();
+
+    @Nullable
+    public abstract String message();
+
+    @Nullable
+    public abstract String exceptionName();
+
+    Error() {
+    }
+
+    @SerializedNames({ "context", "message", "exceptionName" })
+    public static Error create(String context, String message, String exceptionName) {
+        return new AutoValue_Error(context, message, exceptionName);
+    }
 }

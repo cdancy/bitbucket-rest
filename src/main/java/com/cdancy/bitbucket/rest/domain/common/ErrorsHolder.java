@@ -19,10 +19,7 @@ package com.cdancy.bitbucket.rest.domain.common;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
+public interface ErrorsHolder {
 
-public class Utils {
-    public static <T> List<T> nullToEmpty(Iterable<? extends T> input) {
-        return (List<T>) (input == null ? ImmutableList.<T> of() : ImmutableList.copyOf(input));
-    }
+    public abstract List<Error> errors();
 }

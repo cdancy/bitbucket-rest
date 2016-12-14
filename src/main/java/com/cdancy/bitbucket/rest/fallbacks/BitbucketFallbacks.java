@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -31,7 +32,6 @@ import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import org.jclouds.Fallback;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.error.Error;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

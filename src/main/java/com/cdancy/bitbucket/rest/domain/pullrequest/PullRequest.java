@@ -22,12 +22,13 @@ import java.util.List;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.error.Error;
+import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 
 @AutoValue
-public abstract class PullRequest {
+public abstract class PullRequest implements ErrorsHolder {
 
     public abstract int id();
 
@@ -68,8 +69,6 @@ public abstract class PullRequest {
     @Nullable
     public abstract Links links();
 
-    public abstract List<Error> errors();
-
     PullRequest() {
     }
 
@@ -78,10 +77,7 @@ public abstract class PullRequest {
     public static PullRequest create(int id, int version, String title, String description, String state, boolean open,
                                      boolean closed, long createdDate, long updatedDate, Reference fromRef, Reference toRef, boolean locked,
                                      Person author, List<Person> reviewers, List<Person> participants, Links links, List<Error> errors) {
-        return new AutoValue_PullRequest(id, version, title, description, state, open, closed, createdDate, updatedDate,
-                fromRef, toRef, locked, author,
-                reviewers != null ? ImmutableList.copyOf(reviewers) : ImmutableList.<Person> of(),
-                participants != null ? ImmutableList.copyOf(participants) : ImmutableList.<Person> of(), links,
-                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_PullRequest(Utils.nullToEmpty(errors), id, version, title, description, state, open, closed, createdDate,
+                updatedDate, fromRef, toRef, locked, author, Utils.nullToEmpty(reviewers), Utils.nullToEmpty(participants), links);
     }
 }

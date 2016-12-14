@@ -15,30 +15,21 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.error;
+package com.cdancy.bitbucket.rest.utils;
 
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
+import java.util.List;
+import java.util.Map;
 
-import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
-@AutoValue
-public abstract class Error {
+public class Utils {
 
-    @Nullable
-    public abstract String context();
-
-    @Nullable
-    public abstract String message();
-
-    @Nullable
-    public abstract String exceptionName();
-
-    Error() {
+    public static <T> List<T> nullToEmpty(Iterable<? extends T> input) {
+        return (List<T>) (input == null ? ImmutableList.<T> of() : ImmutableList.copyOf(input));
     }
 
-    @SerializedNames({ "context", "message", "exceptionName" })
-    public static Error create(String context, String message, String exceptionName) {
-        return new AutoValue_Error(context, message, exceptionName);
+    public static <K, V> Map<K, V> nullToEmpty(Map<? extends K, ? extends V> input) {
+        return (Map<K, V>) (input == null ? ImmutableMap.<K, V> of() : ImmutableMap.copyOf(input));
     }
 }

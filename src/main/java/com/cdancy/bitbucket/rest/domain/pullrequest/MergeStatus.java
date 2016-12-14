@@ -17,15 +17,17 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import com.cdancy.bitbucket.rest.error.Error;
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import org.jclouds.json.SerializedNames;
-
 import java.util.List;
 
+import org.jclouds.json.SerializedNames;
+
+import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.utils.Utils;
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-public abstract class MergeStatus {
+public abstract class MergeStatus implements ErrorsHolder {
 
     public abstract boolean canMerge();
 
@@ -33,15 +35,11 @@ public abstract class MergeStatus {
 
     public abstract List<Veto> vetoes();
 
-    public abstract List<Error> errors();
-
     MergeStatus() {
     }
 
     @SerializedNames({ "canMerge", "conflicted", "vetoes", "errors" })
     public static MergeStatus create(boolean canMerge, boolean conflicted, List<Veto> vetoes, List<Error> errors) {
-        return new AutoValue_MergeStatus(canMerge, conflicted,
-                vetoes != null ? ImmutableList.copyOf(vetoes) : ImmutableList.<Veto> of(),
-                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_MergeStatus(Utils.nullToEmpty(errors), canMerge, conflicted, Utils.nullToEmpty(vetoes));
     }
 }
