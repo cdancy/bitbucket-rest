@@ -20,12 +20,10 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.domain.common.Links;
-import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Change implements LinksHolder {
+public abstract class Change {
 
     public abstract String contentId();
 
@@ -49,15 +47,20 @@ public abstract class Change implements LinksHolder {
 
     public abstract boolean srcExecutable();
 
+    @Nullable
+    public abstract Links links();
+
     Change() {
     }
 
     @SerializedNames({ "contentId", "fromContentId", "path", "executable",
-            "percentUnchanged", "type", "nodeType", "srcPath", "srcExecutable", "links" })
-    public static Change create(String contentId, String fromContentId, Path path, boolean executable,
-                                int percentUnchanged, String type, String nodeType, Path srcPath,
-                                boolean srcExecutable, Links links) {
-        return new AutoValue_Change(links, contentId, fromContentId, path, executable,
-                percentUnchanged, type, nodeType, srcPath, srcExecutable);
+            "percentUnchanged", "type", "nodeType", "srcPath",
+            "srcExecutable", "links" })
+    public static Change create(String contentId, String fromContentId, Path path,
+                                boolean executable, int percentUnchanged, String type,
+                                String nodeType, Path srcPath, boolean srcExecutable,
+                                Links links) {
+        return new AutoValue_Change(contentId, fromContentId, path, executable,
+                percentUnchanged, type, nodeType, srcPath, srcExecutable, links);
     }
 }

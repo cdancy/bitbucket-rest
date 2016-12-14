@@ -24,14 +24,13 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.domain.common.Links;
-import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Links;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Repository implements ErrorsHolder, LinksHolder {
+public abstract class Repository implements ErrorsHolder {
 
     @Nullable
     public abstract String slug();
@@ -57,6 +56,9 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
 
     public abstract boolean _public();
 
+    @Nullable
+    public abstract Links links();
+
     Repository() {
     }
 
@@ -64,7 +66,7 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
     public static Repository create(String slug, int id, String name, String scmId,
                                     String state, String statusMessage, boolean forkable,
                                     Project project, boolean _public, Links links, List<Error> errors) {
-        return new AutoValue_Repository(Utils.nullToEmpty(errors), links, slug, id, name, scmId, state,
-                statusMessage, forkable, project, _public);
+        return new AutoValue_Repository(Utils.nullToEmpty(errors), slug, id, name, scmId, state,
+                statusMessage, forkable, project, _public, links);
     }
 }

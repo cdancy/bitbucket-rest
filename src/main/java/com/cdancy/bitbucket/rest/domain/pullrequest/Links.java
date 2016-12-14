@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.common;
+package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import java.util.List;
 import java.util.Map;
 
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 
 @AutoValue
 public abstract class Links {
@@ -37,6 +37,7 @@ public abstract class Links {
 
     @SerializedNames({ "clone", "self" })
     public static Links create(List<Map<String, String>> clone, List<Map<String, String>> self) {
-        return new AutoValue_Links(Utils.nullToEmpty(clone), Utils.nullToEmpty(self));
+        return new AutoValue_Links(clone != null ? ImmutableList.copyOf(clone) : ImmutableList.<Map<String, String>> of(),
+                self != null ? ImmutableList.copyOf(self) : ImmutableList.<Map<String, String>> of());
     }
 }

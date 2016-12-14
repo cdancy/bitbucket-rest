@@ -17,13 +17,12 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import java.util.List;
-
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
-import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
 public abstract class Path {
@@ -45,6 +44,11 @@ public abstract class Path {
     @SerializedNames({ "components", "parent", "name", "extension", "toString" })
     public static Path create(List<String> components, String parent, String name,
                               String extension, String _toString) {
-        return new AutoValue_Path(Utils.nullToEmpty(components), parent, name, extension, _toString);
+        List<String> comp = (components != null) ? ImmutableList.copyOf(components) : ImmutableList.<String>of();
+        return new AutoValue_Path(comp,
+                parent,
+                name,
+                extension,
+                _toString);
     }
 }
