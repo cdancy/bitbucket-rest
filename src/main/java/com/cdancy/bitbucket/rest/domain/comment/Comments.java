@@ -23,10 +23,10 @@ import java.util.Map;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
+import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Links;
-import com.cdancy.bitbucket.rest.error.Error;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 

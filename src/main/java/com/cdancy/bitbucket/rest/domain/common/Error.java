@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.error;
+package com.cdancy.bitbucket.rest.domain.common;
 
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
