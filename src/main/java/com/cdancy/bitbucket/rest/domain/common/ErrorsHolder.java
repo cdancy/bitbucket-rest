@@ -19,8 +19,6 @@ package com.cdancy.bitbucket.rest.domain.common;
 
 import java.util.List;
 
-import com.cdancy.bitbucket.rest.error.Error;
-
 public interface ErrorsHolder {
 
     public abstract List<Error> errors();
