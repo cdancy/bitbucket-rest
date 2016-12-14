@@ -25,13 +25,14 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.domain.common.Links;
+import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Links;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Comments implements ErrorsHolder {
+public abstract class Comments implements ErrorsHolder, LinksHolder {
 
     public abstract Map<String, String> properties();
 
@@ -52,9 +53,6 @@ public abstract class Comments implements ErrorsHolder {
     @Nullable
     public abstract Link link();
 
-    @Nullable
-    public abstract Links links();
-
     Comments() {
     }
 
@@ -71,16 +69,7 @@ public abstract class Comments implements ErrorsHolder {
                                   Link link,
                                   Links links,
                                   List<Error> errors) {
-        return new AutoValue_Comments(Utils.nullToEmpty(errors),
-                Utils.nullToEmpty(properties),
-                id,
-                version,
-                text,
-                author,
-                createdDate,
-                updatedDate,
-                Utils.nullToEmpty(comments),
-                link,
-                links);
+        return new AutoValue_Comments(Utils.nullToEmpty(errors), links, Utils.nullToEmpty(properties),
+                id, version, text, author, createdDate, updatedDate, Utils.nullToEmpty(comments), link);
     }
 }

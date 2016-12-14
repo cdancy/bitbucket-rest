@@ -17,11 +17,12 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
+import com.cdancy.bitbucket.rest.utils.Utils;
+import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Commit {
@@ -45,7 +46,6 @@ public abstract class Commit {
             "message", "parents" })
     public static Commit create(String id, String displayId, Author author,
                                 long authorTimestamp, String message, List<Parents> parents) {
-        return new AutoValue_Commit(id, displayId, author, authorTimestamp, message,
-                parents != null ? ImmutableList.copyOf(parents) : ImmutableList.<Parents>of());
+        return new AutoValue_Commit(id, displayId, author, authorTimestamp, message, Utils.nullToEmpty(parents));
     }
 }
