@@ -22,8 +22,8 @@ import java.util.List;
 import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.domain.common.Utils;
 import com.cdancy.bitbucket.rest.error.Error;
+import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue

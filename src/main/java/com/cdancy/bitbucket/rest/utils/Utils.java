@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.common;
+package com.cdancy.bitbucket.rest.utils;
 
 import java.util.List;
 import java.util.Map;
