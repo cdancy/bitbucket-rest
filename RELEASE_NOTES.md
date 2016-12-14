@@ -2,7 +2,8 @@
 * ADDED: PagingApi - [PR 19](https://github.com/cdancy/bitbucket-rest/pull/19)
 * ADDED: Bumped jclouds deps to 2.0.0 - [PR 20](https://github.com/cdancy/bitbucket-rest/pull/20)
 * REFACTOR: Code cleanup and bump travis jdk to 8 for proper http DELETE method support - [PR 21](https://github.com/cdancy/bitbucket-rest/pull/21)
-* ADDED: editorconfig - [PR 22](https://github.com/cdancy/bitbucket-rest/pull/22)
+* ADDED: default editorconfig - [PR 22](https://github.com/cdancy/bitbucket-rest/pull/22)
+* REFACTOR: Factorize code with ErrorsWrapper and Utils.nullToEmpty - [PR 25](https://github.com/cdancy/bitbucket-rest/pull/25)
 
 ### Version 0.0.10 (8/26/2016)
 * ADDED: CommentsApi gained endpoint `comment`, `createComment`, and `get` - [PR 16](https://github.com/cdancy/bitbucket-rest/pull/16)
