@@ -17,16 +17,18 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import com.cdancy.bitbucket.rest.error.Error;
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsWrapper;
+import com.cdancy.bitbucket.rest.domain.common.Utils;
+import com.cdancy.bitbucket.rest.error.Error;
+import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class PagedCommitResponse {
+public abstract class PagedCommitResponse implements ErrorsWrapper {
 
     public abstract int size();
 
@@ -47,8 +49,6 @@ public abstract class PagedCommitResponse {
 
     public abstract int nextPageStart();
 
-    public abstract List<Error> errors();
-
     public PagedCommitResponse() {
     }
 
@@ -56,13 +56,7 @@ public abstract class PagedCommitResponse {
     public static PagedCommitResponse create(int size, int limit, boolean isLastPage, List<Commit> values,
                                              int start, int authorCount, int totalCount, String filter,
                                              int nextPageStart, List<Error> errors) {
-        return new AutoValue_PagedCommitResponse(size, limit, isLastPage,
-                values != null ? ImmutableList.copyOf(values) : ImmutableList.<Commit>of(),
-                start,
-                authorCount,
-                totalCount,
-                filter,
-                nextPageStart,
-                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_PagedCommitResponse(Utils.nullToEmpty(errors), size, limit, isLastPage,
+                Utils.nullToEmpty(values), start, authorCount, totalCount, filter, nextPageStart);
     }
 }

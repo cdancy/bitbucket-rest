@@ -18,11 +18,18 @@
 package com.cdancy.bitbucket.rest.domain.common;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 public class Utils {
+
     public static <T> List<T> nullToEmpty(Iterable<? extends T> input) {
         return (List<T>) (input == null ? ImmutableList.<T> of() : ImmutableList.copyOf(input));
+    }
+
+    public static <K, V> Map<K, V> nullToEmpty(Map<? extends K, ? extends V> input) {
+        return (Map<K, V>) (input == null ? ImmutableMap.<K, V> of() : ImmutableMap.copyOf(input));
     }
 }

@@ -17,16 +17,18 @@
 
 package com.cdancy.bitbucket.rest.domain.branch;
 
-import com.cdancy.bitbucket.rest.error.Error;
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsWrapper;
+import com.cdancy.bitbucket.rest.domain.common.Utils;
+import com.cdancy.bitbucket.rest.error.Error;
+import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class BranchModel {
+public abstract class BranchModel implements ErrorsWrapper {
 
     @Nullable
     public abstract Branch development();
@@ -36,15 +38,11 @@ public abstract class BranchModel {
 
     public abstract List<Type> types();
 
-    public abstract List<Error> errors();
-
     BranchModel() {
     }
 
     @SerializedNames({ "development", "production", "types", "errors" })
     public static BranchModel create(Branch development, Branch production, List<Type> types, List<Error> errors) {
-        return new AutoValue_BranchModel(development, production,
-                types != null ? ImmutableList.copyOf(types) : ImmutableList.<Type> of(),
-                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_BranchModel(Utils.nullToEmpty(errors), development, production, Utils.nullToEmpty(types));
     }
 }

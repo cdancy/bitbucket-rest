@@ -17,16 +17,18 @@
 
 package com.cdancy.bitbucket.rest.domain.tags;
 
-import com.cdancy.bitbucket.rest.error.Error;
-import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
+
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsWrapper;
+import com.cdancy.bitbucket.rest.domain.common.Utils;
+import com.cdancy.bitbucket.rest.error.Error;
+import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Tag {
+public abstract class Tag implements ErrorsWrapper {
 
     @Nullable
     public abstract String id();
@@ -46,15 +48,12 @@ public abstract class Tag {
     @Nullable
     public abstract String hash();
 
-    public abstract List<Error> errors();
-
     Tag() {
     }
 
     @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "hash", "errors" })
     public static Tag create(String id, String displayId, String type,
                              String latestCommit, String latestChangeset, String hash, List<Error> errors) {
-        return new AutoValue_Tag(id, displayId, type, latestCommit, latestChangeset, hash,
-                errors != null ? ImmutableList.copyOf(errors) : ImmutableList.<Error> of());
+        return new AutoValue_Tag(Utils.nullToEmpty(errors), id, displayId, type, latestCommit, latestChangeset, hash);
     }
 }
