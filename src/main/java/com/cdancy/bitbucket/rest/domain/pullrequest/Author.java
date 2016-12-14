@@ -17,13 +17,16 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import com.cdancy.bitbucket.rest.domain.comment.Link;
-import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
+import com.cdancy.bitbucket.rest.domain.comment.Link;
+import com.cdancy.bitbucket.rest.domain.common.Links;
+import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-public abstract class Author {
+public abstract class Author implements LinksHolder {
 
     public abstract String name();
 
@@ -47,17 +50,10 @@ public abstract class Author {
     @Nullable
     public abstract Link link();
 
-    @Nullable
-    public abstract Links links();
-
     Author() {
     }
 
-    @SerializedNames({ "name", "emailAddress",
-            "id", "displayName",
-            "active", "slug",
-            "type", "link",
-            "links" })
+    @SerializedNames({ "name", "emailAddress", "id", "displayName", "active", "slug", "type", "link", "links" })
     public static Author create(String name,
                                 String emailAddress,
                                 Integer id,
@@ -67,14 +63,6 @@ public abstract class Author {
                                 String type,
                                 Link link,
                                 Links links) {
-        return new AutoValue_Author(name,
-                emailAddress,
-                id,
-                displayName,
-                active,
-                slug,
-                type,
-                link,
-                links);
+        return new AutoValue_Author(links, name, emailAddress, id, displayName, active, slug, type, link);
     }
 }
