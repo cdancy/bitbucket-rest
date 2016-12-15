@@ -15,36 +15,12 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
-
-import java.util.List;
+package com.cdancy.bitbucket.rest.domain.common;
 
 import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Path {
-
-    public abstract List<String> components();
-
-    public abstract String parent();
-
-    public abstract String name();
+public interface LinksHolder {
 
     @Nullable
-    public abstract String extension();
-
-    public abstract String _toString();
-
-    Path() {
-    }
-
-    @SerializedNames({ "components", "parent", "name", "extension", "toString" })
-    public static Path create(List<String> components, String parent, String name,
-                              String extension, String _toString) {
-        return new AutoValue_Path(Utils.nullToEmpty(components), parent, name, extension, _toString);
-    }
+    public abstract Links links();
 }

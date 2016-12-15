@@ -18,9 +18,6 @@
 package com.cdancy.bitbucket.rest.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 import java.util.Map;
 
@@ -52,10 +49,11 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "HELLO";
             CreateProject createProject = CreateProject.create(projectKey, null, null, null);
             Project project = api.create(createProject);
-            assertNotNull(project);
-            assertTrue(project.errors().isEmpty());
-            assertTrue(project.key().equalsIgnoreCase(projectKey));
-            assertTrue(project.name().equalsIgnoreCase(projectKey));
+            assertThat(project).isNotNull();
+            assertThat(project.errors()).isEmpty();
+            assertThat(project.key()).isEqualToIgnoringCase(projectKey);
+            assertThat(project.name()).isEqualToIgnoringCase(projectKey);
+            assertThat(project.links()).isNotNull();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
         } finally {
             baseApi.close();
@@ -73,8 +71,8 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "9999";
             CreateProject createProject = CreateProject.create(projectKey, null, null, null);
             Project project = api.create(createProject);
-            assertNotNull(project);
-            assertFalse(project.errors().isEmpty());
+            assertThat(project).isNotNull();
+            assertThat(project.errors()).isNotEmpty();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
         } finally {
             baseApi.close();
@@ -91,9 +89,10 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "HELLO";
             Project project = api.get(projectKey);
-            assertNotNull(project);
-            assertTrue(project.errors().isEmpty());
-            assertTrue(projectKey.equalsIgnoreCase(project.key()));
+            assertThat(project).isNotNull();
+            assertThat(project.errors()).isEmpty();
+            assertThat(project.key()).isEqualToIgnoringCase(projectKey);
+            assertThat(project.links()).isNotNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
@@ -110,8 +109,8 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "HelloWorld";
             Project project = api.get(projectKey);
-            assertNotNull(project);
-            assertFalse(project.errors().isEmpty());
+            assertThat(project).isNotNull();
+            assertThat(project.errors()).isNotEmpty();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
@@ -128,7 +127,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "HELLO";
             boolean success = api.delete(projectKey);
-            assertTrue(success);
+            assertThat(success).isTrue();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
@@ -145,7 +144,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "NOTEXIST";
             boolean success = api.delete(projectKey);
-            assertFalse(success);
+            assertThat(success).isFalse();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
@@ -164,7 +163,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
 
-            assertNotNull(projectPage);
+            assertThat(projectPage).isNotNull();
             assertThat(projectPage.errors()).isEmpty();
 
             int size = projectPage.size();
@@ -195,7 +194,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects", queryParams);
 
-            assertNotNull(projectPage);
+            assertThat(projectPage).isNotNull();
             assertThat(projectPage.errors()).isEmpty();
 
             int size = projectPage.size();

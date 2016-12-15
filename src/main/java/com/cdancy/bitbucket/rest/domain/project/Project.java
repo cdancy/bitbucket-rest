@@ -24,12 +24,13 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Links;
+import com.cdancy.bitbucket.rest.domain.common.Links;
+import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class Project implements ErrorsHolder {
+public abstract class Project implements ErrorsHolder, LinksHolder {
 
     @Nullable
     public abstract String key();
@@ -47,15 +48,12 @@ public abstract class Project implements ErrorsHolder {
     @Nullable
     public abstract String type();
 
-    @Nullable
-    public abstract Links links();
-
     Project() {
     }
 
     @SerializedNames({ "key", "id", "name", "description", "public", "type", "links", "errors" })
     public static Project create(String key, int id, String name, String description,
                                  boolean _public, String type, Links links, List<Error> errors) {
-        return new AutoValue_Project(Utils.nullToEmpty(errors), key, id, name, description, _public, type, links);
+        return new AutoValue_Project(Utils.nullToEmpty(errors), links, key, id, name, description, _public, type);
     }
 }
