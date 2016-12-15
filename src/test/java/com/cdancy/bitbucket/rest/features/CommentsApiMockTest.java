@@ -17,8 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -51,9 +50,10 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         try {
 
             Comments pr = api.comment("PRJ", "my-repo", 101, "A measured reply.");
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.text().equals("A measured reply."));
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.text()).isEqualTo("A measured reply.");
+            assertThat(pr.links()).isNull();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
         } finally {
@@ -75,9 +75,10 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             Anchor anchor = Anchor.create(1, Anchor.LineType.CONTEXT, Anchor.FileType.FROM, "path/to/file", "path/to/file");
             CreateComment createComment = CreateComment.create("A measured reply.", parent, anchor);
             Comments pr = api.create("PRJ", "my-repo", 101, createComment);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.text().equals("A measured reply."));
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.text()).isEqualTo("A measured reply.");
+            assertThat(pr.links()).isNull();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
         } finally {
@@ -95,9 +96,10 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         CommentsApi api = baseApi.commentsApi();
         try {
             Comments pr = api.get("PRJ", "my-repo", 101, 1);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.text().equals("A measured reply."));
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.text()).isEqualTo("A measured reply.");
+            assertThat(pr.links()).isNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
         } finally {
@@ -114,8 +116,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         CommentsApi api = baseApi.commentsApi();
         try {
             boolean pr = api.delete("PRJ", "my-repo", 101, 1, 1);
-            assertNotNull(pr);
-            assertTrue(pr);
+            assertThat(pr).isTrue();
 
             Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION

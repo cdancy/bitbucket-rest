@@ -17,9 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -48,7 +46,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
     final String project = "PRJ";
     final String repo = "my-repo";
-            
+
     public void testCreatePullRequest() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -67,11 +65,12 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
             PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
 
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
-            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
-            assertTrue(pr.id() == 101);
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.links()).isNotNull();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests");
         } finally {
@@ -88,11 +87,12 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.get(project, repo, 101);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(project.equals(pr.fromRef().repository().project().key()));
-            assertTrue(repo.equals(pr.fromRef().repository().slug()));
-            assertTrue(pr.id() == 101);
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(project);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repo);
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.links()).isNotNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101");
         } finally {
@@ -109,13 +109,14 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.decline(project, repo, 101, 1);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
-            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
-            assertTrue(pr.id() == 101);
-            assertTrue(pr.state().equalsIgnoreCase("DECLINED"));
-            assertFalse(pr.open());
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.state()).isEqualToIgnoringCase("DECLINED");
+            assertThat(pr.open()).isFalse();
+            assertThat(pr.links()).isNotNull();
 
             Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -134,13 +135,14 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.reopen(project, repo, 101, 1);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
-            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
-            assertTrue(pr.id() == 101);
-            assertTrue(pr.state().equalsIgnoreCase("OPEN"));
-            assertTrue(pr.open());
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.state()).isEqualToIgnoringCase("OPEN");
+            assertThat(pr.open()).isTrue();
+            assertThat(pr.links()).isNotNull();
 
             Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -159,11 +161,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            MergeStatus pr = api.canMerge(project, repo, 101);
-            assertNotNull(pr);
-            assertTrue(pr.canMerge());
-            assertTrue(pr.vetoes().isEmpty());
-            assertTrue(pr.errors().isEmpty());
+            MergeStatus ms = api.canMerge(project, repo, 101);
+            assertThat(ms).isNotNull();
+            assertThat(ms.errors()).isEmpty();
+            assertThat(ms.canMerge()).isTrue();
+            assertThat(ms.vetoes()).isEmpty();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
@@ -179,11 +181,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
-            MergeStatus pr = api.canMerge(project, repo, 101);
-            assertNotNull(pr);
-            assertFalse(pr.canMerge());
-            assertTrue(pr.vetoes().size() == 1);
-            assertTrue(pr.errors().isEmpty());
+            MergeStatus ms = api.canMerge(project, repo, 101);
+            assertThat(ms).isNotNull();
+            assertThat(ms.errors()).isEmpty();
+            assertThat(ms.canMerge()).isFalse();
+            assertThat(ms.vetoes()).hasSize(1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
         } finally {
@@ -200,13 +202,14 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.merge(project, repo, 101, 1);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.fromRef().repository().project().key().equals("PRJ"));
-            assertTrue(pr.fromRef().repository().slug().equals("my-repo"));
-            assertTrue(pr.id() == 101);
-            assertTrue(pr.state().equalsIgnoreCase("MERGED"));
-            assertFalse(pr.open());
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.state()).isEqualToIgnoringCase("MERGED");
+            assertThat(pr.open()).isFalse();
+            assertThat(pr.links()).isNotNull();
 
             Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -225,9 +228,9 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.get(project, repo, 101);
-            assertNotNull(pr);
-            assertTrue(pr.errors().size() > 0);
-            assertTrue(pr.errors().get(0).exceptionName().endsWith("NoSuchPullRequestException"));
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isNotEmpty();
+            assertThat(pr.errors().get(0).exceptionName()).endsWith("NoSuchPullRequestException");
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101");
         } finally {
@@ -245,11 +248,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedChangeResponse pr = api.changes(project, repo, 101, true, 12, null);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.values().size() == 1);
-            assertNotNull(pr);
+            PagedChangeResponse pcr = api.changes(project, repo, 101, true, 12, null);
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isEmpty();
+            assertThat(pcr.values()).hasSize(1);
 
             Map<String, ?> queryParams = ImmutableMap.of("withComments", true, "limit", 12);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -269,11 +271,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedCommitResponse pr = api.commits(project, repo, 101, true, 1, null);
-            assertNotNull(pr);
-            assertTrue(pr.errors().isEmpty());
-            assertTrue(pr.values().size() == 1);
-            assertTrue(pr.totalCount() == 1);
+            PagedCommitResponse pcr = api.commits(project, repo, 101, true, 1, null);
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isEmpty();
+            assertThat(pcr.values()).hasSize(1);
+            assertThat(pcr.totalCount()).isEqualTo(1);
 
             Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
