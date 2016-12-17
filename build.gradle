@@ -15,6 +15,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 apply from: "$rootDir/gradle/additional-artifacts.gradle"
 apply from: "$rootDir/gradle/dependencies.gradle"
@@ -59,6 +60,13 @@ jar {
 
 checkstyle {
     toolVersion = "6.13"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 }
 
 tasks.withType(JavaCompile) {
