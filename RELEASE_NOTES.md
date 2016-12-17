@@ -5,6 +5,7 @@
 * ADDED: default editorconfig - [PR 22](https://github.com/cdancy/bitbucket-rest/pull/22)
 * REFACTOR: Factorize code with ErrorsHolder interface and Utils.nullToEmpty - [PR 25](https://github.com/cdancy/bitbucket-rest/pull/25)
 * REFACTOR: Factorize Links attributes in domain classes with LinksHolder interface - [PR 26](https://github.com/cdancy/bitbucket-rest/pull/26)
+* REFACTOR: Relocating external dependencies in fat jar - [PR 27](https://github.com/cdancy/bitbucket-rest/pull/27)
 
 ### Version 0.0.10 (8/26/2016)
 * ADDED: CommentsApi gained endpoint `comment`, `createComment`, and `get` - [PR 16](https://github.com/cdancy/bitbucket-rest/pull/16)
