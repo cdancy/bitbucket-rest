@@ -17,6 +17,7 @@
 *.jspf          text
 *.properties    text
 *.sh            text
+*.bat           text
 *.tld           text
 *.txt           text
 *.xml           text
