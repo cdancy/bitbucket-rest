@@ -1,4 +1,7 @@
-### Version 0.0.11 (TBA)
+### Version 0.0.12 (TBA)
+*
+
+### Version 0.0.11 (12/27/2016)
 * ADDED: PagingApi - [PR 19](https://github.com/cdancy/bitbucket-rest/pull/19)
 * ADDED: Bumped jclouds deps to 2.0.0 - [PR 20](https://github.com/cdancy/bitbucket-rest/pull/20)
 * REFACTOR: Code cleanup and bump travis jdk to 8 for proper http DELETE method support - [PR 21](https://github.com/cdancy/bitbucket-rest/pull/21)
