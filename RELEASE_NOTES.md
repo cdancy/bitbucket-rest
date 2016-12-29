@@ -1,5 +1,6 @@
-### Version 0.0.12 (TBA)
-*
+### Version 0.0.12 (12/29/2016)
+* REFACTOR: re-model existing endpoints after new `page` design. - [PR 32](https://github.com/cdancy/bitbucket-rest/pull/32)
+* BUG: remove use of *Holder objects for outgoing http traffic classes - [PR 33](https://github.com/cdancy/bitbucket-rest/pull/33)
 
 ### Version 0.0.11 (12/27/2016)
 * ADDED: PagingApi - [PR 19](https://github.com/cdancy/bitbucket-rest/pull/19)
