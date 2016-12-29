@@ -24,34 +24,17 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.domain.common.Page;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class PagedChangeResponse implements ErrorsHolder {
-
-    public abstract int size();
-
-    public abstract int limit();
-
-    public abstract boolean isLastPage();
-
-    public abstract List<Change> values();
-
-    public abstract int start();
-
-    @Nullable
-    public abstract String filter();
-
-    public abstract int nextPageStart();
-
-    public PagedChangeResponse() {
-    }
-
-    @SerializedNames({ "size", "limit", "isLastPage", "values", "start", "filter", "nextPageStart", "errors" })
-    public static PagedChangeResponse create(int size, int limit, boolean isLastPage, List<Change> values,
-                                             int start, String filter, int nextPageStart, List<Error> errors) {
-        return new AutoValue_PagedChangeResponse(Utils.nullToEmpty(errors), size, limit, isLastPage,
-                Utils.nullToEmpty(values), start, filter, nextPageStart);
+public abstract class ChangePage implements Page<Change>, ErrorsHolder {
+    
+    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
+    public static ChangePage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
+                                     @Nullable List<Change> values, @Nullable List<Error> errors) {
+        return new AutoValue_ChangePage(start, limit, size, nextPageStart, isLastPage,
+                Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
     }
 }

@@ -24,39 +24,23 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.domain.common.Page;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class PagedCommitResponse implements ErrorsHolder {
-
-    public abstract int size();
-
-    public abstract int limit();
-
-    public abstract boolean isLastPage();
-
-    public abstract List<Commit> values();
-
-    public abstract int start();
-
-    public abstract int authorCount();
-
-    public abstract int totalCount();
+public abstract class CommitPage implements Page<Commit>, ErrorsHolder {
 
     @Nullable
-    public abstract String filter();
+    public abstract Integer authorCount();
+    
+    @Nullable
+    public abstract Integer totalCount();
 
-    public abstract int nextPageStart();
-
-    public PagedCommitResponse() {
-    }
-
-    @SerializedNames({ "size", "limit", "isLastPage", "values", "start", "authorCount", "totalCount", "filter", "nextPageStart", "errors" })
-    public static PagedCommitResponse create(int size, int limit, boolean isLastPage, List<Commit> values,
-                                             int start, int authorCount, int totalCount, String filter,
-                                             int nextPageStart, List<Error> errors) {
-        return new AutoValue_PagedCommitResponse(Utils.nullToEmpty(errors), size, limit, isLastPage,
-                Utils.nullToEmpty(values), start, authorCount, totalCount, filter, nextPageStart);
+    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors", "authorCount", "totalCount" })
+    public static CommitPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
+                                     @Nullable List<Commit> values, @Nullable List<Error> errors, Integer authorCount, Integer totalCount) {
+        return new AutoValue_CommitPage(start, limit, size, nextPageStart, isLastPage,
+                Utils.nullToEmpty(values), Utils.nullToEmpty(errors), authorCount, totalCount);
     }
 }

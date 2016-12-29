@@ -23,8 +23,8 @@ import static org.testng.Assert.assertTrue;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PagedCommitResponse;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
@@ -37,9 +37,9 @@ import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 @Test(groups = "live", testName = "PullRequestApiLiveTest", singleThreaded = true)
 public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String project = "TEST";
-    String repo = "dev";
-    String branchToMerge = "lion";
+    String project = "BUILD";
+    String repo = "dancc-test";
+    String branchToMerge = "TIGER";
     int prId = -1;
     int version = -1;
 
@@ -52,6 +52,8 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         Reference fromRef = Reference.create("refs/heads/" + branchToMerge, repository);
         Reference toRef = Reference.create(null, repository);
         CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
+        
+        System.out.println("---------> CREATED PR: " + cpr);
         PullRequest pr = api().create(project, repo, cpr);
         assertNotNull(pr);
         assertTrue(project.equals(pr.fromRef().repository().project().key()));
@@ -72,7 +74,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequest")
     public void testGetPullRequestChanges() {
-        PagedChangeResponse pr = api().changes(project, repo, prId, null, null, null);
+        ChangePage pr = api().changes(project, repo, prId, null, null, null);
         assertNotNull(pr);
         assertTrue(pr.errors().isEmpty());
         assertTrue(pr.values().size() > 0);
@@ -80,7 +82,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequestChanges")
     public void testGetPullRequestCommits() {
-        PagedCommitResponse pr = api().commits(project, repo, prId, true, 1, null);
+        CommitPage pr = api().commits(project, repo, prId, true, 1, null);
         assertNotNull(pr);
         assertTrue(pr.errors().isEmpty());
         assertTrue(pr.values().size() == 1);
