@@ -30,8 +30,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PagedCommitResponse;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommitPage;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
@@ -114,7 +114,7 @@ public interface PullRequestApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/changes")
     @Fallback(PullRequestOnError.class)
     @GET
-    PagedChangeResponse changes(@PathParam("project") String project,
+    ChangePage changes(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
                                 @PathParam("pullRequestId") int pullRequestId,
                                 @Nullable @QueryParam("withComments") Boolean withComments,
@@ -126,7 +126,7 @@ public interface PullRequestApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/commits")
     @Fallback(PullRequestOnError.class)
     @GET
-    PagedCommitResponse commits(@PathParam("project") String project,
+    CommitPage commits(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
                                 @PathParam("pullRequestId") int pullRequestId,
                                 @Nullable @QueryParam("withCounts") Boolean withCounts,

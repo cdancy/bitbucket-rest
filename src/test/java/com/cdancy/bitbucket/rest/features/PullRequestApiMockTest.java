@@ -27,8 +27,8 @@ import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PagedChangeResponse;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PagedCommitResponse;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
@@ -248,7 +248,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedChangeResponse pcr = api.changes(project, repo, 101, true, 12, null);
+            ChangePage pcr = api.changes(project, repo, 101, true, 12, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
@@ -271,7 +271,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            PagedCommitResponse pcr = api.commits(project, repo, 101, true, 1, null);
+            CommitPage pcr = api.commits(project, repo, 101, true, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
