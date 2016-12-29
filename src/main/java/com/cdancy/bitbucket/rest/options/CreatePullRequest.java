@@ -17,20 +17,17 @@
 
 package com.cdancy.bitbucket.rest.options;
 
-import java.util.List;
-
+import com.cdancy.bitbucket.rest.domain.common.Links;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Person;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.domain.common.Links;
-import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Person;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
-import com.cdancy.bitbucket.rest.utils.Utils;
-import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
-public abstract class CreatePullRequest implements LinksHolder {
+public abstract class CreatePullRequest {
 
     public abstract String title();
 
@@ -57,13 +54,17 @@ public abstract class CreatePullRequest implements LinksHolder {
     @Nullable
     public abstract List<Person> reviewers();
 
+    @Nullable
+    public abstract Links links();
+
     CreatePullRequest() {
     }
+
 
     @SerializedNames({ "title", "description", "state", "open", "closed", "fromRef", "toRef", "locked", "reviewers", "links" })
     public static CreatePullRequest create(String title, String description, Reference fromRef,
                                            Reference toRef, List<Person> reviewers, Links links) {
-        return new AutoValue_CreatePullRequest(links != null ? links : Links.create(null, null), title, description, "OPEN",
-                true, false, fromRef, toRef, false, Utils.nullToEmpty(reviewers));
+        return new AutoValue_CreatePullRequest(title, description, "OPEN", true, false,
+              fromRef, toRef, false, reviewers, links);
     }
 }
