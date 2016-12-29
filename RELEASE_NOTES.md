@@ -2,7 +2,7 @@
 * REFACTOR: re-model existing endpoints after new `page` design. - [PR 32](https://github.com/cdancy/bitbucket-rest/pull/32)
 * BUG: remove use of *Holder objects for outgoing http traffic classes - [PR 33](https://github.com/cdancy/bitbucket-rest/pull/33)
 
-### Version 0.0.11 (12/27/2016)
+### Version 0.0.11 (12/27/2016) *** DO NOT USE ***
 * ADDED: PagingApi - [PR 19](https://github.com/cdancy/bitbucket-rest/pull/19)
 * ADDED: Bumped jclouds deps to 2.0.0 - [PR 20](https://github.com/cdancy/bitbucket-rest/pull/20)
 * REFACTOR: Code cleanup and bump travis jdk to 8 for proper http DELETE method support - [PR 21](https://github.com/cdancy/bitbucket-rest/pull/21)
