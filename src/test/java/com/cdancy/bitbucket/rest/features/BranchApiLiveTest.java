@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -62,8 +63,16 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(branch.id().endsWith(branchName));
         assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));
     }
-
+    
     @Test (dependsOnMethods = "testCreateBranch")
+    public void testListBranches() {
+        BranchPage branch = api().list(projectKey, repoKey, null, null, null, null, null, 1);
+        assertNotNull(branch);
+        assertTrue(branch.errors().isEmpty());
+        assertTrue(branch.values().size() > 0);
+    }
+
+    @Test (dependsOnMethods = "testListBranches")
     public void testGetBranchModel() {
         BranchModel branchModel = api().model(projectKey, repoKey);
         assertNotNull(branchModel);

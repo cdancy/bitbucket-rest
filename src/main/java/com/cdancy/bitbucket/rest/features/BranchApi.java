@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
@@ -39,13 +40,29 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.jclouds.javax.annotation.Nullable;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest")
 public interface BranchApi {
 
+    @Named("branch:list")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
+    @Fallback(BitbucketFallbacks.BranchOnError.class)
+    @GET
+    BranchPage list(@PathParam("project") String project,
+                  @PathParam("repo") String repo,
+                  @Nullable @QueryParam("base") String base,
+                  @Nullable @QueryParam("details") String details,
+                  @Nullable @QueryParam("filterText") String filterText,
+                  @Nullable @QueryParam("orderBy") String orderBy,
+                  @Nullable @QueryParam("start") Integer start,
+                  @Nullable @QueryParam("limit") Integer limit);
+    
     @Named("branch:create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")

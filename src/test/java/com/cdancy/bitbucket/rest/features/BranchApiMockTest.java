@@ -26,10 +26,13 @@ import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import java.util.Map;
 
 /**
  * Mock tests for the {@link BranchApi} class.
@@ -54,9 +57,34 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertNotNull(branch);
             assertTrue(branch.errors().isEmpty());
             assertTrue(branch.id().endsWith(branchName));
-            assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));
+            assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));            
             assertSent(server, "POST", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testListBranches() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+
+            BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
+            assertNotNull(branch);
+            assertTrue(branch.errors().isEmpty());
+            assertTrue(branch.values().size() > 0);
+            assertTrue("hello-world".equals(branch.values().get(0).displayId()));
+            
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
