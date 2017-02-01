@@ -26,6 +26,7 @@ import java.util.List;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
@@ -55,6 +56,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class CommitOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createCommitFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -107,6 +117,10 @@ public final class BitbucketFallbacks {
 
     public static Branch createBranchFromErrors(List<Error> errors) {
         return Branch.create(null, null, null, null, null, false, errors);
+    }
+    
+    public static Commit createCommitFromErrors(List<Error> errors) {
+        return Commit.create("-1", "-1", null, 0, null, null, errors);
     }
 
     public static Tag createTagFromErrors(List<Error> errors) {

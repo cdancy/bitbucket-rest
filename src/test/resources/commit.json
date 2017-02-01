@@ -1,0 +1,16 @@
+{
+    "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
+    "displayId": "abcdef0123a",
+    "author": {
+        "name": "charlie",
+        "emailAddress": "charlie@example.com"
+    },
+    "authorTimestamp": 1484800877151,
+    "message": "WIP on feature 1",
+    "parents": [
+        {
+            "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
+            "displayId": "abcdef0"
+        }
+    ]
+}

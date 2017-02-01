@@ -15,26 +15,33 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.commit;
 
+import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Parents;
 import java.util.List;
 
 import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 
 @AutoValue
-public abstract class Commit {
+public abstract class Commit implements ErrorsHolder {
 
     public abstract String id();
 
     public abstract String displayId();
 
+    @Nullable
     public abstract Author author();
 
     public abstract long authorTimestamp();
 
+    @Nullable
     public abstract String message();
 
     public abstract List<Parents> parents();
@@ -43,9 +50,10 @@ public abstract class Commit {
     }
 
     @SerializedNames({ "id", "displayId", "author", "authorTimestamp",
-            "message", "parents" })
+            "message", "parents", "errors" })
     public static Commit create(String id, String displayId, Author author,
-                                long authorTimestamp, String message, List<Parents> parents) {
-        return new AutoValue_Commit(id, displayId, author, authorTimestamp, message, Utils.nullToEmpty(parents));
+                                long authorTimestamp, String message, List<Parents> parents, List<Error> errors) {
+        return new AutoValue_Commit(Utils.nullToEmpty(errors), id, displayId, author, 
+                authorTimestamp, message, Utils.nullToEmpty(parents));
     }
 }

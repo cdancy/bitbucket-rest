@@ -21,6 +21,7 @@ import java.io.Closeable;
 
 import com.cdancy.bitbucket.rest.features.BranchApi;
 import com.cdancy.bitbucket.rest.features.CommentsApi;
+import com.cdancy.bitbucket.rest.features.CommitsApi;
 import com.cdancy.bitbucket.rest.features.ProjectApi;
 import com.cdancy.bitbucket.rest.features.PullRequestApi;
 import com.cdancy.bitbucket.rest.features.RepositoryApi;
@@ -37,6 +38,9 @@ public interface BitbucketApi extends Closeable {
     @Delegate
     CommentsApi commentsApi();
 
+    @Delegate
+    CommitsApi commitsApi();
+    
     @Delegate
     ProjectApi projectApi();
 

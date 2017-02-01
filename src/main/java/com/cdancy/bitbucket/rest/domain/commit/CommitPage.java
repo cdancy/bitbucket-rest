@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.commit;
 
 import java.util.List;
 
