@@ -1,7 +1,7 @@
 ### Version 0.0.13 (TBA)
 * ADDED: BranchApi gained proper page support. - [Commit 2c642c](https://github.com/cdancy/bitbucket-rest/commit/2c642c0736768649bd7fb0b6ed1f93b02d6d8f22)
-* ADDED: CommitsApi with `get` endpoint - [Commit 5aca03](https://github.com/cdancy/bitbucket-rest/commit/5aca03d23521bf307973a3170f0760ce0d143f95)
-* ADDED: PullRequestApi gained proper page support. - [Commit 0474f58](https://github.com/cdancy/bitbucket-rest/commit/0474f58a1deceb0d1d6898487ef39561f2be7d17)
+* ADDED: CommitsApi with single `get` endpoint - [Commit 5aca03](https://github.com/cdancy/bitbucket-rest/commit/5aca03d23521bf307973a3170f0760ce0d143f95)
+* ADDED: PullRequestApi gained proper page support through `list` endpoint. - [Commit 0474f58](https://github.com/cdancy/bitbucket-rest/commit/0474f58a1deceb0d1d6898487ef39561f2be7d17)
 * REFACTOR: Code cleanup and minor refactorings to make overall API more consistent. - [Commit b4ff92](https://github.com/cdancy/bitbucket-rest/commit/b4ff92cf42b54be5a79c59f6c25928cd55884200)
 * BREAKING: `ProjectApi.list` parameter order has been altered thus introducing a backwards incompatible change. `limit` and `start` parameters are now last in list to better align with overall project consistency.
 
