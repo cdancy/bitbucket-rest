@@ -1,0 +1,9 @@
+{  
+   "errors":[  
+      {  
+         "context":null,
+         "message":"Repository HelloWorld/something does not exist.",
+         "exceptionName":"com.atlassian.stash.exception.NoSuchRepositoryException"
+      }
+   ]
+}

@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 
 @Test(groups = "live", testName = "PullRequestApiLiveTest", singleThreaded = true)
 public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -71,8 +72,16 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(repo.equals(pr.fromRef().repository().slug()));
         assertTrue(version == pr.version());
     }
+    
+    @Test (dependsOnMethods = "createGetPullRequest")
+    public void testListPullRequest() {
+        PullRequestPage pr = api().list(project, repo, null, null, null, null, null, null, null, 10);
+        assertNotNull(pr);
+        assertTrue(pr.errors().isEmpty());
+        assertTrue(pr.values().size() > 0);
+    }
 
-    @Test (dependsOnMethods = "testGetPullRequest")
+    @Test (dependsOnMethods = "testListPullRequest")
     public void testGetPullRequestChanges() {
         ChangePage pr = api().changes(project, repo, prId, null, null, null);
         assertNotNull(pr);

@@ -39,8 +39,10 @@ import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestPageOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
@@ -57,6 +59,22 @@ public interface PullRequestApi {
     PullRequest get(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @PathParam("pullRequestId") int pullRequestId);
+    
+    @Named("pull-request:list")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests")
+    @Fallback(PullRequestPageOnError.class)
+    @GET
+    PullRequestPage list(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @Nullable @QueryParam("direction") String direction,
+                    @Nullable @QueryParam("at") String at,
+                    @Nullable @QueryParam("state") String state,
+                    @Nullable @QueryParam("order") String order,
+                    @Nullable @QueryParam("withAttributes") Boolean withAttributes,
+                    @Nullable @QueryParam("withProperties") Boolean withProperties,
+                    @Nullable @QueryParam("start") Integer start,
+                    @Nullable @QueryParam("limit") Integer limit);
 
     @Named("pull-request:create")
     @Consumes(MediaType.APPLICATION_JSON)

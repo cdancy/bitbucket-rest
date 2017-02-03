@@ -31,6 +31,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
@@ -95,6 +96,45 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(pr.links()).isNotNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testListPullRequest() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            PullRequestPage pr = api.list(project, repo, null, null, null, null, null, null, null, 10);
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.values()).isNotEmpty();
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 10);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testListPullRequestNonExistent() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            PullRequestPage pr = api.list(project, repo, null, null, null, null, null, null, null, 10);
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isNotEmpty();
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 10);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
