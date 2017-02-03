@@ -69,7 +69,7 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = "testGetProject")
     public void testListProjects() {
-        ProjectPage projectPage = api().list(0, 100, null, null);
+        ProjectPage projectPage = api().list(null, null, 0, 100);
 
         assertNotNull(projectPage);
         assertThat(projectPage.errors()).isEmpty();

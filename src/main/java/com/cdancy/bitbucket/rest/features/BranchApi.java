@@ -52,7 +52,7 @@ public interface BranchApi {
     @Named("branch:list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
-    @Fallback(BitbucketFallbacks.BranchOnError.class)
+    @Fallback(BitbucketFallbacks.BranchPageOnError.class)
     @GET
     BranchPage list(@PathParam("project") String project,
                   @PathParam("repo") String repo,

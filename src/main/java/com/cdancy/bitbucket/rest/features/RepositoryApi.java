@@ -69,11 +69,11 @@ public interface RepositoryApi {
     boolean delete(@PathParam("project") String project,
                    @PathParam("repo") String repo);
 
-    @GET
     @Named("repository:list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos")
-    @Fallback(BitbucketFallbacks.RepositoryOnError.class)
+    @Fallback(BitbucketFallbacks.RepositoryPageOnError.class)
+    @GET
     RepositoryPage list(@PathParam("project") String project,
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);

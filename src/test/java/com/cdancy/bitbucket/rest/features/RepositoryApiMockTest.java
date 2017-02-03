@@ -220,4 +220,22 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+    
+    public void testGetRepositoryListNonExistent() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            RepositoryApi api = baseApi.repositoryApi();
+
+            String projectKey = "non-existent";
+            RepositoryPage repositoryPage = api.list(projectKey, null, null);
+
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isNotEmpty();
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
+        } finally {
+            server.shutdown();
+        }
+    }
 }

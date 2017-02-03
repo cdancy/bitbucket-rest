@@ -28,6 +28,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
@@ -118,6 +119,15 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
+    
+    public static final class ProjectPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createProjectPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
 
     public static final class PullRequestOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
@@ -165,12 +175,17 @@ public final class BitbucketFallbacks {
     public static Repository createRepositoryFromErrors(List<Error> errors) {
         return Repository.create(null, -1, null, null, null, null, false, null, false, null, errors);
     }
+    
     public static RepositoryPage createRepositoryPageFromErrors(List<Error> errors) {
         return RepositoryPage.create(-1, -1, -1, -1, true, null, errors);
     }
     
     public static Project createProjectFromErrors(List<Error> errors) {
         return Project.create(null, -1, null, null, false, null, null, errors);
+    }
+    
+    public static ProjectPage createProjectPageFromErrors(List<Error> errors) {
+        return ProjectPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static PullRequest createPullRequestFromErrors(List<Error> errors) {

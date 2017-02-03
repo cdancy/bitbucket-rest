@@ -90,6 +90,29 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+    
+    public void testListBranchesNonExistent() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "hello";
+            String repoKey = "world";
+
+            BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
+            assertNotNull(branch);
+            assertTrue(branch.errors().size() > 0);
+            
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 
     public void testGetBranchModel() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();

@@ -189,7 +189,7 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
 
             int start = 0;
             int limit = 2;
-            ProjectPage projectPage = api.list(start, limit, null, null);
+            ProjectPage projectPage = api.list(null, null, start, limit);
 
             Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects", queryParams);
@@ -207,6 +207,22 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
 
             assertThat(projectPage.values()).hasSize(size);
             assertThat(projectPage.values()).hasOnlyElementsOfType(Project.class);
+        } finally {
+            server.shutdown();
+        }
+    }
+    
+    public void testGetProjectListNonExistent() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-not-exist.json")).setResponseCode(404));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            ProjectApi api = baseApi.projectApi();
+            ProjectPage projectPage = api.list(null, null, null, null);
+
+            assertThat(projectPage).isNotNull();
+            assertThat(projectPage.errors()).isNotEmpty();
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
         } finally {
             server.shutdown();
         }
