@@ -17,23 +17,17 @@
 
 package com.cdancy.bitbucket.rest.config;
 
-import org.jclouds.http.HttpCommandExecutorService;
 import org.jclouds.http.HttpErrorHandler;
 import org.jclouds.http.annotation.ClientError;
 import org.jclouds.http.annotation.Redirection;
 import org.jclouds.http.annotation.ServerError;
-import org.jclouds.http.config.ConfiguresHttpCommandExecutorService;
-import org.jclouds.http.okhttp.OkHttpCommandExecutorService;
-import org.jclouds.http.okhttp.OkHttpClientSupplier;
 import org.jclouds.rest.ConfiguresHttpApi;
 import org.jclouds.rest.config.HttpApiModule;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.handlers.BitbucketErrorHandler;
-import com.google.inject.Scopes;
 
 @ConfiguresHttpApi
-//@ConfiguresHttpCommandExecutorService
 public class BitbucketHttpApiModule extends HttpApiModule<BitbucketApi> {
 
     @Override
@@ -41,11 +35,5 @@ public class BitbucketHttpApiModule extends HttpApiModule<BitbucketApi> {
         bind(HttpErrorHandler.class).annotatedWith(Redirection.class).to(BitbucketErrorHandler.class);
         bind(HttpErrorHandler.class).annotatedWith(ClientError.class).to(BitbucketErrorHandler.class);
         bind(HttpErrorHandler.class).annotatedWith(ServerError.class).to(BitbucketErrorHandler.class);
-    }
-
-    protected void configure() {
-        super.configure();
-        //bind(HttpCommandExecutorService.class).to(OkHttpCommandExecutorService.class).in(Scopes.SINGLETON);
-        //bind(OkHttpClientSupplier.class).to(BitbucketOkHttpClientSupplier.class).in(Scopes.SINGLETON);
     }
 }
