@@ -1,9 +1,14 @@
 shadowJar {
      mergeServiceFiles()
-     relocate 'com.google', 'com.cdancy.bitbucket.rest.shaded.google'
-     relocate 'com.squareup', 'com.cdancy.bitbucket.rest.shaded.squareup'
-     relocate 'autovalue', 'com.cdancy.bitbucket.rest.shaded.autovalue'
-     relocate 'okio', 'com.cdancy.bitbucket.rest.shaded.okio'
+     relocate 'org.aopalliance', 'com.cdancy.bitbucket.rest.shaded.org.aopalliance'
+     relocate 'org.objectweb', 'com.cdancy.bitbucket.rest.shaded.org.objectweb'
+     relocate 'com.google', 'com.cdancy.bitbucket.rest.shaded.com.google'
+     relocate 'net.sf', 'com.cdancy.bitbucket.rest.shaded.net.sf'
+     relocate 'javax.inject', 'com.cdancy.bitbucket.rest.shaded.javax.inject'
+     relocate 'org.jclouds', 'com.cdancy.bitbucket.rest.shaded.org.jclouds'
+     relocate 'javax.inject', 'com.cdancy.bitbucket.rest.shaded.javax.inject'
+     relocate 'javax.annotation', 'com.cdancy.bitbucket.rest.shaded.javax.annotation'
+     relocate 'javax.ws.rs', 'com.cdancy.bitbucket.rest.shaded.javax.ws.rs'
 }
 
 task sourcesJar(type: Jar) {
