@@ -1,4 +1,4 @@
-### Version 0.0.13 (TBA)
+### Version 0.0.13 (2/4/2017)
 * ADDED: BranchApi gained proper page support. - [Commit 2c642c](https://github.com/cdancy/bitbucket-rest/commit/2c642c0736768649bd7fb0b6ed1f93b02d6d8f22)
 * ADDED: CommitsApi with single `get` endpoint. - [Commit 5aca03](https://github.com/cdancy/bitbucket-rest/commit/5aca03d23521bf307973a3170f0760ce0d143f95)
 * BREAKING: Domain class `Commit` was moved out of `pullrequest` package and into its own package. - [Commit 5aca03](https://github.com/cdancy/bitbucket-rest/commit/5aca03d23521bf307973a3170f0760ce0d143f95)
