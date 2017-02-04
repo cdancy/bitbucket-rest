@@ -16,6 +16,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             artifact sourcesJar
+            artifact testsJar
             artifact javadocJar
             artifact shadowJar
 
@@ -82,7 +83,7 @@ bintray {
         githubReleaseNotesFile = 'RELEASE_NOTES.md'
 
         version {
-        	released  = new Date()
+            released  = new Date()
             vcsTag = "v${project.version}"
             attributes = ['bitbucket-rest': ["${project.group}:${project.name}:${project.version}"]]
 

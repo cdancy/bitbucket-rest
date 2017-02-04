@@ -36,8 +36,8 @@ task pushTag {
 
     doLast {
         logger.quiet "Pushing tag '$createTag.tagName' to remote."
-		System.setProperty('org.ajoberstar.grgit.auth.username', project.githubUsername)
-		System.setProperty('org.ajoberstar.grgit.auth.password', project.githubPassword)
+        System.setProperty('org.ajoberstar.grgit.auth.username', project.githubUsername)
+        System.setProperty('org.ajoberstar.grgit.auth.password', project.githubPassword)
         repo.push {
             refsOrSpecs = [createTag.tagName]
         }
