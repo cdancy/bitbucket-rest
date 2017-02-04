@@ -4,6 +4,7 @@
 * ADDED: PullRequestApi gained proper page support through `list` endpoint. - [Commit 0474f58](https://github.com/cdancy/bitbucket-rest/commit/0474f58a1deceb0d1d6898487ef39561f2be7d17)
 * REFACTOR: Code cleanup and minor refactorings to make overall API more consistent. - [Commit b4ff92](https://github.com/cdancy/bitbucket-rest/commit/b4ff92cf42b54be5a79c59f6c25928cd55884200)
 * BREAKING: `ProjectApi.list` parameter order has been altered thus introducing a backwards incompatible change. `limit` and `start` parameters are now last in list to better align with overall project consistency.
+* BUG: Fix packaging of all (e.g. shadow/shaded) jar so that it's actually usable. [Commit f2c0467](https://github.com/cdancy/bitbucket-rest/commit/f2c0467bc0cf2a776ac96e82f704b2d6ac065437)
 
 ### Version 0.0.12 (12/29/2016)
 * REFACTOR: re-model existing endpoints after new `page` design. - [PR 32](https://github.com/cdancy/bitbucket-rest/pull/32)
