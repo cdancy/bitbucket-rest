@@ -33,7 +33,7 @@ Can be sourced from jcenter like so:
 	<dependency>
 	  <groupId>com.cdancy</groupId>
 	  <artifactId>bitbucket-rest</artifactId>
-	  <version>0.0.12</version>
+	  <version>0.0.13</version>
 	  <classifier>sources|tests|javadoc|all</classifier> (Optional)
 	</dependency>
 	

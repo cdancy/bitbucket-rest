@@ -30,7 +30,6 @@ repositories {
 
 dependencies {
     compile ('org.apache.jclouds:jclouds-core:2.0.0') 
-    compile ('org.apache.jclouds.driver:jclouds-okhttp:2.0.0') 
     compile ('com.google.auto.service:auto-service:1.0-rc2') 
     compile ('com.google.auto.value:auto-value:1.2')
     
@@ -77,8 +76,8 @@ task mockTest(type: Test) {
     useTestNG() 
 	include "**/**MockTest.class"
 	testLogging {
-		showStandardStreams = true
-		events 'started', 'passed', 'failed'
+            showStandardStreams = true
+            events 'started', 'passed', 'failed'
 	}
 }
 
@@ -86,9 +85,9 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
     useTestNG() 
     include "**/**LiveTest.class"
     testLogging {
-		showStandardStreams = true
+        showStandardStreams = true
         events 'started', 'passed', 'failed'
     } 
     systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketEndpoint}",
-    					"test.bitbucket.credential" : "${testBitbucketCredential}"]
+                        "test.bitbucket.credential" : "${testBitbucketCredential}"]
 }
