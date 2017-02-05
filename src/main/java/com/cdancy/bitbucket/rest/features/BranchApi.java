@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
@@ -50,6 +51,7 @@ import org.jclouds.javax.annotation.Nullable;
 public interface BranchApi {
 
     @Named("branch:list")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295356999632"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
     @Fallback(BitbucketFallbacks.BranchPageOnError.class)
@@ -64,6 +66,7 @@ public interface BranchApi {
                   @Nullable @QueryParam("limit") Integer limit);
     
     @Named("branch:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295357022352"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
     @Fallback(BitbucketFallbacks.BranchOnError.class)
@@ -73,6 +76,7 @@ public interface BranchApi {
                   @BinderParam(BindToJsonPayload.class) CreateBranch createBranch);
 
     @Named("branch:delete")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.10.0/bitbucket-branch-rest.html#idp47888"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
@@ -83,6 +87,7 @@ public interface BranchApi {
                    @PayloadParam("branchPath") String branchPath);
 
     @Named("branch:update-default")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295356975264"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/default")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
@@ -93,6 +98,7 @@ public interface BranchApi {
                           @PayloadParam("id") String id);
 
     @Named("branch:get-default")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295356984528"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/default")
     @Fallback(BitbucketFallbacks.BranchOnError.class)
@@ -101,6 +107,7 @@ public interface BranchApi {
                       @PathParam("repo") String repo);
 
     @Named("branch:model")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.10.0/bitbucket-branch-rest.html#idp27168"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel")
     @Fallback(BitbucketFallbacks.BranchOnError.class)
