@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -46,12 +47,14 @@ import com.cdancy.bitbucket.rest.options.CreateProject;
 public interface ProjectApi {
 
     @Named("project:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277995712"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(BitbucketFallbacks.ProjectOnError.class)
     @POST
     Project create(@BinderParam(BindToJsonPayload.class) CreateProject createProject);
 
     @Named("project:get")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277922400"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}")
     @Fallback(BitbucketFallbacks.ProjectOnError.class)
@@ -59,16 +62,18 @@ public interface ProjectApi {
     Project get(@PathParam("project") String project);
 
     @Named("project:delete")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277932528"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @DELETE
     boolean delete(@PathParam("project") String project);
 
-    @GET
     @Named("project:list")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277975392"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(BitbucketFallbacks.ProjectPageOnError.class)
+    @GET
     ProjectPage list(@Nullable @QueryParam("name") String name,
                      @Nullable @QueryParam("permission") String permission,
                      @Nullable @QueryParam("start") Integer start,
