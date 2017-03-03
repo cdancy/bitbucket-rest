@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -35,6 +36,7 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 public interface SystemApi {
 
     @Named("system:version")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/application-properties")
     @GET
