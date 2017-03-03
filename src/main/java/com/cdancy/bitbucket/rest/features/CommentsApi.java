@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
@@ -46,6 +47,7 @@ import javax.ws.rs.core.MediaType;
 public interface CommentsApi {
 
     @Named("comments:comment")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278076336"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
     @Payload("%7B \"text\": \"{comment}\" %7D")
@@ -57,6 +59,7 @@ public interface CommentsApi {
                      @PayloadParam("comment") String comment);
 
     @Named("comments:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278076336"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
     @Fallback(PullRequestOnError.class)
@@ -67,6 +70,7 @@ public interface CommentsApi {
                     @BinderParam(BindToJsonPayload.class) CreateComment createComment);
 
     @Named("comments:get")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278070112"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments/{commentId}")
     @Fallback(PullRequestOnError.class)
@@ -77,6 +81,7 @@ public interface CommentsApi {
                  @PathParam("commentId") int commentId);
 
     @Named("comments:delete")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278021232"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments/{commentId}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
