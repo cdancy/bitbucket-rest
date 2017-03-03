@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -46,6 +47,7 @@ import com.cdancy.bitbucket.rest.options.CreateRepository;
 public interface RepositoryApi {
 
     @Named("repository:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277587248"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
@@ -54,6 +56,7 @@ public interface RepositoryApi {
                       @BinderParam(BindToJsonPayload.class) CreateRepository createRepository);
 
     @Named("repository:get")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277593152"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
@@ -62,6 +65,7 @@ public interface RepositoryApi {
                    @PathParam("repo") String repo);
 
     @Named("repository:delete")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277567792"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
@@ -70,6 +74,7 @@ public interface RepositoryApi {
                    @PathParam("repo") String repo);
 
     @Named("repository:list")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277593152"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryPageOnError.class)
