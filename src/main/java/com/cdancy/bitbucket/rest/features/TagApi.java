@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
@@ -43,6 +44,7 @@ import javax.ws.rs.core.MediaType;
 public interface TagApi {
 
     @Named("tag:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278801952"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/tags")
     @Fallback(BitbucketFallbacks.TagOnError.class)
@@ -52,6 +54,7 @@ public interface TagApi {
                @BinderParam(BindToJsonPayload.class) CreateTag createTag);
 
     @Named("tag:get")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278800832"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/tags/{tag}")
     @Fallback(Fallbacks.NullOnNotFoundOr404.class)
