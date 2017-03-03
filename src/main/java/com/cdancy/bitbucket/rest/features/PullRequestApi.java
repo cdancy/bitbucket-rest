@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import javax.inject.Named;
 
 import javax.ws.rs.Consumes;
@@ -26,7 +27,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
 import javax.ws.rs.core.MediaType;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
@@ -52,6 +52,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 public interface PullRequestApi {
 
     @Named("pull-request:get")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278120560"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}")
     @Fallback(PullRequestOnError.class)
@@ -61,6 +62,7 @@ public interface PullRequestApi {
                     @PathParam("pullRequestId") int pullRequestId);
     
     @Named("pull-request:list")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278244864"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests")
     @Fallback(PullRequestPageOnError.class)
@@ -77,6 +79,7 @@ public interface PullRequestApi {
                     @Nullable @QueryParam("limit") Integer limit);
 
     @Named("pull-request:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278226704"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests")
     @Fallback(PullRequestOnError.class)
@@ -86,6 +89,7 @@ public interface PullRequestApi {
                        @BinderParam(BindToJsonPayload.class) CreatePullRequest createPullRequest);
 
     @Named("pull-request:merge")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278164320"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/merge")
     @Fallback(PullRequestOnError.class)
@@ -96,6 +100,7 @@ public interface PullRequestApi {
                       @QueryParam("version") int version);
 
     @Named("pull-request:can-merge")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278176112"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/merge")
     @Fallback(MergeStatusOnError.class)
@@ -105,6 +110,7 @@ public interface PullRequestApi {
                          @PathParam("pullRequestId") int pullRequestId);
 
     @Named("pull-request:decline")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278147920"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/decline")
     @Fallback(PullRequestOnError.class)
@@ -115,6 +121,7 @@ public interface PullRequestApi {
                         @QueryParam("version") int version);
 
     @Named("pull-request:reopen")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278134496"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/reopen")
     @Fallback(PullRequestOnError.class)
@@ -125,6 +132,7 @@ public interface PullRequestApi {
                        @QueryParam("version") int version);
 
     @Named("pull-request:changes")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888279438576"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/changes")
     @Fallback(PullRequestOnError.class)
@@ -137,6 +145,7 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("start") Integer start);
 
     @Named("pull-request:commits")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278089280"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/commits")
     @Fallback(PullRequestOnError.class)
