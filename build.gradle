@@ -2,10 +2,14 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.6'
     }
 }
 
@@ -16,6 +20,7 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
+apply plugin: 'com.github.sherter.google-java-format'
 
 apply from: "$rootDir/gradle/additional-artifacts.gradle"
 apply from: "$rootDir/gradle/dependencies.gradle"
@@ -45,6 +50,8 @@ dependencies {
 ext.compatibilityVersion = '1.7'
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
+
+compileJava.dependsOn 'googleJavaFormat'
 
 jar {
     manifest {
