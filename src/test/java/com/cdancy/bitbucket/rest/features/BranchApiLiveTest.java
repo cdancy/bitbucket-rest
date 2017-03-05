@@ -17,17 +17,19 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -50,7 +52,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     public void init() {
         Branch branch = api().getDefault(projectKey, repoKey);
         assertNotNull(branch);
-        assertTrue(branch.errors().isEmpty());
+        assertThat(branch.errors()).isEmpty();
         defaultBranchId = branch.id();
     }
 
@@ -63,7 +65,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTrue(branch.id().endsWith(branchName));
         assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));
     }
-    
+
     @Test (dependsOnMethods = "testCreateBranch")
     public void testListBranches() {
         BranchPage branch = api().list(projectKey, repoKey, null, null, null, null, null, 1);
