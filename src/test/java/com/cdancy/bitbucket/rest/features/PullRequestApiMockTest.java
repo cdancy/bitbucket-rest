@@ -25,10 +25,12 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
-import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
-import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
@@ -101,7 +103,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testListPullRequest() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -121,7 +123,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testListPullRequestNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -296,6 +298,41 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             Map<String, ?> queryParams = ImmutableMap.of("withComments", true, "limit", 12);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/changes", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestComments() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-comments.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            CommentPage pcr = api.comments(project, repo, 101, "hej");
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isEmpty();
+            assertThat(pcr.values()).hasSize(2);
+
+            Comments firstComment = pcr.values().get(0);
+            assertThat(firstComment.text()).isEqualTo("comment in diff");
+            assertThat(firstComment.id()).isEqualTo(4);
+            assertThat(firstComment.comments()).hasSize(1);
+            assertThat(firstComment.comments().get(0).text()).isEqualTo("reply to comment in diff");
+            assertThat(firstComment.comments().get(0).id()).isEqualTo(5);
+
+            Comments secondComment = pcr.values().get(1);
+            assertThat(secondComment.text()).isEqualTo("another commet in diff");
+            assertThat(secondComment.id()).isEqualTo(6);
+            assertThat(secondComment.comments()).isEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("path", "hej");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/comments", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();

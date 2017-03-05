@@ -17,9 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import com.cdancy.bitbucket.rest.annotations.Documentation;
 import javax.inject.Named;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,22 +27,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
-import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
-import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.binders.BindToJsonPayload;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestPageOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
-import org.jclouds.rest.binders.BindToJsonPayload;
+import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -60,7 +60,7 @@ public interface PullRequestApi {
     PullRequest get(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @PathParam("pullRequestId") int pullRequestId);
-    
+
     @Named("pull-request:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278244864"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -143,6 +143,17 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("withComments") Boolean withComments,
                                 @Nullable @QueryParam("limit") Integer limit,
                                 @Nullable @QueryParam("start") Integer start);
+
+    @Named("pull-request:comments")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    CommentPage comments(@PathParam("project") String project,
+                                @PathParam("repo") String repo,
+                                @PathParam("pullRequestId") int pullRequestId,
+                                @QueryParam("path") String path);
 
     @Named("pull-request:commits")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278089280"})
