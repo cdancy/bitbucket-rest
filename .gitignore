@@ -5,6 +5,7 @@ bin
 out 
 src/generated
 .gradle
+test-output
 
 # OS generated files #
 ######################
