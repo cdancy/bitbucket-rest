@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
@@ -40,7 +42,6 @@ import org.jclouds.Fallback;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -68,6 +69,15 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
+    
+    public static final class BranchModelOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createBranchModelFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
 
     public static final class BranchPageOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
@@ -82,6 +92,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createChangePageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class CommentsOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createCommentsFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -189,7 +208,11 @@ public final class BitbucketFallbacks {
     public static Branch createBranchFromErrors(List<Error> errors) {
         return Branch.create(null, null, null, null, null, false, errors);
     }
-
+    
+    public static BranchModel createBranchModelFromErrors(List<Error> errors) {
+        return BranchModel.create(null, null, null, errors);
+    }
+    
     public static BranchPage createBranchPageFromErrors(List<Error> errors) {
         return BranchPage.create(-1, -1, -1, -1, true, null, errors);
     }
@@ -197,7 +220,11 @@ public final class BitbucketFallbacks {
     public static ChangePage createChangePageFromErrors(List<Error> errors) {
         return ChangePage.create(0, 0, 0, 0, true, null, errors);
     }
-        
+    
+    public static Comments createCommentsFromErrors(List<Error> errors) {
+        return Comments.create(null, 0, 0, null, null, 0, 0, null, null, null, errors);
+    }
+    
     public static CommentPage createCommentPageFromErrors(List<Error> errors) {
         return CommentPage.create(0, 0, 0, 0, true, null, errors);
     }

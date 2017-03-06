@@ -40,8 +40,10 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
 
     public abstract int version();
 
+    @Nullable
     public abstract String text();
 
+    @Nullable
     public abstract Author author();
 
     public abstract long createdDate();

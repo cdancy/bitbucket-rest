@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentsOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateComment;
 import org.jclouds.rest.annotations.BinderParam;
@@ -51,7 +51,7 @@ public interface CommentsApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
     @Payload("%7B \"text\": \"{comment}\" %7D")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(CommentsOnError.class)
     @POST
     Comments comment(@PathParam("project") String project,
                      @PathParam("repo") String repo,
@@ -62,7 +62,7 @@ public interface CommentsApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278076336"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(CommentsOnError.class)
     @POST
     Comments create(@PathParam("project") String project,
                     @PathParam("repo") String repo,
@@ -73,7 +73,7 @@ public interface CommentsApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278070112"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments/{commentId}")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(CommentsOnError.class)
     @GET
     Comments get(@PathParam("project") String project,
                  @PathParam("repo") String repo,

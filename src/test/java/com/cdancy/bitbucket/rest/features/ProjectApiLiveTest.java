@@ -18,9 +18,6 @@
 package com.cdancy.bitbucket.rest.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 import java.util.List;
 

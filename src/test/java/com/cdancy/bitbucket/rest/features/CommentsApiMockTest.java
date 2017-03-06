@@ -107,6 +107,26 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+    
+    public void testGetCommentOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+                .setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        CommentsApi api = baseApi.commentsApi();
+        try {
+            Comments pr = api.get("PRJ", "my-repo", 101, 1);
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isNotEmpty();
+
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 
     public void testDeleteComment() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();

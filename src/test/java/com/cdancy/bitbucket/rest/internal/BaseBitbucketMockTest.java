@@ -20,7 +20,6 @@ package com.cdancy.bitbucket.rest.internal;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jclouds.util.Strings2.toStringAndClose;
-import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.URL;

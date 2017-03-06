@@ -18,7 +18,6 @@
 package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.google.auto.value.AutoValue;
-import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue

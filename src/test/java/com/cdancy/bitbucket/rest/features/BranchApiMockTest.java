@@ -134,6 +134,27 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
+    public void testGetBranchModelOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            BranchModel branchModel = api.model(projectKey, repoKey);
+            assertThat(branchModel).isNotNull();
+            assertThat(branchModel.errors()).isNotEmpty();
+            
+            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+        
     public void testDeleteBranch() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 

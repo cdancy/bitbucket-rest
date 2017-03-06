@@ -110,7 +110,7 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.10.0/bitbucket-branch-rest.html#idp27168"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel")
-    @Fallback(BitbucketFallbacks.BranchOnError.class)
+    @Fallback(BitbucketFallbacks.BranchModelOnError.class)
     @GET
     BranchModel model(@PathParam("project") String project,
                       @PathParam("repo") String repo);
