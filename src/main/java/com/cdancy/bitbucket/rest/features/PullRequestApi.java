@@ -40,6 +40,9 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ChangePageOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentPageOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommitPageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestPageOnError;
@@ -135,7 +138,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888279438576"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/changes")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(ChangePageOnError.class)
     @GET
     ChangePage changes(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
@@ -148,7 +151,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(CommentPageOnError.class)
     @GET
     CommentPage comments(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
@@ -159,7 +162,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278089280"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/commits")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(CommitPageOnError.class)
     @GET
     CommitPage commits(@PathParam("project") String project,
                                 @PathParam("repo") String repo,

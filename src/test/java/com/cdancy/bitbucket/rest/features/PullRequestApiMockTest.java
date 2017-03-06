@@ -303,6 +303,28 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+    
+    public void testGetPullRequestChangesOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+                .setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            ChangePage pcr = api.changes(project, repo, 101, true, 12, null);
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("withComments", true, "limit", 12);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/changes", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 
     public void testGetPullRequestComments() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
@@ -339,6 +361,28 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
+    public void testGetPullRequestCommentsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+                .setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            CommentPage pcr = api.comments(project, repo, 101, "hej");
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("path", "hej");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/comments", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+        
     public void testGetPullRequestCommits() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -353,6 +397,28 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
             assertThat(pcr.totalCount()).isEqualTo(1);
+
+            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/commits", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testGetPullRequestCommitsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            CommitPage pcr = api.commits(project, repo, 101, true, 1, null);
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isNotEmpty();
 
             Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
