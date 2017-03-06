@@ -53,39 +53,39 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     public void init() {
         CreateProject createProject = CreateProject.create(projectKey, null, null, null);
         Project project = api.projectApi().create(createProject);
-        assertNotNull(project);
-        assertTrue(project.errors().isEmpty());
-        assertTrue(project.key().equalsIgnoreCase(projectKey));
+        assertThat(project).isNotNull();
+        assertThat(project.errors().isEmpty()).isTrue();
+        assertThat(project.key().equalsIgnoreCase(projectKey)).isTrue();
     }
 
     @Test
     public void testCreateRepository() {
         CreateRepository createRepository = CreateRepository.create(repoKey, true);
         Repository repository = api().create(projectKey, createRepository);
-        assertNotNull(repository);
-        assertTrue(repository.errors().isEmpty());
-        assertTrue(repoKey.equalsIgnoreCase(repository.name()));
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors().isEmpty()).isTrue();
+        assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
     }
 
     @Test (dependsOnMethods = "testCreateRepository")
     public void testGetRepository() {
         Repository repository = api().get(projectKey, repoKey);
-        assertNotNull(repository);
-        assertTrue(repository.errors().isEmpty());
-        assertTrue(repoKey.equalsIgnoreCase(repository.name()));
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors().isEmpty()).isTrue();
+        assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
     }
 
     @Test (dependsOnMethods = "testGetRepository")
     public void testDeleteRepository() {
         boolean success = api().delete(projectKey, repoKey);
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     @Test(dependsOnMethods = "testGetRepository")
     public void testListProjects() {
         RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
 
-        assertNotNull(repositoryPage);
+        assertThat(repositoryPage).isNotNull();
         assertThat(repositoryPage.errors()).isEmpty();
         assertThat(repositoryPage.size()).isGreaterThan(0);
 
@@ -97,28 +97,28 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testDeleteRepositoryNonExistent() {
         boolean success = api().delete(projectKey, randomStringLettersOnly());
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     @Test
     public void testGetRepositoryNonExistent() {
         Repository repository = api().get(projectKey, randomStringLettersOnly());
-        assertNotNull(repository);
-        assertFalse(repository.errors().isEmpty());
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors().isEmpty()).isFalse();
     }
 
     @Test
     public void testCreateRepositoryWithIllegalName() {
         CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
         Repository repository = api().create(projectKey, createRepository);
-        assertNotNull(repository);
-        assertFalse(repository.errors().isEmpty());
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors().isEmpty()).isFalse();
     }
 
     @AfterClass
     public void fin() {
         boolean success = api.projectApi().delete(projectKey);
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     private RepositoryApi api() {

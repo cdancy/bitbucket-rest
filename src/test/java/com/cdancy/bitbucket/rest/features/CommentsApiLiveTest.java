@@ -17,15 +17,14 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
 import com.cdancy.bitbucket.rest.options.CreateComment;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "CommentsApiLiveTest", singleThreaded = true)
 public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -43,9 +42,9 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testComment() {
         Comments comm = api().comment(project, repo, prId, commentText);
-        assertNotNull(comm);
-        assertTrue(comm.errors().isEmpty());
-        assertTrue(comm.text().equals(commentText));
+        assertThat(comm).isNotNull();
+        assertThat(comm.errors().isEmpty()).isTrue();
+        assertThat(comm.text().equals(commentText)).isTrue();
         commentId = comm.id();
         commentIdVersion = comm.version();
     }
@@ -56,9 +55,9 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateComment createComment = CreateComment.create(commentReplyText, parent, null);
 
         Comments comm = api().create(project, repo, prId, createComment);
-        assertNotNull(comm);
-        assertTrue(comm.errors().isEmpty());
-        assertTrue(comm.text().equals(commentReplyText));
+        assertThat(comm).isNotNull();
+        assertThat(comm.errors().isEmpty()).isTrue();
+        assertThat(comm.text().equals(commentReplyText)).isTrue();
         commentReplyId = comm.id();
         commentReplyIdVersion = comm.version();
     }
@@ -66,15 +65,15 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testCreateComment")
     public void testGetComment() {
         Comments comm = api().get(project, repo, prId, commentReplyId);
-        assertNotNull(comm);
-        assertTrue(comm.errors().isEmpty());
-        assertTrue(comm.text().equals(commentReplyText));
+        assertThat(comm).isNotNull();
+        assertThat(comm.errors().isEmpty()).isTrue();
+        assertThat(comm.text().equals(commentReplyText)).isTrue();
     }
 
     @Test (dependsOnMethods = "testGetComment")
     public void testDeleteComment() {
         boolean success = api().delete(project, repo, prId, commentReplyId, commentReplyIdVersion);
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     @AfterClass

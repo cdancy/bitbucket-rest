@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.testng.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.testng.annotations.Test;
 
@@ -30,6 +30,6 @@ public class BitbucketClientMockTest extends BaseBitbucketMockTest {
     @Test
     public void testCreateClient() {
         BitbucketClient client = BitbucketClient.builder().build();
-        assertNotNull(client);
+        assertThat(client).isNotNull();
     }
 }

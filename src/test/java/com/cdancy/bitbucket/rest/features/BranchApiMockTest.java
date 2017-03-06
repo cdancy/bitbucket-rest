@@ -17,8 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.testng.annotations.Test;
 
@@ -54,10 +53,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
             CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
             Branch branch = api.create(projectKey, repoKey, createBranch);
-            assertNotNull(branch);
-            assertTrue(branch.errors().isEmpty());
-            assertTrue(branch.id().endsWith(branchName));
-            assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));            
+            assertThat(branch).isNotNull();
+            assertThat(branch.errors().isEmpty()).isTrue();
+            assertThat(branch.id().endsWith(branchName)).isTrue();
+            assertThat(commitHash.equalsIgnoreCase(branch.latestChangeset())).isTrue();            
             assertSent(server, "POST", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
@@ -77,10 +76,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
 
             BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
-            assertNotNull(branch);
-            assertTrue(branch.errors().isEmpty());
-            assertTrue(branch.values().size() > 0);
-            assertTrue("hello-world".equals(branch.values().get(0).displayId()));
+            assertThat(branch).isNotNull();
+            assertThat(branch.errors().isEmpty()).isTrue();
+            assertThat(branch.values().size() > 0).isTrue();
+            assertThat("hello-world".equals(branch.values().get(0).displayId())).isTrue();
             
             Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -102,8 +101,8 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "world";
 
             BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
-            assertNotNull(branch);
-            assertTrue(branch.errors().size() > 0);
+            assertThat(branch).isNotNull();
+            assertThat(branch.errors().size() > 0).isTrue();
             
             Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -124,9 +123,9 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
             BranchModel branchModel = api.model(projectKey, repoKey);
-            assertNotNull(branchModel);
-            assertTrue(branchModel.errors().isEmpty());
-            assertTrue(branchModel.types().size() > 0);
+            assertThat(branchModel).isNotNull();
+            assertThat(branchModel.errors().isEmpty()).isTrue();
+            assertThat(branchModel.types().size() > 0).isTrue();
             assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel");
         } finally {
@@ -145,7 +144,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
             boolean success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
-            assertTrue(success);
+            assertThat(success).isTrue();
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
@@ -165,9 +164,9 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
 
             Branch branch = api.getDefault(projectKey, repoKey);
-            assertNotNull(branch);
-            assertTrue(branch.errors().isEmpty());
-            assertNotNull(branch.id());
+            assertThat(branch).isNotNull();
+            assertThat(branch.errors().isEmpty()).isTrue();
+            assertThat(branch.id()).isNotNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
         } finally {
@@ -187,7 +186,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
 
             boolean success = api.updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
-            assertTrue(success);
+            assertThat(success).isTrue();
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
         } finally {

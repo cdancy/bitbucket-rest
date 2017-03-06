@@ -17,15 +17,13 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.options.CreateTag;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "TagApiLiveTest", singleThreaded = true)
 public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -39,25 +37,25 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateTag() {
         CreateTag createTag = CreateTag.create(tagName, commitHash, null);
         Tag tag = api().create(projectKey, repoKey, createTag);
-        assertNotNull(tag);
-        assertTrue(tag.errors().isEmpty());
-        assertTrue(tag.id().endsWith(tagName));
-        assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
+        assertThat(tag).isNotNull();
+        assertThat(tag.errors().isEmpty()).isTrue();
+        assertThat(tag.id().endsWith(tagName)).isTrue();
+        assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
     }
 
     @Test (dependsOnMethods = "testCreateTag")
     public void testGetTag() {
         Tag tag = api().get(projectKey, repoKey, tagName);
-        assertNotNull(tag);
-        assertTrue(tag.errors().isEmpty());
-        assertTrue(tag.id().endsWith(tagName));
-        assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
+        assertThat(tag).isNotNull();
+        assertThat(tag.errors().isEmpty()).isTrue();
+        assertThat(tag.id().endsWith(tagName)).isTrue();
+        assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
     }
 
     @Test
     public void testGetTagNonExistent() {
         Tag tag = api().get(projectKey, repoKey, tagName + "9999");
-        assertNull(tag);
+        assertThat(tag).isNull();
     }
 
     private TagApi api() {
