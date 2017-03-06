@@ -1,3 +1,10 @@
+### Version 0.0.14 (TBA)
+* ADDED: `Documentation` annotation to all endpoints. The idea is that this annotation will hold a list of links where the user can go to get more detailed information on the endpoint and it's options.
+* ADDED: Bump jclouds, auto*, testng, assertj, and logback dependencies.
+* ADDED: `comments` endpoint to `PullRequestApi`. - [PR 45](https://github.com/cdancy/bitbucket-rest/pull/45)
+* ADDED: convert all `testng` assertions to `assertj`. - [PR 46](https://github.com/cdancy/bitbucket-rest/pull/46)
+* ADDED: Fix various fallback implementations and added tests for each to catch these in the future.
+
 ### Version 0.0.13 (2/4/2017)
 * ADDED: BranchApi gained proper page support. - [Commit 2c642c](https://github.com/cdancy/bitbucket-rest/commit/2c642c0736768649bd7fb0b6ed1f93b02d6d8f22)
 * ADDED: CommitsApi with single `get` endpoint. - [Commit 5aca03](https://github.com/cdancy/bitbucket-rest/commit/5aca03d23521bf307973a3170f0760ce0d143f95)
