@@ -28,7 +28,10 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
@@ -70,6 +73,33 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class ChangePageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createChangePageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class CommentPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createCommentPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class CommitPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createCommitPageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -162,6 +192,18 @@ public final class BitbucketFallbacks {
 
     public static BranchPage createBranchPageFromErrors(List<Error> errors) {
         return BranchPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+    
+    public static ChangePage createChangePageFromErrors(List<Error> errors) {
+        return ChangePage.create(0, 0, 0, 0, true, null, errors);
+    }
+        
+    public static CommentPage createCommentPageFromErrors(List<Error> errors) {
+        return CommentPage.create(0, 0, 0, 0, true, null, errors);
+    }
+    
+    public static CommitPage createCommitPageFromErrors(List<Error> errors) {
+        return CommitPage.create(0, 0, 0, 0, true, null, errors, -1, -1);
     }
     
     public static Commit createCommitFromErrors(List<Error> errors) {
