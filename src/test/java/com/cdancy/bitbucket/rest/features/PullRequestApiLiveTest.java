@@ -17,9 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
@@ -56,9 +54,9 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         
         System.out.println("---------> CREATED PR: " + cpr);
         PullRequest pr = api().create(project, repo, cpr);
-        assertNotNull(pr);
-        assertTrue(project.equals(pr.fromRef().repository().project().key()));
-        assertTrue(repo.equals(pr.fromRef().repository().slug()));
+        assertThat(pr).isNotNull();
+        assertThat(project.equals(pr.fromRef().repository().project().key())).isTrue();
+        assertThat(repo.equals(pr.fromRef().repository().slug())).isTrue();
         prId = pr.id();
         version = pr.version();
     }
@@ -66,76 +64,76 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "createGetPullRequest")
     public void testGetPullRequest() {
         PullRequest pr = api().get(project, repo, prId);
-        assertNotNull(pr);
-        assertTrue(pr.errors().isEmpty());
-        assertTrue(project.equals(pr.fromRef().repository().project().key()));
-        assertTrue(repo.equals(pr.fromRef().repository().slug()));
-        assertTrue(version == pr.version());
+        assertThat(pr).isNotNull();
+        assertThat(pr.errors().isEmpty()).isTrue();
+        assertThat(project.equals(pr.fromRef().repository().project().key())).isTrue();
+        assertThat(repo.equals(pr.fromRef().repository().slug())).isTrue();
+        assertThat(version == pr.version()).isTrue();
     }
     
     @Test (dependsOnMethods = "createGetPullRequest")
     public void testListPullRequest() {
         PullRequestPage pr = api().list(project, repo, null, null, null, null, null, null, null, 10);
-        assertNotNull(pr);
-        assertTrue(pr.errors().isEmpty());
-        assertTrue(pr.values().size() > 0);
+        assertThat(pr).isNotNull();
+        assertThat(pr.errors().isEmpty()).isTrue();
+        assertThat(pr.values().size() > 0).isTrue();
     }
 
     @Test (dependsOnMethods = "testListPullRequest")
     public void testGetPullRequestChanges() {
         ChangePage pr = api().changes(project, repo, prId, null, null, null);
-        assertNotNull(pr);
-        assertTrue(pr.errors().isEmpty());
-        assertTrue(pr.values().size() > 0);
+        assertThat(pr).isNotNull();
+        assertThat(pr.errors().isEmpty()).isTrue();
+        assertThat(pr.values().size() > 0).isTrue();
     }
 
     @Test (dependsOnMethods = "testGetPullRequestChanges")
     public void testGetPullRequestCommits() {
         CommitPage pr = api().commits(project, repo, prId, true, 1, null);
-        assertNotNull(pr);
-        assertTrue(pr.errors().isEmpty());
-        assertTrue(pr.values().size() == 1);
-        assertTrue(pr.totalCount() > 0);
+        assertThat(pr).isNotNull();
+        assertThat(pr.errors().isEmpty()).isTrue();
+        assertThat(pr.values().size() == 1).isTrue();
+        assertThat(pr.totalCount() > 0).isTrue();
     }
 
     @Test (dependsOnMethods = "testGetPullRequestCommits")
     public void testDeclinePullRequest() {
         PullRequest pr = api().decline(project, repo, prId, version);
-        assertNotNull(pr);
-        assertTrue("DECLINED".equalsIgnoreCase(pr.state()));
-        assertFalse(pr.open());
+        assertThat(pr).isNotNull();
+        assertThat("DECLINED".equalsIgnoreCase(pr.state())).isTrue();
+        assertThat(pr.open()).isFalse();
     }
 
     @Test (dependsOnMethods = "testDeclinePullRequest")
     public void testReopenPullRequest() {
         PullRequest pr = api().get(project, repo, prId);
         pr = api().reopen(project, repo, prId, pr.version());
-        assertNotNull(pr);
-        assertTrue("OPEN".equalsIgnoreCase(pr.state()));
-        assertTrue(pr.open());
+        assertThat(pr).isNotNull();
+        assertThat("OPEN".equalsIgnoreCase(pr.state())).isTrue();
+        assertThat(pr.open()).isTrue();
     }
 
     @Test (dependsOnMethods = "testReopenPullRequest")
     public void testCanMergePullRequest() {
         MergeStatus mergeStatus = api().canMerge(project, repo, prId);
-        assertNotNull(mergeStatus);
-        assertTrue(mergeStatus.canMerge());
+        assertThat(mergeStatus).isNotNull();
+        assertThat(mergeStatus.canMerge()).isTrue();
     }
 
     @Test (dependsOnMethods = "testCanMergePullRequest")
     public void testMergePullRequest() {
         PullRequest pr = api().get(project, repo, prId);
         pr = api().merge(project, repo, prId, pr.version());
-        assertNotNull(pr);
-        assertTrue("MERGED".equalsIgnoreCase(pr.state()));
-        assertFalse(pr.open());
+        assertThat(pr).isNotNull();
+        assertThat("MERGED".equalsIgnoreCase(pr.state())).isTrue();
+        assertThat(pr.open()).isFalse();
     }
 
     @Test
     public void testGetNonExistentPullRequest() {
         PullRequest pr = api().get(randomString(), randomString(), 999);
-        assertNotNull(pr);
-        assertFalse(pr.errors().isEmpty());
+        assertThat(pr).isNotNull();
+        assertThat(pr.errors().isEmpty()).isFalse();
     }
 
     private PullRequestApi api() {

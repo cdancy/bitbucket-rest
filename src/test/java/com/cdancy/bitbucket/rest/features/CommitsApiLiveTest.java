@@ -20,10 +20,9 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 
-import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "CommitsApiLiveTest", singleThreaded = true)
 public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -35,16 +34,16 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test 
     public void testGetCommit() {
         Commit commit = api().get(projectKey, repoKey, commitHash, null);
-        assertNotNull(commit);
-        assertTrue(commit.errors().isEmpty());
-        assertTrue(commit.id().equals(commitHash));
+        assertThat(commit).isNotNull();
+        assertThat(commit.errors().isEmpty()).isTrue();
+        assertThat(commit.id().equals(commitHash)).isTrue();
     }
 
     @Test
     public void testGetCommitNonExistent() {
         Commit commit = api().get(projectKey, repoKey, "1234567890", null);
-        assertNotNull(commit);
-        assertTrue(commit.errors().size() > 0);
+        assertThat(commit).isNotNull();
+        assertThat(commit.errors().size() > 0).isTrue();
     }
 
     private CommitsApi api() {

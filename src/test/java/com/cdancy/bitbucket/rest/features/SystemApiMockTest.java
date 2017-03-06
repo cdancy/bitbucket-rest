@@ -17,8 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.testng.annotations.Test;
 
@@ -45,8 +44,8 @@ public class SystemApiMockTest extends BaseBitbucketMockTest {
         SystemApi api = baseApi.systemApi();
         try {
             Version version = api.version();
-            assertNotNull(version);
-            assertTrue(version.version().matches(versionRegex));
+            assertThat(version).isNotNull();
+            assertThat(version.version().matches(versionRegex)).isTrue();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/application-properties");
         } finally {
             baseApi.close();

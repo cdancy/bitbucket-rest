@@ -138,8 +138,8 @@ public class BaseBitbucketMockTest {
     protected RecordedRequest assertSent(MockWebServer server, String method, String path, String json)
             throws InterruptedException {
         RecordedRequest request = assertSent(server, method, path);
-        assertEquals(request.getHeader("Content-Type"), APPLICATION_JSON);
-        assertEquals(parser.parse(request.getUtf8Body()), parser.parse(json));
+        assertThat(APPLICATION_JSON).isEqualTo(request.getHeader("Content-Type"));
+        assertThat(parser.parse(json)).isEqualTo(parser.parse(request.getUtf8Body()));
         return request;
     }
 

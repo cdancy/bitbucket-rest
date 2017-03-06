@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
@@ -24,10 +26,6 @@ import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link CommitsApi} class.
@@ -47,9 +45,9 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
 
             Commit commit = api.get(projectKey, repoKey, commitHash, null);
-            assertNotNull(commit);
-            assertTrue(commit.errors().isEmpty());
-            assertTrue(commit.id().equalsIgnoreCase(commitHash));
+            assertThat(commit).isNotNull();
+            assertThat(commit.errors().isEmpty()).isTrue();
+            assertThat(commit.id().equalsIgnoreCase(commitHash)).isTrue();
             
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
@@ -71,8 +69,8 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
 
             Commit commit = api.get(projectKey, repoKey, commitHash, null);
-            assertNotNull(commit);
-            assertTrue(commit.errors().size() > 0);
+            assertThat(commit).isNotNull();
+            assertThat(commit.errors().size() > 0).isTrue();
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);

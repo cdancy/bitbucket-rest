@@ -17,9 +17,7 @@
 
 package com.cdancy.bitbucket.rest;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 
@@ -29,7 +27,6 @@ import org.jclouds.apis.Apis;
 import org.jclouds.apis.internal.BaseApiMetadataTest;
 import org.testng.annotations.Test;
 
-import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.google.common.reflect.TypeToken;
 
 /**
@@ -45,8 +42,8 @@ public class BitbucketApiMetadataTest extends BaseApiMetadataTest {
     public void testEtcdApiRegistered() {
         ApiMetadata api = Apis.withId("bitbucket");
 
-        assertNotNull(api);
-        assertTrue(api instanceof BitbucketApiMetadata);
-        assertEquals(api.getId(), "bitbucket");
+        assertThat(api).isNotNull();
+        assertThat(api instanceof BitbucketApiMetadata).isTrue();
+        assertThat("bitbucket").isEqualTo(api.getId());
     }
 }

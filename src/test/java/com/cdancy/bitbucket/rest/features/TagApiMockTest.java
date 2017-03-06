@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
@@ -25,10 +27,6 @@ import com.cdancy.bitbucket.rest.options.CreateTag;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Mock tests for the {@link TagApi} class.
@@ -50,10 +48,10 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
 
             CreateTag createTag = CreateTag.create(tagName, commitHash, null);
             Tag tag = api.create(projectKey, repoKey, createTag);
-            assertNotNull(tag);
-            assertTrue(tag.errors().isEmpty());
-            assertTrue(tag.id().endsWith(tagName));
-            assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
+            assertThat(tag).isNotNull();
+            assertThat(tag.errors().isEmpty()).isTrue();
+            assertThat(tag.id().endsWith(tagName)).isTrue();
+            assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags");
         } finally {
@@ -74,12 +72,12 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             String tagName = "release-2.0.0";
 
             Tag tag = api.get(projectKey, repoKey, tagName);
-            assertNotNull(tag);
-            assertTrue(tag.errors().isEmpty());
-            assertTrue(tag.id().endsWith(tagName));
+            assertThat(tag).isNotNull();
+            assertThat(tag.errors().isEmpty()).isTrue();
+            assertThat(tag.id().endsWith(tagName)).isTrue();
             
             String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
-            assertTrue(commitHash.equalsIgnoreCase(tag.latestCommit()));
+            assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
         } finally {
@@ -100,7 +98,7 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             String tagName = "non-existent-tag";
 
             Tag tag = api.get(projectKey, repoKey, tagName);
-            assertNull(tag);
+            assertThat(tag).isNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
         } finally {

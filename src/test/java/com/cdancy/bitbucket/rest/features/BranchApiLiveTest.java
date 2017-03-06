@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
@@ -25,9 +27,6 @@ import com.cdancy.bitbucket.rest.options.CreateBranch;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -49,8 +48,8 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @BeforeClass
     public void init() {
         Branch branch = api().getDefault(projectKey, repoKey);
-        assertNotNull(branch);
-        assertTrue(branch.errors().isEmpty());
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isTrue();
         defaultBranchId = branch.id();
     }
 
@@ -58,47 +57,47 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateBranch() {
         CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
         Branch branch = api().create(projectKey, repoKey, createBranch);
-        assertNotNull(branch);
-        assertTrue(branch.errors().isEmpty());
-        assertTrue(branch.id().endsWith(branchName));
-        assertTrue(commitHash.equalsIgnoreCase(branch.latestChangeset()));
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isTrue();
+        assertThat(branch.id().endsWith(branchName)).isTrue();
+        assertThat(commitHash.equalsIgnoreCase(branch.latestChangeset())).isTrue();
     }
     
     @Test (dependsOnMethods = "testCreateBranch")
     public void testListBranches() {
         BranchPage branch = api().list(projectKey, repoKey, null, null, null, null, null, 1);
-        assertNotNull(branch);
-        assertTrue(branch.errors().isEmpty());
-        assertTrue(branch.values().size() > 0);
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isTrue();
+        assertThat(branch.values().size() > 0).isTrue();
     }
 
     @Test (dependsOnMethods = "testListBranches")
     public void testGetBranchModel() {
         BranchModel branchModel = api().model(projectKey, repoKey);
-        assertNotNull(branchModel);
-        assertTrue(branchModel.errors().isEmpty());
+        assertThat(branchModel).isNotNull();
+        assertThat(branchModel.errors().isEmpty()).isTrue();
     }
 
     @Test (dependsOnMethods = "testGetBranchModel")
     public void testUpdateDefaultBranch() {
         boolean success = api().updateDefault(projectKey, repoKey, "refs/heads/" + branchName);
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     @Test (dependsOnMethods = "testUpdateDefaultBranch")
     public void testGetNewDefaultBranch() {
         Branch branch = api().getDefault(projectKey, repoKey);
-        assertNotNull(branch);
-        assertTrue(branch.errors().isEmpty());
-        assertNotNull(branch.id());
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isTrue();
+        assertThat(branch.id()).isNotNull();
     }
 
     @AfterClass
     public void fin() {
         boolean success = api().updateDefault(projectKey, repoKey, defaultBranchId);
-        assertTrue(success);
+        assertThat(success).isTrue();
         success = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     private BranchApi api() {

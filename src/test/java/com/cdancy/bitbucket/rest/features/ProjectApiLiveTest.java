@@ -48,30 +48,30 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateProject() {
         CreateProject createProject = CreateProject.create(projectKey, null, null, null);
         Project project = api().create(createProject);
-        assertNotNull(project);
-        assertTrue(project.errors().isEmpty());
-        assertTrue(projectKey.equalsIgnoreCase(project.key()));
+        assertThat(project).isNotNull();
+        assertThat(project.errors().isEmpty()).isTrue();
+        assertThat(projectKey.equalsIgnoreCase(project.key())).isTrue();
     }
 
     @Test (dependsOnMethods = "testCreateProject")
     public void testGetProject() {
         Project project = api().get(projectKey);
-        assertNotNull(project);
-        assertTrue(project.errors().isEmpty());
-        assertTrue(projectKey.equalsIgnoreCase(project.key()));
+        assertThat(project).isNotNull();
+        assertThat(project.errors().isEmpty()).isTrue();
+        assertThat(projectKey.equalsIgnoreCase(project.key())).isTrue();
     }
 
     @Test (dependsOnMethods = "testGetProject")
     public void testDeleteProject() {
         boolean success = api().delete(projectKey);
-        assertTrue(success);
+        assertThat(success).isTrue();
     }
 
     @Test(dependsOnMethods = "testGetProject")
     public void testListProjects() {
         ProjectPage projectPage = api().list(null, null, 0, 100);
 
-        assertNotNull(projectPage);
+        assertThat(projectPage).isNotNull();
         assertThat(projectPage.errors()).isEmpty();
         assertThat(projectPage.size()).isGreaterThan(0);
 
@@ -83,14 +83,14 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testDeleteProjectNonExistent() {
         boolean success = api().delete(randomStringLettersOnly());
-        assertFalse(success);
+        assertThat(success).isFalse();
     }
 
     @Test
     public void testGetProjectNonExistent() {
         Project project = api().get(randomStringLettersOnly());
-        assertNotNull(project);
-        assertTrue(project.errors().isEmpty());
+        assertThat(project).isNotNull();
+        assertThat(project.errors().isEmpty()).isTrue();
     }
 
     @Test
@@ -98,8 +98,8 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
         String illegalProjectKey = "9999";
         CreateProject createProject = CreateProject.create(illegalProjectKey, null, null, null);
         Project project = api().create(createProject);
-        assertNotNull(project);
-        assertFalse(project.errors().isEmpty());
+        assertThat(project).isNotNull();
+        assertThat(project.errors().isEmpty()).isFalse();
     }
 
     private ProjectApi api() {
