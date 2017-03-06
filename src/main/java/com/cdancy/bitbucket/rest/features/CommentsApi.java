@@ -17,19 +17,6 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import com.cdancy.bitbucket.rest.annotations.Documentation;
-import com.cdancy.bitbucket.rest.domain.comment.Comments;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentsOnError;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
-import com.cdancy.bitbucket.rest.options.CreateComment;
-import org.jclouds.rest.annotations.BinderParam;
-import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.Payload;
-import org.jclouds.rest.annotations.PayloadParam;
-import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.binders.BindToJsonPayload;
-
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -40,6 +27,22 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import org.jclouds.rest.annotations.BinderParam;
+import org.jclouds.rest.annotations.Fallback;
+import org.jclouds.rest.annotations.Payload;
+import org.jclouds.rest.annotations.PayloadParam;
+import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.binders.BindToJsonPayload;
+
+import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentPageOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentsOnError;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.options.CreateComment;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -79,6 +82,17 @@ public interface CommentsApi {
                  @PathParam("repo") String repo,
                  @PathParam("pullRequestId") int pullRequestId,
                  @PathParam("commentId") int commentId);
+
+    @Named("comments:path")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
+    @Fallback(CommentPageOnError.class)
+    @GET
+    CommentPage comments(@PathParam("project") String project,
+                                @PathParam("repo") String repo,
+                                @PathParam("pullRequestId") int pullRequestId,
+                                @QueryParam("path") String path);
 
     @Named("comments:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278021232"})
