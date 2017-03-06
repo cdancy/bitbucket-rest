@@ -28,6 +28,7 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateComment;
 import com.google.common.collect.ImmutableMap;
@@ -107,7 +108,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testGetCommentOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -122,6 +123,64 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestComments() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-comments.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        CommentsApi api = baseApi.commentsApi();
+        try {
+
+            CommentPage pcr = api.comments("project", "repo", 101, "hej");
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isEmpty();
+            assertThat(pcr.values()).hasSize(2);
+
+            Comments firstComment = pcr.values().get(0);
+            assertThat(firstComment.text()).isEqualTo("comment in diff");
+            assertThat(firstComment.id()).isEqualTo(4);
+            assertThat(firstComment.comments()).hasSize(1);
+            assertThat(firstComment.comments().get(0).text()).isEqualTo("reply to comment in diff");
+            assertThat(firstComment.comments().get(0).id()).isEqualTo(5);
+
+            Comments secondComment = pcr.values().get(1);
+            assertThat(secondComment.text()).isEqualTo("another commet in diff");
+            assertThat(secondComment.id()).isEqualTo(6);
+            assertThat(secondComment.comments()).isEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("path", "hej");
+
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                        + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestCommentsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+                .setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        CommentsApi api = baseApi.commentsApi();
+        try {
+
+            CommentPage pcr = api.comments("project", "repo", 101, "hej");
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("path", "hej");
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
