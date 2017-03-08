@@ -10,9 +10,6 @@ import org.jclouds.json.SerializedNames;
 
 import java.util.List;
 
-/**
- * Created by jdoire on 07/03/2017.
- */
 @AutoValue
 public abstract class BranchPermissionPage implements Page<BranchPermission>, ErrorsHolder {
 
