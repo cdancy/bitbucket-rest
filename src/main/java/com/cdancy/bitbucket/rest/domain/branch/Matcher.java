@@ -24,10 +24,9 @@ import org.jclouds.json.SerializedNames;
 public abstract class Matcher {
 
     public enum MatcherId {
-        release("RELEASE", "Release", "MODEL_CATEGORY", "Branching model category"),
-        develop("development", "Development", "MODEL_BRANCH", "Branching model branch"),
-        master("production", "Production", "MODEL_BRANCH", "Branching model branch");
-
+        RELEASE("RELEASE", "Release", "MODEL_CATEGORY", "Branching model category"),
+        DEVELOP("development", "Development", "MODEL_BRANCH", "Branching model branch"),
+        MASTER("production", "Production", "MODEL_BRANCH", "Branching model branch");
 
         private String id;
         private String name;

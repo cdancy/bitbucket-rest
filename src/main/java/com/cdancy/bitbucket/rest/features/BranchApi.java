@@ -120,18 +120,18 @@ public interface BranchApi {
     BranchModel model(@PathParam("project") String project,
                       @PathParam("repo") String repo);
 
-    @Named("branch:get-BranchPermission")
+    @Named("branch:list-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Fallback(BitbucketFallbacks.BranchPermissionPageOnError.class)
     @GET
-    BranchPermissionPage getBranchPermission(@PathParam("project") String project,
+    BranchPermissionPage listBranchPermission(@PathParam("project") String project,
                                              @PathParam("repo") String repo,
                                              @Nullable @QueryParam("start") Integer start,
                                              @Nullable @QueryParam("limit") Integer limit);
 
-    @Named("branch:update-BranchPermission")
+    @Named("branch:update-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Produces("application/vnd.atl.bitbucket.bulk+json")
@@ -141,7 +141,7 @@ public interface BranchApi {
                                    @PathParam("repo") String repo,
                                    @BinderParam(BindToJsonPayload.class) List<BranchPermission> listBranchPermission);
 
-    @Named("branch:get-BranchPermission")
+    @Named("branch:delete-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions/{id}")
@@ -149,5 +149,5 @@ public interface BranchApi {
     @DELETE
     boolean deleteBranchPermission(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
-                                   @PathParam("id") Long id);
+                                   @PathParam("id") long id);
 }

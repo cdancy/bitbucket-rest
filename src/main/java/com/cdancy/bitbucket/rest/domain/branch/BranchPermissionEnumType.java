@@ -18,12 +18,12 @@
 package com.cdancy.bitbucket.rest.domain.branch;
 
 public enum BranchPermissionEnumType {
-    fast_forward_only("Rewriting history", "fast-forward-only",
+    FAST_FORWARD_ONLY("Rewriting history", "fast-forward-only",
         "prevents history rewrites on the specified branch(es) - for example by a force push or rebase."),
-    no_deletes("Deletion", "no-deletes", "prevents branch and tag deletion"),
-    pull_request_only("Changes without a pull request", "pull-request-only",
+    NO_DELETES("Deletion", "no-deletes", "prevents branch and tag deletion"),
+    PULL_REQUEST_ONLY("Changes without a pull request", "pull-request-only",
         "prevents pushing changes directly to the specified branch(es); changes are allowed only with a pull request"),
-    read_only("All changes", "read-only",
+    READ_ONLY("All changes", "read-only",
         "prevents pushes to the specified branch(es) and restricts creating new"
             + " branches matching the specified branch(es) or pattern");
 
