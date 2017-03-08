@@ -15,30 +15,23 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
-
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
+package com.cdancy.bitbucket.rest.domain.branch;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Reference {
-
-    // default to 'refs/heads/master' if null
-    @Nullable
+public abstract class BranchPermissionType {
     public abstract String id();
 
-    public abstract MinimalRepository repository();
+    public abstract String name();
 
-    @Nullable
-    public abstract String displayId();
-
-    Reference() {
+    @SerializedNames({"id", "name"})
+    public static BranchPermissionType create(String id, String name) {
+        return new AutoValue_BranchPermissionType(id, name);
     }
 
-    @SerializedNames({ "id", "repository", "displayId" })
-    public static Reference create(String id, MinimalRepository repository, String displayId) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
+    public static BranchPermissionType create(Matcher.MatcherId matcherId) {
+        return new AutoValue_BranchPermissionType(matcherId.getTypeId(), matcherId.getTypeName());
     }
 }

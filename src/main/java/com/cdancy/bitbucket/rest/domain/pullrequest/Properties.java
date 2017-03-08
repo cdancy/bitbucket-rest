@@ -17,28 +17,17 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import org.jclouds.javax.annotation.Nullable;
+import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
-import com.google.auto.value.AutoValue;
-
 @AutoValue
-public abstract class Reference {
+public abstract class Properties {
+    public abstract Long openTaskCount();
 
-    // default to 'refs/heads/master' if null
-    @Nullable
-    public abstract String id();
+    public abstract Long resolvedTaskCount();
 
-    public abstract MinimalRepository repository();
-
-    @Nullable
-    public abstract String displayId();
-
-    Reference() {
-    }
-
-    @SerializedNames({ "id", "repository", "displayId" })
-    public static Reference create(String id, MinimalRepository repository, String displayId) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
+    @SerializedNames({"openTaskCount", "resolvedTaskCount"})
+    public static Properties create(long openTaskCount, long resolvedTaskCount) {
+        return new AutoValue_Properties(openTaskCount, resolvedTaskCount);
     }
 }

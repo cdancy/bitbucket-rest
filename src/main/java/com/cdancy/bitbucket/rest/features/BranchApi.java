@@ -21,6 +21,8 @@ import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
@@ -43,7 +45,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
 import org.jclouds.javax.annotation.Nullable;
+
+import java.util.List;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -57,14 +62,14 @@ public interface BranchApi {
     @Fallback(BitbucketFallbacks.BranchPageOnError.class)
     @GET
     BranchPage list(@PathParam("project") String project,
-                  @PathParam("repo") String repo,
-                  @Nullable @QueryParam("base") String base,
-                  @Nullable @QueryParam("details") String details,
-                  @Nullable @QueryParam("filterText") String filterText,
-                  @Nullable @QueryParam("orderBy") String orderBy,
-                  @Nullable @QueryParam("start") Integer start,
-                  @Nullable @QueryParam("limit") Integer limit);
-    
+                    @PathParam("repo") String repo,
+                    @Nullable @QueryParam("base") String base,
+                    @Nullable @QueryParam("details") String details,
+                    @Nullable @QueryParam("filterText") String filterText,
+                    @Nullable @QueryParam("orderBy") String orderBy,
+                    @Nullable @QueryParam("start") Integer start,
+                    @Nullable @QueryParam("limit") Integer limit);
+
     @Named("branch:create")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295357022352"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -114,4 +119,35 @@ public interface BranchApi {
     @GET
     BranchModel model(@PathParam("project") String project,
                       @PathParam("repo") String repo);
+
+    @Named("branch:get-BranchPermission")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
+    @Fallback(BitbucketFallbacks.BranchPermissionPageOnError.class)
+    @GET
+    BranchPermissionPage getBranchPermission(@PathParam("project") String project,
+                                             @PathParam("repo") String repo,
+                                             @Nullable @QueryParam("start") Integer start,
+                                             @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("branch:update-BranchPermission")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
+    @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
+    @Produces("application/vnd.atl.bitbucket.bulk+json")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @POST
+    boolean updateBranchPermission(@PathParam("project") String project,
+                                   @PathParam("repo") String repo,
+                                   @BinderParam(BindToJsonPayload.class) List<BranchPermission> listBranchPermission);
+
+    @Named("branch:get-BranchPermission")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions/{id}")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deleteBranchPermission(@PathParam("project") String project,
+                                   @PathParam("repo") String repo,
+                                   @PathParam("id") Long id);
 }

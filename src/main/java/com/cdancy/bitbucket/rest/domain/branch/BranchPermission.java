@@ -15,30 +15,31 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.branch;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
+import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
-public abstract class Reference {
-
-    // default to 'refs/heads/master' if null
+public abstract class BranchPermission {
     @Nullable
-    public abstract String id();
+    public abstract Long id();
 
-    public abstract MinimalRepository repository();
+    public abstract BranchPermissionEnumType type();
 
-    @Nullable
-    public abstract String displayId();
+    public abstract Matcher matcher();
 
-    Reference() {
-    }
+    public abstract List<User> users();
 
-    @SerializedNames({ "id", "repository", "displayId" })
-    public static Reference create(String id, MinimalRepository repository, String displayId) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
+    public abstract List<String> groups();
+
+    @SerializedNames({"id", "type", "matcher", "users", "groups"})
+    public static BranchPermission create(Long id, BranchPermissionEnumType type, Matcher matcher,
+                                          List<User> users, List<String> groups) {
+        return new AutoValue_BranchPermission(id, type, matcher, users, groups);
     }
 }
