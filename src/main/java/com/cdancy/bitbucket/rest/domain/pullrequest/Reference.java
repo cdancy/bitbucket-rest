@@ -31,11 +31,13 @@ public abstract class Reference {
 
     public abstract MinimalRepository repository();
 
+    public abstract String displayId();
+
     Reference() {
     }
 
-    @SerializedNames({ "id", "repository" })
-    public static Reference create(String id, MinimalRepository repository) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository);
+    @SerializedNames({ "id", "repository", "displayId" })
+    public static Reference create(String id, MinimalRepository repository, String displayId) {
+        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
     }
 }
