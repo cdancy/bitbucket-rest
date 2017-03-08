@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.*;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -35,10 +36,6 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ChangePageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommitPageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
@@ -157,4 +154,6 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("withCounts") Boolean withCounts,
                                 @Nullable @QueryParam("limit") Integer limit,
                                 @Nullable @QueryParam("start") Integer start);
+    
+    ActivitiesPage activities();
 }
