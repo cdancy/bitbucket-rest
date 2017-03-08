@@ -34,11 +34,11 @@ public abstract class Matcher {
         private String typeId;
         private String typeName;
 
-        MatcherId(String pId, String pName, String pTypeId, String pTypeName) {
-            this.id = pId;
-            this.name = pName;
-            this.typeId = pTypeId;
-            this.typeName = pTypeName;
+        MatcherId(String id, String name, String typeId, String typeName) {
+            this.id = id;
+            this.name = name;
+            this.typeId = typeId;
+            this.typeName = typeName;
         }
 
         public String getId() {

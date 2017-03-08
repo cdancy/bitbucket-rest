@@ -23,7 +23,10 @@ import static com.google.common.base.Throwables.propagate;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cdancy.bitbucket.rest.domain.branch.*;
+import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.project.Project;
@@ -272,7 +275,7 @@ public final class BitbucketFallbacks {
         return PullRequest.create(-1, -1, null, null, null,
                 false, false, 0, 0, null,
                 null, false, null, null, null,
-                null, null, errors);
+                null, errors);
     }
 
     public static PullRequestPage createPullRequestPageFromErrors(List<Error> errors) {
