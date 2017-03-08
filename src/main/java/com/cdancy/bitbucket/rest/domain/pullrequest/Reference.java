@@ -31,6 +31,7 @@ public abstract class Reference {
 
     public abstract MinimalRepository repository();
 
+    @Nullable
     public abstract String displayId();
 
     Reference() {

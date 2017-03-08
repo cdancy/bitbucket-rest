@@ -18,7 +18,11 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
-import com.cdancy.bitbucket.rest.domain.branch.*;
+import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
