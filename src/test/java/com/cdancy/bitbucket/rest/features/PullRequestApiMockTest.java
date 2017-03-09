@@ -62,7 +62,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             MinimalRepository repository2 = MinimalRepository.create("my-repo", null, proj2);
 
             Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, "feature-ABC-123");
-            Reference toRef = Reference.create("refs/heads/master", repository2, "master");
+            Reference toRef = Reference.create("refs/heads/master", repository2);
             CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
             PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
 
