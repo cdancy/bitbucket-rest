@@ -37,6 +37,16 @@ public abstract class Reference {
     Reference() {
     }
 
+    @Deprecated
+    public static Reference create(String id, MinimalRepository repository) {
+        String displayId = null;
+        if (id != null) {
+            String[] parts = id.split("/");
+            displayId = parts[parts.length - 1];
+        }
+        return create(id, repository, displayId);
+    }
+
     @SerializedNames({"id", "repository", "displayId"})
     public static Reference create(String id, MinimalRepository repository, String displayId) {
         return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
