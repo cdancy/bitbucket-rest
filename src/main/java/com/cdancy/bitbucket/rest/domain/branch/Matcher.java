@@ -25,7 +25,7 @@ public abstract class Matcher {
 
     public enum MatcherId {
         RELEASE("RELEASE", "Release", "MODEL_CATEGORY", "Branching model category"),
-        DEVELOP("development", "Development", "MODEL_BRANCH", "Branching model branch"),
+        DEVELOPMENT("development", "Development", "MODEL_BRANCH", "Branching model branch"),
         MASTER("production", "Production", "MODEL_BRANCH", "Branching model branch");
 
         private String id;
