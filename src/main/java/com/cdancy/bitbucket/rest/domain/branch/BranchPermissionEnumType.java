@@ -61,7 +61,7 @@ public enum BranchPermissionEnumType {
                 return enumType;
             }
         }
-        throw new IllegalArgumentException("Value not Found");
+        throw new IllegalArgumentException("Value " + apiName + " is not a legal BranchPermission type");
     }
 
     @Override
