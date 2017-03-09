@@ -53,13 +53,16 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
     public abstract List<Comments> comments();
 
     @Nullable
+    public abstract Anchor anchor();
+    
+    @Nullable
     public abstract Link link();
 
     Comments() {
     }
 
     @SerializedNames({ "properties", "id", "version", "text", "author",
-            "createdDate", "updatedDate", "comments", "link", "links", "errors" })
+            "createdDate", "updatedDate", "comments", "anchor", "link", "links", "errors" })
     public static Comments create(Map<String, String> properties,
                                   int id,
                                   int version,
@@ -68,10 +71,11 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
                                   long createdDate,
                                   long updatedDate,
                                   List<Comments> comments,
+                                  Anchor anchor,
                                   Link link,
                                   Links links,
                                   List<Error> errors) {
         return new AutoValue_Comments(Utils.nullToEmpty(errors), links, Utils.nullToEmpty(properties),
-                id, version, text, author, createdDate, updatedDate, Utils.nullToEmpty(comments), link);
+                id, version, text, author, createdDate, updatedDate, Utils.nullToEmpty(comments), anchor, link);
     }
 }
