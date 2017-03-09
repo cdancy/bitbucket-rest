@@ -23,13 +23,22 @@ import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class Activities {
+
+    public enum ActivitiesType {
+        RESCOPED,
+        APPROVED,
+        REVIEWED,
+        COMMENTED,
+        OPENED
+    }
+
     public abstract long id();
 
     public abstract long createdDate();
 
     public abstract User user();
 
-    public abstract String action();
+    public abstract ActivitiesType action();
 
     public abstract String fromHash();
 
@@ -44,7 +53,7 @@ public abstract class Activities {
     public abstract ActivitiesCommit removed();
 
     @SerializedNames({"id", "createdDate", "size", "user", "action", "fromHash", "previousFromHash", "previousToHash", "toHash", "added", "removed"})
-    public static Activities create(long id, long createdDate, User user, String action, String fromHash,
+    public static Activities create(long id, long createdDate, User user, ActivitiesType action, String fromHash,
                                         String previousFromHash, String previousToHash, String toHash,
                                         ActivitiesCommit added, ActivitiesCommit removed) {
         return new AutoValue_Activities(id, createdDate, user, action, fromHash, previousFromHash, previousToHash,
