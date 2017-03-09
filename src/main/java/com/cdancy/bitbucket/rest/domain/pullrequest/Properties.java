@@ -25,9 +25,9 @@ import org.jclouds.json.SerializedNames;
  */
 @AutoValue
 public abstract class Properties {
-    public abstract Long openTaskCount();
+    public abstract long openTaskCount();
 
-    public abstract Long resolvedTaskCount();
+    public abstract long resolvedTaskCount();
 
     @SerializedNames({"openTaskCount", "resolvedTaskCount"})
     public static Properties create(long openTaskCount, long resolvedTaskCount) {
