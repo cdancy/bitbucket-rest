@@ -22,18 +22,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
+import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.options.CreateComment;
+import com.google.common.collect.Lists;
+import java.util.List;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "CommentsApiLiveTest", singleThreaded = true)
 public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String project = "TEST";
-    String repo = "dev";
+    String project = "DEV";
+    String repo = "test";
     String commentText = randomString();
     String commentReplyText = randomString();
-    int prId = -1;
+    String filePath = "some/file/path.java";
+    int prId = 6571;
     int commentId = -1;
     int commentIdVersion = -1;
     int commentReplyId = -1;
@@ -69,8 +73,38 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text().equals(commentReplyText)).isTrue();
     }
-
+    
     @Test (dependsOnMethods = "testGetComment")
+    public void testGetFileCommentPage() throws Exception {
+        List<Comments> allComments = Lists.newArrayList();
+        Integer start = null;
+        while (true) {
+            CommentPage comm = api().fileComments(project, repo, prId, filePath, start, 100);
+            assertThat(comm.errors().isEmpty()).isTrue();
+            allComments.addAll(comm.values());
+            start = comm.nextPageStart();
+            if (comm.isLastPage()) {
+                break;
+            } else {
+                System.out.println("Sleeping for 1 seconds before querying for next page");
+                Thread.sleep(1000);
+            }
+        }
+        
+        assertThat(allComments.isEmpty()).isFalse();
+        boolean foundComment = false;
+        for (Comments comm : allComments) {
+            if (comm.anchor() != null) {
+                if (comm.anchor().path().equalsIgnoreCase(filePath)) {
+                    foundComment = true;
+                    break;
+                }
+            }
+        }
+        assertThat(foundComment).isTrue();
+    }
+
+    @Test (dependsOnMethods = "testGetFileCommentPage")
     public void testDeleteComment() {
         boolean success = api().delete(project, repo, prId, commentReplyId, commentReplyIdVersion);
         assertThat(success).isTrue();

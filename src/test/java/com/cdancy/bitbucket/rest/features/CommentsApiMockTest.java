@@ -138,12 +138,13 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         CommentsApi api = baseApi.commentsApi();
         try {
 
-            CommentPage pcr = api.comments("project", "repo", 101, "hej");
+            CommentPage pcr = api.fileComments("project", "repo", 101, "hej", 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(2);
 
             Comments firstComment = pcr.values().get(0);
+            assertThat(firstComment.anchor().path()).isEqualTo("hej");
             assertThat(firstComment.text()).isEqualTo("comment in diff");
             assertThat(firstComment.id()).isEqualTo(4);
             assertThat(firstComment.comments()).hasSize(1);
@@ -151,12 +152,12 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertThat(firstComment.comments().get(0).id()).isEqualTo(5);
 
             Comments secondComment = pcr.values().get(1);
+            assertThat(secondComment.anchor().path()).isEqualTo("hej");
             assertThat(secondComment.text()).isEqualTo("another commet in diff");
             assertThat(secondComment.id()).isEqualTo(6);
             assertThat(secondComment.comments()).isEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("path", "hej");
-
+            Map<String, ?> queryParams = ImmutableMap.of("path", "hej", "start", "0", "limit", "100");
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                         + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
@@ -174,11 +175,11 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         CommentsApi api = baseApi.commentsApi();
         try {
 
-            CommentPage pcr = api.comments("project", "repo", 101, "hej");
+            CommentPage pcr = api.fileComments("project", "repo", 101, "hej", 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("path", "hej");
+            Map<String, ?> queryParams = ImmutableMap.of("path", "hej", "start", "0", "limit", "100");
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
