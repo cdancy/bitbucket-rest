@@ -20,11 +20,9 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
-/**
- * Created by jdoire on 07/03/2017.
- */
 @AutoValue
 public abstract class Properties {
+
     public abstract long openTaskCount();
 
     public abstract long resolvedTaskCount();
