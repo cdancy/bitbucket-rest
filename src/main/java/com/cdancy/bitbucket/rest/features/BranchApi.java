@@ -135,6 +135,7 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Produces("application/vnd.atl.bitbucket.bulk+json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @POST
     boolean updateBranchPermission(@PathParam("project") String project,
