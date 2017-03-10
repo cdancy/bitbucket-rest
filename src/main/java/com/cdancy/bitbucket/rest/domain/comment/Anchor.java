@@ -46,6 +46,7 @@ public abstract class Anchor {
 
     public abstract String path();
 
+    @Nullable
     public abstract String srcPath();
 
     Anchor() {

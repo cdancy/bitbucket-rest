@@ -236,7 +236,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Comments createCommentsFromErrors(List<Error> errors) {
-        return Comments.create(null, 0, 0, null, null, 0, 0, null, null, null, errors);
+        return Comments.create(null, 0, 0, null, null, 0, 0, null, null, null, null, errors);
     }
 
     public static CommentPage createCommentPageFromErrors(List<Error> errors) {
@@ -275,7 +275,7 @@ public final class BitbucketFallbacks {
         return PullRequest.create(-1, -1, null, null, null,
                 false, false, 0, 0, null,
                 null, false, null, null, null,
-                null, errors);
+                null, null, errors);
     }
 
     public static PullRequestPage createPullRequestPageFromErrors(List<Error> errors) {

@@ -47,12 +47,9 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         String randomChars = randomString();
         ProjectKey proj = ProjectKey.create(project);
         MinimalRepository repository = MinimalRepository.create(repo, null, proj);
-
-        Reference fromRef = Reference.create("refs/heads/" + branchToMerge, repository);
+        Reference fromRef = Reference.create("refs/heads/" + branchToMerge, repository, branchToMerge);
         Reference toRef = Reference.create(null, repository);
         CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
-        
-        System.out.println("---------> CREATED PR: " + cpr);
         PullRequest pr = api().create(project, repo, cpr);
         assertThat(pr).isNotNull();
         assertThat(project.equals(pr.fromRef().repository().project().key())).isTrue();
@@ -70,7 +67,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(repo.equals(pr.fromRef().repository().slug())).isTrue();
         assertThat(version == pr.version()).isTrue();
     }
-    
+
     @Test (dependsOnMethods = "createGetPullRequest")
     public void testListPullRequest() {
         PullRequestPage pr = api().list(project, repo, null, null, null, null, null, null, null, 10);
