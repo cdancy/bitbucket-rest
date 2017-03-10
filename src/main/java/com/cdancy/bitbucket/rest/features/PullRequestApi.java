@@ -158,6 +158,14 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("withCounts") Boolean withCounts,
                                 @Nullable @QueryParam("limit") Integer limit,
                                 @Nullable @QueryParam("start") Integer start);
-    
-    ActivitiesPage activities();
+
+    @Named("pull-request:activities")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278197104"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/activities")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    ActivitiesPage activities(@PathParam("project") String project,
+                              @PathParam("repo") String repo,
+                              @PathParam("pullRequestId") long pullRequestId);
 }
