@@ -1,4 +1,4 @@
-### Version 0.0.14 (TBA)
+### Version 0.0.14 (3/13/2017)
 * ADDED: `Documentation` annotation to all endpoints. The idea is that this annotation will hold a list of links where the user can go to get more detailed information on the endpoint and it's options.
 * ADDED: Bump jclouds, auto*, testng, assertj, and logback dependencies.
 * ADDED: `comments` endpoint to `PullRequestApi`. - [PR 45](https://github.com/cdancy/bitbucket-rest/pull/45)
