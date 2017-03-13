@@ -167,5 +167,7 @@ public interface PullRequestApi {
     @GET
     ActivitiesPage activities(@PathParam("project") String project,
                               @PathParam("repo") String repo,
-                              @PathParam("pullRequestId") long pullRequestId);
+                              @PathParam("pullRequestId") long pullRequestId,
+                              @Nullable @QueryParam("limit") Integer limit,
+                              @Nullable @QueryParam("start") Integer start);
 }

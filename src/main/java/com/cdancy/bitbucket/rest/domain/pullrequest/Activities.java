@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesCommit;
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -29,7 +30,9 @@ public abstract class Activities {
         APPROVED,
         REVIEWED,
         COMMENTED,
-        OPENED
+        OPENED,
+        UPDATED,
+        UNAPPROVED
     }
 
     public abstract long id();
@@ -40,22 +43,29 @@ public abstract class Activities {
 
     public abstract ActivitiesType action();
 
+    @Nullable
     public abstract String fromHash();
 
+    @Nullable
     public abstract String previousFromHash();
 
+    @Nullable
     public abstract String previousToHash();
 
+    @Nullable
     public abstract String toHash();
 
+    @Nullable
     public abstract ActivitiesCommit added();
 
+    @Nullable
     public abstract ActivitiesCommit removed();
 
-    @SerializedNames({"id", "createdDate", "size", "user", "action", "fromHash", "previousFromHash", "previousToHash", "toHash", "added", "removed"})
-    public static Activities create(long id, long createdDate, User user, ActivitiesType action, String fromHash,
-                                        String previousFromHash, String previousToHash, String toHash,
-                                        ActivitiesCommit added, ActivitiesCommit removed) {
+    @SerializedNames({"id", "createdDate", "user", "action", "fromHash", "previousFromHash", "previousToHash", "toHash", "added", "removed"})
+    public static Activities create(long id, long createdDate, User user, ActivitiesType action, @Nullable String fromHash,
+                                        @Nullable String previousFromHash,  @Nullable String previousToHash,
+                                        @Nullable String toHash, @Nullable ActivitiesCommit added,
+                                        @Nullable ActivitiesCommit removed) {
         return new AutoValue_Activities(id, createdDate, user, action, fromHash, previousFromHash, previousToHash,
             toHash, added, removed);
     }
