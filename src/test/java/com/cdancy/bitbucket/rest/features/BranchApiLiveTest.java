@@ -51,6 +51,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     String repoKey = "dancc-test";
     String branchName = randomStringLettersOnly();
     String commitHash = "5284b6cec569346855710b535dafb915423110c2";
+    String existingGroup = "dev-group";
     Long branchPermissionId = null;
 
     String defaultBranchId = "refs/heads/master";
@@ -102,7 +103,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(branch.id()).isNotNull();
     }
 
-    @Test
+    @Test (dependsOnMethods = "testGetNewDefaultBranch")
     public void testCreateBranchPermission() {
         List<String> groupPermission = new ArrayList<>();
         groupPermission.add("Test12354");
