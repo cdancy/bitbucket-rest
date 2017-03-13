@@ -6,6 +6,7 @@
 * ADDED: Fix various fallback implementations and added tests for each to catch these in the future.
 * ADDED: Add new field in PullRequest bbject. - [PR 50](https://github.com/cdancy/bitbucket-rest/pull/50)
 * ADDED: Add new api call for BranchPermission. - [PR 51](https://github.com/cdancy/bitbucket-rest/pull/51)
+* ADDED: Add new attribute `AccessKey` for branchPermission. - [PR 53](https://github.com/cdancy/bitbucket-rest/pull/53)
 
 ### Version 0.0.13 (2/4/2017)
 * ADDED: BranchApi gained proper page support. - [Commit 2c642c](https://github.com/cdancy/bitbucket-rest/commit/2c642c0736768649bd7fb0b6ed1f93b02d6d8f22)
