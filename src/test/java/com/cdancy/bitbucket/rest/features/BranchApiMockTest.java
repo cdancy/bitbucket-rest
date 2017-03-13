@@ -236,6 +236,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.values().size() > 0).isTrue();
             assertThat(839L == branch.values().get(0).id()).isTrue();
+            assertThat(2 == branch.values().get(0).accessKeys().size()).isTrue();
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
             assertSent(server, "GET", "/rest/branch-permissions/2.0"
@@ -276,15 +277,18 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         BranchApi api = baseApi.branchApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
 
             List<String> groupPermission = new ArrayList<>();
             groupPermission.add("Test12354");
+            List<Long> listAccessKey = new ArrayList<>();
+            listAccessKey.add(123L);
             List<BranchPermission> listBranchPermission = new ArrayList<>();
-            listBranchPermission.add(BranchPermission.create(839L, BranchPermissionEnumType.FAST_FORWARD_ONLY,
-                    Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission));
+            listBranchPermission.add(BranchPermission.createWithId(839L, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+                    Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission,
+                    listAccessKey));
 
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
             boolean success = api.updateBranchPermission(projectKey, repoKey, listBranchPermission);
             assertThat(success).isTrue();
             assertSent(server, "POST", "/rest/branch-permissions/2.0"

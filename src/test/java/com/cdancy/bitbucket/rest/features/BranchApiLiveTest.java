@@ -106,10 +106,12 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testGetNewDefaultBranch")
     public void testCreateBranchPermission() {
         List<String> groupPermission = new ArrayList<>();
-        groupPermission.add(existingGroup);
+        groupPermission.add("Test12354");
+        List<Long> listAccessKey = new ArrayList<>();
+        listAccessKey.add(123L);
         List<BranchPermission> listBranchPermission = new ArrayList<>();
-        listBranchPermission.add(BranchPermission.create(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
-                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission));
+        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, listAccessKey));
 
         boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
         assertThat(success).isTrue();
