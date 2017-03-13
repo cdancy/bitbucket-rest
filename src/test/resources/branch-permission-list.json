@@ -1,0 +1,25 @@
+{
+  "isLastPage": true,
+  "limit": 25,
+  "size": 1,
+  "start": 0,
+  "values": [
+    {
+      "groups": [
+        "GROUPS1"
+      ],
+      "id": 839,
+      "matcher": {
+        "active": true,
+        "displayId": "Development",
+        "id": "development",
+        "type": {
+          "id": "MODEL_BRANCH",
+          "name": "Branching model branch"
+        }
+      },
+      "type": "fast-forward-only",
+      "users": []
+    }
+  ]
+}
