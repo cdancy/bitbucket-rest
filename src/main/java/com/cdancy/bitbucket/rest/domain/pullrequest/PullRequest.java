@@ -68,15 +68,20 @@ public abstract class PullRequest implements ErrorsHolder, LinksHolder {
 
     public abstract List<Person> participants();
 
+    @Nullable
+    public abstract Properties properties();
+
     PullRequest() {
     }
 
     @SerializedNames({ "id", "version", "title", "description", "state", "open", "closed", "createdDate", "updatedDate",
-            "fromRef", "toRef", "locked", "author", "reviewers", "participants", "links", "errors" })
+            "fromRef", "toRef", "locked", "author", "reviewers", "participants", "properties", "links", "errors" })
     public static PullRequest create(int id, int version, String title, String description, String state, boolean open,
-                                     boolean closed, long createdDate, long updatedDate, Reference fromRef, Reference toRef, boolean locked,
-                                     Person author, List<Person> reviewers, List<Person> participants, Links links, List<Error> errors) {
+                                     boolean closed, long createdDate, long updatedDate, Reference fromRef,
+                                     Reference toRef, boolean locked, Person author, List<Person> reviewers,
+                                     List<Person> participants, Properties properties, Links links,
+                                     List<Error> errors) {
         return new AutoValue_PullRequest(Utils.nullToEmpty(errors), links, id, version, title, description, state, open, closed, createdDate,
-                updatedDate, fromRef, toRef, locked, author, Utils.nullToEmpty(reviewers), Utils.nullToEmpty(participants));
+            updatedDate, fromRef, toRef, locked, author, Utils.nullToEmpty(reviewers), Utils.nullToEmpty(participants), properties);
     }
 }

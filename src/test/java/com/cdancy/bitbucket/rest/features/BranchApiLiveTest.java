@@ -18,15 +18,24 @@
 package com.cdancy.bitbucket.rest.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.Matcher;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -42,6 +51,8 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     String repoKey = "dancc-test";
     String branchName = randomStringLettersOnly();
     String commitHash = "5284b6cec569346855710b535dafb915423110c2";
+    String existingGroup = "dev-group";
+    Long branchPermissionId = null;
 
     String defaultBranchId = "refs/heads/master";
 
@@ -62,7 +73,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(branch.id().endsWith(branchName)).isTrue();
         assertThat(commitHash.equalsIgnoreCase(branch.latestChangeset())).isTrue();
     }
-    
+
     @Test (dependsOnMethods = "testCreateBranch")
     public void testListBranches() {
         BranchPage branch = api().list(projectKey, repoKey, null, null, null, null, null, 1);
@@ -90,6 +101,39 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(branch).isNotNull();
         assertThat(branch.errors().isEmpty()).isTrue();
         assertThat(branch.id()).isNotNull();
+    }
+
+    @Test (dependsOnMethods = "testGetNewDefaultBranch")
+    public void testCreateBranchPermission() {
+        List<String> groupPermission = new ArrayList<>();
+        groupPermission.add(existingGroup);
+        List<Long> listAccessKey = new ArrayList<>();
+        listAccessKey.add(123L);
+        List<BranchPermission> listBranchPermission = new ArrayList<>();
+        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, listAccessKey));
+
+        boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
+        assertThat(success).isTrue();
+    }
+
+    @Test (dependsOnMethods = "testCreateBranchPermission")
+    public void testListBranchPermission() {
+        BranchPermissionPage branchPermissionPage = api().listBranchPermission(projectKey, repoKey, null, 1);
+        assertThat(branchPermissionPage).isNotNull();
+        assertThat(branchPermissionPage.errors().isEmpty()).isTrue();
+        assertThat(branchPermissionPage.values().size() > 0).isTrue();
+        branchPermissionId = branchPermissionPage.values().get(0).id();
+    }
+
+    @Test (dependsOnMethods = "testListBranchPermission")
+    public void testDeleteBranchPermission() {
+        if (branchPermissionId != null) {
+            boolean success = api().deleteBranchPermission(projectKey, repoKey, branchPermissionId);
+            assertThat(success).isTrue();
+        } else {
+            fail("branchPermissionId is null");
+        }
     }
 
     @AfterClass

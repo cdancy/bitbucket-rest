@@ -43,6 +43,7 @@ import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentPageOnError
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommentsOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateComment;
+import org.jclouds.javax.annotation.Nullable;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -89,10 +90,12 @@ public interface CommentsApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
     @Fallback(CommentPageOnError.class)
     @GET
-    CommentPage comments(@PathParam("project") String project,
+    CommentPage fileComments(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
                                 @PathParam("pullRequestId") int pullRequestId,
-                                @QueryParam("path") String path);
+                                @QueryParam("path") String pathToFile,
+                                @Nullable @QueryParam("start") Integer start,
+                                @Nullable @QueryParam("limit") Integer limit);
 
     @Named("comments:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278021232"})

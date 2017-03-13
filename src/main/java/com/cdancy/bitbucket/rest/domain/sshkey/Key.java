@@ -15,40 +15,24 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.sshkey;
 
+import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.google.auto.value.AutoValue;
-
 @AutoValue
-public abstract class Reference {
-
-    // default to 'refs/heads/master' if null
-    @Nullable
-    public abstract String id();
-
-    public abstract MinimalRepository repository();
+public abstract class Key {
 
     @Nullable
-    public abstract String displayId();
+    public abstract Long id();
 
-    Reference() {
-    }
+    public abstract String text();
 
-    @Deprecated
-    public static Reference create(String id, MinimalRepository repository) {
-        String displayId = null;
-        if (id != null) {
-            String[] parts = id.split("/");
-            displayId = parts[parts.length - 1];
-        }
-        return create(id, repository, displayId);
-    }
+    public abstract String label();
 
-    @SerializedNames({"id", "repository", "displayId"})
-    public static Reference create(String id, MinimalRepository repository, String displayId) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
+    @SerializedNames({"id", "text", "label"})
+    public static Key create(@Nullable Long id, String text, String label) {
+        return new AutoValue_Key(id, text, label);
     }
 }
