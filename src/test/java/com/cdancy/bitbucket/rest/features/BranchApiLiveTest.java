@@ -106,7 +106,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testGetNewDefaultBranch")
     public void testCreateBranchPermission() {
         List<String> groupPermission = new ArrayList<>();
-        groupPermission.add("Test12354");
+        groupPermission.add(existingGroup);
         List<Long> listAccessKey = new ArrayList<>();
         listAccessKey.add(123L);
         List<BranchPermission> listBranchPermission = new ArrayList<>();
