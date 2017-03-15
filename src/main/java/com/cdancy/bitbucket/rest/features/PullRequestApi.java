@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,11 +28,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.cdancy.bitbucket.rest.domain.pullrequest.ActivitiesPage;
+import com.cdancy.bitbucket.rest.domain.participants.Participants;
+import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
+import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -159,15 +163,49 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("limit") Integer limit,
                                 @Nullable @QueryParam("start") Integer start);
 
-    @Named("pull-request:activities")
+    @Named("pull-request:list-activities")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278197104"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/activities")
     @Fallback(PullRequestOnError.class)
     @GET
-    ActivitiesPage activities(@PathParam("project") String project,
+    ActivitiesPage listActivities(@PathParam("project") String project,
                               @PathParam("repo") String repo,
                               @PathParam("pullRequestId") long pullRequestId,
                               @Nullable @QueryParam("limit") Integer limit,
                               @Nullable @QueryParam("start") Integer start);
+
+    @Named("pull-request:list-participants")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978405632"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants")
+    @Fallback(PullRequestOnError.class)
+    @GET
+    ParticipantsPage listParticipants(@PathParam("project") String project,
+                                @PathParam("repo") String repo,
+                                @PathParam("pullRequestId") long pullRequestId,
+                                @Nullable @QueryParam("limit") Integer limit,
+                                @Nullable @QueryParam("start") Integer start);
+
+    @Named("pull-request:update-participants")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @POST
+    boolean updateParticipants(@PathParam("project") String project,
+                               @PathParam("repo") String repo,
+                               @PathParam("pullRequestId") long pullRequestId,
+                               @Nullable @BinderParam(BindToJsonPayload.class) Participants participants);
+
+    @Named("pull-request:delete-participants")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants/{userSlug}")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deleteParticipants(@PathParam("project") String project,
+                               @PathParam("repo") String repo,
+                               @PathParam("pullRequestId") long pullRequestId,
+                               @PathParam("userSlug") String userSlug);
 }
