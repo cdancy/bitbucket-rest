@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.activities;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;

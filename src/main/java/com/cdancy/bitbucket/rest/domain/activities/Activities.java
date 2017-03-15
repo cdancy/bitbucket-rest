@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.activities;
 
-import com.cdancy.bitbucket.rest.domain.activities.ActivitiesCommit;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
+
+import java.util.List;
 
 @AutoValue
 public abstract class Activities {
@@ -61,12 +63,20 @@ public abstract class Activities {
     @Nullable
     public abstract ActivitiesCommit removed();
 
-    @SerializedNames({"id", "createdDate", "user", "action", "fromHash", "previousFromHash", "previousToHash", "toHash", "added", "removed"})
+    @Nullable
+    public abstract List<User> addedReviewers();
+
+    @Nullable
+    public abstract List<User> removedReviewers();
+
+    @SerializedNames({"id", "createdDate", "user", "action", "fromHash", "previousFromHash", "previousToHash",
+            "toHash", "added", "removed", "addedReviewers", "removedReviewers"})
     public static Activities create(long id, long createdDate, User user, ActivitiesType action, @Nullable String fromHash,
                                         @Nullable String previousFromHash,  @Nullable String previousToHash,
                                         @Nullable String toHash, @Nullable ActivitiesCommit added,
-                                        @Nullable ActivitiesCommit removed) {
+                                        @Nullable ActivitiesCommit removed, @Nullable List<User> addedReviewers,
+                                        @Nullable List<User> removedReviewers) {
         return new AutoValue_Activities(id, createdDate, user, action, fromHash, previousFromHash, previousToHash,
-            toHash, added, removed);
+            toHash, added, removed, addedReviewers, removedReviewers);
     }
 }
