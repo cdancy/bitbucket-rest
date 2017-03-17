@@ -188,7 +188,7 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("start") Integer start);
 
     @Named("pull-request:update-participants")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978396928"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
