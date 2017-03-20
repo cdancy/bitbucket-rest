@@ -20,7 +20,6 @@ package com.cdancy.bitbucket.rest.features;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
-import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;

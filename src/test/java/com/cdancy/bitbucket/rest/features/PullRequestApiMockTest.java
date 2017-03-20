@@ -24,7 +24,14 @@ import java.util.Map;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.*;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -371,7 +378,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
@@ -384,7 +391,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -395,7 +402,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities-error.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
@@ -406,7 +413,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -417,7 +424,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
@@ -430,7 +437,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -441,7 +448,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants-error.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
@@ -452,7 +459,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -474,8 +481,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             boolean success = api.updateParticipants(projectKey, repoKey, pullRequestId, participants);
             assertThat(success).isTrue();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
-                + pullRequestId + "/participants");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -496,8 +503,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
             assertThat(success).isTrue();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
-                + pullRequestId + "/participants/" + userSlug);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants/" + userSlug);
         } finally {
             baseApi.close();
             server.shutdown();
