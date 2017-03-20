@@ -19,6 +19,9 @@ package com.cdancy.bitbucket.rest.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
+import com.cdancy.bitbucket.rest.domain.participants.Participants;
+import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
@@ -124,6 +127,18 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(pr).isNotNull();
         assertThat("MERGED".equalsIgnoreCase(pr.state())).isTrue();
         assertThat(pr.open()).isFalse();
+    }
+
+    @Test (dependsOnMethods = "testGetPullRequest")
+    public void testGetListPerticipants() {
+        ParticipantsPage pg = api().listParticipants(project, repo, prId, 100, 0);
+        assertThat(pg).isNotNull();
+    }
+
+    @Test (dependsOnMethods = "testGetPullRequest")
+    public void testGetListActivities() {
+        ActivitiesPage ac = api().listActivities(project, repo, prId, 100, 0);
+        assertThat(ac).isNotNull();
     }
 
     @Test
