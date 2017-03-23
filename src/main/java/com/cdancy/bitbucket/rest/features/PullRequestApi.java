@@ -167,7 +167,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278197104"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/activities")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(BitbucketFallbacks.ActivitiesPageOnError.class)
     @GET
     ActivitiesPage listActivities(@PathParam("project") String project,
                               @PathParam("repo") String repo,
@@ -179,7 +179,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978405632"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants")
-    @Fallback(PullRequestOnError.class)
+    @Fallback(BitbucketFallbacks.ParticipantsPageOnError.class)
     @GET
     ParticipantsPage listParticipants(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
@@ -196,7 +196,7 @@ public interface PullRequestApi {
     boolean updateParticipants(@PathParam("project") String project,
                                @PathParam("repo") String repo,
                                @PathParam("pullRequestId") long pullRequestId,
-                               @Nullable @BinderParam(BindToJsonPayload.class) Participants participants);
+                               @BinderParam(BindToJsonPayload.class) Participants participants);
 
     @Named("pull-request:delete-participants")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})

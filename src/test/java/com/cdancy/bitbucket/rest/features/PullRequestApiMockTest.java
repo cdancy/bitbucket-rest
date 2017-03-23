@@ -402,7 +402,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities-error.json"))
-                .setResponseCode(200));
+                .setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
@@ -448,7 +448,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants-error.json"))
-                .setResponseCode(200));
+                .setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
@@ -489,6 +489,29 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
+    public void testUpdatePullRequestPaticipantsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            Long pullRequestId = 839L;
+            User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
+            Participants participants = Participants.create(user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
+            boolean success = api.updateParticipants(projectKey, repoKey, pullRequestId, participants);
+            assertThat(success).isFalse();
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
     public void testDeletePullRequestPaticipants() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -502,6 +525,28 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String userSlug = "bbdfgf";
             boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
             assertThat(success).isTrue();
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants/" + userSlug);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeletePullRequestPaticipantsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            Long pullRequestId = 839L;
+            String userSlug = "bbdfgf";
+            boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
+            assertThat(success).isFalse();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
                     + pullRequestId + "/participants/" + userSlug);

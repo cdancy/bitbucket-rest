@@ -23,12 +23,14 @@ import static com.google.common.base.Throwables.propagate;
 import java.util.Iterator;
 import java.util.List;
 
+import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
@@ -197,6 +199,24 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class ActivitiesPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createActivitiesPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class ParticipantsPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createParticipantsPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class PullRequestPageOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
@@ -276,6 +296,14 @@ public final class BitbucketFallbacks {
                 false, false, 0, 0, null,
                 null, false, null, null, null,
                 null, null, errors);
+    }
+
+    public static ActivitiesPage createActivitiesPageFromErrors(List<Error> errors) {
+        return ActivitiesPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static ParticipantsPage createParticipantsPageFromErrors(List<Error> errors) {
+        return ParticipantsPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static PullRequestPage createPullRequestPageFromErrors(List<Error> errors) {
