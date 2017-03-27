@@ -493,7 +493,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     public void testPullRequestAssignPaticipantsOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/participants-error.json")).setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
