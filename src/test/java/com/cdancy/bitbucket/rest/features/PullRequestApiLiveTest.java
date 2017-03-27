@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
+import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
@@ -41,6 +42,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     String project = "BUILD";
     String repo = "dancc-test";
     String branchToMerge = "TIGER";
+    Participants participants = null;
     int prId = -1;
     int version = -1;
 
@@ -133,6 +135,20 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         ParticipantsPage pg = api().listParticipants(project, repo, prId, 100, 0);
         assertThat(pg).isNotNull();
         assertThat(pg.errors()).isEmpty();
+        assertThat(pg.values()).isNotEmpty();
+        participants = pg.values().get(0);
+    }
+
+    @Test (dependsOnMethods = "testGetListParticipants")
+    public void testDeleteParticipants() {
+        boolean success = api().deleteParticipants(project, repo, prId, participants.user().slug());
+        assertThat(success).isTrue();
+    }
+
+    @Test (dependsOnMethods = "testDeleteParticipants")
+    public void testAssignParticipants() {
+        Participants p = api().assignParticipant(project, repo, prId, participants);
+        assertThat(p.errors()).isEmpty();
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")
