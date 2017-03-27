@@ -147,8 +147,8 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testDeleteParticipants")
     public void testAssignParticipants() {
-        Participants p = api().assignParticipant(project, repo, prId, participants);
-        assertThat(p.errors()).isEmpty();
+        Participants participants = api().assignParticipant(project, repo, prId, this.participants);
+        assertThat(participants.errors()).isEmpty();
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")
