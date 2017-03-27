@@ -35,7 +35,6 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -44,9 +43,13 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ActivitiesPageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ChangePageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommitPageOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.FalseOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ParticipantsOnError;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ParticipantsPageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestPageOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
@@ -167,7 +170,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278197104"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/activities")
-    @Fallback(BitbucketFallbacks.ActivitiesPageOnError.class)
+    @Fallback(ActivitiesPageOnError.class)
     @GET
     ActivitiesPage listActivities(@PathParam("project") String project,
                               @PathParam("repo") String repo,
@@ -179,7 +182,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978405632"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants")
-    @Fallback(BitbucketFallbacks.ParticipantsPageOnError.class)
+    @Fallback(ParticipantsPageOnError.class)
     @GET
     ParticipantsPage listParticipants(@PathParam("project") String project,
                                 @PathParam("repo") String repo,
@@ -187,13 +190,13 @@ public interface PullRequestApi {
                                 @Nullable @QueryParam("limit") Integer limit,
                                 @Nullable @QueryParam("start") Integer start);
 
-    @Named("pull-request:update-participants")
+    @Named("pull-request:assign-participants")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978396928"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(ParticipantsOnError.class)
     @POST
-    boolean updateParticipants(@PathParam("project") String project,
+    Participants assignParticipant(@PathParam("project") String project,
                                @PathParam("repo") String repo,
                                @PathParam("pullRequestId") long pullRequestId,
                                @BinderParam(BindToJsonPayload.class) Participants participants);
@@ -202,7 +205,7 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants/{userSlug}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(FalseOnError.class)
     @DELETE
     boolean deleteParticipants(@PathParam("project") String project,
                                @PathParam("repo") String repo,

@@ -466,7 +466,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testUpdatePullRequestPaticipants() throws Exception {
+    public void testPullRequestAssignPaticipants() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
@@ -477,9 +477,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
-            Participants participants = Participants.create(user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
-            boolean success = api.updateParticipants(projectKey, repoKey, pullRequestId, participants);
-            assertThat(success).isTrue();
+            Participants participants = Participants.create(null, user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
+            Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
+            assertThat(success).isNotNull();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
                     + pullRequestId + "/participants");
@@ -489,7 +490,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testUpdatePullRequestPaticipantsOnError() throws Exception {
+    public void testPullRequestAssignPaticipantsOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
@@ -500,9 +501,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
-            Participants participants = Participants.create(user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
-            boolean success = api.updateParticipants(projectKey, repoKey, pullRequestId, participants);
-            assertThat(success).isFalse();
+            Participants participants = Participants.create(null, user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
+            Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
+            assertThat(success).isNotNull();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
                     + pullRequestId + "/participants");

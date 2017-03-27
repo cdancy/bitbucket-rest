@@ -17,13 +17,18 @@
 
 package com.cdancy.bitbucket.rest.domain.participants;
 
+import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
+import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
+import java.util.List;
+
 @AutoValue
-public abstract class Participants {
+public abstract class Participants implements ErrorsHolder {
 
     public enum Role {
         AUTHOR,
@@ -37,6 +42,7 @@ public abstract class Participants {
         NEEDS_WORK
     }
 
+    @Nullable
     public abstract User user();
 
     @Nullable
@@ -48,9 +54,10 @@ public abstract class Participants {
 
     public abstract Status status();
 
-    @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status"})
-    public static Participants create(User user, @Nullable String lastReviewedCommit, Role role,
-                                      boolean approved, Status status) {
-        return new AutoValue_Participants(user, lastReviewedCommit, role, approved, status);
+    @SerializedNames({"errors","user", "lastReviewedCommit", "role", "approved", "status"})
+    public static Participants create(@Nullable List<Error> errors, @Nullable User user,
+                                      @Nullable String lastReviewedCommit,
+                                      Role role, boolean approved, Status status) {
+        return new AutoValue_Participants(Utils.nullToEmpty(errors), user, lastReviewedCommit, role, approved, status);
     }
 }

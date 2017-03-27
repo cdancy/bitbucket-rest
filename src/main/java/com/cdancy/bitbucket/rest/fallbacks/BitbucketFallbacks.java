@@ -30,6 +30,9 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.participants.Participants;
+import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
+import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
@@ -217,6 +220,15 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class ParticipantsOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createParticipantsFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class PullRequestPageOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
@@ -304,6 +316,10 @@ public final class BitbucketFallbacks {
 
     public static ParticipantsPage createParticipantsPageFromErrors(List<Error> errors) {
         return ParticipantsPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static Participants createParticipantsFromErrors(List<Error> errors) {
+        return Participants.create(errors, null, null, Role.REVIEWER, false, Status.UNAPPROVED);
     }
 
     public static PullRequestPage createPullRequestPageFromErrors(List<Error> errors) {

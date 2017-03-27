@@ -129,15 +129,17 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")
-    public void testGetListPerticipants() {
+    public void testGetListParticipants() {
         ParticipantsPage pg = api().listParticipants(project, repo, prId, 100, 0);
         assertThat(pg).isNotNull();
+        assertThat(pg.errors()).isEmpty();
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")
     public void testGetListActivities() {
         ActivitiesPage ac = api().listActivities(project, repo, prId, 100, 0);
         assertThat(ac).isNotNull();
+        assertThat(ac.errors()).isEmpty();
     }
 
     @Test
