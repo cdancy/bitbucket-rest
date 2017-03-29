@@ -319,7 +319,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Participants createParticipantsFromErrors(List<Error> errors) {
-        return Participants.create(errors, null, null, Role.REVIEWER, false, Status.UNAPPROVED);
+        return Participants.create(null, null, Role.REVIEWER, false, Status.UNAPPROVED, errors);
     }
 
     public static PullRequestPage createPullRequestPageFromErrors(List<Error> errors) {

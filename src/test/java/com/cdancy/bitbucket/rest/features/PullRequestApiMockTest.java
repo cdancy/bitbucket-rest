@@ -32,6 +32,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
+import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -477,7 +478,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
-            Participants participants = Participants.create(null, user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
+            CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+                    false, Participants.Status.UNAPPROVED);
             Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
             assertThat(success).isNotNull();
             assertThat(success.errors()).isEmpty();
@@ -501,7 +503,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
-            Participants participants = Participants.create(null, user, null, Participants.Role.REVIEWER, false, Participants.Status.UNAPPROVED);
+            CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+                    false, Participants.Status.UNAPPROVED);
             Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
             assertThat(success).isNotNull();
             assertThat(success.errors()).isNotEmpty();

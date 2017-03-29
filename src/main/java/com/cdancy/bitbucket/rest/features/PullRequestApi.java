@@ -35,6 +35,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -199,7 +200,7 @@ public interface PullRequestApi {
     Participants assignParticipant(@PathParam("project") String project,
                                @PathParam("repo") String repo,
                                @PathParam("pullRequestId") long pullRequestId,
-                               @BinderParam(BindToJsonPayload.class) Participants participants);
+                               @BinderParam(BindToJsonPayload.class) CreateParticipants participants);
 
     @Named("pull-request:delete-participants")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})

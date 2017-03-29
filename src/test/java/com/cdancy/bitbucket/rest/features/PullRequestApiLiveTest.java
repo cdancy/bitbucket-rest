@@ -30,6 +30,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 
+import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import org.testng.annotations.Test;
 
@@ -147,7 +148,9 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testDeleteParticipants")
     public void testAssignParticipants() {
-        Participants participants = api().assignParticipant(project, repo, prId, this.participants);
+        CreateParticipants createParticipants = CreateParticipants.create(participants.user(),
+                participants.lastReviewedCommit(), participants.role(), participants.approved(), participants.status());
+        Participants participants = api().assignParticipant(project, repo, prId, createParticipants);
         assertThat(participants.errors()).isEmpty();
     }
 

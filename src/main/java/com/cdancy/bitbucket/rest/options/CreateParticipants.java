@@ -15,32 +15,17 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.participants;
+package com.cdancy.bitbucket.rest.options;
 
-import com.cdancy.bitbucket.rest.domain.common.Error;
-import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
 
 @AutoValue
-public abstract class Participants implements ErrorsHolder {
-
-    public enum Role {
-        AUTHOR,
-        REVIEWER,
-        PARTICIPANT
-    }
-
-    public enum Status {
-        APPROVED,
-        UNAPPROVED,
-        NEEDS_WORK
-    }
+public abstract class CreateParticipants {
 
     @Nullable
     public abstract User user();
@@ -48,17 +33,16 @@ public abstract class Participants implements ErrorsHolder {
     @Nullable
     public abstract String lastReviewedCommit();
 
-    public abstract Role role();
+    public abstract Participants.Role role();
 
     public abstract boolean approved();
 
-    public abstract Status status();
+    public abstract Participants.Status status();
 
-    @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status", "errors"})
-    public static Participants create(@Nullable User user,
+    @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status"})
+    public static CreateParticipants create(User user,
                                       @Nullable String lastReviewedCommit,
-                                      Role role, boolean approved, Status status,
-                                      @Nullable List<Error> errors) {
-        return new AutoValue_Participants(Utils.nullToEmpty(errors), user, lastReviewedCommit, role, approved, status);
+                                      Participants.Role role, boolean approved, Participants.Status status) {
+        return new AutoValue_CreateParticipants(user, lastReviewedCommit, role, approved, status);
     }
 }
