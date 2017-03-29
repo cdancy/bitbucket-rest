@@ -27,7 +27,6 @@ import org.jclouds.json.SerializedNames;
 @AutoValue
 public abstract class CreateParticipants {
 
-    @Nullable
     public abstract User user();
 
     @Nullable
@@ -41,7 +40,7 @@ public abstract class CreateParticipants {
 
     @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status"})
     public static CreateParticipants create(User user,
-                                      @Nullable String lastReviewedCommit,
+                                      String lastReviewedCommit,
                                       Participants.Role role, boolean approved, Participants.Status status) {
         return new AutoValue_CreateParticipants(user, lastReviewedCommit, role, approved, status);
     }
