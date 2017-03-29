@@ -38,6 +38,7 @@ import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Mock tests for the {@link PullRequestApi} class.
@@ -242,6 +243,50 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.merge(project, repo, 101, 1);
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.state()).isEqualToIgnoringCase("MERGED");
+            assertThat(pr.open()).isFalse();
+            assertThat(pr.links()).isNotNull();
+
+            Map<String, ?> queryParams = ImmutableMap.of("version", 1);
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testMergePullRequestNeedsRetry() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/merge-failed-retry.json")).setResponseCode(409));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            
+            AtomicInteger retries = new AtomicInteger(5);
+            
+            PullRequest pr = api.merge(project, repo, 101, 1);
+            while (retries.get() > 0 && pr.errors().size() > 0 && pr.errors().get(0).message().contains("Please retry the merge")) {
+                
+                System.out.println("Bitbucket is under load. Waiting for some time period and then retrying");
+                Thread.sleep(500);
+                retries.decrementAndGet();
+                
+                if (retries.get() == 0) {
+                    server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-merge.json")).setResponseCode(200));
+                } else {
+                    server.enqueue(new MockResponse().setBody(payloadFromResource("/merge-failed-retry.json")).setResponseCode(409));
+                }
+
+                pr = api.merge(project, repo, 101, 1);
+            } 
+
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
             assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
