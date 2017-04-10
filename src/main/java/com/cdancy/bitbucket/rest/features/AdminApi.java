@@ -42,7 +42,7 @@ public interface AdminApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-rest.html#idm46478323815824"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/groups/more-members")
-    @Fallback(BitbucketFallbacks.BranchPageOnError.class)
+    @Fallback(BitbucketFallbacks.UserPageOnError.class)
     @GET
     UserPage listUserByGroup(@QueryParam("context") String context,
                              @Nullable @QueryParam("filter") String filter,

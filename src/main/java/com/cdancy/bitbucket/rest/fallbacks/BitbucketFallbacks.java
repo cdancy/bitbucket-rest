@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
+import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
@@ -89,6 +90,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class UserPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createUserPageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -257,6 +267,10 @@ public final class BitbucketFallbacks {
 
     public static BranchPage createBranchPageFromErrors(List<Error> errors) {
         return BranchPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static UserPage createUserPageFromErrors(List<Error> errors) {
+        return UserPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static BranchPermissionPage createBranchPermissionPageFromErrors(List<Error> errors) {

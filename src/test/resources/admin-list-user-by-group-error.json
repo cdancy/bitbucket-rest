@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "exceptionName": null,
+      "message": "The context parameter is required."
+    }
+  ]
+}
