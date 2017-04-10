@@ -40,7 +40,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     CommitsApi commitsApi();
-    
+
     @Delegate
     ProjectApi projectApi();
 
@@ -55,4 +55,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     TagApi tagApi();
+
+    @Delegate
+    AdminApi adminApi();
 }
