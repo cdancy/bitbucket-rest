@@ -20,7 +20,6 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.BitbucketClient;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
-import com.cdancy.bitbucket.rest.domain.system.Version;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

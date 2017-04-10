@@ -48,7 +48,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/admin/groups/more-members", queryParams);
+                    + "/admin/groups/more-members", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -68,7 +68,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/admin/groups/more-members", queryParams);
+                    + "/admin/groups/more-members", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
