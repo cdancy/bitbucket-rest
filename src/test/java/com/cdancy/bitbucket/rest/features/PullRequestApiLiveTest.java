@@ -141,12 +141,18 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test (dependsOnMethods = "testGetListParticipants")
-    public void testDeleteParticipants() {
-        boolean success = api().deleteParticipants(project, repo, prId, participants.user().slug());
+    public void testDeleteParticipant() {
+        boolean success = api().deleteParticipant(project, repo, prId, participants.user().slug());
         assertThat(success).isTrue();
     }
+    
+    @Test (dependsOnMethods = "testDeleteParticipant")
+    public void testDeleteParticipantNonExistent() {
+        boolean success = api().deleteParticipant(project, repo, prId, randomString());
+        assertThat(success).isFalse();
+    }
 
-    @Test (dependsOnMethods = "testDeleteParticipants")
+    @Test (dependsOnMethods = "testDeleteParticipantNonExistent")
     public void testAssignParticipants() {
         CreateParticipants createParticipants = CreateParticipants.create(participants.user(),
                 participants.lastReviewedCommit(), participants.role(), participants.approved(), participants.status());

@@ -208,7 +208,7 @@ public interface PullRequestApi {
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants/{userSlug}")
     @Fallback(FalseOnError.class)
     @DELETE
-    boolean deleteParticipants(@PathParam("project") String project,
+    boolean deleteParticipant(@PathParam("project") String project,
                                @PathParam("repo") String repo,
                                @PathParam("pullRequestId") long pullRequestId,
                                @PathParam("userSlug") String userSlug);

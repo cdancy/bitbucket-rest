@@ -573,7 +573,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             String userSlug = "bbdfgf";
-            boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
+            boolean success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
             assertThat(success).isTrue();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
@@ -595,7 +595,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             String userSlug = "bbdfgf";
-            boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
+            boolean success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
             assertThat(success).isFalse();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
