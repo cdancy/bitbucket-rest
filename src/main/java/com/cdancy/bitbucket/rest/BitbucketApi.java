@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest;
 
 import java.io.Closeable;
 
+import com.cdancy.bitbucket.rest.features.AdminApi;
 import com.cdancy.bitbucket.rest.features.BranchApi;
 import com.cdancy.bitbucket.rest.features.CommentsApi;
 import com.cdancy.bitbucket.rest.features.CommitsApi;
@@ -40,7 +41,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     CommitsApi commitsApi();
-    
+
     @Delegate
     ProjectApi projectApi();
 
@@ -55,4 +56,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     TagApi tagApi();
+
+    @Delegate
+    AdminApi adminApi();
 }

@@ -17,63 +17,58 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
 
-/**
- * Mock tests for the {@link CommitsApi} class.
- */
-@Test(groups = "unit", testName = "CommitApiMockTest")
-public class CommitsApiMockTest extends BaseBitbucketMockTest {
+import java.util.Map;
 
-    public void testGetCommit() throws Exception {
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Test(groups = "unit", testName = "AdminApiMockTest")
+public class AdminApiMockTest extends BaseBitbucketMockTest {
+
+    public void testGetListUserByGroup() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit.json")).setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        CommitsApi api = baseApi.commitsApi();
+        AdminApi api = baseApi.adminApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
+            UserPage up = api.listUserByGroup("test", null, 0, 2);
+            assertThat(up).isNotNull();
+            assertThat(up.errors()).isEmpty();
+            assertThat(up.size() == 2).isTrue();
+            assertThat(up.values().get(0).slug().equals("bob123")).isTrue();
 
-            Commit commit = api.get(projectKey, repoKey, commitHash, null);
-            assertThat(commit).isNotNull();
-            assertThat(commit.errors().isEmpty()).isTrue();
-            assertThat(commit.id().equalsIgnoreCase(commitHash)).isTrue();
-
+            Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
+                    + "/admin/groups/more-members", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
         }
     }
 
-    public void testGetCommitNonExistent() throws Exception {
+    public void testGetListUserByGroupOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group-error.json")).setResponseCode(401));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        CommitsApi api = baseApi.commitsApi();
+        AdminApi api = baseApi.adminApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
+            UserPage up = api.listUserByGroup("test", null, 0, 2);
+            assertThat(up).isNotNull();
+            assertThat(up.errors()).isNotEmpty();
 
-            Commit commit = api.get(projectKey, repoKey, commitHash, null);
-            assertThat(commit).isNotNull();
-            assertThat(commit.errors().size() > 0).isTrue();
-
+            Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
+                    + "/admin/groups/more-members", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
