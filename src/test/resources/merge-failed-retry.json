@@ -1,0 +1,9 @@
+{  
+   "errors":[  
+      {  
+         "context" : null,
+         "message" : "New changes were pushed to master in PROJECT/repo while the merge was being performed. Please retry the merge.",
+         "exceptionName" : "com.atlassian.stash.scm.MergeException"
+      }
+   ]
+}
