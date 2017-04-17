@@ -18,7 +18,6 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.BitbucketClient;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import org.testng.annotations.Test;
 
@@ -28,11 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
-    public void testCreateClient() {
-        BitbucketClient client = BitbucketClient.builder().endPoint(this.endpoint).build();
-
-        UserPage userPage = client.api().adminApi().listUserByGroup("test21345435435", null, null, null);
+    public void testListUsersByNonExistentGroup() {
+        UserPage userPage = api().listUserByGroup(randomString(), null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
+    }
+    
+    private AdminApi api() {
+        return api.adminApi();
     }
 }
