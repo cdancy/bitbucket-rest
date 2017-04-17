@@ -86,7 +86,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-changes.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
         CommitsApi api = baseApi.commitsApi();
         try {
@@ -98,7 +98,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 12);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
+                    + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -109,7 +109,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
-            .setResponseCode(404));
+                .setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         CommitsApi api = baseApi.commitsApi();
         try {
@@ -120,7 +120,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 12, "start", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
+                    + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
