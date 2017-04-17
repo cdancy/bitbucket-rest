@@ -1,0 +1,21 @@
+{
+  "approved": false,
+  "role": "PARTICIPANT",
+  "status": "UNAPPROVED",
+  "user": {
+    "active": true,
+    "displayName": "test123",
+    "emailAddress": "test123@asdf.com",
+    "id": 339,
+    "links": {
+      "self": [
+        {
+          "href": "https://test.test.com/users/test123"
+        }
+      ]
+    },
+    "name": "test123",
+    "slug": "test123",
+    "type": "NORMAL"
+  }
+}

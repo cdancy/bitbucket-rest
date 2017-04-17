@@ -1,0 +1,9 @@
+{
+    "errors": [
+        {
+            "context": null,
+            "exceptionName": "com.atlassian.bitbucket.pull.NoSuchPullRequestException",
+            "message": "No pull request exists with ID 999 for this repository 136"
+        }
+    ]
+}

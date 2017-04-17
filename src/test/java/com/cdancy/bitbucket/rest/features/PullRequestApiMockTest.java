@@ -21,11 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import org.testng.annotations.Test;
-
-import com.cdancy.bitbucket.rest.BitbucketApi;
-import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
+import com.cdancy.bitbucket.rest.domain.participants.Participants;
+import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
@@ -33,6 +31,13 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
+import com.cdancy.bitbucket.rest.options.CreateParticipants;
+import org.testng.annotations.Test;
+
+import com.cdancy.bitbucket.rest.BitbucketApi;
+import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.google.common.collect.ImmutableMap;
@@ -409,6 +414,192 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/commits", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestActivities() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            ActivitiesPage activities = api.listActivities(project, repo, 1, 5, 0);
+            assertThat(activities).isNotNull();
+            assertThat(activities.errors()).isEmpty();
+            assertThat(activities.values()).hasSize(2);
+            assertThat(activities.values().get(1).id() == 29733L).isTrue();
+
+            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestActivitiesOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities-error.json"))
+                .setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            ActivitiesPage activities = api.listActivities(project, repo, 1, 5, 0);
+            assertThat(activities).isNotNull();
+            assertThat(activities.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestParticipants() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants.json"))
+                .setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            ParticipantsPage participants = api.listParticipants(project, repo, 1, 5, 0);
+            assertThat(participants).isNotNull();
+            assertThat(participants.errors()).isEmpty();
+            assertThat(participants.values()).hasSize(1);
+            assertThat(participants.values().get(0).approved()).isFalse();
+
+            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestParticipantsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants-error.json"))
+                .setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+
+            ParticipantsPage participants = api.listParticipants(project, repo, 1, 5, 0);
+            assertThat(participants).isNotNull();
+            assertThat(participants.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testPullRequestAssignPaticipants() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/participants.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            Long pullRequestId = 839L;
+            User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
+            CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+                    false, Participants.Status.UNAPPROVED);
+            Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
+            assertThat(success).isNotNull();
+            assertThat(success.errors()).isEmpty();
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testPullRequestAssignPaticipantsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/participants-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            Long pullRequestId = 839L;
+            User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
+            CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+                    false, Participants.Status.UNAPPROVED);
+            Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
+            assertThat(success).isNotNull();
+            assertThat(success.errors()).isNotEmpty();
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeletePullRequestPaticipants() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            Long pullRequestId = 839L;
+            String userSlug = "bbdfgf";
+            boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
+            assertThat(success).isTrue();
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants/" + userSlug);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeletePullRequestPaticipantsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            Long pullRequestId = 839L;
+            String userSlug = "bbdfgf";
+            boolean success = api.deleteParticipants(projectKey, repoKey, pullRequestId, userSlug);
+            assertThat(success).isFalse();
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+                    + pullRequestId + "/participants/" + userSlug);
         } finally {
             baseApi.close();
             server.shutdown();
