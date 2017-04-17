@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import org.jclouds.rest.annotations.Fallback;
@@ -50,4 +51,16 @@ public interface CommitsApi {
             @PathParam("repo") String repo,
             @PathParam("commitId") String commitId,
             @Nullable @QueryParam("path") String path);
+
+    @Named("commits:list-Changes")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm46478324982720"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/commits/{commitId}/changes")
+    @Fallback(BitbucketFallbacks.ChangePageOnError.class)
+    @GET
+    ChangePage listChanges(@PathParam("project") String project,
+                           @PathParam("repo") String repo,
+                           @PathParam("commitId") String commitId,
+                           @Nullable @QueryParam("start") Integer start,
+                           @Nullable @QueryParam("limit") Integer limit);
 }
