@@ -1,0 +1,24 @@
+{
+  "isLastPage": true,
+  "limit": 100,
+  "size": 2,
+  "start": 0,
+  "values": [
+    {
+      "dateAdded": 1492526977926,
+      "description": "#120 failed\n(1 test failed)\nin 45 minutes",
+      "key": "AC-TEST",
+      "name": "develop",
+      "state": "FAILED",
+      "url": "https://bamboo.acme.com/browse/AC-TEST-120"
+    },
+    {
+      "dateAdded": 1492525545176,
+      "description": "#110 successful\n(with 1288 tests)\nin 6 minutes",
+      "key": "AC-TEST2",
+      "name": "develop",
+      "state": "SUCCESSFUL",
+      "url": "https://bamboo.acme.com/browse/AC-TEST2-110"
+    }
+  ]
+}

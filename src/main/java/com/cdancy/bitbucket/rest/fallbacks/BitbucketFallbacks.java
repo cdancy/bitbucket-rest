@@ -29,6 +29,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
@@ -99,6 +100,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class StatusPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createStatusPageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -271,6 +281,10 @@ public final class BitbucketFallbacks {
 
     public static UserPage createUserPageFromErrors(List<Error> errors) {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static StatusPage createStatusPageFromErrors(List<Error> errors) {
+        return StatusPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static BranchPermissionPage createBranchPermissionPageFromErrors(List<Error> errors) {
