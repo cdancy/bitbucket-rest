@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Mock tests for the {@link BuildApi} class.
  */
-@Test(groups = "unit", testName = "BranchApiMockTest")
+@Test(groups = "unit", testName = "BuildApiMockTest")
 public class BuildApiMockTest extends BaseBitbucketMockTest {
 
     public void testGetStatus() throws Exception {
