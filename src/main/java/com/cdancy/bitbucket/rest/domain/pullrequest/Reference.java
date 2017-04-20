@@ -34,6 +34,9 @@ public abstract class Reference {
     @Nullable
     public abstract String displayId();
 
+    @Nullable
+    public abstract String latestCommit();
+
     Reference() {
     }
 
@@ -47,8 +50,13 @@ public abstract class Reference {
         return create(id, repository, displayId);
     }
 
-    @SerializedNames({"id", "repository", "displayId"})
+    @Deprecated
     public static Reference create(String id, MinimalRepository repository, String displayId) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId);
+        return create(id, repository, displayId, null);
+    }
+
+    @SerializedNames({"id", "repository", "displayId", "latestCommit"})
+    public static Reference create(String id, MinimalRepository repository, String displayId, String latestCommit) {
+        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId, latestCommit);
     }
 }

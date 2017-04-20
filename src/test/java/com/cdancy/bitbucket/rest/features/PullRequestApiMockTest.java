@@ -67,7 +67,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             MinimalRepository repository1 = MinimalRepository.create("my-repo", null, proj1);
             MinimalRepository repository2 = MinimalRepository.create("my-repo", null, proj2);
 
-            Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, "feature-ABC-123");
+            String commitId = "930228bb501e07c2653771858320873d94518e33";
+            Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, "feature-ABC-123", commitId);
             Reference toRef = Reference.create("refs/heads/master", repository2);
             CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
             PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
@@ -78,6 +79,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.links()).isNotNull();
+            assertThat(pr.fromRef().latestCommit().equals(commitId));
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests");
         } finally {
