@@ -19,7 +19,6 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
@@ -29,7 +28,6 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,7 +53,7 @@ public class BuildApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
+                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -76,7 +74,7 @@ public class BuildApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
+                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -97,7 +95,7 @@ public class BuildApiMockTest extends BaseBitbucketMockTest {
             assertThat(summary.successful() == 3).isTrue();
 
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
+                    + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
         } finally {
             baseApi.close();
             server.shutdown();

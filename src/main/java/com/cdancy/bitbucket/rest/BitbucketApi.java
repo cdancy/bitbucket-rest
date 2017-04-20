@@ -19,7 +19,16 @@ package com.cdancy.bitbucket.rest;
 
 import java.io.Closeable;
 
-import com.cdancy.bitbucket.rest.features.*;
+import com.cdancy.bitbucket.rest.features.AdminApi;
+import com.cdancy.bitbucket.rest.features.BuildApi;
+import com.cdancy.bitbucket.rest.features.BranchApi;
+import com.cdancy.bitbucket.rest.features.CommentsApi;
+import com.cdancy.bitbucket.rest.features.CommitsApi;
+import com.cdancy.bitbucket.rest.features.ProjectApi;
+import com.cdancy.bitbucket.rest.features.PullRequestApi;
+import com.cdancy.bitbucket.rest.features.RepositoryApi;
+import com.cdancy.bitbucket.rest.features.SystemApi;
+import com.cdancy.bitbucket.rest.features.TagApi;
 
 import org.jclouds.rest.annotations.Delegate;
 
