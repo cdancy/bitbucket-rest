@@ -90,11 +90,11 @@ public class BuildApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         BuildApi api = baseApi.buildApi();
         try {
-            Summary statusPage = api.summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
-            assertThat(statusPage).isNotNull();
-            assertThat(statusPage.failed() == 1);
-            assertThat(statusPage.inProgress() == 2);
-            assertThat(statusPage.successful() == 3);
+            Summary summary = api.summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
+            assertThat(summary).isNotNull();
+            assertThat(summary.failed() == 1).isTrue();
+            assertThat(summary.inProgress() == 2).isTrue();
+            assertThat(summary.successful() == 3).isTrue();
 
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                 + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
