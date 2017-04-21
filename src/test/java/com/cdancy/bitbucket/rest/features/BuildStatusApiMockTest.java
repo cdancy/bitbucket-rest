@@ -33,17 +33,17 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Mock tests for the {@link BuildApi} class.
+ * Mock tests for the {@link BuildStatusApi} class.
  */
-@Test(groups = "unit", testName = "BuildApiMockTest")
-public class BuildApiMockTest extends BaseBitbucketMockTest {
+@Test(groups = "unit", testName = "BuildStatusApiMockTest")
+public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
     public void testGetStatus() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildApi api = baseApi.buildApi();
+        BuildStatusApi api = baseApi.buildStatusApiApi();
         try {
             StatusPage statusPage = api.status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
             assertThat(statusPage).isNotNull();
@@ -65,7 +65,7 @@ public class BuildApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-error.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildApi api = baseApi.buildApi();
+        BuildStatusApi api = baseApi.buildStatusApiApi();
         try {
             StatusPage statusPage = api.status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
             assertThat(statusPage).isNotNull();
@@ -86,7 +86,7 @@ public class BuildApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-summary.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildApi api = baseApi.buildApi();
+        BuildStatusApi api = baseApi.buildStatusApiApi();
         try {
             Summary summary = api.summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
             assertThat(summary).isNotNull();

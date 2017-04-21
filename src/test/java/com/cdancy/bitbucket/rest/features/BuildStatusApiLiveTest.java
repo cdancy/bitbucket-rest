@@ -24,8 +24,8 @@ import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test(groups = "live", testName = "BuildApiLiveTest")
-public class BuildApiLiveTest extends BaseBitbucketApiLiveTest {
+@Test(groups = "live", testName = "BuildStatusApiLiveTest")
+public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetStatusByNonExistentCommit() {
@@ -43,7 +43,7 @@ public class BuildApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(statusPage.failed() == 0).isTrue();
     }
 
-    private BuildApi api() {
-        return api.buildApi();
+    private BuildStatusApi api() {
+        return api.buildStatusApiApi();
     }
 }

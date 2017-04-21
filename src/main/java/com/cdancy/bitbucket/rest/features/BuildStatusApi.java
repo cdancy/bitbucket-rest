@@ -38,7 +38,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/build-status/{jclouds.api-version}")
-public interface BuildApi {
+public interface BuildStatusApi {
 
     @Named("build:status")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111531152"})
