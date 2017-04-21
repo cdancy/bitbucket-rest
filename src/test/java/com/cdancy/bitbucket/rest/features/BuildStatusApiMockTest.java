@@ -43,7 +43,7 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildStatusApi api = baseApi.buildStatusApiApi();
+        BuildStatusApi api = baseApi.buildStatusApi();
         try {
             StatusPage statusPage = api.status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
             assertThat(statusPage).isNotNull();
@@ -65,7 +65,7 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-error.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildStatusApi api = baseApi.buildStatusApiApi();
+        BuildStatusApi api = baseApi.buildStatusApi();
         try {
             StatusPage statusPage = api.status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
             assertThat(statusPage).isNotNull();
@@ -86,7 +86,7 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-summary.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildStatusApi api = baseApi.buildStatusApiApi();
+        BuildStatusApi api = baseApi.buildStatusApi();
         try {
             Summary summary = api.summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
             assertThat(summary).isNotNull();

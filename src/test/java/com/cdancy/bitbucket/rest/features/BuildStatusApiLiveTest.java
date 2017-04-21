@@ -44,6 +44,6 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     private BuildStatusApi api() {
-        return api.buildStatusApiApi();
+        return api.buildStatusApi();
     }
 }

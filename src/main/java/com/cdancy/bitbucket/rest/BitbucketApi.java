@@ -62,5 +62,5 @@ public interface BitbucketApi extends Closeable {
     AdminApi adminApi();
 
     @Delegate
-    BuildStatusApi buildStatusApiApi();
+    BuildStatusApi buildStatusApi();
 }
