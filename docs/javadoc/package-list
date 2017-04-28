@@ -1,10 +1,14 @@
 com.cdancy.bitbucket.rest
 com.cdancy.bitbucket.rest.annotations
 com.cdancy.bitbucket.rest.config
+com.cdancy.bitbucket.rest.domain.activities
+com.cdancy.bitbucket.rest.domain.admin
 com.cdancy.bitbucket.rest.domain.branch
+com.cdancy.bitbucket.rest.domain.build
 com.cdancy.bitbucket.rest.domain.comment
 com.cdancy.bitbucket.rest.domain.commit
 com.cdancy.bitbucket.rest.domain.common
+com.cdancy.bitbucket.rest.domain.participants
 com.cdancy.bitbucket.rest.domain.project
 com.cdancy.bitbucket.rest.domain.pullrequest
 com.cdancy.bitbucket.rest.domain.repository
