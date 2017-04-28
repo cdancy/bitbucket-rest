@@ -27,20 +27,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "live", testName = "BuildStatusApiLiveTest")
 public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
 
+    String statusPageCommitHash = "5284b6cec569346855710b535dafb915423110c2";
+    String summaryPageCommitHash = "5284b6cec569346855710b535dafb915423110c2";
+
+    @Test
+    public void testGetStatusByCommit() {
+        StatusPage statusPage = api().status(statusPageCommitHash, 0, 100);
+        assertThat(statusPage).isNotNull();
+        assertThat(statusPage.size() > 0).isTrue();
+    }
+    
     @Test
     public void testGetStatusByNonExistentCommit() {
-        StatusPage statusPage = api().status(randomString(),0,100);
+        StatusPage statusPage = api().status(randomString(), 0, 100);
         assertThat(statusPage).isNotNull();
         assertThat(statusPage.size() == 0).isTrue();
     }
 
     @Test
+    public void testGetSummaryByCommit() {
+        Summary summary = api().summary(summaryPageCommitHash);
+        assertThat(summary).isNotNull();
+        assertThat(summary.successful() == 1).isTrue();
+        assertThat(summary.inProgress() == 0).isTrue();
+        assertThat(summary.failed() == 0).isTrue();
+    }
+    
+    @Test
     public void testGetSummaryByNonExistentCommit() {
-        Summary statusPage = api().summary(randomString());
-        assertThat(statusPage).isNotNull();
-        assertThat(statusPage.successful() == 0).isTrue();
-        assertThat(statusPage.inProgress() == 0).isTrue();
-        assertThat(statusPage.failed() == 0).isTrue();
+        Summary summary = api().summary(randomString());
+        assertThat(summary).isNotNull();
+        assertThat(summary.successful() == 0).isTrue();
+        assertThat(summary.inProgress() == 0).isTrue();
+        assertThat(summary.failed() == 0).isTrue();
     }
 
     private BuildStatusApi api() {
