@@ -16,7 +16,8 @@
             "project": {
                 "key": "PRJ"
             }
-        }
+        },
+        "latestCommit": "930228bb501e07c2653771858320873d94518e33"
     },
     "toRef": {
         "id": "refs/heads/master",
