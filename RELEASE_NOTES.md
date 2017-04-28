@@ -1,7 +1,8 @@
-### Version 0.0.15 (TBA)
+### Version 0.0.15 (4/28/2017)
 * ADDED: `PullRequestApi` gained endpoints `listActivities`, `listParticipants`, `assignParticipant`, and `deleteParticipant`. - [PR 55](https://github.com/cdancy/bitbucket-rest/pull/55)
 * ADDED: new api `AdminApi` with single endpoint `listUserByGroup`. - [PR 57](https://github.com/cdancy/bitbucket-rest/pull/57/files)
 * ADDED: `changes` endpoint to `CommitsApi`. - [PR 58](https://github.com/cdancy/bitbucket-rest/pull/58)
+* ADDED: new api `BuildStatusApi` with endpoints `status` and `summary`. - [PR 59](https://github.com/cdancy/bitbucket-rest/pull/59)
 
 ### Version 0.0.14 (3/13/2017)
 * ADDED: `Documentation` annotation to all endpoints. The idea is that this annotation will hold a list of links where the user can go to get more detailed information on the endpoint and it's options.
