@@ -34,9 +34,16 @@ import org.jclouds.rest.annotations.Delegate;
 
 public interface BitbucketApi extends Closeable {
 
+    
+    @Delegate
+    AdminApi adminApi();
+    
     @Delegate
     BranchApi branchApi();
 
+    @Delegate
+    BuildStatusApi buildStatusApi();
+    
     @Delegate
     CommentsApi commentsApi();
 
@@ -57,10 +64,4 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     TagApi tagApi();
-
-    @Delegate
-    AdminApi adminApi();
-
-    @Delegate
-    BuildStatusApi buildStatusApi();
 }
