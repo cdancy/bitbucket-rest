@@ -281,7 +281,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                   + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
