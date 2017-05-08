@@ -21,8 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import com.cdancy.bitbucket.rest.domain.build.Status;
-import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import org.testng.annotations.Test;
 
@@ -260,7 +258,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -283,7 +281,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -303,7 +301,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isTrue();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -323,7 +321,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isFalse();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -343,7 +341,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isTrue();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -363,7 +361,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isFalse();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -388,7 +386,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -411,7 +409,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -431,7 +429,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isTrue();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -451,7 +449,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isFalse();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -471,7 +469,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isTrue();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -491,7 +489,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isFalse();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();

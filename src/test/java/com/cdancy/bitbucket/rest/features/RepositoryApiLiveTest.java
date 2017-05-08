@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import com.cdancy.bitbucket.rest.domain.repository.Permissions;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import org.assertj.core.api.Condition;
 import org.testng.annotations.AfterClass;
