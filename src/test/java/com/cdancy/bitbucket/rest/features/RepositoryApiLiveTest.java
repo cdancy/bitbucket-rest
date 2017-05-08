@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import org.assertj.core.api.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -110,6 +111,12 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         Repository repository = api().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
+    }
+
+    @Test(dependsOnMethods = "testGetRepository")
+    public void testListPermissionGroup() {
+        PermissionsPage permissionsPage = api().listPermissionsGroup(projectKey, repoKey, 0, 100);
+        assertThat(permissionsPage.values()).isEmpty();
     }
 
     @AfterClass
