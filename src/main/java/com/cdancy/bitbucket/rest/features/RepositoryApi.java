@@ -92,8 +92,8 @@ public interface RepositoryApi {
     @PUT
     boolean createPermissionsGroup(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
-                                   @Nullable @QueryParam("permission") String permission,
-                                   @Nullable @QueryParam("name") String name);
+                                   @QueryParam("permission") String permission,
+                                   @QueryParam("name") String name);
 
     @Named("repository:delete-Permissions-Group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
@@ -103,5 +103,5 @@ public interface RepositoryApi {
     @DELETE
     boolean deletePermissionsGroup(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
-                                   @Nullable @QueryParam("name") String name);
+                                   @QueryParam("name") String name);
 }
