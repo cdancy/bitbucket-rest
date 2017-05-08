@@ -1,0 +1,27 @@
+{
+  "isLastPage": true,
+  "limit": 25,
+  "size": 1,
+  "start": 0,
+  "values": [
+    {
+      "permission": "REPO_READ",
+      "user": {
+        "active": true,
+        "displayName": "test123 123",
+        "emailAddress": "test@amce.com",
+        "id": 339,
+        "links": {
+          "self": [
+            {
+              "href": "https://bitbucket.amce.com/users/test"
+            }
+          ]
+        },
+        "name": "test",
+        "slug": "test",
+        "type": "NORMAL"
+      }
+    }
+  ]
+}
