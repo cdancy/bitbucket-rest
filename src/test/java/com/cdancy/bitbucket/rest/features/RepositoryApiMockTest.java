@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -235,6 +236,54 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(repositoryPage.errors()).isNotEmpty();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
         } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testListPermissionUser() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        RepositoryApi api = baseApi.repositoryApi();
+        try {
+            String projectKey = "PRJ1";
+            String repoKey = "1234";
+            PermissionsPage permissionsPage = api.listPermissionsUser(projectKey, repoKey, 0, 100);
+            assertThat(permissionsPage).isNotNull();
+            assertThat(permissionsPage.errors()).isEmpty();
+            assertThat(permissionsPage.size() == 1).isTrue();
+            assertThat(permissionsPage.values().get(0).group() == null).isTrue();
+            assertThat(permissionsPage.values().get(0).user().name().equals("test")).isTrue();
+
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListPermissionUserOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        RepositoryApi api = baseApi.repositoryApi();
+        try {
+            String projectKey = "PRJ1";
+            String repoKey = "1234";
+            PermissionsPage permissionsPage = api.listPermissionsUser(projectKey, repoKey, 0, 100);
+            assertThat(permissionsPage).isNotNull();
+            assertThat(permissionsPage.values()).isEmpty();
+            assertThat(permissionsPage.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+        } finally {
+            baseApi.close();
             server.shutdown();
         }
     }
