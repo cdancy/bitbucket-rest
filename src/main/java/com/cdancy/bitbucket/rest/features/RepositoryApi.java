@@ -23,6 +23,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -82,4 +83,25 @@ public interface RepositoryApi {
     RepositoryPage list(@PathParam("project") String project,
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("repository:create-Permissions-Users")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/users")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @PUT
+    boolean createPermissionsUser(@PathParam("project") String project,
+                                  @PathParam("repo") String repo,
+                                  @QueryParam("permission") String permission,
+                                  @QueryParam("name") String name);
+
+    @Named("repository:delete-Permissions-Users")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/users")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deletePermissionsUser(@PathParam("project") String project,
+                                  @PathParam("repo") String repo,
+                                  @QueryParam("name") String name);
 }
