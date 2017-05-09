@@ -17,21 +17,26 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Map;
-
-import org.testng.annotations.Test;
-
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
+import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
+import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Mock tests for the {@link RepositoryApi} class.
@@ -234,6 +239,105 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isNotEmpty();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestSettings() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            RepositoryApi api = baseApi.repositoryApi();
+
+            String projectKey = "PRJ1";
+            String repoKey = "test";
+            PullRequestSettings settings = api.getPullRequestSettings(projectKey, repoKey);
+
+            assertThat(settings).isNotNull();
+            assertThat(settings.errors()).isEmpty();
+            assertThat(settings.requiredAllApprovers()).isFalse();
+            assertThat(settings.requiredAllTasksComplete()).isTrue();
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetPullRequestSettingsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings-error.json")).setResponseCode(404));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            RepositoryApi api = baseApi.repositoryApi();
+
+            String projectKey = "PRJ1";
+            String repoKey = "test";
+            PullRequestSettings settings = api.getPullRequestSettings(projectKey, repoKey);
+
+            assertThat(settings).isNotNull();
+            assertThat(settings.errors()).isNotEmpty();
+            assertThat(settings.requiredAllApprovers()).isNull();
+            assertThat(settings.requiredAllTasksComplete()).isNull();
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testUpdatePullRequestSettings() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        RepositoryApi api = baseApi.repositoryApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.ff, null);
+            List<MergeStrategy> listStrategy = new ArrayList<>();
+            listStrategy.add(strategy);
+            MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+            PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
+
+            assertThat(settings).isNotNull();
+            assertThat(settings.errors()).isEmpty();
+            assertThat(settings.requiredAllApprovers()).isFalse();
+            assertThat(settings.requiredAllTasksComplete()).isTrue();
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testUpdatePullRequestSettingsOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings-error.json")).setResponseCode(404));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            RepositoryApi api = baseApi.repositoryApi();
+
+            String projectKey = "PRJ1";
+            String repoKey = "test";
+            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.ff, null);
+            List<MergeStrategy> listStrategy = new ArrayList<>();
+            listStrategy.add(strategy);
+            MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+            PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
+
+            assertThat(settings).isNotNull();
+            assertThat(settings.errors()).isNotEmpty();
+            assertThat(settings.requiredAllApprovers()).isNull();
+            assertThat(settings.requiredAllTasksComplete()).isNull();
+            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
         } finally {
             server.shutdown();
         }

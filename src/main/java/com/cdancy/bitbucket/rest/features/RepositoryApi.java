@@ -84,14 +84,20 @@ public interface RepositoryApi {
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
 
+    @Named("repository:get-PullRequest-Settings")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054915136"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/pull-requests")
+    @Fallback(BitbucketFallbacks.PullRequestSettingsOnError.class)
     @GET
     PullRequestSettings getPullRequestSettings(@PathParam("project") String project,
                                                @PathParam("repo") String repo);
 
+    @Named("repository:update-PullRequest-Settings")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054915136"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/pull-requests")
+    @Fallback(BitbucketFallbacks.PullRequestSettingsOnError.class)
     @POST
     PullRequestSettings updatePullRequestSettings(@PathParam("project") String project,
                                                   @PathParam("repo") String repo,

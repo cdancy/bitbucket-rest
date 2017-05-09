@@ -17,28 +17,39 @@
 
 package com.cdancy.bitbucket.rest.domain.repository;
 
+import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-@AutoValue
-public abstract class PullRequestSettings {
+import java.util.List;
 
+@AutoValue
+public abstract class PullRequestSettings implements ErrorsHolder {
+
+    @Nullable
     public abstract MergeConfig mergeConfig();
 
-    public abstract boolean requiredAllApprovers();
+    @Nullable
+    public abstract Boolean requiredAllApprovers();
 
-    public abstract boolean requiredAllTasksComplete();
+    @Nullable
+    public abstract Boolean requiredAllTasksComplete();
 
-    public abstract long requiredApprovers();
+    @Nullable
+    public abstract Long requiredApprovers();
 
-    public abstract long requiredSuccessfulBuilds();
+    @Nullable
+    public abstract Long requiredSuccessfulBuilds();
 
     @SerializedNames({ "mergeConfig", "requiredAllApprovers", "requiredAllTasksComplete", "requiredApprovers",
-            "requiredSuccessfulBuilds" })
-    public static PullRequestSettings create(MergeConfig mergeConfig, boolean requiredAllApprovers,
-                                             boolean requiredAllTasksComplete, long requiredApprovers,
-                                             long requiredSuccessfulBuilds) {
-        return new AutoValue_PullRequestSettings(mergeConfig, requiredAllApprovers, requiredAllTasksComplete,
-            requiredApprovers, requiredSuccessfulBuilds);
+            "requiredSuccessfulBuilds", "errors" })
+    public static PullRequestSettings create(MergeConfig mergeConfig, Boolean requiredAllApprovers,
+                                             Boolean requiredAllTasksComplete, Long requiredApprovers,
+                                             Long requiredSuccessfulBuilds, @Nullable List<Error> errors) {
+        return new AutoValue_PullRequestSettings(Utils.nullToEmpty(errors), mergeConfig, requiredAllApprovers,
+            requiredAllTasksComplete, requiredApprovers, requiredSuccessfulBuilds);
     }
 }

@@ -25,14 +25,19 @@ import java.util.List;
 @AutoValue
 public abstract class MergeConfig {
 
+    public enum MergeConfigType {
+        REPOSITORY,
+        DEFAULT
+    }
+
     public abstract MergeStrategy defaultStrategy();
 
     public abstract List<MergeStrategy> strategies();
 
-    public abstract String type();
+    public abstract MergeConfigType type();
 
     @SerializedNames({ "defaultStrategy", "strategies", "type"})
-    public static MergeConfig create(MergeStrategy defaultStrategy, List<MergeStrategy> strategies, String type) {
+    public static MergeConfig create(MergeStrategy defaultStrategy, List<MergeStrategy> strategies, MergeConfigType type) {
         return new AutoValue_MergeConfig(defaultStrategy, strategies, type);
     }
 }

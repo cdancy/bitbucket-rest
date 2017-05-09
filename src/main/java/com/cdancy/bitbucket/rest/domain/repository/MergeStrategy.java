@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.repository;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -61,18 +62,22 @@ public abstract class MergeStrategy {
         }
     }
 
+    @Nullable
     public abstract String description();
 
-    public abstract boolean enabled();
+    @Nullable
+    public abstract Boolean enabled();
 
+    @Nullable
     public abstract String flag();
 
     public abstract MergeStrategyId id();
 
+    @Nullable
     public abstract String name();
 
     @SerializedNames({ "description", "enabled", "flag", "id", "name"})
-    public static MergeStrategy create(String description, boolean enabled, String flag, MergeStrategyId id, String name) {
+    public static MergeStrategy create(String description, Boolean enabled, String flag, MergeStrategyId id, String name) {
         return new AutoValue_MergeStrategy(description, enabled, flag, id, name);
     }
 }
