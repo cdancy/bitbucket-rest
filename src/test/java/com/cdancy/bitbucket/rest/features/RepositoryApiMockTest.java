@@ -225,7 +225,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testGetRepositoryListNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -337,7 +337,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(settings.requiredAllApprovers()).isNull();
             assertThat(settings.requiredAllTasksComplete()).isNull();
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
         } finally {
             server.shutdown();
         }
