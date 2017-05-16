@@ -43,6 +43,7 @@ import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import org.jclouds.Fallback;
@@ -195,6 +196,15 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class PermissionsPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createPermissionsPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class ProjectOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
@@ -321,6 +331,10 @@ public final class BitbucketFallbacks {
 
     public static RepositoryPage createRepositoryPageFromErrors(List<Error> errors) {
         return RepositoryPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static PermissionsPage createPermissionsPageFromErrors(List<Error> errors) {
+        return PermissionsPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static Project createProjectFromErrors(List<Error> errors) {

@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -104,4 +105,15 @@ public interface RepositoryApi {
     boolean deletePermissionsUser(@PathParam("project") String project,
                                   @PathParam("repo") String repo,
                                   @QueryParam("name") String name);
+
+    @Named("repository:list-permissions-by-group")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/groups")
+    @Fallback(BitbucketFallbacks.PermissionsPageOnError.class)
+    @GET
+    PermissionsPage listPermissionsByGroup(@PathParam("project") String project,
+                                         @PathParam("repo") String repo,
+                                         @Nullable @QueryParam("start") Integer start,
+                                         @Nullable @QueryParam("limit") Integer limit);
 }
