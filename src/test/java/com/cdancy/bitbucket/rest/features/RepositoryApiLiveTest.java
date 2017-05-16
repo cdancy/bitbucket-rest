@@ -119,6 +119,12 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(permissionsPage.values()).isEmpty();
     }
 
+    @Test(dependsOnMethods = "testGetRepository")
+    public void testListPermissionByGroup() {
+        PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
+        assertThat(permissionsPage.values()).isEmpty();
+    }
+
     @AfterClass
     public void fin() {
         boolean success = api.projectApi().delete(projectKey);

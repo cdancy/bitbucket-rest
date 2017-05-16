@@ -17,15 +17,9 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Map;
-
-import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
-import org.testng.annotations.Test;
-
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
@@ -33,6 +27,11 @@ import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import org.testng.annotations.Test;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Mock tests for the {@link RepositoryApi} class.
@@ -221,7 +220,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testGetRepositoryListNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
@@ -249,6 +248,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ1";
             String repoKey = "1234";
+
             PermissionsPage permissionsPage = api.listPermissionsUser(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.errors()).isEmpty();
@@ -259,6 +259,32 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListPermissionByGroup() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-group.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        RepositoryApi api = baseApi.repositoryApi();
+        try {
+            String projectKey = "PRJ1";
+            String repoKey = "1234";
+
+            PermissionsPage permissionsPage = api.listPermissionsByGroup(projectKey, repoKey, 0, 100);
+            assertThat(permissionsPage).isNotNull();
+            assertThat(permissionsPage.errors()).isEmpty();
+            assertThat(permissionsPage.size() == 1).isTrue();
+            assertThat(permissionsPage.values().get(0).user() == null).isTrue();
+            assertThat(permissionsPage.values().get(0).group().name().equals("test12345")).isTrue();
+
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -282,6 +308,29 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListPermissionByGroupOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-group-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        RepositoryApi api = baseApi.repositoryApi();
+        try {
+            String projectKey = "PRJ1";
+            String repoKey = "1234";
+            PermissionsPage permissionsPage = api.listPermissionsByGroup(projectKey, repoKey, 0, 100);
+            assertThat(permissionsPage).isNotNull();
+            assertThat(permissionsPage.values()).isEmpty();
+            assertThat(permissionsPage.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
