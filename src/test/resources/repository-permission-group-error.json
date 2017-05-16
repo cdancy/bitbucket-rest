@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "exceptionName": "com.atlassian.bitbucket.project.NoSuchProjectException",
+      "message": "Project test123 does not exist."
+    }
+  ]
+}
