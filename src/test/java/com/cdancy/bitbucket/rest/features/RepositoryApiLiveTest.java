@@ -119,6 +119,18 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(permissionsPage.values()).isEmpty();
     }
 
+    @Test(dependsOnMethods = "testGetRepository")
+    public void testCreatePermissionByGroupNonExistent() {
+        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = "testGetRepository")
+    public void testDeletePermissionByGroupNonExistent() {
+        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, randomString());
+        assertThat(success).isFalse();
+    }
+
     @AfterClass
     public void fin() {
         boolean success = api.projectApi().delete(projectKey);
