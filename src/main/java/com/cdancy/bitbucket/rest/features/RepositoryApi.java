@@ -90,10 +90,10 @@ public interface RepositoryApi {
     @Path("/{project}/repos/{repo}/permissions/groups")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @PUT
-    boolean createPermissionsGroup(@PathParam("project") String project,
-                                   @PathParam("repo") String repo,
-                                   @QueryParam("permission") String permission,
-                                   @QueryParam("name") String name);
+    boolean createPermissionsByGroup(@PathParam("project") String project,
+                                     @PathParam("repo") String repo,
+                                     @QueryParam("permission") String permission,
+                                     @QueryParam("name") String name);
 
     @Named("repository:delete-Permissions-Group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
@@ -101,9 +101,9 @@ public interface RepositoryApi {
     @Path("/{project}/repos/{repo}/permissions/groups")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
     @DELETE
-    boolean deletePermissionsGroup(@PathParam("project") String project,
-                                   @PathParam("repo") String repo,
-                                   @QueryParam("name") String name);
+    boolean deletePermissionsByGroup(@PathParam("project") String project,
+                                     @PathParam("repo") String repo,
+                                     @QueryParam("name") String name);
 
     @Named("repository:list-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
