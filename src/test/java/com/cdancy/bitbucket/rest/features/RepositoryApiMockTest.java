@@ -239,7 +239,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testCreatePermissionUser() throws Exception {
+    public void testCreatePermissionByUser() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
@@ -248,7 +248,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsUser(projectKey, repoKey, "test123", "123");
+            boolean success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
             assertThat(success).isTrue();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -284,7 +284,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testCreatePermissionUserOnError() throws Exception {
+    public void testCreatePermissionByUserOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
@@ -293,7 +293,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsUser(projectKey, repoKey, "test123", "123");
+            boolean success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
             assertThat(success).isFalse();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -304,7 +304,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testDeletePermissionUser() throws Exception {
+    public void testDeletePermissionByUser() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
@@ -313,7 +313,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deletePermissionsUser(projectKey, repoKey, "test123");
+            boolean success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
             assertThat(success).isTrue();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -324,7 +324,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testDeletePermissionUserOnError() throws Exception {
+    public void testDeletePermissionByUserOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
@@ -333,7 +333,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deletePermissionsUser(projectKey, repoKey, "test123");
+            boolean success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
             assertThat(success).isFalse();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
