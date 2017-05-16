@@ -90,11 +90,11 @@ public interface RepositoryApi {
     @Path("/{project}/repos/{repo}/permissions/users")
     @Fallback(BitbucketFallbacks.PermissionsPageOnError.class)
     @GET
-    PermissionsPage listPermissionsUser(@PathParam("project") String project,
-                                        @PathParam("repo") String repo,
-                                        @Nullable @QueryParam("start") Integer start,
-                                        @Nullable @QueryParam("limit") Integer limit);
-    
+    PermissionsPage listPermissionsByUser(@PathParam("project") String project,
+                                          @PathParam("repo") String repo,
+                                          @Nullable @QueryParam("start") Integer start,
+                                          @Nullable @QueryParam("limit") Integer limit);
+
     @Named("repository:list-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)

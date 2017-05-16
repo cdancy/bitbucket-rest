@@ -239,7 +239,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testListPermissionUser() throws Exception {
+    public void testListPermissionByUser() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users.json")).setResponseCode(200));
@@ -249,7 +249,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ1";
             String repoKey = "1234";
 
-            PermissionsPage permissionsPage = api.listPermissionsUser(projectKey, repoKey, 0, 100);
+            PermissionsPage permissionsPage = api.listPermissionsByUser(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.errors()).isEmpty();
             assertThat(permissionsPage.size() == 1).isTrue();
@@ -291,7 +291,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testListPermissionUserOnError() throws Exception {
+    public void testListPermissionByUserOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users-error.json")).setResponseCode(404));
@@ -300,7 +300,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ1";
             String repoKey = "1234";
-            PermissionsPage permissionsPage = api.listPermissionsUser(projectKey, repoKey, 0, 100);
+            PermissionsPage permissionsPage = api.listPermissionsByUser(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.values()).isEmpty();
             assertThat(permissionsPage.errors()).isNotEmpty();
