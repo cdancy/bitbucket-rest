@@ -114,8 +114,8 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = "testGetRepository")
-    public void testListPermissionGroup() {
-        PermissionsPage permissionsPage = api().listPermissionsGroup(projectKey, repoKey, 0, 100);
+    public void testListPermissionByGroup() {
+        PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
         assertThat(permissionsPage.values()).isEmpty();
     }
 
