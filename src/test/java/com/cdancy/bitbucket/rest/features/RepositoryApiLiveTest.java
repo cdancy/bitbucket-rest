@@ -21,6 +21,7 @@ import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
 import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
@@ -137,6 +138,12 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(settings.errors().isEmpty()).isTrue();
         assertThat(settings.mergeConfig().strategies()).isNotEmpty();
         assertThat(MergeStrategy.MergeStrategyId.squash.equals(settings.mergeConfig().defaultStrategy().id()));
+    }
+
+    @Test(dependsOnMethods = "testGetRepository")
+    public void testListPermissionByGroup() {
+        PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
+        assertThat(permissionsPage.values()).isEmpty();
     }
 
     @AfterClass
