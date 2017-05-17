@@ -18,29 +18,29 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
-import javax.inject.Named;
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.options.CreateRepository;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.rest.annotations.BinderParam;
+import org.jclouds.rest.annotations.Fallback;
+import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.binders.BindToJsonPayload;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.rest.annotations.BinderParam;
-import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.binders.BindToJsonPayload;
-
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
-import com.cdancy.bitbucket.rest.options.CreateRepository;
+import javax.inject.Named;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -83,6 +83,27 @@ public interface RepositoryApi {
     RepositoryPage list(@PathParam("project") String project,
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("repository:create-Permissions-Group")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/groups")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @PUT
+    boolean createPermissionsByGroup(@PathParam("project") String project,
+                                     @PathParam("repo") String repo,
+                                     @QueryParam("permission") String permission,
+                                     @QueryParam("name") String name);
+
+    @Named("repository:delete-Permissions-Group")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/groups")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deletePermissionsByGroup(@PathParam("project") String project,
+                                     @PathParam("repo") String repo,
+                                     @QueryParam("name") String name);
 
     @Named("repository:list-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
