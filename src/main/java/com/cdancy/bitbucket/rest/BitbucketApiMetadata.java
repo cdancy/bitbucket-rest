@@ -17,16 +17,15 @@
 
 package com.cdancy.bitbucket.rest;
 
-import java.net.URI;
-import java.util.Properties;
-
-import org.jclouds.apis.ApiMetadata;
-import org.jclouds.rest.internal.BaseHttpApiMetadata;
-
 import com.cdancy.bitbucket.rest.config.BitbucketHttpApiModule;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
+import org.jclouds.apis.ApiMetadata;
+import org.jclouds.rest.internal.BaseHttpApiMetadata;
+
+import java.net.URI;
+import java.util.Properties;
 
 @AutoService(ApiMetadata.class)
 public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
@@ -59,9 +58,9 @@ public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
             id("bitbucket").name("Bitbucket API")
                     .identityName("Optional Username")
                     .credentialName("Optional Password")
-                    .defaultIdentity("").defaultCredential("")
+                    .defaultIdentity("").defaultCredential(System.getProperty("test.bitbucket.credential",""))
                     .documentation(URI.create("https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html"))
-                    .version(API_VERSION).buildVersion(BUILD_VERSION).defaultEndpoint("http://127.0.0.1:7990")
+                    .version(API_VERSION).buildVersion(BUILD_VERSION).defaultEndpoint(System.getProperty("test.bitbucket.endpoint", "http://127.0.0.1:7990"))
                     .defaultProperties(BitbucketApiMetadata.defaultProperties())
                     .defaultModules(ImmutableSet.<Class<? extends Module>> of(BitbucketHttpApiModule.class));
         }
