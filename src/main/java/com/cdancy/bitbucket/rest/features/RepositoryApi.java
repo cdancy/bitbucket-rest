@@ -84,6 +84,17 @@ public interface RepositoryApi {
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
 
+    @Named("repository:list-Permissions-User")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/users")
+    @Fallback(BitbucketFallbacks.PermissionsPageOnError.class)
+    @GET
+    PermissionsPage listPermissionsByUser(@PathParam("project") String project,
+                                          @PathParam("repo") String repo,
+                                          @Nullable @QueryParam("start") Integer start,
+                                          @Nullable @QueryParam("limit") Integer limit);
+
     @Named("repository:create-Permissions-Group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
