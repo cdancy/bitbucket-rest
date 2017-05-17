@@ -75,11 +75,11 @@ tasks.withType(JavaCompile) {
 
 task mockTest(type: Test) {
     useTestNG() 
-	include "**/**MockTest.class"
-	testLogging {
-            showStandardStreams = true
-            events 'started', 'passed', 'failed'
-	}
+    include "**/**MockTest.class"
+    testLogging {
+        showStandardStreams = true
+        events 'started', 'passed', 'failed'
+    }
 }
 
 task integTest(type: Test, dependsOn: ['mockTest']) {
