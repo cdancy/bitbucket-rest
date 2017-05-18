@@ -18,11 +18,13 @@
 package com.cdancy.bitbucket.rest.domain.branch;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class BranchConfiguration {
 
+    @Nullable
     public abstract String refId();
 
     public abstract boolean useDefault();
