@@ -17,22 +17,21 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
+import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
+import com.cdancy.bitbucket.rest.options.CreateProject;
+import com.cdancy.bitbucket.rest.options.CreateRepository;
 import org.assertj.core.api.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.cdancy.bitbucket.rest.options.CreateProject;
-import com.cdancy.bitbucket.rest.options.CreateRepository;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Test(groups = "live", testName = "RepositoryApiLiveTest", singleThreaded = true)
 public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -43,7 +42,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     Condition<Repository> withRepositorySlug = new Condition<Repository>() {
         @Override
         public boolean matches(Repository value) {
-            return value.slug().equals(repoKey);
+            return value.slug().toLowerCase().equals(repoKey.toLowerCase());
         }
     };
 
@@ -73,13 +72,13 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
     }
 
-    @Test (dependsOnMethods = "testGetRepository")
+    @Test (dependsOnMethods = "testGetRepository", priority = 1000)
     public void testDeleteRepository() {
         boolean success = api().delete(projectKey, repoKey);
         assertThat(success).isTrue();
     }
 
-    @Test(dependsOnMethods = "testGetRepository")
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository"})
     public void testListProjects() {
         RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
 
@@ -114,9 +113,39 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = "testGetRepository")
+    public void testListPermissionByUser() {
+        PermissionsPage permissionsPage = api().listPermissionsByUser(projectKey, repoKey, 0, 100);
+        assertThat(permissionsPage.values()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = "testGetRepository")
     public void testListPermissionByGroup() {
         PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
         assertThat(permissionsPage.values()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
+    public void testCreatePermissionByGroupNonExistent() {
+        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testCreatePermissionByGroupNonExistent", "testGetRepository", "testCreateRepository"})
+    public void testDeletePermissionByGroupNonExistent() {
+        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, randomString());
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testListPermissionByGroup","testGetRepository", "testCreateRepository"})
+    public void testCreatePermissionByGroup() {
+        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", "stash-users");
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testListPermissionByGroup","testGetRepository", "testCreateRepository", "testCreatePermissionByGroup"})
+    public void testDeletePermissionByGroup() {
+        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, "stash-users");
+        assertThat(success).isTrue();
     }
 
     @AfterClass
