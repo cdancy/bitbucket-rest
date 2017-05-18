@@ -122,6 +122,7 @@ public interface BranchApi {
     @Named("branch:get-model-configuration")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
+    @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
     @GET
     BranchModelConfiguration getModelConfiguration(@PathParam("project") String project,
                                                    @PathParam("repo") String repo);
@@ -129,6 +130,7 @@ public interface BranchApi {
     @Named("branch:get-model-configuration")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
+    @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
     @PUT
     BranchModelConfiguration updateModelConfiguration(@PathParam("project") String project,
                                           @PathParam("repo") String repo,

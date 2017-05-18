@@ -25,8 +25,16 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Type {
 
-    public abstract String id();
+    public enum TypeId {
+        BUGFIX,
+        FEATURE,
+        HOTFIX,
+        RELEASE
+    }
 
+    public abstract TypeId id();
+
+    @Nullable
     public abstract String displayName();
 
     public abstract String prefix();
@@ -38,12 +46,12 @@ public abstract class Type {
     }
 
     @Deprecated
-    public static Type create(String id, String displayName, String prefix) {
+    public static Type create(TypeId id, String displayName, String prefix) {
         return create(id, displayName, prefix, null);
     }
 
     @SerializedNames({ "id", "displayName", "prefix", "enabled" })
-    public static Type create(String id, String displayName, String prefix, Boolean enabled) {
+    public static Type create(TypeId id, String displayName, String prefix, Boolean enabled) {
         return new AutoValue_Type(id, displayName, prefix, enabled);
     }
 }

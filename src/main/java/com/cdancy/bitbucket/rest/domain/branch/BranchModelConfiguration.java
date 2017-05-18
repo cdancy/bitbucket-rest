@@ -29,6 +29,7 @@ import java.util.List;
 @AutoValue
 public abstract class BranchModelConfiguration implements ErrorsHolder {
 
+    @Nullable
     public abstract BranchConfiguration development();
 
     @Nullable
