@@ -17,33 +17,21 @@
 
 package com.cdancy.bitbucket.rest.domain.branch;
 
-import org.jclouds.javax.annotation.Nullable;
+import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
-import com.google.auto.value.AutoValue;
-
 @AutoValue
-public abstract class Type {
+public abstract class BranchConfiguration {
 
-    public abstract String id();
+    public abstract String refId();
 
-    public abstract String displayName();
+    public abstract boolean useDefault();
 
-    public abstract String prefix();
-
-    @Nullable
-    public abstract Boolean enabled();
-
-    Type() {
+    BranchConfiguration() {
     }
 
-    @Deprecated
-    public static Type create(String id, String displayName, String prefix) {
-        return create(id, displayName, prefix, null);
-    }
-
-    @SerializedNames({ "id", "displayName", "prefix", "enabled" })
-    public static Type create(String id, String displayName, String prefix, Boolean enabled) {
-        return new AutoValue_Type(id, displayName, prefix, enabled);
+    @SerializedNames({ "refId", "useDefault" })
+    public static BranchConfiguration create(String refId, boolean useDefault) {
+        return new AutoValue_BranchConfiguration(refId, useDefault);
     }
 }
