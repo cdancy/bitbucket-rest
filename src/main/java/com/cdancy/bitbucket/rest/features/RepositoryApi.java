@@ -84,6 +84,27 @@ public interface RepositoryApi {
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
 
+    @Named("repository:create-Permissions-Users")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/users")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @PUT
+    boolean createPermissionsByUser(@PathParam("project") String project,
+                                    @PathParam("repo") String repo,
+                                    @QueryParam("permission") String permission,
+                                    @QueryParam("name") String name);
+
+    @Named("repository:delete-Permissions-Users")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/permissions/users")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deletePermissionsByUser(@PathParam("project") String project,
+                                    @PathParam("repo") String repo,
+                                    @QueryParam("name") String name);
+
     @Named("repository:list-Permissions-User")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
