@@ -436,7 +436,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             boolean success = api.deleteModelConfiguration(projectKey, repoKey);
             assertThat(success).isTrue();
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -455,7 +455,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             boolean success = api.deleteModelConfiguration(projectKey, repoKey);
             assertThat(success).isFalse();
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
