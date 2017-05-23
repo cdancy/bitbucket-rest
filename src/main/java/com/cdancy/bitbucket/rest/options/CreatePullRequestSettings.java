@@ -24,6 +24,7 @@ import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class CreatePullRequestSettings {
+
     public abstract MergeConfig mergeConfig();
 
     public abstract boolean requiredAllApprovers();

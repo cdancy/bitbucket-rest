@@ -25,11 +25,11 @@ import org.jclouds.json.SerializedNames;
 public abstract class MergeStrategy {
 
     public enum MergeStrategyId {
-        no_ff("no-ff"),
-        ff("ff"),
-        ff_only("ff-only"),
-        squash("squash"),
-        squash_ff_only("squash-ff-only");
+        NO_FF("no-ff"),
+        FF("ff"),
+        FF_ONLY("ff-only"),
+        SQUASH("squash"),
+        SQUASH_FF_ONLY("squash-ff-only");
 
         private String apiName;
 

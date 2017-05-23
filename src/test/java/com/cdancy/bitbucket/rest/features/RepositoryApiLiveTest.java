@@ -128,7 +128,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequestSettings")
     public void testUpdatePullRequestSettings() {
-        MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.squash, null);
+        MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.SQUASH, null);
         List<MergeStrategy> listStrategy = new ArrayList<>();
         listStrategy.add(strategy);
         MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
@@ -138,7 +138,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(settings).isNotNull();
         assertThat(settings.errors().isEmpty()).isTrue();
         assertThat(settings.mergeConfig().strategies()).isNotEmpty();
-        assertThat(MergeStrategy.MergeStrategyId.squash.equals(settings.mergeConfig().defaultStrategy().id()));
+        assertThat(MergeStrategy.MergeStrategyId.SQUASH.equals(settings.mergeConfig().defaultStrategy().id()));
     }
 
     @Test(dependsOnMethods = "testGetRepository")

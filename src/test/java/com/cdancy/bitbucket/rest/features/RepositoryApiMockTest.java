@@ -391,7 +391,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.ff, null);
+            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
             List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
             MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
@@ -439,7 +439,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             String projectKey = "PRJ1";
             String repoKey = "test";
-            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.ff, null);
+            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
             List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
             MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
