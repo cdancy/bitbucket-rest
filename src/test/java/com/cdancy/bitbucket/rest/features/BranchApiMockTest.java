@@ -335,7 +335,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(configuration.development().refId().equals("refs/heads/master")).isTrue();
             assertThat(configuration.production()).isNull();
             assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -357,7 +357,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(configuration.production()).isNull();
             assertThat(configuration.development()).isNull();
             assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
