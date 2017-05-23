@@ -43,11 +43,12 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String projectKey = randomStringLettersOnly();
     String repoKey = randomStringLettersOnly();
+    String existingUser = "ChrisDancy"; // should be created dynamically through API
 
     Condition<Repository> withRepositorySlug = new Condition<Repository>() {
         @Override
         public boolean matches(Repository value) {
-            return value.slug().equals(repoKey);
+            return value.slug().toLowerCase().equals(repoKey.toLowerCase());
         }
     };
 
@@ -77,13 +78,13 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
     }
 
-    @Test (dependsOnMethods = "testGetRepository")
+    @Test (dependsOnMethods = "testGetRepository", priority = 1000)
     public void testDeleteRepository() {
         boolean success = api().delete(projectKey, repoKey);
         assertThat(success).isTrue();
     }
 
-    @Test(dependsOnMethods = "testGetRepository")
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository"})
     public void testListProjects() {
         RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
 
@@ -141,9 +142,63 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = "testGetRepository")
+    public void testListPermissionByUser() {
+        PermissionsPage permissionsPage = api().listPermissionsByUser(projectKey, repoKey, 0, 100);
+        assertThat(permissionsPage.values()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = "testGetRepository")
     public void testListPermissionByGroup() {
         PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
         assertThat(permissionsPage.values()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
+    public void testCreatePermissionByGroupNonExistent() {
+        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testCreatePermissionByGroupNonExistent", "testGetRepository", "testCreateRepository"})
+    public void testDeletePermissionByGroupNonExistent() {
+        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, randomString());
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testListPermissionByGroup","testGetRepository", "testCreateRepository"})
+    public void testCreatePermissionByGroup() {
+        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", "stash-users");
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testListPermissionByGroup","testGetRepository", "testCreateRepository", "testCreatePermissionByGroup"})
+    public void testDeletePermissionByGroup() {
+        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, "stash-users");
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
+    public void testCreatePermissionByUser() {
+        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", existingUser);
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup", "testCreatePermissionByUser"})
+    public void testDeletePermissionByUser() {
+        boolean success = api().deletePermissionsByUser(projectKey, repoKey, existingUser);
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
+    public void testCreatePermissionByUserNonExistent() {
+        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
+    public void testDeletePermissionByUserNonExistent() {
+        boolean success = api().deletePermissionsByUser(projectKey, repoKey, randomString());
+        assertThat(success).isFalse();
     }
 
     @AfterClass
