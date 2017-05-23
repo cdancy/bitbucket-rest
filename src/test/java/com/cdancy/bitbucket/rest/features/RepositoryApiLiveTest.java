@@ -41,6 +41,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     String projectKey = randomStringLettersOnly();
     String repoKey = randomStringLettersOnly();
     String hookKey = null;
+    String existingUser = "ChrisDancy"; // should be created dynamically through API
 
     Condition<Repository> withRepositorySlug = new Condition<Repository>() {
         @Override
@@ -224,7 +225,31 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(hook.enabled()).isNull();
     }
 
-    @AfterClass()
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
+    public void testCreatePermissionByUser() {
+        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", existingUser);
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup", "testCreatePermissionByUser"})
+    public void testDeletePermissionByUser() {
+        boolean success = api().deletePermissionsByUser(projectKey, repoKey, existingUser);
+        assertThat(success).isTrue();
+    }
+    
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
+    public void testCreatePermissionByUserNonExistent() {
+        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
+    public void testDeletePermissionByUserNonExistent() {
+        boolean success = api().deletePermissionsByUser(projectKey, repoKey, randomString());
+        assertThat(success).isFalse();
+    }
+
+    @AfterClass
     public void fin() {
         boolean success = api.projectApi().delete(projectKey);
         assertThat(success).isTrue();
