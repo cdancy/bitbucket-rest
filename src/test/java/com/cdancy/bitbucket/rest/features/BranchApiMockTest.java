@@ -17,29 +17,29 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import org.testng.annotations.Test;
-
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Mock tests for the {@link BranchApi} class.
@@ -313,6 +313,51 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isTrue();
             assertSent(server, "DELETE", "/rest/branch-permissions/2.0"
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions/" + idToDelete);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetBranchModelConfiguration() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            BranchModelConfiguration configuration = api.getModelConfiguration(projectKey, repoKey);
+            assertThat(configuration).isNotNull();
+            assertThat(configuration.errors().isEmpty()).isTrue();
+            assertThat(configuration.types().size() > 0).isTrue();
+            assertThat(configuration.development().refId().equals("refs/heads/master")).isTrue();
+            assertThat(configuration.production()).isNull();
+            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetBranchModelConfigurationOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration-error.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            BranchModelConfiguration configuration = api.getModelConfiguration(projectKey, repoKey);
+            assertThat(configuration).isNotNull();
+            assertThat(configuration.errors()).isNotEmpty();
+            assertThat(configuration.production()).isNull();
+            assertThat(configuration.development()).isNull();
+            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
