@@ -136,6 +136,14 @@ public interface BranchApi {
                                                       @PathParam("repo") String repo,
                                                       @BinderParam(BindToJsonPayload.class) CreateBranchModelConfiguration config);
 
+    @Named("branch:delete-model-configuration")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deleteModelConfiguration(@PathParam("project") String project,
+                                     @PathParam("repo") String repo);
+
     @Named("branch:list-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Consumes(MediaType.APPLICATION_JSON)
