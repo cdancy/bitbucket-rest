@@ -17,12 +17,6 @@
 
 package com.cdancy.bitbucket.rest.fallbacks;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Throwables.propagate;
-
-import java.util.Iterator;
-import java.util.List;
-
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
@@ -31,31 +25,37 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.domain.commit.Commit;
-import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.domain.tags.Tag;
-import org.jclouds.Fallback;
-
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
+import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
+import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.jclouds.Fallback;
+
+import java.util.Iterator;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Throwables.propagate;
 
 public final class BitbucketFallbacks {
 
@@ -214,6 +214,15 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class PullRequestSettingsOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createPullRequestSettingsFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class ProjectPageOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
@@ -339,6 +348,10 @@ public final class BitbucketFallbacks {
 
     public static Project createProjectFromErrors(List<Error> errors) {
         return Project.create(null, -1, null, null, false, null, null, errors);
+    }
+
+    public static PullRequestSettings createPullRequestSettingsFromErrors(List<Error> errors) {
+        return PullRequestSettings.create(null, null, null, null, null, errors);
     }
 
     public static ProjectPage createProjectPageFromErrors(List<Error> errors) {
