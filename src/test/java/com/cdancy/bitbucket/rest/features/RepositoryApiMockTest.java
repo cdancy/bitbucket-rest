@@ -435,7 +435,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -458,7 +458,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
             Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks", queryParams);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -481,7 +481,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(hookPage.errors()).isEmpty();
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -504,7 +504,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(hookPage.errors()).isNotEmpty();
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey);
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -527,7 +527,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(hookPage.errors()).isEmpty();
 
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -550,7 +550,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(hookPage.errors()).isNotEmpty();
 
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -573,7 +573,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(hookPage.errors()).isEmpty();
 
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -596,7 +596,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(hookPage.errors()).isNotEmpty();
 
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
         } finally {
             baseApi.close();
             server.shutdown();
