@@ -27,6 +27,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
+import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -125,6 +126,15 @@ public interface BranchApi {
     @GET
     BranchModelConfiguration getModelConfiguration(@PathParam("project") String project,
                                                    @PathParam("repo") String repo);
+
+    @Named("branch:get-model-configuration")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
+    @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
+    @PUT
+    BranchModelConfiguration updateModelConfiguration(@PathParam("project") String project,
+                                                      @PathParam("repo") String repo,
+                                                      @BinderParam(BindToJsonPayload.class) CreateBranchModelConfiguration config);
 
     @Named("branch:list-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})

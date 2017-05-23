@@ -29,6 +29,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.branch.Type;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
+import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -146,6 +147,47 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         checkDefaultBranchConfiguration();
     }
 
+    @Test(dependsOnMethods = {"testGetBranchModelConfiguration", "testCreateBranch", "testListBranches"})
+    public void testUpdateBranchModelConfiguration() {
+        List<Type> types = new ArrayList<>();
+        types.add(Type.create(Type.TypeId.BUGFIX, null, "bug/", false));
+        types.add(Type.create(Type.TypeId.HOTFIX, null, "hot/", true));
+        types.add(Type.create(Type.TypeId.RELEASE, null, "rel/", true));
+        types.add(Type.create(Type.TypeId.FEATURE, null, "fea/", true));
+        CreateBranchModelConfiguration configuration = CreateBranchModelConfiguration.create(branchModelConfiguration.development(), null, types);
+
+
+        BranchModelConfiguration branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey, configuration);
+        assertThat(branchModelConfiguration).isNotNull();
+        assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
+        assertThat(branchModelConfiguration.development().refId()).isNull();
+        assertThat(branchModelConfiguration.development().useDefault()).isTrue();
+        assertThat(branchModelConfiguration.production()).isNull();
+        assertThat(branchModelConfiguration.types().size() == 4);
+        for (Type type : branchModelConfiguration.types()) {
+            switch (type.id()) {
+                case BUGFIX:
+                    assertThat(type.prefix()).isEqualTo("bug/");
+                    assertThat(type.enabled()).isFalse();
+                    break;
+                case HOTFIX:
+                    assertThat(type.prefix()).isEqualTo("hot/");
+                    assertThat(type.enabled()).isTrue();
+                    break;
+                case RELEASE:
+                    assertThat(type.prefix()).isEqualTo("rel/");
+                    assertThat(type.enabled()).isTrue();
+                    break;
+                case FEATURE:
+                    assertThat(type.prefix()).isEqualTo("fea/");
+                    assertThat(type.enabled()).isTrue();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     private void checkDefaultBranchConfiguration() {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
@@ -181,6 +223,8 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         success = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
         assertThat(success).isTrue();
         if (branchModelConfiguration != null) {
+            branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey,
+                CreateBranchModelConfiguration.create(branchModelConfiguration));
             checkDefaultBranchConfiguration();
         }
     }

@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
+import com.cdancy.bitbucket.rest.domain.branch.BranchConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
@@ -27,9 +28,11 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
+import com.cdancy.bitbucket.rest.domain.branch.Type;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
+import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -335,7 +338,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(configuration.development().refId().equals("refs/heads/master")).isTrue();
             assertThat(configuration.production()).isNull();
             assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -357,7 +360,64 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(configuration.production()).isNull();
             assertThat(configuration.development()).isNull();
             assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testUpdateBranchModelConfiguration() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+
+            BranchConfiguration branchConfiguration = BranchConfiguration.create("test", false);
+            List<Type> types = new ArrayList<>();
+            types.add(Type.create(Type.TypeId.BUGFIX, "test", "test", true));
+
+            CreateBranchModelConfiguration branchModelConfiguration = CreateBranchModelConfiguration.create(branchConfiguration, null, types);
+
+            BranchModelConfiguration configuration = api.updateModelConfiguration(projectKey, repoKey, branchModelConfiguration);
+            assertThat(configuration).isNotNull();
+            assertThat(configuration.errors().isEmpty()).isTrue();
+            assertThat(configuration.types().size() > 0).isTrue();
+            assertSent(server, "PUT", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testUpdateBranchModelConfigurationOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration-error.json")).setResponseCode(400));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+
+            BranchConfiguration branchConfiguration = BranchConfiguration.create("test", false);
+            List<Type> types = new ArrayList<>();
+            types.add(Type.create(Type.TypeId.BUGFIX, "test", "test", true));
+
+            CreateBranchModelConfiguration branchModelConfiguration = CreateBranchModelConfiguration.create(branchConfiguration, null, types);
+
+            BranchModelConfiguration configuration = api.updateModelConfiguration(projectKey, repoKey, branchModelConfiguration);
+            assertThat(configuration).isNotNull();
+            assertThat(configuration.errors()).isNotEmpty();
+            assertThat(configuration.production()).isNull();
+            assertThat(configuration.development()).isNull();
+            assertSent(server, "PUT", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
             baseApi.close();
             server.shutdown();
