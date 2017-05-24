@@ -25,8 +25,10 @@ public abstract class Matcher {
 
     public enum MatcherId {
         RELEASE("RELEASE", "Release", "MODEL_CATEGORY", "Branching model category"),
-        DEVELOPMENT("development", "Development", "MODEL_BRANCH", "Branching model branch"),
-        MASTER("production", "Production", "MODEL_BRANCH", "Branching model branch");
+        DEVELOPMENT("Development", "Development", "MODEL_BRANCH", "Branching model branch"),
+        MASTER("Production", "Production", "MODEL_BRANCH", "Branching model branch"),
+        ANY_REF("ANY_REF_MATCHER_ID","ANY_REF_MATCHER_ID", "ANY_REF", "Any branch"),
+        ANY("any", "any", "ANY_REF", "ANY_REF");
 
         private String id;
         private String name;
