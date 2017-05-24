@@ -1,0 +1,53 @@
+{
+  "mergeConfig": {
+    "defaultStrategy": {
+      "description": "Always create a new merge commit and update the target branch to it, even if the source branch is already up to date with the target branch.",
+      "enabled": true,
+      "flag": "--no-ff",
+      "id": "no-ff",
+      "name": "Merge commit"
+    },
+    "strategies": [
+      {
+        "description": "Always create a new merge commit and update the target branch to it, even if the source branch is already up to date with the target branch.",
+        "enabled": true,
+        "flag": "--no-ff",
+        "id": "no-ff",
+        "name": "Merge commit"
+      },
+      {
+        "description": "If the source branch is out of date with the target branch, create a merge commit. Otherwise, update the target branch to the latest commit on the source branch.",
+        "enabled": false,
+        "flag": "--ff",
+        "id": "ff",
+        "name": "Fast-forward"
+      },
+      {
+        "description": "If the source branch is out of date with the target branch, reject the merge request. Otherwise, update the target branch to the latest commit on the source branch.",
+        "enabled": false,
+        "flag": "--ff-only",
+        "id": "ff-only",
+        "name": "Fast-forward only"
+      },
+      {
+        "description": "Combine all commits into one new non-merge commit on the target branch.",
+        "enabled": false,
+        "flag": "--squash",
+        "id": "squash",
+        "name": "Squash"
+      },
+      {
+        "description": "If the source branch is out of date with the target branch, reject the merge request. Otherwise, combine all commits into one new non-merge commit on the target branch.",
+        "enabled": false,
+        "flag": "--squash --ff-only",
+        "id": "squash-ff-only",
+        "name": "Squash, fast-forward only"
+      }
+    ],
+    "type": "REPOSITORY"
+  },
+  "requiredAllApprovers": false,
+  "requiredAllTasksComplete": true,
+  "requiredApprovers": 2,
+  "requiredSuccessfulBuilds": 1
+}

@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "exceptionName": "com.atlassian.bitbucket.repository.NoSuchRepositoryException",
+      "message": "Repository test/test-test does not exist."
+    }
+  ]
+}
