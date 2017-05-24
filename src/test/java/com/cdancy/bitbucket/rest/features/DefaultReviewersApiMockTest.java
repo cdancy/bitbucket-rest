@@ -51,7 +51,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(conditions.size()).isEqualTo(3);
 
             assertSent(server, "GET", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/conditions/");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/conditions/");
         } finally {
             baseApi.close();
             server.shutdown();
