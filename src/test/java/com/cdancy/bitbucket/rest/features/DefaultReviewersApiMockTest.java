@@ -87,7 +87,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(returnCondition.id()).isEqualTo(10);
 
             assertSent(server, "POST", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -118,7 +118,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(returnCondition.errors().size()).isEqualTo(1);
 
             assertSent(server, "POST", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/123456/condition/");
+                    + "/projects/" + projectKey + "/repos/123456/condition/");
         } finally {
             baseApi.close();
             server.shutdown();

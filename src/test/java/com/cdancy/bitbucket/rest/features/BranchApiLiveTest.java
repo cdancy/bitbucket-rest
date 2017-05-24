@@ -17,9 +17,6 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
@@ -36,6 +33,9 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -113,9 +113,9 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
                 Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, listAccessKey));
         listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
-            Matcher.create(Matcher.MatcherId.DEVELOPMENT, true), new ArrayList<User>(), groupPermission, listAccessKey));
+                Matcher.create(Matcher.MatcherId.DEVELOPMENT, true), new ArrayList<User>(), groupPermission, listAccessKey));
         listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
-            Matcher.create(Matcher.MatcherId.MASTER, true), new ArrayList<User>(), groupPermission, listAccessKey));
+                Matcher.create(Matcher.MatcherId.MASTER, true), new ArrayList<User>(), groupPermission, listAccessKey));
 
         boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
         assertThat(success).isTrue();
