@@ -43,7 +43,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
     public void testComment() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/defaultReviwers-list.json"))
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json"))
                 .setResponseCode(201));
         BitbucketApi baseApi = api(server.getUrl("/"));
         CommentsApi api = baseApi.commentsApi();
