@@ -1,0 +1,81 @@
+{
+  "id": 10,
+  "repository": {
+    "forkable": true,
+    "id": 71,
+    "links": {
+      "clone": [
+        {
+          "href": "http://root@192.168.99.100:32775/scm/zluwzttzaw/mszwjhlwvt.git",
+          "name": "http"
+        },
+        {
+          "href": "ssh://git@192.168.99.100:7999/zluwzttzaw/mszwjhlwvt.git",
+          "name": "ssh"
+        }
+      ],
+      "self": [
+        {
+          "href": "http://192.168.99.100:32775/projects/ZLUWZTTZAW/repos/mszwjhlwvt/browse"
+        }
+      ]
+    },
+    "name": "MSZWJHLWVT",
+    "project": {
+      "id": 103,
+      "key": "ZLUWZTTZAW",
+      "links": {
+        "self": [
+          {
+            "href": "http://192.168.99.100:32775/projects/ZLUWZTTZAW"
+          }
+        ]
+      },
+      "name": "ZLUWZTTZAW",
+      "public": false,
+      "type": "NORMAL"
+    },
+    "public": false,
+    "scmId": "git",
+    "slug": "mszwjhlwvt",
+    "state": "AVAILABLE",
+    "statusMessage": "Available"
+  },
+  "requiredApprovals": 1,
+  "reviewers": [
+    {
+      "active": true,
+      "displayName": "root",
+      "emailAddress": "root@test.com",
+      "id": 1,
+      "links": {
+        "self": [
+          {
+            "href": "http://192.168.99.100:32775/users/root"
+          }
+        ]
+      },
+      "name": "root",
+      "slug": "root",
+      "type": "NORMAL"
+    }
+  ],
+  "sourceRefMatcher": {
+    "active": true,
+    "displayId": "ANY_REF_MATCHER_ID",
+    "id": "ANY_REF_MATCHER_ID",
+    "type": {
+      "id": "ANY_REF",
+      "name": "Any branch"
+    }
+  },
+  "targetRefMatcher": {
+    "active": true,
+    "displayId": "ANY_REF_MATCHER_ID",
+    "id": "ANY_REF_MATCHER_ID",
+    "type": {
+      "id": "ANY_REF",
+      "name": "Any branch"
+    }
+  }
+}
