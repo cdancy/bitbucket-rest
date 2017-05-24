@@ -17,12 +17,6 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Map;
-
-import org.testng.annotations.Test;
-
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
@@ -34,6 +28,11 @@ import com.cdancy.bitbucket.rest.options.CreateComment;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import org.testng.annotations.Test;
+
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Mock tests for the {@link CommentsApi} class.
@@ -44,7 +43,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
     public void testComment() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json"))
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/defaultReviwers-list.json"))
                 .setResponseCode(201));
         BitbucketApi baseApi = api(server.getUrl("/"));
         CommentsApi api = baseApi.commentsApi();
