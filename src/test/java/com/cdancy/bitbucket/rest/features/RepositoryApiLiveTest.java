@@ -154,7 +154,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
     public void testListHook() {
-        HookPage hookPage = api().listHook(projectKey, repoKey, 0, 100);
+        HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isEmpty();
         assertThat(hookPage.size()).isGreaterThan(0);
@@ -168,7 +168,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test()
     public void testListHookOnError() {
-        HookPage hookPage = api().listHook(projectKey, randomString(), 0, 100);
+        HookPage hookPage = api().listHooks(projectKey, randomString(), 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isNotEmpty();
         assertThat(hookPage.values()).isEmpty();
@@ -236,7 +236,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         boolean success = api().deletePermissionsByUser(projectKey, repoKey, existingUser);
         assertThat(success).isTrue();
     }
-    
+
     @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
     public void testCreatePermissionByUserNonExistent() {
         boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", randomString());

@@ -32,14 +32,12 @@ public abstract class Hook implements ErrorsHolder {
     @Nullable
     public abstract HookDetails details();
 
-    @Nullable
-    public abstract Boolean enabled();
+    public abstract boolean enabled();
 
-    @Nullable
-    public abstract Boolean configured();
+    public abstract boolean configured();
 
     @SerializedNames({ "details", "enabled", "configured", "errors" })
-    public static Hook create(HookDetails details, Boolean enabled, Boolean configured, @Nullable List<Error> errors) {
-        return new AutoValue_Hook(Utils.nullToEmpty(errors), details, enabled, configured);
+    public static Hook create(HookDetails details, String enabled, String configured, @Nullable List<Error> errors) {
+        return new AutoValue_Hook(Utils.nullToEmpty(errors), details, Boolean.valueOf(enabled), Boolean.valueOf(configured));
     }
 }

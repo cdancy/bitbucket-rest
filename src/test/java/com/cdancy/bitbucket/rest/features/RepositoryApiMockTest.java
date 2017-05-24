@@ -510,7 +510,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ1";
             String repoKey = "1234";
-            HookPage hookPage = api.listHook(projectKey, repoKey, 0, 100);
+            HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.values()).isNotEmpty();
             assertThat(hookPage.errors()).isEmpty();
@@ -533,7 +533,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ1";
             String repoKey = "1234";
-            HookPage hookPage = api.listHook(projectKey, repoKey, 0, 100);
+            HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.values()).isEmpty();
             assertThat(hookPage.errors()).isNotEmpty();
@@ -582,7 +582,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String hookKey = "qwerty";
             Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isNull();
+            assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -628,7 +628,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String hookKey = "qwerty";
             Hook hookPage = api.createHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isNull();
+            assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
 
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
@@ -674,7 +674,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String hookKey = "qwerty";
             Hook hookPage = api.deleteHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isNull();
+            assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
 
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
