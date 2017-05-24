@@ -21,16 +21,21 @@ import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
+import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
+import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
+import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.options.CreateProject;
+import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import org.assertj.core.api.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,6 +119,29 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         Repository repository = api().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
+    }
+
+    @Test (dependsOnMethods = "testGetRepository")
+    public void testGetPullRequestSettings() {
+        PullRequestSettings settings = api().getPullRequestSettings(projectKey, repoKey);
+        assertThat(settings).isNotNull();
+        assertThat(settings.errors().isEmpty()).isTrue();
+        assertThat(settings.mergeConfig().strategies()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testGetPullRequestSettings")
+    public void testUpdatePullRequestSettings() {
+        MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.SQUASH, null);
+        List<MergeStrategy> listStrategy = new ArrayList<>();
+        listStrategy.add(strategy);
+        MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+        CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+
+        PullRequestSettings settings = api().updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
+        assertThat(settings).isNotNull();
+        assertThat(settings.errors().isEmpty()).isTrue();
+        assertThat(settings.mergeConfig().strategies()).isNotEmpty();
+        assertThat(MergeStrategy.MergeStrategyId.SQUASH.equals(settings.mergeConfig().defaultStrategy().id()));
     }
 
     @Test(dependsOnMethods = "testGetRepository")
