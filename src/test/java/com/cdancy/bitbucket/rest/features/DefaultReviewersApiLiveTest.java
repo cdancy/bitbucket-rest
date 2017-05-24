@@ -121,6 +121,41 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnCondition.id()).isEqualTo(conditionId);
     }
 
+    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition", "testCreateConditionMatcherDiff"})
+    public void testListConditions() {
+        List<Condition> listCondition = api().listConditions(projectKey, repoKey);
+        assertThat(listCondition.size()).isEqualTo(2);
+        for (Condition condition : listCondition) {
+            if (condition.id().equals(conditionId)) {
+                validCondition(condition, 0L, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
+            } else {
+                validCondition(condition, 1L, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
+            }
+        }
+    }
+
+    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition", "testCreateConditionMatcherDiff", "testListConditions"})
+    public void testDeleteCondition() {
+        boolean success = api().deleteCondition(projectKey, repoKey, conditionId);
+        assertThat(success).isTrue();
+    }
+
+    @Test()
+    public void testDeleteConditionOnError() {
+        boolean success = api().deleteCondition(projectKey, repoKey, -1);
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition", "testCreateConditionMatcherDiff", "testListConditions", "testDeleteCondition"})
+    public void testListConditionsAfterDelete() {
+        List<Condition> listCondition = api().listConditions(projectKey, repoKey);
+        assertThat(listCondition.size()).isEqualTo(1);
+        for (Condition condition : listCondition) {
+            assertThat(condition.id()).isNotEqualTo(conditionId);
+            validCondition(condition, 1L, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
+        }
+    }
+
     @AfterClass
     public void fin() {
         boolean success = api.repositoryApi().delete(projectKey, repoKey);
@@ -137,7 +172,6 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnValue.errors()).isEmpty();
         assertThat(returnValue.repository().name().equals(repoKey));
         assertThat(returnValue.id()).isNotNull();
-        assertThat(returnValue.errors()).isEmpty();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
         assertThat(returnValue.reviewers().get(0).id()).isEqualTo(1);
