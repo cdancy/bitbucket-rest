@@ -124,4 +124,66 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+
+    public void testUpdateCondition() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/default-reviwers-create.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        DefaultReviewersApi api = baseApi.defaultReviewersApi();
+        try {
+            Long requiredApprover = 1L;
+            Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
+            Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
+            List<User> listUser = new ArrayList<>();
+            listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
+            Repository repository = Repository.create(null, -1, null, null, null, null, false, null, false, null, null);
+            CreateCondition condition = CreateCondition.create(10L, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+
+            String projectKey = "test";
+            String repoKey = "1234";
+
+            Condition returnCondition = api.updateCondition(projectKey, repoKey, 10L, condition);
+            assertThat(returnCondition).isNotNull();
+            assertThat(returnCondition.errors()).isEmpty();
+            assertThat(returnCondition.id()).isEqualTo(10L);
+
+            assertSent(server, "PUT", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
+                + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testUpdateConditionOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        DefaultReviewersApi api = baseApi.defaultReviewersApi();
+        try {
+            Long requiredApprover = 1L;
+            Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
+            Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
+            List<User> listUser = new ArrayList<>();
+            listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
+            Repository repository = Repository.create(null, -1, null, null, null, null, false, null, false, null, null);
+            CreateCondition condition = CreateCondition.create(10L, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+
+            String projectKey = "test";
+            String repoKey = "1234";
+
+            Condition returnCondition = api.updateCondition(projectKey, "123456", 10L, condition);
+            assertThat(returnCondition).isNotNull();
+            assertThat(returnCondition.errors()).isNotEmpty();
+            assertThat(returnCondition.errors().size()).isEqualTo(1);
+
+            assertSent(server, "PUT", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
+                + "/projects/" + projectKey + "/repos/123456/condition/10");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 }
