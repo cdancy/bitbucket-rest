@@ -26,6 +26,7 @@ import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -67,4 +68,13 @@ public interface DefaultReviewersApi {
                               @PathParam("repo") String repo,
                               @PathParam("id") long id,
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
+
+    @Named("defaultReviewers:delete-Condition")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/condition/{id}")
+    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @DELETE
+    boolean deleteCondition(@PathParam("project") String project,
+                              @PathParam("repo") String repo,
+                              @PathParam("id") long id);
 }
