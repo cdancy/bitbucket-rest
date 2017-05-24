@@ -40,6 +40,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String projectKey = randomStringLettersOnly();
     String repoKey = randomStringLettersOnly();
+    Long conditionId = null;
     Repository repository = null;
 
     @BeforeClass
@@ -72,6 +73,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateCondition condition = CreateCondition.create(null, repository, matcherSrc, matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
+        conditionId = returnCondition.id();
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
     }
 
@@ -103,6 +105,20 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
         Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
+    }
+
+    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition"})
+    public void testUpdateCondition() {
+        Long requiredApprover = 0L;
+        Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
+        Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
+        List<User> listUser = new ArrayList<>();
+        listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
+        CreateCondition condition = CreateCondition.create(conditionId, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+
+        Condition returnCondition = api().updateCondition(projectKey, repoKey, conditionId, condition);
+        validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
+        assertThat(returnCondition.id()).isEqualTo(conditionId);
     }
 
     @AfterClass
