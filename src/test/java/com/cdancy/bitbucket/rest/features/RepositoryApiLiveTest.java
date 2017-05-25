@@ -19,6 +19,8 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.repository.Hook;
+import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
 import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -43,6 +45,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String projectKey = randomStringLettersOnly();
     String repoKey = randomStringLettersOnly();
+    String hookKey = null;
     String existingUser = "ChrisDancy"; // should be created dynamically through API
 
     Condition<Repository> withRepositorySlug = new Condition<Repository>() {
@@ -175,6 +178,80 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testDeletePermissionByGroup() {
         boolean success = api().deletePermissionsByGroup(projectKey, repoKey, "stash-users");
         assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
+    public void testListHook() {
+        HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
+        assertThat(hookPage).isNotNull();
+        assertThat(hookPage.errors()).isEmpty();
+        assertThat(hookPage.size()).isGreaterThan(0);
+        for (Hook hook : hookPage.values()) {
+            if (hook.details().configFormKey() == null) {
+                assertThat(hook.details().key()).isNotNull();
+                hookKey = hook.details().key();
+                break;
+            }
+        }
+    }
+
+    @Test()
+    public void testListHookOnError() {
+        HookPage hookPage = api().listHooks(projectKey, randomString(), 0, 100);
+        assertThat(hookPage).isNotNull();
+        assertThat(hookPage.errors()).isNotEmpty();
+        assertThat(hookPage.values()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook"})
+    public void testGetHook() {
+        Hook hook = api().getHook(projectKey, repoKey, hookKey);
+        assertThat(hook).isNotNull();
+        assertThat(hook.errors()).isEmpty();
+        assertThat(hook.details().key().equals(hookKey)).isTrue();
+        assertThat(hook.enabled()).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
+    public void testGetHookOnError() {
+        Hook hook = api().getHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
+        assertThat(hook).isNotNull();
+        assertThat(hook.errors()).isNotEmpty();
+        assertThat(hook.enabled()).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook", "testGetHook"})
+    public void testEnableHook() {
+        Hook hook = api().enableHook(projectKey, repoKey, hookKey);
+        assertThat(hook).isNotNull();
+        assertThat(hook.errors()).isEmpty();
+        assertThat(hook.details().key().equals(hookKey)).isTrue();
+        assertThat(hook.enabled()).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
+    public void testEnableHookOnError() {
+        Hook hook = api().enableHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
+        assertThat(hook).isNotNull();
+        assertThat(hook.errors()).isNotEmpty();
+        assertThat(hook.enabled()).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook", "testGetHook", "testCreateHook"})
+    public void testDisableHook() {
+        Hook hook = api().disableHook(projectKey, repoKey, hookKey);
+        assertThat(hook).isNotNull();
+        assertThat(hook.errors()).isEmpty();
+        assertThat(hook.details().key().equals(hookKey)).isTrue();
+        assertThat(hook.enabled()).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
+    public void testDisableHookOnError() {
+        Hook hook = api().disableHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
+        assertThat(hook).isNotNull();
+        assertThat(hook.errors()).isNotEmpty();
+        assertThat(hook.enabled()).isFalse();
     }
 
     @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})

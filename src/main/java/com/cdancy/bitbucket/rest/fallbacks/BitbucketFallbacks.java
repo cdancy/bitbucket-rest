@@ -39,6 +39,8 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.repository.Hook;
+import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -205,6 +207,24 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class HookPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createHookPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class HookOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createHookFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class ProjectOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
@@ -344,6 +364,14 @@ public final class BitbucketFallbacks {
 
     public static PermissionsPage createPermissionsPageFromErrors(List<Error> errors) {
         return PermissionsPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static HookPage createHookPageFromErrors(List<Error> errors) {
+        return HookPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static Hook createHookFromErrors(List<Error> errors) {
+        return Hook.create(null, false, false, errors);
     }
 
     public static Project createProjectFromErrors(List<Error> errors) {

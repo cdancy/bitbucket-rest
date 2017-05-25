@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "message": "No such hook com.atlassian.bitbucket.server.bitbucket-bundled-hooks:force-push-hook2",
+      "exceptionName": null
+    }
+  ]
+}
