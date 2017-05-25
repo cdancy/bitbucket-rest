@@ -371,7 +371,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Hook createHookFromErrors(List<Error> errors) {
-        return Hook.create(null, null, null, errors);
+        return Hook.create(null, false, false, errors);
     }
 
     public static Project createProjectFromErrors(List<Error> errors) {
