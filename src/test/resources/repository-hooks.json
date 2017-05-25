@@ -1,0 +1,44 @@
+{
+  "size": 3,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "details": {
+        "key": "de.aeffle.stash.plugin.stash-http-get-post-receive-hook:http-get-post-receive-hook",
+        "name": "Http Request Post Receive Hook",
+        "type": "POST_RECEIVE",
+        "description": "Does a HTTP request of an URL after a git push has been received.",
+        "version": "4.2.1",
+        "configFormKey": "de.aeffle.stash.plugin.stash-http-get-post-receive-hook:http-get-post-receive-hook-config-form"
+      },
+      "enabled": false,
+      "configured": false
+    },
+    {
+      "details": {
+        "key": "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:force-push-hook",
+        "name": "Reject Force Push",
+        "type": "PRE_RECEIVE",
+        "description": "Reject all force pushes (git push --force) to this repository",
+        "version": "5.0.0",
+        "configFormKey": null
+      },
+      "enabled": false,
+      "configured": false
+    },
+    {
+      "details": {
+        "key": "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:verify-committer-hook",
+        "name": "Verify Committer",
+        "type": "PRE_RECEIVE",
+        "description": "Reject commits not committed by the user pushing to this repository",
+        "version": "5.0.0",
+        "configFormKey": null
+      },
+      "enabled": false,
+      "configured": false
+    }
+  ],
+  "start": 0
+}
