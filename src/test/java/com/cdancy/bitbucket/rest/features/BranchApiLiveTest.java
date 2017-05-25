@@ -146,11 +146,19 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         checkDefaultBranchConfiguration();
     }
 
+    @Test(dependsOnMethods = {"testCreateBranch", "testListBranches"})
+    public void testGetBranchModelConfigurationOnError() {
+        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, "12345");
+        assertThat(configuration.errors()).isNotEmpty();
+        assertThat(configuration.development()).isNull();
+        assertThat(configuration.production()).isNull();
+        assertThat(configuration.types()).isEmpty();
+    }
+
     private void checkDefaultBranchConfiguration() {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
-        assertThat(branchModelConfiguration.development().refId()).isNull();
-        assertThat(branchModelConfiguration.development().useDefault()).isTrue();
+        assertThat(branchModelConfiguration.development().refId()).isNotNull();
         assertThat(branchModelConfiguration.production()).isNull();
         assertThat(branchModelConfiguration.types().size() == 4);
         for (Type type : branchModelConfiguration.types()) {
@@ -180,9 +188,6 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success).isTrue();
         success = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
         assertThat(success).isTrue();
-        if (branchModelConfiguration != null) {
-            checkDefaultBranchConfiguration();
-        }
     }
 
     private BranchApi api() {
