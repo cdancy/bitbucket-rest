@@ -698,7 +698,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testCreateHook() throws Exception {
+    public void testEnableHook() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
@@ -708,7 +708,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ1";
             String repoKey = "1234";
             String hookKey = "qwerty";
-            Hook hookPage = api.createHook(projectKey, repoKey, hookKey);
+            Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
@@ -721,7 +721,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testCreateHookOnError() throws Exception {
+    public void testEnableHookOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
@@ -731,7 +731,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ1";
             String repoKey = "1234";
             String hookKey = "qwerty";
-            Hook hookPage = api.createHook(projectKey, repoKey, hookKey);
+            Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
@@ -744,7 +744,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testDeleteHook() throws Exception {
+    public void testDisableHook() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
@@ -754,7 +754,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ1";
             String repoKey = "1234";
             String hookKey = "qwerty";
-            Hook hookPage = api.deleteHook(projectKey, repoKey, hookKey);
+            Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
@@ -767,7 +767,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testDeleteHookOnError() throws Exception {
+    public void testDisableHookOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
@@ -777,7 +777,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ1";
             String repoKey = "1234";
             String hookKey = "qwerty";
-            Hook hookPage = api.deleteHook(projectKey, repoKey, hookKey);
+            Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();

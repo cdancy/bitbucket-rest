@@ -191,24 +191,24 @@ public interface RepositoryApi {
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey);
 
-    @Named("repository:create-Hook")
+    @Named("repository:enable-Hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/enabled")
     @Fallback(BitbucketFallbacks.HookOnError.class)
     @PUT
-    Hook createHook(@PathParam("project") String project,
+    Hook enableHook(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey);
 
-    @Named("repository:delete-Hook")
+    @Named("repository:disable-Hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/enabled")
     @Fallback(BitbucketFallbacks.HookOnError.class)
     @DELETE
-    Hook deleteHook(@PathParam("project") String project,
-                    @PathParam("repo") String repo,
-                    @PathParam("hookKey") String hookKey);
+    Hook disableHook(@PathParam("project") String project,
+                     @PathParam("repo") String repo,
+                     @PathParam("hookKey") String hookKey);
 
 }

@@ -188,6 +188,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(hookPage.size()).isGreaterThan(0);
         for (Hook hook : hookPage.values()) {
             if (hook.details().configFormKey() == null) {
+                assertThat(hook.details().key()).isNotNull();
                 hookKey = hook.details().key();
                 break;
             }
@@ -216,12 +217,12 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         Hook hook = api().getHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isNotEmpty();
-        assertThat(hook.enabled()).isNull();
+        assertThat(hook.enabled()).isFalse();
     }
 
     @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook", "testGetHook"})
-    public void testCreateHook() {
-        Hook hook = api().createHook(projectKey, repoKey, hookKey);
+    public void testEnableHook() {
+        Hook hook = api().enableHook(projectKey, repoKey, hookKey);
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isEmpty();
         assertThat(hook.details().key().equals(hookKey)).isTrue();
@@ -229,16 +230,16 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
-    public void testCreateHookOnError() {
-        Hook hook = api().createHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
+    public void testEnableHookOnError() {
+        Hook hook = api().enableHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isNotEmpty();
-        assertThat(hook.enabled()).isNull();
+        assertThat(hook.enabled()).isFalse();
     }
 
     @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook", "testGetHook", "testCreateHook"})
-    public void testDeleteHook() {
-        Hook hook = api().deleteHook(projectKey, repoKey, hookKey);
+    public void testDisableHook() {
+        Hook hook = api().disableHook(projectKey, repoKey, hookKey);
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isEmpty();
         assertThat(hook.details().key().equals(hookKey)).isTrue();
@@ -246,11 +247,11 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository"})
-    public void testDeleteHookOnError() {
-        Hook hook = api().deleteHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
+    public void testDisableHookOnError() {
+        Hook hook = api().disableHook(projectKey, repoKey, randomStringLettersOnly() + ":" + randomStringLettersOnly());
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isNotEmpty();
-        assertThat(hook.enabled()).isNull();
+        assertThat(hook.enabled()).isFalse();
     }
 
     @Test(dependsOnMethods = {"testCreateRepository", "testGetRepository", "testListPermissionByGroup"})
