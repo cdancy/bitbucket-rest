@@ -186,4 +186,46 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+
+    public void testDeleteCondition() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        DefaultReviewersApi api = baseApi.defaultReviewersApi();
+        try {
+                String projectKey = "test";
+                String repoKey = "1234";
+
+                boolean success = api.deleteCondition(projectKey, repoKey, 10L);
+                assertThat(success).isTrue();
+
+                assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteConditionOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        DefaultReviewersApi api = baseApi.defaultReviewersApi();
+        try {
+            String projectKey = "test";
+            String repoKey = "1234";
+
+            boolean success = api.deleteCondition(projectKey, repoKey, 10L);
+            assertThat(success).isFalse();
+
+            assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
+                + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 }
