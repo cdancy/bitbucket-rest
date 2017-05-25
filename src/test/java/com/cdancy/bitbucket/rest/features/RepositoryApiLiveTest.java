@@ -237,7 +237,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(hook.enabled()).isFalse();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook", "testGetHook", "testCreateHook"})
+    @Test(dependsOnMethods = {"testGetRepository", "testCreateRepository", "testListHook", "testGetHook", "testEnableHook"})
     public void testDisableHook() {
         Hook hook = api().disableHook(projectKey, repoKey, hookKey);
         assertThat(hook).isNotNull();
