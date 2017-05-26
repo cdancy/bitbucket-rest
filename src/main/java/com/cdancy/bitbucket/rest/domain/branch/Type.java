@@ -39,8 +39,7 @@ public abstract class Type {
 
     public abstract String prefix();
 
-    @Nullable
-    public abstract Boolean enabled();
+    public abstract boolean enabled();
 
     Type() {
     }
@@ -52,6 +51,6 @@ public abstract class Type {
 
     @SerializedNames({ "id", "displayName", "prefix", "enabled" })
     public static Type create(TypeId id, String displayName, String prefix, Boolean enabled) {
-        return new AutoValue_Type(id, displayName, prefix, enabled);
+        return new AutoValue_Type(id, displayName, prefix, enabled != null ? enabled : false);
     }
 }
