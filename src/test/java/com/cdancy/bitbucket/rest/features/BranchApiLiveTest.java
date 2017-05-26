@@ -156,11 +156,9 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         types.add(Type.create(Type.TypeId.FEATURE, null, "fea/", true));
         CreateBranchModelConfiguration configuration = CreateBranchModelConfiguration.create(branchModelConfiguration.development(), null, types);
 
-
         BranchModelConfiguration branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey, configuration);
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
-        assertThat(branchModelConfiguration.development().refId()).isNotNull();
         assertThat(branchModelConfiguration.production()).isNull();
         assertThat(branchModelConfiguration.types().size() == 4);
         for (Type type : branchModelConfiguration.types()) {
@@ -199,7 +197,6 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     private void checkDefaultBranchConfiguration() {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
-        assertThat(branchModelConfiguration.development().refId()).isNotNull();
         assertThat(branchModelConfiguration.production()).isNull();
         assertThat(branchModelConfiguration.types().size() == 4);
         for (Type type : branchModelConfiguration.types()) {
