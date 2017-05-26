@@ -1,0 +1,12 @@
+{
+  "details": {
+    "key": "com.atlassian.bitbucket.server.bitbucket-bundled-hooks:force-push-hook",
+    "name": "Reject Force Push",
+    "type": "PRE_RECEIVE",
+    "description": "Reject all force pushes (git push --force) to this repository",
+    "version": "5.0.0",
+    "configFormKey": null
+  },
+  "enabled": false,
+  "configured": false
+}
