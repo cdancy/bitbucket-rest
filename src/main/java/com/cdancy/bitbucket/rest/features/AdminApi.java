@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}/admin")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface AdminApi {
 
     @Named("admin:list-user-by-group")

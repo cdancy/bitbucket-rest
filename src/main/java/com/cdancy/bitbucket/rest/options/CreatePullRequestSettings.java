@@ -35,7 +35,7 @@ public abstract class CreatePullRequestSettings {
 
     public abstract long requiredSuccessfulBuilds();
 
-    public static CreatePullRequestSettings create(PullRequestSettings pullRequestSettings) {
+    public static CreatePullRequestSettings create(final PullRequestSettings pullRequestSettings) {
         return new AutoValue_CreatePullRequestSettings(pullRequestSettings.mergeConfig(),
             pullRequestSettings.requiredAllApprovers(), pullRequestSettings.requiredAllTasksComplete(),
             pullRequestSettings.requiredApprovers(), pullRequestSettings.requiredSuccessfulBuilds());
@@ -43,9 +43,11 @@ public abstract class CreatePullRequestSettings {
 
     @SerializedNames({ "mergeConfig", "requiredAllApprovers", "requiredAllTasksComplete",
             "requiredApprovers", "requiredSuccessfulBuilds" })
-    public static CreatePullRequestSettings create(MergeConfig mergeConfig, boolean requiredAllApprovers,
-                                             boolean requiredAllTasksComplete, long requiredApprovers,
-                                             long requiredSuccessfulBuilds) {
+    public static CreatePullRequestSettings create(final MergeConfig mergeConfig, 
+            final boolean requiredAllApprovers,
+            final boolean requiredAllTasksComplete, 
+            final long requiredApprovers,
+            final long requiredSuccessfulBuilds) {
         return new AutoValue_CreatePullRequestSettings(mergeConfig, requiredAllApprovers, requiredAllTasksComplete,
             requiredApprovers, requiredSuccessfulBuilds);
     }

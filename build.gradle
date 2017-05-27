@@ -19,6 +19,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'nebula.compile-api'
+apply plugin: 'pmd'
 
 apply from: "$rootDir/gradle/additional-artifacts.gradle"
 apply from: "$rootDir/gradle/dependencies.gradle"
@@ -64,7 +65,21 @@ checkstyle {
     toolVersion = "6.13"
 }
 
+pmd {
+    ruleSetConfig = resources.text.fromFile(rootProject.file("config/pmd/pmd.xml"))
+    consoleOutput = true
+    ignoreFailures = false
+    ruleSets = []
+}
+
 jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+tasks.withType(Pmd) {
     reports {
         xml.enabled = true
         html.enabled = true

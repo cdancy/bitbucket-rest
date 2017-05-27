@@ -52,6 +52,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface BranchApi {
 
     @Named("branch:list")

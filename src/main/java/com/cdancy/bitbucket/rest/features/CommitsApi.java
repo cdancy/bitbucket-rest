@@ -39,6 +39,7 @@ import org.jclouds.javax.annotation.Nullable;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface CommitsApi {
 
     @Named("commits:get")

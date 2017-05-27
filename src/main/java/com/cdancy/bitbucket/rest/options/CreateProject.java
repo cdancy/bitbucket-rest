@@ -40,7 +40,10 @@ public abstract class CreateProject {
     }
 
     @SerializedNames({ "key", "name", "description", "avatar" })
-    public static CreateProject create(String key, String name, String description, String avatar) {
+    public static CreateProject create(final String key,
+            final String name,
+            final String description,
+            final String avatar) {
         return new AutoValue_CreateProject(key, name != null ? name : key, description, avatar);
     }
 }

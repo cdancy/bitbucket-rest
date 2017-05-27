@@ -39,9 +39,11 @@ public abstract class CreateParticipants {
     public abstract Participants.Status status();
 
     @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status"})
-    public static CreateParticipants create(User user,
-                                      String lastReviewedCommit,
-                                      Participants.Role role, boolean approved, Participants.Status status) {
+    public static CreateParticipants create(final User user, 
+            final String lastReviewedCommit,
+            final Participants.Role role, 
+            final boolean approved, 
+            final Participants.Status status) {
         return new AutoValue_CreateParticipants(user, lastReviewedCommit, role, approved, status);
     }
 }

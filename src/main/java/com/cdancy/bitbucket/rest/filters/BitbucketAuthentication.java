@@ -39,13 +39,13 @@ public class BitbucketAuthentication implements HttpRequestFilter {
     public static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
 
     @Inject
-    BitbucketAuthentication(@Provider Supplier<Credentials> creds) {
+    BitbucketAuthentication(@Provider final Supplier<Credentials> creds) {
         this.creds = creds;
     }
 
     @Override
-    public HttpRequest filter(HttpRequest request) throws HttpException {
-        Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
+    public HttpRequest filter(final HttpRequest request) throws HttpException {
+        final Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
         if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {
             /*
             * client can pass in credential string in 1 of 2 ways:
@@ -71,7 +71,7 @@ public class BitbucketAuthentication implements HttpRequestFilter {
         }
     }
 
-    private boolean isBase64Encoded(String possiblyEncodedString) {
-        return possiblyEncodedString.matches(BASE64_REGEX) ? true : false;
+    private boolean isBase64Encoded(final String possiblyEncodedString) {
+        return possiblyEncodedString.matches(BASE64_REGEX);
     }
 }

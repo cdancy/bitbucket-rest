@@ -48,6 +48,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface RepositoryApi {
 
     @Named("repository:create")
@@ -210,5 +211,4 @@ public interface RepositoryApi {
     Hook disableHook(@PathParam("project") String project,
                      @PathParam("repo") String repo,
                      @PathParam("hookKey") String hookKey);
-
 }
