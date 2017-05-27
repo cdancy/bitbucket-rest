@@ -11,6 +11,7 @@
 * BUG: Fix incorrect pom file generation - [PR 77](https://github.com/cdancy/bitbucket-rest/pull/77)
 * ADDED: Checkstyle module to catch windows based line-endings - [PR 78](https://github.com/cdancy/bitbucket-rest/pull/78)
 * ADDED: Checkstyle module to catch author annotations - [PR 79](https://github.com/cdancy/bitbucket-rest/pull/79)
+* ADDED: `Branch` model gained attribute `metadata`  - [PR 72](https://github.com/cdancy/bitbucket-rest/pull/72)
 
 ### Version 0.0.15 (4/28/2017)
 * ADDED: `PullRequestApi` gained endpoints `listActivities`, `listParticipants`, `assignParticipant`, and `deleteParticipant`. - [PR 55](https://github.com/cdancy/bitbucket-rest/pull/55)
