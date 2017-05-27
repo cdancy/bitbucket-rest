@@ -7,6 +7,7 @@
 * ADDED: `RepositoryApi` gained endpoints `listHooks`, `getHook`, `enableHook` and `disableHook` - [PR 66](https://github.com/cdancy/bitbucket-rest/pull/66)
 * ADDED: `BranchApi` gained endpoints `getModelConfiguration` - [PR 68](https://github.com/cdancy/bitbucket-rest/pull/68)
 * ADDED: `BranchApi` gained endpoints `updateModelConfiguration` - [PR 69](https://github.com/cdancy/bitbucket-rest/pull/69)
+* REFACTOR: Upgrade to gradle 3.5 - [PR 75](https://github.com/cdancy/bitbucket-rest/pull/75)
 
 ### Version 0.0.15 (4/28/2017)
 * ADDED: `PullRequestApi` gained endpoints `listActivities`, `listParticipants`, `assignParticipant`, and `deleteParticipant`. - [PR 55](https://github.com/cdancy/bitbucket-rest/pull/55)
