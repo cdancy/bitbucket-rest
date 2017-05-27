@@ -33,7 +33,7 @@ public abstract class BranchConfiguration {
     }
 
     @SerializedNames({ "refId", "useDefault" })
-    public static BranchConfiguration create(String refId, boolean useDefault) {
+    public static BranchConfiguration create(final String refId, final boolean useDefault) {
         return new AutoValue_BranchConfiguration(refId, useDefault);
     }
 }

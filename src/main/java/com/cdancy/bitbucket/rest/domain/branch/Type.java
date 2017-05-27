@@ -45,12 +45,21 @@ public abstract class Type {
     }
 
     @Deprecated
-    public static Type create(TypeId id, String displayName, String prefix) {
+    public static Type create(final TypeId id, 
+            final String displayName, 
+            final String prefix) {
         return create(id, displayName, prefix, null);
     }
 
     @SerializedNames({ "id", "displayName", "prefix", "enabled" })
-    public static Type create(TypeId id, String displayName, String prefix, Boolean enabled) {
-        return new AutoValue_Type(id, displayName, prefix, enabled != null ? enabled : false);
+    public static Type create(final TypeId id, 
+            final String displayName, 
+            final String prefix, 
+            final Boolean enabled) {
+        
+        return new AutoValue_Type(id, 
+                displayName, 
+                prefix, 
+                enabled != null ? enabled : false);
     }
 }

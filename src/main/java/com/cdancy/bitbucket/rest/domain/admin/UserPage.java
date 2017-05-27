@@ -32,9 +32,13 @@ import java.util.List;
 public abstract class UserPage implements Page<User>, ErrorsHolder {
 
     @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static UserPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                  @Nullable List<User> values, @Nullable List<Error> errors) {
-        return new AutoValue_UserPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    public static UserPage create(final int start, final int limit, 
+            final int size, final int nextPageStart, 
+            final boolean isLastPage, @Nullable final List<User> values, 
+            @Nullable final List<Error> errors) {
+        return new AutoValue_UserPage(start, limit, 
+                size, nextPageStart, 
+                isLastPage, Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

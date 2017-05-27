@@ -60,9 +60,14 @@ public abstract class Branch implements ErrorsHolder {
     }
 
     @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "isDefault", "metadata", "errors" })
-    public static Branch create(String id, String displayId, String type,
-                                String latestCommit, String latestChangeset, 
-                                boolean isDefault, Map<String, JsonElement> metadata, List<Error> errors) {
+    public static Branch create(final String id, 
+            final String displayId, 
+            final String type,
+            final String latestCommit, 
+            final String latestChangeset, 
+            final boolean isDefault, 
+            final Map<String, JsonElement> metadata, 
+            final List<Error> errors) {
         
         return new AutoValue_Branch(Utils.nullToEmpty(errors), id, displayId, type, 
                 latestCommit, latestChangeset, isDefault, Utils.nullToEmpty(metadata));
