@@ -24,8 +24,6 @@ import java.lang.annotation.Target;
 
 /**
  * Provides a potential list of URI's for further documentation.
- * 
- * @author dancc
  */
 @Target(value = {ElementType.TYPE, ElementType.METHOD})
 @Retention(value = RetentionPolicy.RUNTIME)
