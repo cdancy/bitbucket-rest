@@ -31,9 +31,20 @@ import java.util.List;
 public abstract class StatusPage implements Page<Status>, ErrorsHolder {
 
     @SerializedNames({"start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors"})
-    public static StatusPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                    @Nullable List<Status> values, @Nullable List<Error> errors) {
-        return new AutoValue_StatusPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    public static StatusPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<Status> values, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_StatusPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

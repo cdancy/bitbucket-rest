@@ -30,7 +30,9 @@ public abstract class Summary {
     public abstract long successful();
 
     @SerializedNames({"failed", "inProgress", "successful"})
-    public static Summary create(long failed, long inProgress, long successful) {
+    public static Summary create(final long failed, 
+            final long inProgress, 
+            final long successful) {
         return new AutoValue_Summary(failed, inProgress, successful);
     }
 }
