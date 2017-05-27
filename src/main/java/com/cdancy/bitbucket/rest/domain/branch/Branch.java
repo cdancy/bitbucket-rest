@@ -27,6 +27,7 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.JsonElement;
 
 @AutoValue
 public abstract class Branch implements ErrorsHolder {
@@ -48,15 +49,22 @@ public abstract class Branch implements ErrorsHolder {
 
     public abstract boolean isDefault();
 
-    @Nullable
-    public abstract Map<String, ?> metadata();
+    // This map consists of data provided by plugins and so 
+    // is non-standard in how it's returned and the fields
+    // it has. As such we return the raw JsonElement and instead
+    // let the caller iterate through the returned plugin data
+    // for what they are looking for.
+    public abstract Map<String, JsonElement> metadata(); 
 
     Branch() {
     }
 
-    @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "isDefault", "errors", "metadata" })
+    @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "isDefault", "metadata", "errors" })
     public static Branch create(String id, String displayId, String type,
-                                String latestCommit, String latestChangeset, boolean isDefault, List<Error> errors, Map<String, ?> metadata) {
-        return new AutoValue_Branch(Utils.nullToEmpty(errors), id, displayId, type, latestCommit, latestChangeset, isDefault, metadata);
+                                String latestCommit, String latestChangeset, 
+                                boolean isDefault, Map<String, JsonElement> metadata, List<Error> errors) {
+        
+        return new AutoValue_Branch(Utils.nullToEmpty(errors), id, displayId, type, 
+                latestCommit, latestChangeset, isDefault, Utils.nullToEmpty(metadata));
     }
 }

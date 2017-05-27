@@ -317,7 +317,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Branch createBranchFromErrors(List<Error> errors) {
-        return Branch.create(null, null, null, null, null, false, errors, null);
+        return Branch.create(null, null, null, null, null, false, null, errors);
     }
 
     public static BranchModel createBranchModelFromErrors(List<Error> errors) {
