@@ -33,6 +33,11 @@
         <property name="message" value="Do not use Windows line endings"/>
     </module>
         
+    <module name="RegexpMultiline">
+        <property name="format" value="@author"/>
+        <property name="message" value="Do not use Javadoc @author annotation"/>
+    </module>
+    
     <module name="TreeWalker">
         <module name="OuterTypeFilename"/>
         <module name="IllegalTokenText">
