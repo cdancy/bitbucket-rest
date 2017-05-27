@@ -115,33 +115,6 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-
-    private static class BuildStatusInfo {
-        final int successful;
-
-        private BuildStatusInfo(int successful) {
-            this.successful = successful;
-        }
-
-        static BuildStatusInfoBuilder newBuilder() {
-            return new BuildStatusInfoBuilder();
-        }
-
-        private static class BuildStatusInfoBuilder {
-            private int successful;
-
-            BuildStatusInfoBuilder fromMap(Map buildStatus) {
-                this.successful = ((Number) buildStatus.get("successful")).intValue();
-                return this;
-            }
-
-            BuildStatusInfo build() {
-                return new BuildStatusInfo(this.successful);
-            }
-
-        }
-    }
-
     public void testListBranchesNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
