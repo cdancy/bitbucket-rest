@@ -91,12 +91,53 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.values().size() > 0).isTrue();
             assertThat("hello-world".equals(branch.values().get(0).displayId())).isTrue();
+            assertThat(branch.values().get(0).metadata()).isNotNull();
+
+            String jiraIssuesKey = "com.atlassian.bitbucket.server.bitbucket-jira:branch-list-jira-issues";
+            String commitInfoKey = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata";
+            String buildStatusKey = "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata";
+            assertThat(branch.values().get(0).metadata().containsKey(jiraIssuesKey)).isNotNull();
+            assertThat(branch.values().get(0).metadata().containsKey(commitInfoKey)).isNotNull();
+            assertThat(branch.values().get(0).metadata().containsKey(buildStatusKey)).isNotNull();
+
+            Map buildStatusMetadata = (Map)branch.values().get(0).metadata().get(buildStatusKey);
+            BuildStatusInfo buildStatus = BuildStatusInfo.newBuilder().fromMap(buildStatusMetadata).build();
+
+            assertThat(buildStatus.successful).isEqualTo(1);
+
             Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
+        }
+    }
+
+
+    private static class BuildStatusInfo {
+        final int successful;
+
+        private BuildStatusInfo(int successful) {
+            this.successful = successful;
+        }
+
+        static BuildStatusInfoBuilder newBuilder() {
+            return new BuildStatusInfoBuilder();
+        }
+
+        private static class BuildStatusInfoBuilder {
+            private int successful;
+
+            BuildStatusInfoBuilder fromMap(Map buildStatus) {
+                this.successful = ((Number) buildStatus.get("successful")).intValue();
+                return this;
+            }
+
+            BuildStatusInfo build() {
+                return new BuildStatusInfo(this.successful);
+            }
+
         }
     }
 

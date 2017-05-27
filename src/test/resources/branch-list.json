@@ -1,15 +1,49 @@
-{  
-   "size":1,
-   "limit":1,
-   "isLastPage":false,
-   "values":[  
-      {  
-         "id":"refs/heads/hello-world",
-         "displayId":"hello-world",
-         "latestChangeset":"e73efd28360ed2ec94804d582c591d2d3ba6bcc4",
-         "isDefault":false
+{
+  "size": 1,
+  "limit": 1,
+  "isLastPage": false,
+  "values": [
+    {
+      "id": "refs/heads/hello-world",
+      "displayId": "hello-world",
+      "latestChangeset": "e73efd28360ed2ec94804d582c591d2d3ba6bcc4",
+      "isDefault": false,
+      "metadata": {
+        "com.atlassian.bitbucket.server.bitbucket-jira:branch-list-jira-issues": [
+          {
+            "key": "CICD-4590",
+            "url": "https://acme.com/plugins/servlet/jira-integration/issues/CICD-4590"
+          }
+        ],
+        "com.atlassian.bitbucket.server.bitbucket-branch:ahead-behind-metadata-provider": {
+          "ahead": 1,
+          "behind": 0
+        },
+        "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata": {
+          "id": "026e014dc71376bafc601c155fca75bd5dab8205",
+          "displayId": "026e014dc71",
+          "author": {
+            "name": "Sergey",
+            "emailAddress": "slysyuk@acme.com",
+            "avatarUrl": "https://secure.gravatar.com/avatar/724799292f3a225600f4d4644468171c.jpg?s=64&d=mm"
+          },
+          "authorTimestamp": 1495834461000,
+          "message": "sticky fix",
+          "parents": [
+            {
+              "id": "5114f8c7dcc51f9c85a223429938a0b5598d238d",
+              "displayId": "5114f8c7dcc"
+            }
+          ]
+        },
+        "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata": {
+          "successful": 1,
+          "inProgress": 0,
+          "failed": 0
+        }
       }
-   ],
-   "start":0,
-   "nextPageStart":1
+    }
+  ],
+  "start": 0,
+  "nextPageStart": 1
 }

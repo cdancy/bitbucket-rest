@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.branch;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -47,12 +48,15 @@ public abstract class Branch implements ErrorsHolder {
 
     public abstract boolean isDefault();
 
+    @Nullable
+    public abstract Map<String, ?> metadata();
+
     Branch() {
     }
 
-    @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "isDefault", "errors" })
+    @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "isDefault", "errors", "metadata" })
     public static Branch create(String id, String displayId, String type,
-                                String latestCommit, String latestChangeset, boolean isDefault, List<Error> errors) {
-        return new AutoValue_Branch(Utils.nullToEmpty(errors), id, displayId, type, latestCommit, latestChangeset, isDefault);
+                                String latestCommit, String latestChangeset, boolean isDefault, List<Error> errors, Map<String, ?> metadata) {
+        return new AutoValue_Branch(Utils.nullToEmpty(errors), id, displayId, type, latestCommit, latestChangeset, isDefault, metadata);
     }
 }
