@@ -53,16 +53,27 @@ public abstract class Author implements LinksHolder {
     Author() {
     }
 
-    @SerializedNames({ "name", "emailAddress", "id", "displayName", "active", "slug", "type", "link", "links" })
-    public static Author create(String name,
-                                String emailAddress,
-                                Integer id,
-                                String displayName,
-                                Boolean active,
-                                String slug,
-                                String type,
-                                Link link,
-                                Links links) {
-        return new AutoValue_Author(links, name, emailAddress, id, displayName, active, slug, type, link);
+    @SerializedNames({ "name", "emailAddress", "id", 
+            "displayName", "active", "slug", 
+            "type", "link", "links" })
+    public static Author create(final String name,
+                                final String emailAddress,
+                                final Integer id,
+                                final String displayName,
+                                final Boolean active,
+                                final String slug,
+                                final String type,
+                                final Link link,
+                                final Links links) {
+        
+        return new AutoValue_Author(links, 
+                name, 
+                emailAddress, 
+                id, 
+                displayName, 
+                active, 
+                slug, 
+                type, 
+                link);
     }
 }

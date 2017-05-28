@@ -48,7 +48,7 @@ public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
     }
 
     public static Properties defaultProperties() {
-        Properties properties = BaseHttpApiMetadata.defaultProperties();
+        final Properties properties = BaseHttpApiMetadata.defaultProperties();
         return properties;
     }
 

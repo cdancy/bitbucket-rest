@@ -60,6 +60,6 @@ public abstract class Type {
         return new AutoValue_Type(id, 
                 displayName, 
                 prefix, 
-                enabled != null ? enabled : false);
+                enabled || false);
     }
 }

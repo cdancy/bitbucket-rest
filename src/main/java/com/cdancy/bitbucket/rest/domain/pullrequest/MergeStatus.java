@@ -39,7 +39,14 @@ public abstract class MergeStatus implements ErrorsHolder {
     }
 
     @SerializedNames({ "canMerge", "conflicted", "vetoes", "errors" })
-    public static MergeStatus create(boolean canMerge, boolean conflicted, List<Veto> vetoes, List<Error> errors) {
-        return new AutoValue_MergeStatus(Utils.nullToEmpty(errors), canMerge, conflicted, Utils.nullToEmpty(vetoes));
+    public static MergeStatus create(final boolean canMerge, 
+            final boolean conflicted, 
+            final List<Veto> vetoes, 
+            final List<Error> errors) {
+        
+        return new AutoValue_MergeStatus(Utils.nullToEmpty(errors), 
+                canMerge, 
+                conflicted, 
+                Utils.nullToEmpty(vetoes));
     }
 }

@@ -39,7 +39,14 @@ public abstract class Person {
     }
 
     @SerializedNames({ "user", "role", "approved", "status" })
-    public static Person create(User user, String role, boolean approved, String status) {
-        return new AutoValue_Person(user, role, approved, status);
+    public static Person create(final User user, 
+            final String role, 
+            final boolean approved, 
+            final String status) {
+        
+        return new AutoValue_Person(user, 
+                role, 
+                approved, 
+                status);
     }
 }

@@ -34,7 +34,7 @@ public abstract class MergeStrategy {
 
         private final String apiName;
 
-        MergeStrategyId(String apiName) {
+        MergeStrategyId(final String apiName) {
             this.apiName = apiName;
         }
 
@@ -49,7 +49,7 @@ public abstract class MergeStrategy {
          * @return value
          */
         public static MergeStrategyId fromValue(final String apiName) {
-            for (MergeStrategyId enumType : MergeStrategyId.values()) {
+            for (final MergeStrategyId enumType : MergeStrategyId.values()) {
                 if (enumType.getApiName().equals(apiName)) {
                     return enumType;
                 }

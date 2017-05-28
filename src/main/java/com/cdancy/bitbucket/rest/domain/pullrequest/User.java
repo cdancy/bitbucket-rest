@@ -41,9 +41,22 @@ public abstract class User {
     User() {
     }
 
-    @SerializedNames({ "name", "emailAddress", "id", "displayName", "active", "slug", "type" })
-    public static User create(String name, String emailAddress, int id,
-                              String displayName, boolean active, String slug, String type) {
-        return new AutoValue_User(name, emailAddress, id, displayName, active, slug, type);
+    @SerializedNames({ "name", "emailAddress", "id", 
+            "displayName", "active", "slug", "type" })
+    public static User create(final String name, 
+            final String emailAddress, 
+            final int id,
+            final String displayName, 
+            final boolean active, 
+            final String slug, 
+            final String type) {
+        
+        return new AutoValue_User(name, 
+                emailAddress, 
+                id, 
+                displayName, 
+                active, 
+                slug, 
+                type);
     }
 }

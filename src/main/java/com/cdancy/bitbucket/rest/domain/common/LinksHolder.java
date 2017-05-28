@@ -27,5 +27,5 @@ import org.jclouds.javax.annotation.Nullable;
 public interface LinksHolder {
 
     @Nullable
-    abstract Links links();
+    Links links();
 }

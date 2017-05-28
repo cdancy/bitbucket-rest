@@ -26,5 +26,5 @@ import java.util.List;
  */
 public interface ErrorsHolder {
 
-    abstract List<Error> errors();
+    List<Error> errors();
 }

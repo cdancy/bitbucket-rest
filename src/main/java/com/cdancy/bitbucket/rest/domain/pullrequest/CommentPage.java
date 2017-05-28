@@ -32,10 +32,22 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class CommentPage implements Page<Comments>, ErrorsHolder {
 
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static CommentPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                     @Nullable List<Comments> values, @Nullable List<Error> errors) {
-        return new AutoValue_CommentPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    @SerializedNames({ "start", "limit", "size", 
+            "nextPageStart", "isLastPage", "values", "errors" })
+    public static CommentPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<Comments> values, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_CommentPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

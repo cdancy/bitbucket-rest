@@ -21,15 +21,15 @@ import java.util.List;
 
 public interface Page<T> {
 
-    abstract int start();
+    int start();
 
-    abstract int limit();
+    int limit();
 
-    abstract int size();
+    int size();
 
-    abstract int nextPageStart();
+    int nextPageStart();
 
-    abstract boolean isLastPage();
+    boolean isLastPage();
 
-    abstract List<T> values();
+    List<T> values();
 }

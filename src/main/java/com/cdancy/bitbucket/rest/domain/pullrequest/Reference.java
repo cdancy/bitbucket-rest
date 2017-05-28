@@ -41,22 +41,32 @@ public abstract class Reference {
     }
 
     @Deprecated
-    public static Reference create(String id, MinimalRepository repository) {
+    public static Reference create(final String id, final MinimalRepository repository) {
         String displayId = null;
         if (id != null) {
-            String[] parts = id.split("/");
+            final String[] parts = id.split("/");
             displayId = parts[parts.length - 1];
         }
         return create(id, repository, displayId);
     }
 
     @Deprecated
-    public static Reference create(String id, MinimalRepository repository, String displayId) {
+    public static Reference create(final String id, 
+            final MinimalRepository repository, 
+            final String displayId) {
+        
         return create(id, repository, displayId, null);
     }
 
     @SerializedNames({"id", "repository", "displayId", "latestCommit"})
-    public static Reference create(String id, MinimalRepository repository, String displayId, String latestCommit) {
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId, latestCommit);
+    public static Reference create(final String id, 
+            final MinimalRepository repository, 
+            final String displayId, 
+            final String latestCommit) {
+        
+        return new AutoValue_Reference(id != null ? id : "refs/heads/master", 
+                repository, 
+                displayId, 
+                latestCommit);
     }
 }
