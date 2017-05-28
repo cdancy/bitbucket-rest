@@ -60,11 +60,31 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
     Repository() {
     }
 
-    @SerializedNames({ "slug", "id", "name", "scmId", "state", "statusMessage", "forkable", "project", "public", "links", "errors" })
-    public static Repository create(String slug, int id, String name, String scmId,
-                                    String state, String statusMessage, boolean forkable,
-                                    Project project, boolean _public, Links links, List<Error> errors) {
-        return new AutoValue_Repository(Utils.nullToEmpty(errors), links, slug, id, name, scmId, state,
-                statusMessage, forkable, project, _public);
+    @SerializedNames({ "slug", "id", "name", "scmId", 
+            "state", "statusMessage", "forkable", "project", 
+            "public", "links", "errors" })
+    public static Repository create(final String slug, 
+            final int id, 
+            final String name, 
+            final String scmId,
+            final String state, 
+            final String statusMessage, 
+            final boolean forkable,
+            final Project project, 
+            final boolean _public, 
+            final Links links, 
+            final List<Error> errors) {
+        
+        return new AutoValue_Repository(Utils.nullToEmpty(errors), 
+                links, 
+                slug, 
+                id, 
+                name, 
+                scmId, 
+                state,
+                statusMessage, 
+                forkable, 
+                project, 
+                _public);
     }
 }

@@ -30,10 +30,22 @@ import java.util.List;
 @AutoValue
 public abstract class PermissionsPage implements Page<Permissions>, ErrorsHolder {
 
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static PermissionsPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                        @Nullable List<Permissions> values, @Nullable List<Error> errors) {
-        return new AutoValue_PermissionsPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    @SerializedNames({ "start", "limit", "size", 
+            "nextPageStart", "isLastPage", "values", "errors" })
+    public static PermissionsPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<Permissions> values, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_PermissionsPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

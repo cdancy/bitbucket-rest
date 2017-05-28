@@ -40,7 +40,9 @@ public abstract class Permissions {
     public abstract PermissionsType permission();
 
     @SerializedNames({"user", "group", "permission"})
-    public static Permissions create(User user, Group group, PermissionsType type) {
+    public static Permissions create(final User user, 
+            final Group group, 
+            final PermissionsType type) {
         return new AutoValue_Permissions(user, group, type);
     }
 }

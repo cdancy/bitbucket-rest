@@ -26,7 +26,7 @@ public abstract class AccessKey {
     public abstract Key key();
 
     @SerializedNames({"key"})
-    public static AccessKey create(Key key) {
+    public static AccessKey create(final Key key) {
         return new AutoValue_AccessKey(key);
     }
 }

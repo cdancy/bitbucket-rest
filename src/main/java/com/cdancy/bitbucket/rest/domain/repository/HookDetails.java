@@ -42,9 +42,20 @@ public abstract class HookDetails {
     @Nullable
     public abstract String configFormKey();
 
-    @SerializedNames({ "key", "name", "type", "description", "version", "configFormKey" })
-    public static HookDetails create(String key, String name, HookDetailsType type, String description, String version,
-                                  String configFormKey) {
-        return new AutoValue_HookDetails(key, name, type, description, version, configFormKey);
+    @SerializedNames({ "key", "name", "type", 
+            "description", "version", "configFormKey" })
+    public static HookDetails create(final String key, 
+            final String name, 
+            final HookDetailsType type, 
+            final String description, 
+            final String version,
+            final String configFormKey) {
+        
+        return new AutoValue_HookDetails(key, 
+                name, 
+                type, 
+                description, 
+                version, 
+                configFormKey);
     }
 }

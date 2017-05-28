@@ -60,6 +60,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.propagate;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class BitbucketFallbacks {
 
     private static final JsonParser parser = new JsonParser();
@@ -441,11 +442,11 @@ public final class BitbucketFallbacks {
         final List<Error> errors = Lists.newArrayList();
         final Iterator<JsonElement> it = errorsArray.iterator();
         while (it.hasNext()) {
-            JsonObject obj = it.next().getAsJsonObject();
-            JsonElement context = obj.get("context");
-            JsonElement message = obj.get("message");
-            JsonElement exceptionName = obj.get("exceptionName");
-            Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
+            final JsonObject obj = it.next().getAsJsonObject();
+            final JsonElement context = obj.get("context");
+            final JsonElement message = obj.get("message");
+            final JsonElement exceptionName = obj.get("exceptionName");
+            final Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
                     !message.isJsonNull() ? message.getAsString() : null,
                     !exceptionName.isJsonNull() ? exceptionName.getAsString() : null);
             errors.add(error);

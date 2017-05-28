@@ -36,7 +36,7 @@ public abstract class Links {
     }
 
     @SerializedNames({ "clone", "self" })
-    public static Links create(List<Map<String, String>> clone, List<Map<String, String>> self) {
+    public static Links create(final List<Map<String, String>> clone, final List<Map<String, String>> self) {
         return new AutoValue_Links(Utils.nullToEmpty(clone), Utils.nullToEmpty(self));
     }
 }

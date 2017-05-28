@@ -43,7 +43,7 @@ public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
         this(new Builder());
     }
 
-    protected BitbucketApiMetadata(Builder builder) {
+    protected BitbucketApiMetadata(final Builder builder) {
         super(builder);
     }
 
@@ -77,7 +77,7 @@ public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
         }
 
         @Override
-        public Builder fromApiMetadata(ApiMetadata in) {
+        public Builder fromApiMetadata(final ApiMetadata in) {
             return this;
         }
     }

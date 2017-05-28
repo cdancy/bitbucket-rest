@@ -30,10 +30,22 @@ import java.util.List;
 @AutoValue
 public abstract class ParticipantsPage implements Page<Participants>, ErrorsHolder {
 
-    @SerializedNames({"start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors"})
-    public static ParticipantsPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                          @Nullable List<Participants> values, @Nullable List<Error> errors) {
-        return new AutoValue_ParticipantsPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    @SerializedNames({"start", "limit", "size", 
+            "nextPageStart", "isLastPage", "values", "errors"})
+    public static ParticipantsPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<Participants> values, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_ParticipantsPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

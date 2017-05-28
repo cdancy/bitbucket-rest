@@ -38,7 +38,9 @@ public abstract class Error {
     }
 
     @SerializedNames({ "context", "message", "exceptionName" })
-    public static Error create(String context, String message, String exceptionName) {
+    public static Error create(final String context, 
+            final String message, 
+            final String exceptionName) {
         return new AutoValue_Error(context, message, exceptionName);
     }
 }

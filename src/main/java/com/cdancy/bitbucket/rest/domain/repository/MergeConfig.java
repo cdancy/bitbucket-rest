@@ -37,7 +37,10 @@ public abstract class MergeConfig {
     public abstract MergeConfigType type();
 
     @SerializedNames({ "defaultStrategy", "strategies", "type"})
-    public static MergeConfig create(MergeStrategy defaultStrategy, List<MergeStrategy> strategies, MergeConfigType type) {
+    public static MergeConfig create(final MergeStrategy defaultStrategy, 
+            final List<MergeStrategy> strategies, 
+            final MergeConfigType type) {
+        
         return new AutoValue_MergeConfig(defaultStrategy, strategies, type);
     }
 }

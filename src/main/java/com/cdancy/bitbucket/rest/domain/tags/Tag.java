@@ -51,9 +51,22 @@ public abstract class Tag implements ErrorsHolder {
     Tag() {
     }
 
-    @SerializedNames({ "id", "displayId", "type", "latestCommit", "latestChangeset", "hash", "errors" })
-    public static Tag create(String id, String displayId, String type,
-                             String latestCommit, String latestChangeset, String hash, List<Error> errors) {
-        return new AutoValue_Tag(Utils.nullToEmpty(errors), id, displayId, type, latestCommit, latestChangeset, hash);
+    @SerializedNames({ "id", "displayId", "type", 
+            "latestCommit", "latestChangeset", "hash", "errors" })
+    public static Tag create(final String id, 
+            final String displayId, 
+            final String type,
+            final String latestCommit, 
+            final String latestChangeset, 
+            final String hash, 
+            final List<Error> errors) {
+        
+        return new AutoValue_Tag(Utils.nullToEmpty(errors), 
+                id, 
+                displayId, 
+                type, 
+                latestCommit, 
+                latestChangeset, 
+                hash);
     }
 }
