@@ -1,0 +1,32 @@
+{
+  "development": {
+    "refId": "refs/heads/master",
+    "useDefault": false
+  },
+  "types": [
+    {
+      "id": "BUGFIX",
+      "displayName": "Bugfix",
+      "enabled": true,
+      "prefix": "bugfix/"
+    },
+    {
+      "id": "FEATURE",
+      "displayName": "Feature",
+      "enabled": true,
+      "prefix": "feature/"
+    },
+    {
+      "id": "HOTFIX",
+      "displayName": "Hotfix",
+      "enabled": true,
+      "prefix": "hotfix/"
+    },
+    {
+      "id": "RELEASE",
+      "displayName": "Release",
+      "enabled": true,
+      "prefix": "release2/"
+    }
+  ]
+}
