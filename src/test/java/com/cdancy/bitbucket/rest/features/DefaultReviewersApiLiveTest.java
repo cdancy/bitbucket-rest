@@ -51,6 +51,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
     }
 
+    @Test
     public void testListDefaultReviewersOnEmptyRepo() {
         List<Condition> conditionList = api().listConditions(projectKey, repoKey);
         assertThat(conditionList).isEmpty();
