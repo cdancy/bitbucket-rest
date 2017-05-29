@@ -204,7 +204,6 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     private void checkDefaultBranchConfiguration() {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
-        assertThat(branchModelConfiguration.development().refId()).isNotNull();
         assertThat(branchModelConfiguration.production()).isNull();
         assertThat(branchModelConfiguration.types().size() == 4);
         for (Type type : branchModelConfiguration.types()) {
