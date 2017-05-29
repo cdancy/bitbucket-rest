@@ -74,6 +74,7 @@ public interface DefaultReviewersApi {
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 
     @Named("defaultReviewers:delete-Condition")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/{id}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
