@@ -194,13 +194,13 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         DefaultReviewersApi api = baseApi.defaultReviewersApi();
         try {
-                String projectKey = "test";
-                String repoKey = "1234";
+            String projectKey = "test";
+            String repoKey = "1234";
 
-                boolean success = api.deleteCondition(projectKey, repoKey, 10L);
-                assertThat(success).isTrue();
+            boolean success = api.deleteCondition(projectKey, repoKey, 10L);
+            assertThat(success).isTrue();
 
-                assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
         } finally {
             baseApi.close();
@@ -222,7 +222,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(success).isFalse();
 
             assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
         } finally {
             baseApi.close();
             server.shutdown();
