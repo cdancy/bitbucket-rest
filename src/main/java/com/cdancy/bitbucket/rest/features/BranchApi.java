@@ -120,6 +120,7 @@ public interface BranchApi {
                       @PathParam("repo") String repo);
 
     @Named("branch:get-model-configuration")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
     @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
@@ -128,6 +129,7 @@ public interface BranchApi {
                                                    @PathParam("repo") String repo);
 
     @Named("branch:get-model-configuration")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
     @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
@@ -137,6 +139,7 @@ public interface BranchApi {
                                                       @BinderParam(BindToJsonPayload.class) CreateBranchModelConfiguration config);
 
     @Named("branch:delete-model-configuration")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
