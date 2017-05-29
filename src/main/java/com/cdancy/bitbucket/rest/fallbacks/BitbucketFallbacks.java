@@ -21,6 +21,7 @@ import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
+import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
@@ -85,6 +86,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchModelFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class BranchModelConfigurationOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createBranchModelConfigurationFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -307,11 +317,15 @@ public final class BitbucketFallbacks {
     }
 
     public static Branch createBranchFromErrors(List<Error> errors) {
-        return Branch.create(null, null, null, null, null, false, errors);
+        return Branch.create(null, null, null, null, null, false, null, errors);
     }
 
     public static BranchModel createBranchModelFromErrors(List<Error> errors) {
         return BranchModel.create(null, null, null, errors);
+    }
+
+    public static BranchModelConfiguration createBranchModelConfigurationFromErrors(List<Error> errors) {
+        return BranchModelConfiguration.create(null, null, null, errors);
     }
 
     public static BranchPage createBranchPageFromErrors(List<Error> errors) {
