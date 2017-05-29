@@ -15,16 +15,25 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.common;
+package com.cdancy.bitbucket.rest.domain.branch;
 
-import java.util.List;
+import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
-/**
- * This interface should NOT be applied to "option" like classes and/or used 
- * in instances where this is applied to outgoing http traffic. This interface 
- * should ONLY be used for classes modeled after incoming http traffic.
- */
-public interface ErrorsHolder {
+@AutoValue
+public abstract class BranchConfiguration {
 
-    public abstract List<Error> errors();
+    @Nullable
+    public abstract String refId();
+
+    public abstract boolean useDefault();
+
+    BranchConfiguration() {
+    }
+
+    @SerializedNames({ "refId", "useDefault" })
+    public static BranchConfiguration create(String refId, boolean useDefault) {
+        return new AutoValue_BranchConfiguration(refId, useDefault);
+    }
 }

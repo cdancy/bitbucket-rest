@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "message": "There is no branch model configuration defined for repository ~JDOIRE/testmessage[228]. You must enable the branch model first",
+      "exceptionName": "com.atlassian.bitbucket.NoSuchEntityException"
+    }
+  ]
+}
