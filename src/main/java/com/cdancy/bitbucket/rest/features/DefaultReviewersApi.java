@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
@@ -42,6 +43,7 @@ import java.util.List;
 public interface DefaultReviewersApi {
 
     @Named("defaultReviewers:list-Conditions")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/conditions/")
     @GET
