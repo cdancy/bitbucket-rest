@@ -51,6 +51,7 @@ public interface DefaultReviewersApi {
                                    @PathParam("repo") String repo);
 
     @Named("defaultReviewers:create-Condition")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/")
     @Fallback(BitbucketFallbacks.ConditionOnError.class)
