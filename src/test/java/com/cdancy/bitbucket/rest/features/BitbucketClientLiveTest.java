@@ -30,9 +30,8 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateClient() {
-        BitbucketClient client = BitbucketClient.builder().endPoint(this.endpoint).build();
-
-        Version version = client.api().systemApi().version();
+        final BitbucketClient client = BitbucketClient.builder().endPoint(this.endpoint).build();
+        final Version version = client.api().systemApi().version();
         assertThat(version).isNotNull();
     }
 }

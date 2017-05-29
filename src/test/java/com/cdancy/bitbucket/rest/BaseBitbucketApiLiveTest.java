@@ -42,17 +42,17 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     @Override
     protected Properties setupProperties() {
-        Properties overrides = super.setupProperties();
+        final Properties overrides = super.setupProperties();
         overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
         return overrides;
     }
 
     protected String randomStringLettersOnly() {
-        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
+        final char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        final StringBuilder sb = new StringBuilder();
+        final Random random = new Random();
         for (int i = 0; i < 10; i++) {
-            char randomChar = chars[random.nextInt(chars.length)];
+            final char randomChar = chars[random.nextInt(chars.length)];
             sb.append(randomChar);
         }
         return sb.toString().toUpperCase();

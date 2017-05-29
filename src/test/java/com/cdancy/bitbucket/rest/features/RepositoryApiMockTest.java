@@ -48,10 +48,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
     public void testCreateRepository() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository.json")).setResponseCode(201));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -71,10 +71,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCreateRepositoryWithIllegalName() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-illegal-name.json")).setResponseCode(400));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -91,10 +91,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetRepository() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -113,10 +113,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetRepositoryNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -132,10 +132,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeleteRepository() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(202));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -150,10 +150,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeleteRepositoryNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -168,10 +168,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetRepositoryList() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-full.json")).setResponseCode(200));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             RepositoryApi api = baseApi.repositoryApi();
 
             String projectKey = "PRJ1";
@@ -197,10 +197,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetRepositoryListWithLimit() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-truncated.json")).setResponseCode(200));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             RepositoryApi api = baseApi.repositoryApi();
 
             String projectKey = "PRJ1";
@@ -230,10 +230,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetRepositoryListNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             RepositoryApi api = baseApi.repositoryApi();
 
             String projectKey = "non-existent";
@@ -248,10 +248,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestSettings() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings.json")).setResponseCode(200));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             RepositoryApi api = baseApi.repositoryApi();
 
             String projectKey = "PRJ1";
@@ -270,10 +270,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCreatePermissionByUser() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -290,10 +290,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPermissionByUser() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -316,10 +316,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestSettingsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings-error.json")).setResponseCode(404));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             RepositoryApi api = baseApi.repositoryApi();
 
             String projectKey = "PRJ1";
@@ -338,10 +338,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCreatePermissionByGroup() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -359,10 +359,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPermissionByGroup() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-group.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -385,10 +385,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testUpdatePullRequestSettings() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -413,10 +413,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCreatePermissionByUserOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -433,10 +433,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testUpdatePullRequestSettingsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings-error.json")).setResponseCode(404));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             RepositoryApi api = baseApi.repositoryApi();
 
             String projectKey = "PRJ1";
@@ -460,10 +460,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPermissionByUserOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -483,10 +483,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCreatePermissionByGroupOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -503,10 +503,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePermissionByUser() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -523,10 +523,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePermissionByGroup() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -543,10 +543,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePermissionByUserOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -563,10 +563,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePermissionByGroupOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
@@ -584,10 +584,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPermissionByGroupOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-group-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -607,10 +607,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListHook() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hooks.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -630,10 +630,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListHookOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -653,10 +653,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetHook() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -676,10 +676,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetHookOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -699,10 +699,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testEnableHook() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -722,10 +722,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testEnableHookOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -745,10 +745,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDisableHook() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";
@@ -768,10 +768,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDisableHookOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ1";

@@ -42,15 +42,12 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
     public void testComment() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json"))
-                .setResponseCode(201));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json")).setResponseCode(201));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            Comments pr = api.comment("PRJ", "my-repo", 101, "A measured reply.");
+            final Comments pr = baseApi.commentsApi().comment("PRJ", "my-repo", 101, "A measured reply.");
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
             assertThat(pr.text()).isEqualTo("A measured reply.");
@@ -58,24 +55,20 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testCreateComment() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json"))
-                .setResponseCode(201));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json")).setResponseCode(201));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
 
             Parent parent = Parent.create(1);
             Anchor anchor = Anchor.create(1, Anchor.LineType.CONTEXT, Anchor.FileType.FROM, "path/to/file", "path/to/file");
             CreateComment createComment = CreateComment.create("A measured reply.", parent, anchor);
-            Comments pr = api.create("PRJ", "my-repo", 101, createComment);
+            Comments pr = baseApi.commentsApi().create("PRJ", "my-repo", 101, createComment);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
             assertThat(pr.text()).isEqualTo("A measured reply.");
@@ -83,20 +76,17 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetComment() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json"))
-                .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
-            Comments pr = api.get("PRJ", "my-repo", 101, 1);
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            Comments pr = baseApi.commentsApi().get("PRJ", "my-repo", 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
             assertThat(pr.text()).isEqualTo("A measured reply.");
@@ -104,41 +94,34 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetCommentOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
-                .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
-            Comments pr = api.get("PRJ", "my-repo", 101, 1);
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            Comments pr = baseApi.commentsApi().get("PRJ", "my-repo", 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isNotEmpty();
 
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetPullRequestComments() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-comments.json"))
-                .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-comments.json")).setResponseCode(200));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            CommentPage pcr = api.fileComments("project", "repo", 101, "hej", 0, 100);
+            CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, "hej", 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(2);
@@ -161,21 +144,17 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                         + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetPullRequestCommentsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
-                .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            CommentPage pcr = api.fileComments("project", "repo", 101, "hej", 0, 100);
+            CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, "hej", 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 
@@ -183,26 +162,23 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteComment() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommentsApi api = baseApi.commentsApi();
-        try {
-            boolean pr = api.delete("PRJ", "my-repo", 101, 1, 1);
+        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            boolean pr = baseApi.commentsApi().delete("PRJ", "my-repo", 101, 1, 1);
             assertThat(pr).isTrue();
 
             Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }

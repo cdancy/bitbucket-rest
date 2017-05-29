@@ -29,7 +29,7 @@ public class BitbucketClientMockTest extends BaseBitbucketMockTest {
 
     @Test
     public void testCreateClient() {
-        BitbucketClient client = BitbucketClient.builder().build();
+        final BitbucketClient client = BitbucketClient.builder().build();
         assertThat(client).isNotNull();
     }
 }

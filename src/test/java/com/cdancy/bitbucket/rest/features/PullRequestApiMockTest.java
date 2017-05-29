@@ -55,10 +55,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     final String repo = "my-repo";
 
     public void testCreatePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(201));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -89,10 +89,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.get(project, repo, 101);
@@ -111,10 +111,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequestPage pr = api.list(project, repo, null, null, null, null, null, null, null, 10);
@@ -131,10 +131,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPullRequestNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequestPage pr = api.list(project, repo, null, null, null, null, null, null, null, 10);
@@ -150,10 +150,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeclinePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-decline.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.decline(project, repo, 101, 1);
@@ -176,10 +176,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testReopenPullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.reopen(project, repo, 101, 1);
@@ -203,10 +203,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCanMergePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-can-merge-succeed.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             MergeStatus ms = api.canMerge(project, repo, 101);
@@ -223,10 +223,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCanMergePullRequestFail() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-can-merge-fail.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             MergeStatus ms = api.canMerge(project, repo, 101);
@@ -243,10 +243,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testMergePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-merge.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.merge(project, repo, 101, 1);
@@ -269,10 +269,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
     
     public void testMergePullRequestNeedsRetry() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/merge-failed-retry.json")).setResponseCode(409));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             
@@ -313,10 +313,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             PullRequest pr = api.get(project, repo, 101);
@@ -332,11 +332,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestChanges() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-changes.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -355,11 +355,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestChangesOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -377,11 +377,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestCommits() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-commits.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -401,11 +401,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestCommitsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -423,11 +423,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestActivities() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -447,11 +447,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestActivitiesOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -469,11 +469,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestParticipants() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -493,11 +493,11 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestParticipantsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
 
@@ -515,10 +515,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testPullRequestAssignPaticipants() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/participants.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             String projectKey = "PRJ";
@@ -540,10 +540,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testPullRequestAssignPaticipantsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/participants-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             String projectKey = "PRJ";
@@ -565,10 +565,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePullRequestPaticipants() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             String projectKey = "PRJ";
@@ -587,10 +587,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePullRequestPaticipantsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         PullRequestApi api = baseApi.pullRequestApi();
         try {
             String projectKey = "PRJ";

@@ -39,56 +39,51 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
     public void testGetStatus() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildStatusApi api = baseApi.buildStatusApi();
-        try {
-            StatusPage statusPage = api.status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final StatusPage statusPage = baseApi.buildStatusApi().status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
             assertThat(statusPage).isNotNull();
             assertThat(statusPage.errors()).isEmpty();
             assertThat(statusPage.size() == 2).isTrue();
             assertThat(statusPage.values().get(0).state().equals(Status.StatusState.FAILED)).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
+            final Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetStatusOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-error.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildStatusApi api = baseApi.buildStatusApi();
-        try {
-            StatusPage statusPage = api.status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final StatusPage statusPage = baseApi.buildStatusApi().status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
             assertThat(statusPage).isNotNull();
             assertThat(statusPage.values()).isEmpty();
             assertThat(statusPage.errors().size() == 1).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
+            final Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetSummary() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-summary.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BuildStatusApi api = baseApi.buildStatusApi();
-        try {
-            Summary summary = api.summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final Summary summary = baseApi.buildStatusApi().summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
             assertThat(summary).isNotNull();
             assertThat(summary.failed() == 1).isTrue();
             assertThat(summary.inProgress() == 2).isTrue();
@@ -97,7 +92,6 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }

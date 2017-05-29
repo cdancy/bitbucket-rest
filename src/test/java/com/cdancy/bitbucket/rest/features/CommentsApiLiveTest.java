@@ -32,12 +32,12 @@ import org.testng.annotations.Test;
 @Test(groups = "live", testName = "CommentsApiLiveTest", singleThreaded = true)
 public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String project = "DEV";
-    String repo = "test";
-    String commentText = randomString();
-    String commentReplyText = randomString();
-    String filePath = "some/file/path.java";
-    int prId = 6571;
+    final String project = "DEV";
+    final String repo = "test";
+    final String commentText = randomString();
+    final String commentReplyText = randomString();
+    final String filePath = "some/file/path.java";
+    final int prId = 6571;
     int commentId = -1;
     int commentIdVersion = -1;
     int commentReplyId = -1;
@@ -45,7 +45,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testComment() {
-        Comments comm = api().comment(project, repo, prId, commentText);
+        final Comments comm = api().comment(project, repo, prId, commentText);
         assertThat(comm).isNotNull();
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text().equals(commentText)).isTrue();
@@ -55,10 +55,10 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testComment")
     public void testCreateComment() {
-        Parent parent = Parent.create(commentId);
-        CreateComment createComment = CreateComment.create(commentReplyText, parent, null);
+        final Parent parent = Parent.create(commentId);
+        final CreateComment createComment = CreateComment.create(commentReplyText, parent, null);
 
-        Comments comm = api().create(project, repo, prId, createComment);
+        final Comments comm = api().create(project, repo, prId, createComment);
         assertThat(comm).isNotNull();
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text().equals(commentReplyText)).isTrue();
@@ -68,7 +68,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testCreateComment")
     public void testGetComment() {
-        Comments comm = api().get(project, repo, prId, commentReplyId);
+        final Comments comm = api().get(project, repo, prId, commentReplyId);
         assertThat(comm).isNotNull();
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text().equals(commentReplyText)).isTrue();
@@ -76,10 +76,10 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test (dependsOnMethods = "testGetComment")
     public void testGetFileCommentPage() throws Exception {
-        List<Comments> allComments = Lists.newArrayList();
+        final List<Comments> allComments = Lists.newArrayList();
         Integer start = null;
         while (true) {
-            CommentPage comm = api().fileComments(project, repo, prId, filePath, start, 100);
+            final CommentPage comm = api().fileComments(project, repo, prId, filePath, start, 100);
             assertThat(comm.errors().isEmpty()).isTrue();
             allComments.addAll(comm.values());
             start = comm.nextPageStart();
@@ -93,12 +93,10 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         
         assertThat(allComments.isEmpty()).isFalse();
         boolean foundComment = false;
-        for (Comments comm : allComments) {
-            if (comm.anchor() != null) {
-                if (comm.anchor().path().equalsIgnoreCase(filePath)) {
-                    foundComment = true;
-                    break;
-                }
+        for (final Comments comm : allComments) {
+            if (comm.anchor() != null && comm.anchor().path().equalsIgnoreCase(filePath)) {
+                foundComment = true;
+                break;
             }
         }
         assertThat(foundComment).isTrue();
@@ -106,7 +104,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetFileCommentPage")
     public void testDeleteComment() {
-        boolean success = api().delete(project, repo, prId, commentReplyId, commentReplyIdVersion);
+        final boolean success = api().delete(project, repo, prId, commentReplyId, commentReplyIdVersion);
         assertThat(success).isTrue();
     }
 

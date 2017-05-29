@@ -37,92 +37,84 @@ import java.util.Map;
 @Test(groups = "unit", testName = "CommitApiMockTest")
 public class CommitsApiMockTest extends BaseBitbucketMockTest {
 
-    private String projectKey = "PRJ";
-    private String repoKey = "myrepo";
-    private String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
+    private final String projectKey = "PRJ";
+    private final String repoKey = "myrepo";
+    private final String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
 
+    private final String localMethod = "GET";
+    
     public void testGetCommit() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommitsApi api = baseApi.commitsApi();
-        try {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            Commit commit = api.get(projectKey, repoKey, commitHash, null);
+            final Commit commit = baseApi.commitsApi().get(projectKey, repoKey, commitHash, null);
             assertThat(commit).isNotNull();
             assertThat(commit.errors().isEmpty()).isTrue();
             assertThat(commit.id().equalsIgnoreCase(commitHash)).isTrue();
 
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetCommitNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommitsApi api = baseApi.commitsApi();
-        try {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            Commit commit = api.get(projectKey, repoKey, commitHash, null);
+            final Commit commit = baseApi.commitsApi().get(projectKey, repoKey, commitHash, null);
             assertThat(commit).isNotNull();
             assertThat(commit.errors().size() > 0).isTrue();
 
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetPullRequestChanges() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-changes.json"))
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/pull-request-changes.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommitsApi api = baseApi.commitsApi();
-        try {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            ChangePage changePage = api.listChanges(projectKey, repoKey, commitHash, null, 12);
+            final ChangePage changePage = baseApi.commitsApi().listChanges(projectKey, repoKey, commitHash, null, 12);
             assertThat(changePage).isNotNull();
             assertThat(changePage.errors()).isEmpty();
             assertThat(changePage.values()).hasSize(1);
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 12);
+            final Map<String, ?> queryParams = ImmutableMap.of("limit", 12);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetPullRequestChangesOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/commit-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        CommitsApi api = baseApi.commitsApi();
-        try {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            ChangePage changePage = api.listChanges(projectKey, repoKey, commitHash, 1, 12);
+            final ChangePage changePage = baseApi.commitsApi().listChanges(projectKey, repoKey, commitHash, 1, 12);
             assertThat(changePage).isNotNull();
             assertThat(changePage.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 12, "start", 1);
+            final Map<String, ?> queryParams = ImmutableMap.of("limit", 12, "start", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }

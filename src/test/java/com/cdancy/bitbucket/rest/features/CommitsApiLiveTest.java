@@ -28,13 +28,13 @@ import org.testng.annotations.Test;
 @Test(groups = "live", testName = "CommitsApiLiveTest", singleThreaded = true)
 public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String projectKey = "TEST";
-    String repoKey = "dev";
-    String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
+    private final String projectKey = "TEST";
+    private final String repoKey = "dev";
+    private final String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
 
     @Test
     public void testGetCommit() {
-        Commit commit = api().get(projectKey, repoKey, commitHash, null);
+        final Commit commit = api().get(projectKey, repoKey, commitHash, null);
         assertThat(commit).isNotNull();
         assertThat(commit.errors().isEmpty()).isTrue();
         assertThat(commit.id().equals(commitHash)).isTrue();
@@ -42,14 +42,14 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetCommitNonExistent() {
-        Commit commit = api().get(projectKey, repoKey, "1234567890", null);
+        final Commit commit = api().get(projectKey, repoKey, "1234567890", null);
         assertThat(commit).isNotNull();
         assertThat(commit.errors().size() > 0).isTrue();
     }
 
     @Test
     public void testGetCommitChanges() {
-        ChangePage commit = api().listChanges(projectKey, repoKey, commitHash, 0, 100);
+        final ChangePage commit = api().listChanges(projectKey, repoKey, commitHash, 0, 100);
         assertThat(commit).isNotNull();
         assertThat(commit.errors().isEmpty()).isTrue();
         assertThat(commit.size() > 0).isTrue();
@@ -57,7 +57,7 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetCommitChangesNonExistent() {
-        ChangePage commit = api().listChanges(projectKey, repoKey, "1234567890", 0, 100);
+        final ChangePage commit = api().listChanges(projectKey, repoKey, "1234567890", 0, 100);
         assertThat(commit).isNotNull();
         assertThat(commit.size() == 0).isTrue();
         assertThat(commit.errors().size() > 0).isTrue();

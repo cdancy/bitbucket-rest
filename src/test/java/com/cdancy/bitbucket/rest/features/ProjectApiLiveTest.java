@@ -32,19 +32,19 @@ import com.cdancy.bitbucket.rest.options.CreateProject;
 @Test(groups = "live", testName = "ProjectApiLiveTest", singleThreaded = true)
 public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String projectKey = randomStringLettersOnly();
+    final String projectKey = randomStringLettersOnly();
 
-    Condition<Project> withProjectKey = new Condition<Project>() {
+    final Condition<Project> withProjectKey = new Condition<Project>() {
         @Override
-        public boolean matches(Project value) {
+        public boolean matches(final Project value) {
             return value.key().equals(projectKey);
         }
     };
 
     @Test
     public void testCreateProject() {
-        CreateProject createProject = CreateProject.create(projectKey, null, null, null);
-        Project project = api().create(createProject);
+        final CreateProject createProject = CreateProject.create(projectKey, null, null, null);
+        final Project project = api().create(createProject);
         assertThat(project).isNotNull();
         assertThat(project.errors().isEmpty()).isTrue();
         assertThat(projectKey.equalsIgnoreCase(project.key())).isTrue();
@@ -52,7 +52,7 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testCreateProject")
     public void testGetProject() {
-        Project project = api().get(projectKey);
+        final Project project = api().get(projectKey);
         assertThat(project).isNotNull();
         assertThat(project.errors().isEmpty()).isTrue();
         assertThat(projectKey.equalsIgnoreCase(project.key())).isTrue();
@@ -60,41 +60,41 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetProject")
     public void testDeleteProject() {
-        boolean success = api().delete(projectKey);
+        final boolean success = api().delete(projectKey);
         assertThat(success).isTrue();
     }
 
     @Test(dependsOnMethods = "testGetProject")
     public void testListProjects() {
-        ProjectPage projectPage = api().list(null, null, 0, 100);
+        final ProjectPage projectPage = api().list(null, null, 0, 100);
 
         assertThat(projectPage).isNotNull();
         assertThat(projectPage.errors()).isEmpty();
         assertThat(projectPage.size()).isGreaterThan(0);
 
-        List<Project> projects = projectPage.values();
+        final List<Project> projects = projectPage.values();
         assertThat(projects).isNotEmpty();
         assertThat(projects).areExactly(1, withProjectKey);
     }
 
     @Test
     public void testDeleteProjectNonExistent() {
-        boolean success = api().delete(randomStringLettersOnly());
+        final boolean success = api().delete(randomStringLettersOnly());
         assertThat(success).isFalse();
     }
 
     @Test
     public void testGetProjectNonExistent() {
-        Project project = api().get(randomStringLettersOnly());
+        final Project project = api().get(randomStringLettersOnly());
         assertThat(project).isNotNull();
         assertThat(project.errors().isEmpty()).isTrue();
     }
 
     @Test
     public void testCreateProjectWithIllegalName() {
-        String illegalProjectKey = "9999";
-        CreateProject createProject = CreateProject.create(illegalProjectKey, null, null, null);
-        Project project = api().create(createProject);
+        final String illegalProjectKey = "9999";
+        final CreateProject createProject = CreateProject.create(illegalProjectKey, null, null, null);
+        final Project project = api().create(createProject);
         assertThat(project).isNotNull();
         assertThat(project.errors().isEmpty()).isFalse();
     }

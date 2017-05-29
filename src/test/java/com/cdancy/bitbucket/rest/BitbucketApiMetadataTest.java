@@ -36,11 +36,11 @@ import com.google.common.reflect.TypeToken;
 public class BitbucketApiMetadataTest extends BaseApiMetadataTest {
 
     public BitbucketApiMetadataTest() {
-      super(new BitbucketApiMetadata(), new HashSet<TypeToken<? extends View>>());
+        super(new BitbucketApiMetadata(), new HashSet<TypeToken<? extends View>>());
     }
 
     public void testEtcdApiRegistered() {
-        ApiMetadata api = Apis.withId("bitbucket");
+        final ApiMetadata api = Apis.withId("bitbucket");
 
         assertThat(api).isNotNull();
         assertThat(api instanceof BitbucketApiMetadata).isTrue();

@@ -39,165 +39,166 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 @Test(groups = "unit", testName = "ProjctApiMockTest")
 public class ProjectApiMockTest extends BaseBitbucketMockTest {
 
+    private final String localMethod = "GET";
+    private final String localPath = "/projects";
+    
     public void testCreateProject() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project.json")).setResponseCode(201));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        ProjectApi api = baseApi.projectApi();
-        try {
-            String projectKey = "HELLO";
-            CreateProject createProject = CreateProject.create(projectKey, null, null, null);
-            Project project = api.create(createProject);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project.json"))
+                .setResponseCode(201));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String projectKey = "HELLO";
+            final CreateProject createProject = CreateProject.create(projectKey, null, null, null);
+            final Project project = baseApi.projectApi().create(createProject);
+            
             assertThat(project).isNotNull();
             assertThat(project.errors()).isEmpty();
             assertThat(project.key()).isEqualToIgnoringCase(projectKey);
             assertThat(project.name()).isEqualToIgnoringCase(projectKey);
             assertThat(project.links()).isNotNull();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
+            assertSent(server, "POST", restBasePath + BitbucketApiMetadata.API_VERSION + localPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testCreateProjectWithIllegalName() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-create-fail.json")).setResponseCode(400));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        ProjectApi api = baseApi.projectApi();
-        try {
-            String projectKey = "9999";
-            CreateProject createProject = CreateProject.create(projectKey, null, null, null);
-            Project project = api.create(createProject);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project-create-fail.json"))
+                .setResponseCode(400));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String projectKey = "9999";
+            final CreateProject createProject = CreateProject.create(projectKey, null, null, null);
+            final Project project = baseApi.projectApi().create(createProject);
+            
             assertThat(project).isNotNull();
             assertThat(project.errors()).isNotEmpty();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
+            assertSent(server, "POST", restBasePath + BitbucketApiMetadata.API_VERSION + localPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetProject() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        ProjectApi api = baseApi.projectApi();
-        try {
-            String projectKey = "HELLO";
-            Project project = api.get(projectKey);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String projectKey = "HELLO";
+            final Project project = baseApi.projectApi().get(projectKey);
+            
             assertThat(project).isNotNull();
             assertThat(project.errors()).isEmpty();
             assertThat(project.key()).isEqualToIgnoringCase(projectKey);
             assertThat(project.links()).isNotNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION + localPath + "/" + projectKey);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetProjectNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        ProjectApi api = baseApi.projectApi();
-        try {
-            String projectKey = "HelloWorld";
-            Project project = api.get(projectKey);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project-not-exist.json"))
+                .setResponseCode(404));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String projectKey = "HelloWorld";
+            final Project project = baseApi.projectApi().get(projectKey);
+            
             assertThat(project).isNotNull();
             assertThat(project.errors()).isNotEmpty();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION + localPath + "/" + projectKey);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteProject() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        ProjectApi api = baseApi.projectApi();
-        try {
-            String projectKey = "HELLO";
-            boolean success = api.delete(projectKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String projectKey = "HELLO";
+            final boolean success = baseApi.projectApi().delete(projectKey);
             assertThat(success).isTrue();
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+            assertSent(server, "DELETE", restBasePath + BitbucketApiMetadata.API_VERSION + localPath + "/" + projectKey);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteProjectNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        ProjectApi api = baseApi.projectApi();
-        try {
-            String projectKey = "NOTEXIST";
-            boolean success = api.delete(projectKey);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project-not-exist.json"))
+                .setResponseCode(404));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String projectKey = "NOTEXIST";
+            final boolean success = baseApi.projectApi().delete(projectKey);
+            
             assertThat(success).isFalse();
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
+            assertSent(server, "DELETE", restBasePath + BitbucketApiMetadata.API_VERSION + localPath + "/" + projectKey);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetProjectList() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-page-full.json")).setResponseCode(200));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
-            ProjectApi api = baseApi.projectApi();
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project-page-full.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            ProjectPage projectPage = api.list(null, null, null, null);
-
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
+            final ProjectPage projectPage = baseApi.projectApi().list(null, null, null, null);
 
             assertThat(projectPage).isNotNull();
             assertThat(projectPage.errors()).isEmpty();
-
-            int size = projectPage.size();
-            int limit = projectPage.limit();
-
-            assertThat(size).isLessThanOrEqualTo(limit);
+            
+            assertThat(projectPage.size()).isLessThanOrEqualTo(projectPage.limit());
             assertThat(projectPage.start()).isEqualTo(0);
             assertThat(projectPage.isLastPage()).isTrue();
 
-            assertThat(projectPage.values()).hasSize(size);
+            assertThat(projectPage.values()).hasSize(projectPage.size());
             assertThat(projectPage.values()).hasOnlyElementsOfType(Project.class);
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION + localPath);
         } finally {
             server.shutdown();
         }
     }
 
     public void testGetProjectListWithLimit() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-page-truncated.json")).setResponseCode(200));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
-            ProjectApi api = baseApi.projectApi();
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project-page-truncated.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            int start = 0;
-            int limit = 2;
-            ProjectPage projectPage = api.list(null, null, start, limit);
-
-            Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects", queryParams);
+            final int start = 0;
+            final int limit = 2;
+            final ProjectPage projectPage = baseApi.projectApi().list(null, null, start, limit);
 
             assertThat(projectPage).isNotNull();
             assertThat(projectPage.errors()).isEmpty();
 
-            int size = projectPage.size();
+            final int size = projectPage.size();
 
             assertThat(size).isEqualTo(limit);
             assertThat(projectPage.start()).isEqualTo(start);
@@ -207,22 +208,27 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
 
             assertThat(projectPage.values()).hasSize(size);
             assertThat(projectPage.values()).hasOnlyElementsOfType(Project.class);
+            
+            final Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION + localPath, queryParams);
         } finally {
             server.shutdown();
         }
     }
     
     public void testGetProjectListNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-not-exist.json")).setResponseCode(404));
-        try (BitbucketApi baseApi = api(server.getUrl("/"))) {
-            ProjectApi api = baseApi.projectApi();
-            ProjectPage projectPage = api.list(null, null, null, null);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/project-not-exist.json"))
+                .setResponseCode(404));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+
+            final ProjectPage projectPage = baseApi.projectApi().list(null, null, null, null);
 
             assertThat(projectPage).isNotNull();
             assertThat(projectPage.errors()).isNotEmpty();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects");
+            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION + localPath);
         } finally {
             server.shutdown();
         }

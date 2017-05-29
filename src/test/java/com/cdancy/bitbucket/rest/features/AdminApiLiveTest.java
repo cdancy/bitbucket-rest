@@ -28,7 +28,7 @@ public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testListUsersByNonExistentGroup() {
-        UserPage userPage = api().listUserByGroup(randomString(), null, null, null);
+        final UserPage userPage = api().listUserByGroup(randomString(), null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
     }

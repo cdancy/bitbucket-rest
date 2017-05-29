@@ -47,6 +47,7 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
  */
 public class BaseBitbucketMockTest {
 
+    protected final String restBasePath = "/rest/api/";
     protected String provider;
     private final JsonParser parser = new JsonParser();
 
@@ -72,7 +73,7 @@ public class BaseBitbucketMockTest {
      * @throws IOException
      *             if unable to start/play server
      */
-    public static MockWebServer mockEtcdJavaWebServer() throws IOException {
+    public static MockWebServer mockWebServer() throws IOException {
         MockWebServer server = new MockWebServer();
         server.play();
         return server;

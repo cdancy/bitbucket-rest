@@ -35,10 +35,10 @@ import org.testng.annotations.Test;
 public class TagApiMockTest extends BaseBitbucketMockTest {
 
     public void testCreateTag() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/tag.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         TagApi api = baseApi.tagApi();
         try {
             String projectKey = "PRJ";
@@ -61,10 +61,10 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetTag() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/tag.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         TagApi api = baseApi.tagApi();
         try {
             String projectKey = "PRJ";
@@ -87,10 +87,10 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetTagNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
         TagApi api = baseApi.tagApi();
         try {
             String projectKey = "PRJ";

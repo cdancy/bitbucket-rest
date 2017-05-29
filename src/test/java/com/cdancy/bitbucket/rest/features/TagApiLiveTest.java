@@ -28,15 +28,15 @@ import org.testng.annotations.Test;
 @Test(groups = "live", testName = "TagApiLiveTest", singleThreaded = true)
 public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String projectKey = "TEST";
-    String repoKey = "dev";
-    String tagName = randomStringLettersOnly();
-    String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
+    final String projectKey = "TEST";
+    final String repoKey = "dev";
+    final String tagName = randomStringLettersOnly();
+    final String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
 
     @Test
     public void testCreateTag() {
-        CreateTag createTag = CreateTag.create(tagName, commitHash, null);
-        Tag tag = api().create(projectKey, repoKey, createTag);
+        final CreateTag createTag = CreateTag.create(tagName, commitHash, null);
+        final Tag tag = api().create(projectKey, repoKey, createTag);
         assertThat(tag).isNotNull();
         assertThat(tag.errors().isEmpty()).isTrue();
         assertThat(tag.id().endsWith(tagName)).isTrue();
@@ -45,7 +45,7 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testCreateTag")
     public void testGetTag() {
-        Tag tag = api().get(projectKey, repoKey, tagName);
+        final Tag tag = api().get(projectKey, repoKey, tagName);
         assertThat(tag).isNotNull();
         assertThat(tag.errors().isEmpty()).isTrue();
         assertThat(tag.id().endsWith(tagName)).isTrue();
@@ -54,7 +54,7 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetTagNonExistent() {
-        Tag tag = api().get(projectKey, repoKey, tagName + "9999");
+        final Tag tag = api().get(projectKey, repoKey, tagName + "9999");
         assertThat(tag).isNull();
     }
 
