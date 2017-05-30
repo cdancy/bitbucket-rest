@@ -146,7 +146,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByGroup() {
-        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", "stash-users");
+        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", defaultBitbucketGroup);
         assertThat(success).isTrue();
     }
     
@@ -158,7 +158,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test(dependsOnMethods = {"testListPermissionByGroup"})
     public void testDeletePermissionByGroup() {
-        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, "stash-users");
+        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, defaultBitbucketGroup);
         assertThat(success).isTrue();
     }
 

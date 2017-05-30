@@ -37,6 +37,8 @@ import com.google.inject.Module;
 @Test(groups = "live")
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
+    protected final String defaultBitbucketGroup = "stash-users";
+    
     public BaseBitbucketApiLiveTest() {
         provider = "bitbucket";
     }
