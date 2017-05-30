@@ -17,6 +17,12 @@
 
 package com.cdancy.bitbucket.rest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.options.CreateProject;
+import com.cdancy.bitbucket.rest.options.CreateRepository;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
@@ -60,5 +66,67 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     protected String randomString() {
         return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+    
+    /**
+     * Initialize live test contents.
+     * 
+     * @return GeneratedTestContents to use.
+     */
+    protected synchronized GeneratedTestContents initGeneratedTestContents() {
+        
+        // get possibly existing projectKey that user passed in
+        String projectKey = System.getProperty("test.bitbucket.project");
+        if (projectKey == null) {
+            projectKey = randomStringLettersOnly();
+        }
+            
+        // create test project if one does not already exist
+        boolean projectPreviouslyExists = true;
+        Project project = api.projectApi().get(projectKey);
+        assertThat(project).isNotNull();
+        if (project.errors().size() > 1) {
+            
+            projectPreviouslyExists = false;
+
+            final CreateProject createProject = CreateProject.create(projectKey, null, null, null);
+            project = api.projectApi().create(createProject);
+            assertThat(project).isNotNull();
+            assertThat(project.errors().isEmpty()).isTrue();    
+        }
+        
+        // create test repo
+        final String repoKey = randomStringLettersOnly();
+        final CreateRepository createRepository = CreateRepository.create(repoKey, true);
+        final Repository repository = api.repositoryApi().create(projectKey, createRepository);
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors().isEmpty()).isTrue();
+        
+        final GeneratedTestContents generatedTestContents = new GeneratedTestContents(project, repository, projectPreviouslyExists);
+        
+        
+        return generatedTestContents;
+    }
+    
+    /**
+     * Terminate live test contents.
+     * 
+     * @param generatedTestContents to terminate.
+     */
+    protected synchronized void terminateGeneratedTestContents(final GeneratedTestContents generatedTestContents) {
+        assertThat(generatedTestContents).isNotNull();
+        
+        final Project project = generatedTestContents.project;
+        final Repository repository = generatedTestContents.repository;
+        
+        // delete repository 
+        boolean success = api.repositoryApi().delete(project.key(), repository.name());
+        assertThat(success).isTrue();
+        
+        // delete project
+        if (!generatedTestContents.projectPreviouslyExists) {
+            success = api.projectApi().delete(project.key());
+            assertThat(success).isTrue();
+        }
     }
 }
