@@ -49,6 +49,7 @@ import java.util.List;
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     protected final String defaultBitbucketGroup = "stash-users";
+    private String defaultUser;
     
     public BaseBitbucketApiLiveTest() {
         provider = "bitbucket";
@@ -66,6 +67,17 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         return overrides;
     }
 
+    protected synchronized String getDefaultUser() {
+        if (defaultUser == null) {
+            if (this.credential.contains(":")) {
+                defaultUser = this.credential.split(":")[0];
+            } else {
+                defaultUser = new String(base64().decode(this.credential)).split(":")[0];
+            }
+        }
+        return defaultUser;
+    }
+    
     protected String randomStringLettersOnly() {
         char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         StringBuilder sb = new StringBuilder();

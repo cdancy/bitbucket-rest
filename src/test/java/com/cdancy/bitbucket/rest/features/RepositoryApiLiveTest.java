@@ -46,7 +46,6 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     String projectKey;
     String repoKey;
     String hookKey = null;
-    String existingUser = System.getProperty("test.bitbucket.user"); // should be created dynamically through API
 
     @BeforeClass
     public void init() {
@@ -128,7 +127,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByUser() {
-        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", existingUser);
+        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", getDefaultUser());
         assertThat(success).isTrue();
     }
     
@@ -140,7 +139,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListPermissionByUser"})
     public void testDeletePermissionByUser() {
-        boolean success = api().deletePermissionsByUser(projectKey, repoKey, existingUser);
+        boolean success = api().deletePermissionsByUser(projectKey, repoKey, getDefaultUser());
         assertThat(success).isTrue();
     }
     
