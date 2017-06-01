@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
@@ -42,26 +43,24 @@ import static org.assertj.core.api.Assertions.fail;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
+    
+    private GeneratedTestContents generatedTestContents;
 
-    /*
-    String projectKey = randomStringLettersOnly();
-    String repoKey = randomStringLettersOnly();
-    String tagName = randomStringLettersOnly();
-    String commitHash = "";
-    */
+    private String projectKey;
+    private String repoKey;
+    private String defaultBranchId;
+    private String commitHash;
 
-    String projectKey = "BUILD";
-    String repoKey = "dancc-test";
-    String branchName = randomStringLettersOnly();
-    String commitHash = "5284b6cec569346855710b535dafb915423110c2";
-    String existingGroup = "dev-group";
-    Long branchPermissionId = null;
-    BranchModelConfiguration branchModelConfiguration = null;
-
-    String defaultBranchId = "refs/heads/master";
+    private final String branchName = randomStringLettersOnly();
+    private Long branchPermissionId;
+    private BranchModelConfiguration branchModelConfiguration;
 
     @BeforeClass
     public void init() {
+        generatedTestContents = initGeneratedTestContents();
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
+        
         Branch branch = api().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
         assertThat(branch.errors().isEmpty()).isTrue();
@@ -111,12 +110,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testGetNewDefaultBranch")
     public void testCreateBranchPermission() {
         List<String> groupPermission = new ArrayList<>();
-        groupPermission.add(existingGroup);
-        List<Long> listAccessKey = new ArrayList<>();
-        listAccessKey.add(123L);
+        groupPermission.add(defaultBitbucketGroup);
         List<BranchPermission> listBranchPermission = new ArrayList<>();
         listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
-                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, listAccessKey));
+                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, null));
 
         boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
         assertThat(success).isTrue();
@@ -156,12 +153,12 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         types.add(Type.create(Type.TypeId.FEATURE, null, "fea/", true));
         CreateBranchModelConfiguration configuration = CreateBranchModelConfiguration.create(branchModelConfiguration.development(), null, types);
 
-        BranchModelConfiguration branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey, configuration);
-        assertThat(branchModelConfiguration).isNotNull();
-        assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
-        assertThat(branchModelConfiguration.production()).isNull();
-        assertThat(branchModelConfiguration.types().size() == 4);
-        for (Type type : branchModelConfiguration.types()) {
+        BranchModelConfiguration bmc = api().updateModelConfiguration(projectKey, repoKey, configuration);
+        assertThat(bmc).isNotNull();
+        assertThat(bmc.errors().isEmpty()).isTrue();
+        assertThat(bmc.production()).isNull();
+        assertThat(bmc.types().size()).isEqualTo(4);
+        for (Type type : bmc.types()) {
             switch (type.id()) {
                 case BUGFIX:
                     assertThat(type.prefix()).isEqualTo("bug/");
@@ -198,7 +195,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
         assertThat(branchModelConfiguration.production()).isNull();
-        assertThat(branchModelConfiguration.types().size() == 4);
+        assertThat(branchModelConfiguration.types().size()).isEqualTo(4);
         for (Type type : branchModelConfiguration.types()) {
             switch (type.id()) {
                 case BUGFIX:
@@ -231,6 +228,8 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
                 CreateBranchModelConfiguration.create(branchModelConfiguration));
             checkDefaultBranchConfiguration();
         }
+        
+        terminateGeneratedTestContents(generatedTestContents);
     }
 
     private BranchApi api() {
