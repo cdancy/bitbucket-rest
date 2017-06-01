@@ -23,6 +23,7 @@ import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -96,6 +97,52 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testAddBuildStatus() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-post.json")).setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BuildStatusApi api = baseApi.buildStatusApi();
+        try {
+            final CreateBuildStatus cbs = CreateBuildStatus.create(CreateBuildStatus.STATE.SUCCESSFUL, 
+                                    "REPO-MASTER", 
+                                    "REPO-MASTER-42", 
+                                    "https://bamboo.example.com/browse/REPO-MASTER-42", 
+                                    "Changes by John Doe");
+            final boolean success = api.add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            assertThat(success).isTrue();
+            
+            assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
+                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testAddBuildStatusOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-post.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BuildStatusApi api = baseApi.buildStatusApi();
+        try {
+            final CreateBuildStatus cbs = CreateBuildStatus.create(CreateBuildStatus.STATE.SUCCESSFUL, 
+                                    "REPO-MASTER", 
+                                    "REPO-MASTER-42", 
+                                    "https://bamboo.example.com/browse/REPO-MASTER-42", 
+                                    "Changes by John Doe");
+            final boolean success = api.add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            assertThat(success).isFalse();
+            
+            assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
+                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
         } finally {
             baseApi.close();
             server.shutdown();
