@@ -23,16 +23,27 @@ import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.google.common.base.Throwables;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
 
+import org.jclouds.util.Strings2;
 import org.jclouds.Constants;
 import org.jclouds.apis.BaseApiLiveTest;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
+import static com.google.common.io.BaseEncoding.base64;
 import com.google.inject.Module;
+import java.io.File;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 @Test(groups = "live")
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
@@ -71,6 +82,45 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
     }
     
     /**
+     * Execute `args` at the `workingDir`.
+     * 
+     * @param args list of arguments to pass to Process.
+     * @param workingDir directory to execute Process within.
+     * @return possible output of Process.
+     * @throws Exception if Process could not be successfully executed.
+     */
+    protected String executionToString(List<String> args, Path workingDir) throws Exception {
+        assertThat(args).isNotNull();
+        assertThat(args).isNotEmpty();
+        assertThat(workingDir).isNotNull();
+        assertThat(workingDir.toFile().isDirectory()).isTrue();
+        
+        final Process process = new ProcessBuilder(args)
+                .directory(workingDir.toFile())
+                .start();
+        
+        return Strings2.toStringAndClose(process.getInputStream());
+    }
+    
+    /**
+     * Generate a dummy file at the `baseDir` location.
+     * 
+     * @param baseDir directory to generate the file under.
+     * @return Path pointing at generated file.
+     * @throws Exception if file could not be written.
+     */
+    protected Path initGeneratedFile(Path baseDir) throws Exception {
+        assertThat(baseDir).isNotNull();
+        assertThat(baseDir.toFile().isDirectory()).isTrue();
+        
+        final String randomUUID = randomString();
+        
+        final List<String> lines = Arrays.asList(randomUUID);
+        final Path file = Paths.get(new File(baseDir.toFile(), randomUUID + ".txt").toURI());
+        return Files.write(file, lines, Charset.forName("UTF-8"));        
+    }
+    
+    /**
      * Initialize live test contents.
      * 
      * @return GeneratedTestContents to use.
@@ -104,10 +154,68 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isTrue();
         
+        final Path testDir = Paths.get(System.getProperty("test.bitbucket.basedir"));
+        assertThat(testDir.toFile().exists()).isTrue();
+        assertThat(testDir.toFile().isDirectory()).isTrue();
+
+        final String randomUUID = randomString();
+        final File generatedFileDir = new File(testDir.toFile(), randomUUID);
+        assertThat(generatedFileDir.mkdirs()).isTrue();
+        
+        try {
+            String foundCredential = this.credential;
+            if (!foundCredential.contains(":")) {
+                foundCredential = new String(base64().decode(foundCredential));
+            }
+            
+            final URL endpointURL = new URL(this.endpoint);
+            final int index = endpointURL.toString().indexOf(endpointURL.getHost());
+            final String preCredentialPart = endpointURL.toString().substring(0, index);
+            final String postCredentialPart = endpointURL.toString().substring(index, endpointURL.toString().length());
+        
+            final String generatedEndpoint = preCredentialPart 
+                    + foundCredential + "@" 
+                    + postCredentialPart + "/scm/" 
+                    + projectKey.toLowerCase() + "/" 
+                    + repoKey.toLowerCase() + ".git";
+
+            generateGitContentsAndPush(generatedFileDir, generatedEndpoint);
+            
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
+        
         final GeneratedTestContents generatedTestContents = new GeneratedTestContents(project, repository, projectPreviouslyExists);
         
         
         return generatedTestContents;
+    }
+    
+    /**
+     * Initialize git repository and add some randomly generated files.
+     * 
+     * @param gitDirectory directory to initialize and create files within.
+     * @param gitRepoURL git repository URL with embedded credentials.
+     * @throws Exception if git repository could not be created or files added.
+     */
+    private void generateGitContentsAndPush(File gitDirectory, String gitRepoURL) throws Exception {
+        
+        // 1.) initialize git repository
+        String initGit = executionToString(Arrays.asList("git", "init"), gitDirectory.toPath());
+        System.out.println("git-init: " + initGit.trim());
+        
+        // 2.) create some random files and commit them
+        for (int i = 0; i < 3; i++) {
+            Path genFile = initGeneratedFile(gitDirectory.toPath());
+            String addGit = executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
+            System.out.println("git-add: " + addGit.trim());
+            String commitGit = executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
+            System.out.println("git-commit: " + commitGit.trim());
+        }
+        
+        // 3.) push changes to remote repository
+        String pushGit = executionToString(Arrays.asList("git", "push", "--set-upstream", gitRepoURL, "master"), gitDirectory.toPath());
+        System.out.println("git-push: " + pushGit);
     }
     
     /**

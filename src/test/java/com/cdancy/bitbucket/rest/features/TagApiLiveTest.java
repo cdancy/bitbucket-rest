@@ -20,19 +20,31 @@ package com.cdancy.bitbucket.rest.features;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
 
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.options.CreateTag;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "TagApiLiveTest", singleThreaded = true)
 public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
+    
+    private GeneratedTestContents generatedTestContents;
 
-    String projectKey = "TEST";
-    String repoKey = "dev";
+    String projectKey;
+    String repoKey;
     String tagName = randomStringLettersOnly();
     String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
 
+    @BeforeClass
+    public void init() {
+        generatedTestContents = initGeneratedTestContents();
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
+    }
+    
     @Test
     public void testCreateTag() {
         CreateTag createTag = CreateTag.create(tagName, commitHash, null);
@@ -56,6 +68,11 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetTagNonExistent() {
         Tag tag = api().get(projectKey, repoKey, tagName + "9999");
         assertThat(tag).isNull();
+    }
+    
+    @AfterClass
+    public void fin() {
+        terminateGeneratedTestContents(generatedTestContents);
     }
 
     private TagApi api() {
