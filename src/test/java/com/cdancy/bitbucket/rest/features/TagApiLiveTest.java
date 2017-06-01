@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.options.CreateTag;
@@ -35,14 +36,18 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
     String projectKey;
     String repoKey;
+    String commitHash;
     String tagName = randomStringLettersOnly();
-    String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
 
     @BeforeClass
     public void init() {
         generatedTestContents = initGeneratedTestContents();
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
+        
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, Boolean.TRUE, 1, 0);
+        assertThat(commitPage.values().isEmpty()).isFalse();
+        this.commitHash = commitPage.values().get(0).id();
     }
     
     @Test

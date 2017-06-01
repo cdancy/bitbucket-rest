@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.google.common.io.BaseEncoding.base64;
 
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -34,7 +35,6 @@ import org.jclouds.apis.BaseApiLiveTest;
 import org.testng.annotations.Test;
 
 import com.google.common.collect.ImmutableSet;
-import static com.google.common.io.BaseEncoding.base64;
 import com.google.inject.Module;
 import java.io.File;
 import java.net.URL;
@@ -113,10 +113,10 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         assertThat(baseDir).isNotNull();
         assertThat(baseDir.toFile().isDirectory()).isTrue();
         
-        final String randomUUID = randomString();
+        final String randomName = randomString();
         
-        final List<String> lines = Arrays.asList(randomUUID);
-        final Path file = Paths.get(new File(baseDir.toFile(), randomUUID + ".txt").toURI());
+        final List<String> lines = Arrays.asList(randomName);
+        final Path file = Paths.get(new File(baseDir.toFile(), randomName + ".txt").toURI());
         return Files.write(file, lines, Charset.forName("UTF-8"));        
     }
     
@@ -158,8 +158,8 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         assertThat(testDir.toFile().exists()).isTrue();
         assertThat(testDir.toFile().isDirectory()).isTrue();
 
-        final String randomUUID = randomString();
-        final File generatedFileDir = new File(testDir.toFile(), randomUUID);
+        final String randomName = randomString();
+        final File generatedFileDir = new File(testDir.toFile(), randomName);
         assertThat(generatedFileDir.mkdirs()).isTrue();
         
         try {
@@ -240,3 +240,5 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         }
     }
 }
+
+
