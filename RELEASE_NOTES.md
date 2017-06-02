@@ -15,6 +15,7 @@
 * ADDED: `CommitsApi` gained endpoint `list` - [PR 85](https://github.com/cdancy/bitbucket-rest/pull/85)
 * ADDED: `BuildStatusApi` gained endpoint `add` - [PR 86](https://github.com/cdancy/bitbucket-rest/pull/86)
 * REFACTOR: All live tests can now be run successfully OOTB - [PR 87](https://github.com/cdancy/bitbucket-rest/pull/87)
+* ADDED: `BranchApi` gained endpoint `deleteModelConfiguration` - [PR 70](https://github.com/cdancy/bitbucket-rest/pull/70)
 
 ### Version 0.0.15 (4/28/2017)
 * ADDED: `PullRequestApi` gained endpoints `listActivities`, `listParticipants`, `assignParticipant`, and `deleteParticipant`. - [PR 55](https://github.com/cdancy/bitbucket-rest/pull/55)
