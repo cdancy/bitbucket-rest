@@ -36,9 +36,11 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
@@ -51,6 +53,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     private String repo;
     private String branchToMerge;
     private Participants participants;
+    private User foundUser;
     private int prId = -1;
     private int version = -1;
 
@@ -169,8 +172,29 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test (dependsOnMethods = "testGetListParticipants")
-    public void testAssignParticipants() {
+    public void testAssignDefaultParticipantsOnError() {
         CreateParticipants createParticipants = CreateParticipants.create(participants.user(),
+                participants.lastReviewedCommit(), Participants.Role.REVIEWER, participants.approved(), participants.status());
+        Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
+        assertThat(localParticipants).isNotNull();
+        assertThat(localParticipants.errors()).isNotEmpty();
+    }
+    
+    @Test (dependsOnMethods = "testAssignDefaultParticipantsOnError")
+    public void testAssignParticipants() {
+        final UserPage userPage = api.adminApi().listUserByGroup(defaultBitbucketGroup, null, null, null);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.size() > 0).isTrue();
+        
+        for (final User possibleUser : userPage.values()) {
+            if (!possibleUser.name().equalsIgnoreCase(participants.user().name())) {
+                foundUser = possibleUser;
+                break;
+            }
+        }
+        assertThat(foundUser).isNotNull();
+        
+        final CreateParticipants createParticipants = CreateParticipants.create(foundUser,
                 participants.lastReviewedCommit(), Participants.Role.REVIEWER, participants.approved(), participants.status());
         Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
         assertThat(localParticipants).isNotNull();
@@ -179,7 +203,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test (dependsOnMethods = "testAssignParticipants")
     public void testDeleteParticipant() {
-        boolean success = api().deleteParticipant(project, repo, prId, participants.user().slug());
+        boolean success = api().deleteParticipant(project, repo, prId, foundUser.slug());
         assertThat(success).isTrue();
     }
     
