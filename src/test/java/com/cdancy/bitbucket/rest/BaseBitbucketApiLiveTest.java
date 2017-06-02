@@ -197,6 +197,13 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
             throw Throwables.propagate(e);
         }
         
+        try {
+            String initGit = executionToString(Arrays.asList("git", "checkout", "-b", randomString()), generatedFileDir.toPath());
+            System.out.println("git-branch: " + initGit.trim());
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
+        
         final GeneratedTestContents generatedTestContents = new GeneratedTestContents(project, repository, projectPreviouslyExists);
         
         
@@ -228,6 +235,21 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         // 3.) push changes to remote repository
         String pushGit = executionToString(Arrays.asList("git", "push", "--set-upstream", gitRepoURL, "master"), gitDirectory.toPath());
         System.out.println("git-push: " + pushGit);
+        
+        // 4.) create branch 
+        String branchGit = executionToString(Arrays.asList("git", "checkout", "-b", randomString()), gitDirectory.toPath());
+        System.out.println("git-branch: " + branchGit.trim());
+        
+        // 5.) generate random file for new branch
+        Path genFile = initGeneratedFile(gitDirectory.toPath());
+        String addGit = executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
+        System.out.println("git-branch-add: " + addGit.trim());
+        String commitGit = executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
+        System.out.println("git-branch-commit: " + commitGit.trim());
+        
+        // 6.) push branch
+        String pushBranchGit = executionToString(Arrays.asList("git", "push", "-u", "origin", randomString()), gitDirectory.toPath());
+        System.out.println("git-branch-push: " + pushBranchGit);
     }
     
     /**

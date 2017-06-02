@@ -102,6 +102,5 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
     systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketEndpoint}",
                         "test.bitbucket.credential" : "${testBitbucketCredential}",
                         "test.bitbucket.project" : "${testBitbucketProject}",
-                        "test.bitbucket.user" : "${testBitbucketUser}",
                         "test.bitbucket.basedir" : "${buildDir}/integ-projects"]
 }
