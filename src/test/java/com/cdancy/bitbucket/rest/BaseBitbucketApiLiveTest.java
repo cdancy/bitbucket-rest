@@ -110,7 +110,7 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         final Process process = new ProcessBuilder(args)
                 .directory(workingDir.toFile())
                 .start();
-        
+
         return Strings2.toStringAndClose(process.getInputStream());
     }
     
@@ -197,13 +197,6 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
             throw Throwables.propagate(e);
         }
         
-        try {
-            String initGit = executionToString(Arrays.asList("git", "checkout", "-b", randomString()), generatedFileDir.toPath());
-            System.out.println("git-branch: " + initGit.trim());
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
-        }
-        
         final GeneratedTestContents generatedTestContents = new GeneratedTestContents(project, repository, projectPreviouslyExists);
         
         
@@ -237,8 +230,10 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         System.out.println("git-push: " + pushGit);
         
         // 4.) create branch 
-        String branchGit = executionToString(Arrays.asList("git", "checkout", "-b", randomString()), gitDirectory.toPath());
+        String generatedBranchName = randomString();
+        String branchGit = executionToString(Arrays.asList("git", "checkout", "-b", generatedBranchName), gitDirectory.toPath());
         System.out.println("git-branch: " + branchGit.trim());
+
         
         // 5.) generate random file for new branch
         Path genFile = initGeneratedFile(gitDirectory.toPath());
@@ -248,7 +243,8 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         System.out.println("git-branch-commit: " + commitGit.trim());
         
         // 6.) push branch
-        String pushBranchGit = executionToString(Arrays.asList("git", "push", "-u", "origin", randomString()), gitDirectory.toPath());
+        List<String> args = Arrays.asList("git", "push", "-u", gitRepoURL, generatedBranchName);
+        String pushBranchGit = executionToString(args, gitDirectory.toPath());
         System.out.println("git-branch-push: " + pushBranchGit);
     }
     
