@@ -63,7 +63,7 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
     @Override
     protected Properties setupProperties() {
         Properties overrides = super.setupProperties();
-        overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
+        overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "5");
         return overrides;
     }
 
