@@ -138,13 +138,13 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         }
     }
 
-    @Test(dependsOnMethods = {"testCreateBranch", "testListBranches"})
+    @Test(dependsOnMethods = {"testListBranches"})
     public void testGetBranchModelConfiguration() {
         branchModelConfiguration = api().getModelConfiguration(projectKey, repoKey);
         checkDefaultBranchConfiguration();
     }
 
-    @Test(dependsOnMethods = {"testGetBranchModelConfiguration", "testCreateBranch", "testListBranches"})
+    @Test(dependsOnMethods = {"testGetBranchModelConfiguration"})
     public void testUpdateBranchModelConfiguration() {
         List<Type> types = new ArrayList<>();
         types.add(Type.create(Type.TypeId.BUGFIX, null, "bug/", false));
@@ -182,13 +182,17 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         }
     }
 
-    @Test(dependsOnMethods = {"testCreateBranch", "testListBranches"})
+    @Test(dependsOnMethods = {"testUpdateBranchModelConfiguration"})
+    public void testDeleteBranchModelConfiguration() {
+        boolean success = api().deleteModelConfiguration(projectKey, repoKey);
+        assertThat(success).isTrue();
+    }
+
+    @Test(dependsOnMethods = {"testListBranches"})
     public void testGetBranchModelConfigurationOnError() {
-        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, "12345");
+        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, randomString());
+        assertThat(configuration).isNotNull();
         assertThat(configuration.errors()).isNotEmpty();
-        assertThat(configuration.development()).isNull();
-        assertThat(configuration.production()).isNull();
-        assertThat(configuration.types()).isEmpty();
     }
 
     private void checkDefaultBranchConfiguration() {
