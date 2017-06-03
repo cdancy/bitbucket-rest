@@ -1,4 +1,4 @@
-### Version 0.0.16 (TBA)
+### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
 * ADDED: `RepositoryApi` gained endpoints `createPermissionsByGroup` and `createPermissionsByGroup` - [PR 62](https://github.com/cdancy/bitbucket-rest/pull/62)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByUser` - [PR 63](https://github.com/cdancy/bitbucket-rest/pull/63)
