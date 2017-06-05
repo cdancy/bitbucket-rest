@@ -26,6 +26,8 @@ import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -38,30 +40,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "live", testName = "DefaultReviewersApiLiveTest", singleThreaded = true)
 public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String projectKey = randomStringLettersOnly();
-    String repoKey = randomStringLettersOnly();
+
+    private GeneratedTestContents generatedTestContents;
     Long conditionId = null;
-    Repository repository = null;
 
     @BeforeClass
     public void init() {
-        CreateProject createProject = CreateProject.create(projectKey, null, null, null);
-        Project project = api.projectApi().create(createProject);
-        assertThat(project).isNotNull();
-        assertThat(project.errors().isEmpty()).isTrue();
-        assertThat(project.key().equalsIgnoreCase(projectKey)).isTrue();
-        CreateRepository createRepository = CreateRepository.create(repoKey, true);
-        repository = api.repositoryApi().create(projectKey, createRepository);
-        assertThat(repository).isNotNull();
-        assertThat(repository.errors().isEmpty()).isTrue();
-        assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
+        generatedTestContents = initGeneratedTestContents();
     }
 
     @Test
     public void testListConditionsOnEmptyRepo() {
-        List<Condition> conditionList = api().listConditions(projectKey, repoKey);
+        List<Condition> conditionList = api().listConditions(generatedTestContents.project.key(), generatedTestContents.repository.slug());
         assertThat(conditionList).isEmpty();
     }
+
 
     @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo"})
     public void testCreateCondition() {
@@ -70,9 +63,9 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(null, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc, matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
+        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
         conditionId = returnCondition.id();
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
     }
@@ -84,9 +77,9 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(null, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc, matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(projectKey, "1234", condition);
+        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), "1234", condition);
         assertThat(returnCondition.errors()).isNotEmpty();
         assertThat(returnCondition.targetRefMatcher()).isNull();
         assertThat(returnCondition.sourceRefMatcher()).isNull();
@@ -101,9 +94,9 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(null, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc, matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
+        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
 
@@ -160,10 +153,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        boolean success = api.repositoryApi().delete(projectKey, repoKey);
-        assertThat(success).isTrue();
-        success = api.projectApi().delete(projectKey);
-        assertThat(success).isTrue();
+        terminateGeneratedTestContents(generatedTestContents);
     }
 
     private DefaultReviewersApi api() {
@@ -172,7 +162,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private void validCondition(Condition returnValue, Long requiredApprover, Matcher.MatcherId matcherSrc, Matcher.MatcherId matcherDst) {
         assertThat(returnValue.errors()).isEmpty();
-        assertThat(returnValue.repository().name().equals(repoKey));
+        assertThat(returnValue.repository().name().equals(generatedTestContents.repository.slug()));
         assertThat(returnValue.id()).isNotNull();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
