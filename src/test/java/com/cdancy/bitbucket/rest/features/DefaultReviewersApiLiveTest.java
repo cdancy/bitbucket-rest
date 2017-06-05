@@ -18,11 +18,8 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
-import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.options.CreateProject;
-import com.cdancy.bitbucket.rest.options.CreateRepository;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,34 +31,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "live", testName = "DefaultReviewersApiLiveTest", singleThreaded = true)
 public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String projectKey = randomStringLettersOnly();
-    String repoKey = randomStringLettersOnly();
+    private GeneratedTestContents generatedTestContents;
+
 
     @BeforeClass
     public void init() {
-        CreateProject createProject = CreateProject.create(projectKey, null, null, null);
-        Project project = api.projectApi().create(createProject);
-        assertThat(project).isNotNull();
-        assertThat(project.errors().isEmpty()).isTrue();
-        assertThat(project.key().equalsIgnoreCase(projectKey)).isTrue();
-        CreateRepository createRepository = CreateRepository.create(repoKey, true);
-        Repository repository = api.repositoryApi().create(projectKey, createRepository);
-        assertThat(repository).isNotNull();
-        assertThat(repository.errors().isEmpty()).isTrue();
-        assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
+        generatedTestContents = initGeneratedTestContents();
     }
 
     @Test
     public void testListDefaultReviewersOnEmptyRepo() {
-        List<Condition> conditionList = api().listConditions(projectKey, repoKey);
+        List<Condition> conditionList = api().listConditions(generatedTestContents.project.key(), generatedTestContents.repository.slug());
         assertThat(conditionList).isEmpty();
     }
 
     @AfterClass
     public void fin() {
-        boolean success = api.repositoryApi().delete(projectKey, repoKey);
+        boolean success = api.repositoryApi().delete(generatedTestContents.project.key(), generatedTestContents.repository.slug());
         assertThat(success).isTrue();
-        success = api.projectApi().delete(projectKey);
+        success = api.projectApi().delete(generatedTestContents.project.key());
         assertThat(success).isTrue();
     }
 
