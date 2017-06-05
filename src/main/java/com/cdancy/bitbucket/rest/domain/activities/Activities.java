@@ -35,7 +35,8 @@ public abstract class Activities {
         COMMENTED,
         OPENED,
         UPDATED,
-        UNAPPROVED
+        UNAPPROVED,
+        REOPENED
     }
 
     public abstract long id();
