@@ -1,4 +1,6 @@
-### Version 0.0.16 (TBA)
+### Version 0.0.17 (TBA)
+
+### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
 * ADDED: `RepositoryApi` gained endpoints `createPermissionsByGroup` and `createPermissionsByGroup` - [PR 62](https://github.com/cdancy/bitbucket-rest/pull/62)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByUser` - [PR 63](https://github.com/cdancy/bitbucket-rest/pull/63)
@@ -12,6 +14,10 @@
 * ADDED: Checkstyle module to catch windows based line-endings - [PR 78](https://github.com/cdancy/bitbucket-rest/pull/78)
 * ADDED: Checkstyle module to catch author annotations - [PR 79](https://github.com/cdancy/bitbucket-rest/pull/79)
 * ADDED: `Branch` model gained attribute `metadata`  - [PR 72](https://github.com/cdancy/bitbucket-rest/pull/72)
+* ADDED: `CommitsApi` gained endpoint `list` - [PR 85](https://github.com/cdancy/bitbucket-rest/pull/85)
+* ADDED: `BuildStatusApi` gained endpoint `add` - [PR 86](https://github.com/cdancy/bitbucket-rest/pull/86)
+* REFACTOR: All live tests can now be run successfully OOTB - [PR 87](https://github.com/cdancy/bitbucket-rest/pull/87)
+* ADDED: `BranchApi` gained endpoint `deleteModelConfiguration` - [PR 70](https://github.com/cdancy/bitbucket-rest/pull/70)
 
 ### Version 0.0.15 (4/28/2017)
 * ADDED: `PullRequestApi` gained endpoints `listActivities`, `listParticipants`, `assignParticipant`, and `deleteParticipant`. - [PR 55](https://github.com/cdancy/bitbucket-rest/pull/55)

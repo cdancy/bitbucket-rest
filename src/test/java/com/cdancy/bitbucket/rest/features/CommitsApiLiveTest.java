@@ -17,22 +17,53 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.commit.Commit;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "CommitsApiLiveTest", singleThreaded = true)
 public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String projectKey = "TEST";
-    String repoKey = "dev";
-    String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
+    private GeneratedTestContents generatedTestContents;
 
-    @Test
+    private String projectKey;
+    private String repoKey;
+    private String commitHash;
+
+    @BeforeClass
+    public void init() {
+        generatedTestContents = initGeneratedTestContents();
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
+    }
+    
+    @Test 
+    public void testListCommits() {
+        CommitPage commitPage = api().list(projectKey, repoKey, true, 1, null);
+        assertThat(commitPage).isNotNull();
+        assertThat(commitPage.errors().isEmpty()).isTrue();
+        assertThat(commitPage.values().isEmpty()).isFalse();
+        assertThat(commitPage.totalCount() > 0).isTrue();
+        this.commitHash = commitPage.values().get(0).id();
+    }
+    
+    @Test 
+    public void testListCommitsOnError() {
+        CommitPage pr = api().list(projectKey, randomStringLettersOnly(), true, 1, null);
+        assertThat(pr).isNotNull();
+        assertThat(pr.errors().isEmpty()).isFalse();
+        assertThat(pr.values().isEmpty()).isTrue();
+    }
+    
+    @Test (dependsOnMethods = "testListCommits")
     public void testGetCommit() {
         Commit commit = api().get(projectKey, repoKey, commitHash, null);
         assertThat(commit).isNotNull();
@@ -47,7 +78,7 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(commit.errors().size() > 0).isTrue();
     }
 
-    @Test
+    @Test (dependsOnMethods = "testListCommits")
     public void testGetCommitChanges() {
         ChangePage commit = api().listChanges(projectKey, repoKey, commitHash, 0, 100);
         assertThat(commit).isNotNull();
@@ -61,6 +92,11 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(commit).isNotNull();
         assertThat(commit.size() == 0).isTrue();
         assertThat(commit.errors().size() > 0).isTrue();
+    }
+    
+    @AfterClass
+    public void fin() {
+        terminateGeneratedTestContents(generatedTestContents);
     }
 
     private CommitsApi api() {
