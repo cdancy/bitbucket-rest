@@ -117,7 +117,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition", "testCreateConditionMatcherDiff"})
     public void testListConditions() {
-        List<Condition> listCondition = api().listConditions(projectKey, repoKey);
+        List<Condition> listCondition = api().listConditions(generatedTestContents.project.key(),
+                generatedTestContents.repository.slug());
         assertThat(listCondition.size()).isEqualTo(2);
         for (Condition condition : listCondition) {
             if (condition.id().equals(conditionId)) {
@@ -131,20 +132,23 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition",
             "testCreateConditionMatcherDiff", "testListConditions"})
     public void testDeleteCondition() {
-        boolean success = api().deleteCondition(projectKey, repoKey, conditionId);
+        boolean success = api().deleteCondition(generatedTestContents.project.key(),
+                generatedTestContents.repository.slug(), conditionId);
         assertThat(success).isTrue();
     }
 
     @Test()
     public void testDeleteConditionOnError() {
-        boolean success = api().deleteCondition(projectKey, repoKey, -1);
+        boolean success = api().deleteCondition(generatedTestContents.project.key(),
+                generatedTestContents.repository.slug(), -1);
         assertThat(success).isFalse();
     }
 
     @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition",
             "testCreateConditionMatcherDiff", "testListConditions", "testDeleteCondition"})
     public void testListConditionsAfterDelete() {
-        List<Condition> listCondition = api().listConditions(projectKey, repoKey);
+        List<Condition> listCondition = api().listConditions(generatedTestContents.project.key(),
+                generatedTestContents.repository.slug());
         assertThat(listCondition.size()).isEqualTo(1);
         for (Condition condition : listCondition) {
             assertThat(condition.id()).isNotEqualTo(conditionId);
