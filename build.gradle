@@ -85,12 +85,22 @@ task mockTest(type: Test) {
 }
 
 task integTest(type: Test, dependsOn: ['mockTest']) {
+    doFirst {
+        def integProjectDir = project.file("${buildDir}/integ-projects")
+        if (!integProjectDir.exists()) {
+            if (!integProjectDir.mkdirs()) {
+                throw new RuntimeException("Failed to create integ-project directory @ ${integProjectDir.path}")
+            }
+        }
+    }
     useTestNG() 
-    include "**/**LiveTest.class"
+    include "**/BranchApiLiveTest.class"
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
     } 
     systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketEndpoint}",
-                        "test.bitbucket.credential" : "${testBitbucketCredential}"]
+                        "test.bitbucket.credential" : "${testBitbucketCredential}",
+                        "test.bitbucket.project" : "${testBitbucketProject}",
+                        "test.bitbucket.basedir" : "${buildDir}/integ-projects"]
 }

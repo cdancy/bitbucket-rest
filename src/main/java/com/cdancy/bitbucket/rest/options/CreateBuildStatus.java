@@ -15,35 +15,38 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.build;
+package com.cdancy.bitbucket.rest.options;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Status {
+public abstract class CreateBuildStatus {
 
-    public enum StatusState {
+    public enum STATE {
         SUCCESSFUL,
         FAILED,
         INPROGRESS
     }
 
-    public abstract long dateAdded();
-
-    public abstract String description();
+    public abstract String state();
 
     public abstract String key();
-
+    
+    @Nullable
     public abstract String name();
 
-    public abstract StatusState state();
-
     public abstract String url();
+    
+    @Nullable
+    public abstract String description();
 
-    @SerializedNames({"dateAdded", "description", "key", "name", "state", "url"})
-    public static Status create(long dateAdded, String description, String key, String name, StatusState state,
-                                String url) {
-        return new AutoValue_Status(dateAdded, description, key, name, state, url);
+    CreateBuildStatus() {
+    }
+
+    @SerializedNames({ "state", "key", "name", "url", "description" })
+    public static CreateBuildStatus create(STATE state, String key, String name, String url, String description) {
+        return new AutoValue_CreateBuildStatus(state != null ? state.toString() : null, key, name, url, description);
     }
 }

@@ -438,4 +438,42 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+
+    public void testDeleteBranchModelConfiguration() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            boolean success = api.deleteModelConfiguration(projectKey, repoKey);
+            assertThat(success).isTrue();
+            assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteBranchModelConfigurationOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        BranchApi api = baseApi.branchApi();
+        try {
+            String projectKey = "PRJ";
+            String repoKey = "myrepo";
+            boolean success = api.deleteModelConfiguration(projectKey, repoKey);
+            assertThat(success).isFalse();
+            assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 }
