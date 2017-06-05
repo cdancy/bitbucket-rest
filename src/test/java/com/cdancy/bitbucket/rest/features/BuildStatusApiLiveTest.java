@@ -17,36 +17,82 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.testng.annotations.BeforeClass;
 
 @Test(groups = "live", testName = "BuildStatusApiLiveTest")
 public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    String statusPageCommitHash = "5284b6cec569346855710b535dafb915423110c2";
-    String summaryPageCommitHash = "5284b6cec569346855710b535dafb915423110c2";
+    private GeneratedTestContents generatedTestContents;
 
-    @Test
+    private String commitHash;
+    
+    private final CreateBuildStatus.STATE state = CreateBuildStatus.STATE.SUCCESSFUL;
+    private final String key = "REPO-MASTER";
+    private final String name = "REPO-MASTER-42";
+    private final String url = "https://bamboo.example.com/browse/REPO-MASTER-42";
+    private final String description = "Changes by John Doe";
+
+    @BeforeClass
+    public void init() {
+        generatedTestContents = initGeneratedTestContents();
+        String projectKey = generatedTestContents.project.key();
+        String repoKey = generatedTestContents.repository.name();
+        
+        CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, 1, null);
+        assertThat(commitPage).isNotNull();
+        assertThat(commitPage.errors().isEmpty()).isTrue();
+        assertThat(commitPage.values().isEmpty()).isFalse();
+        assertThat(commitPage.totalCount() > 0).isTrue();
+        this.commitHash = commitPage.values().get(0).id();
+    }
+    
+    @Test 
+    public void testAddStatusToCommit() {
+        final CreateBuildStatus cbs = CreateBuildStatus.create(state, 
+                        key, 
+                        name, 
+                        url, 
+                        description);
+        final boolean success = api().add(commitHash, cbs);
+        assertThat(success).isTrue();
+    }
+    
+    @Test (dependsOnMethods = "testAddStatusToCommit")
     public void testGetStatusByCommit() {
-        StatusPage statusPage = api().status(statusPageCommitHash, 0, 100);
+        final StatusPage statusPage = api().status(commitHash, 0, 100);
         assertThat(statusPage).isNotNull();
-        assertThat(statusPage.size() > 0).isTrue();
+        assertThat(statusPage.size() == 1).isTrue();
+        
+        final Status status = statusPage.values().get(0);
+        assertThat(status.state().toString()).isEqualTo(state.toString());
+        assertThat(status.key()).isEqualTo(key);
+        assertThat(status.name()).isEqualTo(name);
+        assertThat(status.url()).isEqualTo(url);
+        assertThat(status.description()).isEqualTo(description);
     }
     
     @Test
     public void testGetStatusByNonExistentCommit() {
-        StatusPage statusPage = api().status(randomString(), 0, 100);
+        final StatusPage statusPage = api().status(randomString(), 0, 100);
         assertThat(statusPage).isNotNull();
         assertThat(statusPage.size() == 0).isTrue();
     }
 
-    @Test
+    @Test (dependsOnMethods = "testGetStatusByCommit")
     public void testGetSummaryByCommit() {
-        Summary summary = api().summary(summaryPageCommitHash);
+        final Summary summary = api().summary(commitHash);
         assertThat(summary).isNotNull();
         assertThat(summary.successful() == 1).isTrue();
         assertThat(summary.inProgress() == 0).isTrue();
@@ -55,13 +101,18 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testGetSummaryByNonExistentCommit() {
-        Summary summary = api().summary(randomString());
+        final Summary summary = api().summary(randomString());
         assertThat(summary).isNotNull();
         assertThat(summary.successful() == 0).isTrue();
         assertThat(summary.inProgress() == 0).isTrue();
         assertThat(summary.failed() == 0).isTrue();
     }
 
+    @AfterClass
+    public void fin() {
+        terminateGeneratedTestContents(generatedTestContents);
+    }
+    
     private BuildStatusApi api() {
         return api.buildStatusApi();
     }

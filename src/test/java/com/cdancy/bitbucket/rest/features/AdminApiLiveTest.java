@@ -27,6 +27,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
+    public void testListUsersByGroup() {
+        UserPage userPage = api().listUserByGroup(defaultBitbucketGroup, null, null, null);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.size() > 0).isTrue();
+    }
+    
+    @Test
     public void testListUsersByNonExistentGroup() {
         UserPage userPage = api().listUserByGroup(randomString(), null, null, null);
         assertThat(userPage).isNotNull();

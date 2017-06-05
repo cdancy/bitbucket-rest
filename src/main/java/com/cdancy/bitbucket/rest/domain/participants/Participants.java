@@ -48,10 +48,12 @@ public abstract class Participants implements ErrorsHolder {
     @Nullable
     public abstract String lastReviewedCommit();
 
+    @Nullable
     public abstract Role role();
 
     public abstract boolean approved();
 
+    @Nullable
     public abstract Status status();
 
     @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status", "errors"})
