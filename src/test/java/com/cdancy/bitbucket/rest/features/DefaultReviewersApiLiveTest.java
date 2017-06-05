@@ -94,7 +94,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
+        Condition returnCondition = api().createCondition(generatedTestContents.project.key(),
+                generatedTestContents.repository.slug(), condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
 
@@ -105,9 +106,11 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(conditionId, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(conditionId, generatedTestContents.repository,
+                matcherSrc, matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().updateCondition(projectKey, repoKey, conditionId, condition);
+        Condition returnCondition = api().updateCondition(generatedTestContents.project.key(),
+                generatedTestContents.repository.slug(), conditionId, condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
         assertThat(returnCondition.id()).isEqualTo(conditionId);
     }
