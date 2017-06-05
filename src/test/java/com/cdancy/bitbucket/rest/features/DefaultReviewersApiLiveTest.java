@@ -18,16 +18,11 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
-import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
-import com.cdancy.bitbucket.rest.options.CreateProject;
-import com.cdancy.bitbucket.rest.options.CreateRepository;
-import com.cdancy.bitbucket.rest.GeneratedTestContents;
-import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -63,7 +58,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
+                matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
@@ -76,7 +72,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
+                matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(generatedTestContents.project.key(), "1234", condition);
         assertThat(returnCondition.errors()).isNotEmpty();
@@ -93,7 +90,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc, matcherDst, listUser, requiredApprover);
+        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
+                matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
