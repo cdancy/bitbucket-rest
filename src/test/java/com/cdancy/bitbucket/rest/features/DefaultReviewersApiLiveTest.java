@@ -47,10 +47,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        boolean success = api.repositoryApi().delete(generatedTestContents.project.key(), generatedTestContents.repository.slug());
-        assertThat(success).isTrue();
-        success = api.projectApi().delete(generatedTestContents.project.key());
-        assertThat(success).isTrue();
+        terminateGeneratedTestContents(generatedTestContents);
     }
 
     private DefaultReviewersApi api() {
