@@ -29,6 +29,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -58,5 +59,16 @@ public interface DefaultReviewersApi {
     @POST
     Condition createCondition(@PathParam("project") String project,
                               @PathParam("repo") String repo,
+                              @BinderParam(BindToJsonPayload.class) CreateCondition condition);
+
+    @Named("default-reviewers:update-Condition")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/condition/{id}")
+    @Fallback(BitbucketFallbacks.ConditionOnError.class)
+    @PUT
+    Condition updateCondition(@PathParam("project") String project,
+                              @PathParam("repo") String repo,
+                              @PathParam("id") long id,
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 }

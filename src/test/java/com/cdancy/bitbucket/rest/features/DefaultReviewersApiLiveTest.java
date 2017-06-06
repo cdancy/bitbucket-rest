@@ -38,7 +38,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
     private GeneratedTestContents generatedTestContents;
     private String projectKey;
     private String repoKey;
-    private Long conditionId;
+    private Long conditionId = null;
 
     @BeforeClass
     public void init() {
@@ -101,13 +101,28 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
 
-    @Test(dependsOnMethods = {"testCreateCondition", "testCreateConditionMatcherDifferent"})
+    @Test(dependsOnMethods = {"testCreateCondition"})
+    public void testUpdateCondition() {
+        Long requiredApprover = 0L;
+        Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
+        Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
+        List<User> listUser = new ArrayList<>();
+        listUser.add(getDefaultUser());
+        CreateCondition condition = CreateCondition.create(conditionId, generatedTestContents.repository,
+                matcherSrc, matcherDst, listUser, requiredApprover);
+
+        Condition returnCondition = api().updateCondition(projectKey, repoKey, conditionId, condition);
+        validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
+        assertThat(returnCondition.id()).isEqualTo(conditionId);
+    }
+
+    @Test(dependsOnMethods = {"testUpdateCondition","testCreateCondition", "testCreateConditionMatcherDifferent"})
     public void testListConditions() {
         List<Condition> listCondition = api().listConditions(projectKey, repoKey);
         assertThat(listCondition.size()).isEqualTo(2);
         for (Condition condition : listCondition) {
             if (condition.id().equals(conditionId)) {
-                validCondition(condition, 1L, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
+                validCondition(condition, 0L, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
             } else {
                 validCondition(condition, 1L, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
             }
@@ -130,6 +145,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnValue.errors()).isEmpty();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
+        assertThat(returnValue.reviewers().get(0).id()).isEqualTo(1);
         assertThat(returnValue.sourceRefMatcher().id()).isEqualTo(matcherSrc.getId());
         assertThat(returnValue.targetRefMatcher().id()).isEqualTo(matcherDst.getId());
     }
