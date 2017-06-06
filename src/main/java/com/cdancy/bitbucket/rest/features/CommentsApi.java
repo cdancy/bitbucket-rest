@@ -84,7 +84,7 @@ public interface CommentsApi {
                  @PathParam("pullRequestId") int pullRequestId,
                  @PathParam("commentId") int commentId);
 
-    @Named("comments:path")
+    @Named("comments:file-comments")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")

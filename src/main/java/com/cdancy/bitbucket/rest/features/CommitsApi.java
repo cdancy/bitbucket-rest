@@ -53,7 +53,7 @@ public interface CommitsApi {
             @PathParam("commitId") String commitId,
             @Nullable @QueryParam("path") String path);
 
-    @Named("commits:list-Changes")
+    @Named("commits:list-changes")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm46478324982720"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/commits/{commitId}/changes")

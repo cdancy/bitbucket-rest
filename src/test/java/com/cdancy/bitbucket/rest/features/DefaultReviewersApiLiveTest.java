@@ -164,7 +164,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private void validCondition(Condition returnValue, Long requiredApprover, Matcher.MatcherId matcherSrc, Matcher.MatcherId matcherDst) {
         assertThat(returnValue.errors()).isEmpty();
-        assertThat(returnValue.repository().name().equals(repoKey));
+        assertThat(returnValue.repository().name()).isEqualTo(repoKey);
         assertThat(returnValue.id()).isNotNull();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
