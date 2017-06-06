@@ -101,7 +101,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
 
-    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition"})
     public void testUpdateCondition() {
         Long requiredApprover = 0L;
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
@@ -117,13 +117,14 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnCondition.id()).isEqualTo(conditionId);
     }
 
-    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testCreateConditionMatcherDifferent"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testUpdateCondition",
+            "testCreateCondition", "testCreateConditionMatcherDifferent"})
     public void testListConditions() {
         List<Condition> listCondition = api().listConditions(projectKey, repoKey);
         assertThat(listCondition.size()).isEqualTo(2);
         for (Condition condition : listCondition) {
             if (condition.id().equals(conditionId)) {
-                validCondition(condition, 1L, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
+                validCondition(condition, 0L, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
             } else {
                 validCondition(condition, 1L, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
             }
