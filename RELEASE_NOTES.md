@@ -1,6 +1,9 @@
 ### Version 0.9.0 (TBA)
 * ADDED: `Activities` pojo gained value `REOPENED` - [PR 88](https://github.com/cdancy/bitbucket-rest/pull/88)
 * ADDED: `DefaultReviewersApi` gained endpoint `listConditions` - [PR 81](https://github.com/cdancy/bitbucket-rest/pull/81)
+* ADDED: `AdminApi` gained endpoint `listUsers` - [PR 91](https://github.com/cdancy/bitbucket-rest/pull/91)
+* REFACTOR: `AdminApi` renamed endpoint `listUserByGroup` to `listUsersByGroup` - [PR 91](https://github.com/cdancy/bitbucket-rest/pull/91)
+* ADDED: `DefaultReviewersApi` gained endpoint `createCondition` - [PR 82](https://github.com/cdancy/bitbucket-rest/pull/82)
 
 ### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
