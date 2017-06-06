@@ -129,6 +129,30 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         }
     }
 
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testUpdateCondition",
+            "testCreateConditionMatcherDifferent", "testListConditions"})
+    public void testDeleteCondition() {
+        boolean success = api().deleteCondition(projectKey, repoKey, conditionId);
+        assertThat(success).isTrue();
+    }
+
+    @Test()
+    public void testDeleteConditionOnError() {
+        boolean success = api().deleteCondition(projectKey, repoKey, -1);
+        assertThat(success).isFalse();
+    }
+
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testUpdateCondition",
+            "testCreateConditionMatcherDifferent", "testListConditions", "testDeleteCondition"})
+    public void testListConditionsAfterDelete() {
+        List<Condition> listCondition = api().listConditions(projectKey, repoKey);
+        assertThat(listCondition.size()).isEqualTo(1);
+        for (Condition condition : listCondition) {
+            assertThat(condition.id()).isNotEqualTo(conditionId);
+            validCondition(condition, 1L, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
+        }
+    }
+
     @AfterClass
     public void fin() {
         terminateGeneratedTestContents(generatedTestContents);
@@ -142,7 +166,6 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnValue.errors()).isEmpty();
         assertThat(returnValue.repository().name()).isEqualTo(repoKey);
         assertThat(returnValue.id()).isNotNull();
-        assertThat(returnValue.errors()).isEmpty();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
         assertThat(returnValue.sourceRefMatcher().id()).isEqualTo(matcherSrc.getId());
