@@ -88,7 +88,6 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
             }
             assertThat(defaultUser).isNotNull();
         }
-        assertThat(defaultUser).isNotNull();
         return defaultUser;
     }
     
