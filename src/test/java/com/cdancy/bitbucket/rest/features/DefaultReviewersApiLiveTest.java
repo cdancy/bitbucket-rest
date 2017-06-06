@@ -60,7 +60,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
-        listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
+        listUser.add(getDefaultUser());
         CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
