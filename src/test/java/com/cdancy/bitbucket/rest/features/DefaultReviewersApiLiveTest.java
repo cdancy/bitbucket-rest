@@ -38,6 +38,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
     private GeneratedTestContents generatedTestContents;
     private String projectKey;
     private String repoKey;
+    private Long conditionId;
 
     @BeforeClass
     public void init() {
@@ -64,6 +65,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
                 matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
+        conditionId = returnCondition.id();
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
     }
 
