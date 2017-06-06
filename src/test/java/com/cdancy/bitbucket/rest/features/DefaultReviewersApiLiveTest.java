@@ -168,7 +168,6 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnValue.id()).isNotNull();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
-        assertThat(returnValue.reviewers().get(0).id()).isEqualTo(1);
         assertThat(returnValue.sourceRefMatcher().id()).isEqualTo(matcherSrc.getId());
         assertThat(returnValue.targetRefMatcher().id()).isEqualTo(matcherDst.getId());
     }
