@@ -33,14 +33,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "AdminApiMockTest")
 public class AdminApiMockTest extends BaseBitbucketMockTest {
 
-    public void testGetListUserByGroup() throws Exception {
+    public void testListUsersByGroup() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group.json")).setResponseCode(200));
         BitbucketApi baseApi = api(server.getUrl("/"));
         AdminApi api = baseApi.adminApi();
         try {
-            UserPage up = api.listUserByGroup("test", null, 0, 2);
+            UserPage up = api.listUsersByGroup("test", null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isEmpty();
             assertThat(up.size() == 2).isTrue();
@@ -55,20 +55,62 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testGetListUserByGroupOnError() throws Exception {
+    public void testListUsersByGroupOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group-error.json")).setResponseCode(401));
         BitbucketApi baseApi = api(server.getUrl("/"));
         AdminApi api = baseApi.adminApi();
         try {
-            UserPage up = api.listUserByGroup("test", null, 0, 2);
+            UserPage up = api.listUsersByGroup("test", null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
             Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/admin/groups/more-members", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testListUsers() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-users.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        AdminApi api = baseApi.adminApi();
+        try {
+            UserPage up = api.listUsers("jcitizen", 0, 2);
+            assertThat(up).isNotNull();
+            assertThat(up.errors()).isEmpty();
+            assertThat(up.size() == 1).isTrue();
+            assertThat(up.values().get(0).slug().equals("jcitizen")).isTrue();
+
+            Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen", "limit", 2, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/admin/users", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListUsersOnError() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group-error.json")).setResponseCode(401));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        AdminApi api = baseApi.adminApi();
+        try {
+            UserPage up = api.listUsers("blah blah", 0, 2);
+            assertThat(up).isNotNull();
+            assertThat(up.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah", "limit", 2, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/admin/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();

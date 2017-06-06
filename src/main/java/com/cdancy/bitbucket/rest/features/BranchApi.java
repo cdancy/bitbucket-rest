@@ -128,7 +128,7 @@ public interface BranchApi {
     BranchModelConfiguration getModelConfiguration(@PathParam("project") String project,
                                                    @PathParam("repo") String repo);
 
-    @Named("branch:get-model-configuration")
+    @Named("branch:update-model-configuration")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")

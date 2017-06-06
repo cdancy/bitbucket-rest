@@ -44,7 +44,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 @Path("/rest/build-status/{jclouds.api-version}")
 public interface BuildStatusApi {
 
-    @Named("build:status")
+    @Named("build-status:status")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111531152"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/commits/{commitId}")
@@ -54,7 +54,7 @@ public interface BuildStatusApi {
                       @Nullable @QueryParam("start") Integer start,
                       @Nullable @QueryParam("limit") Integer limit);
     
-    @Named("build:add-status")
+    @Named("build-status:add")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111500128"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/commits/{commitId}")
@@ -63,7 +63,7 @@ public interface BuildStatusApi {
     boolean add(@PathParam("commitId") String commitId, 
                 @BinderParam(BindToJsonPayload.class) CreateBuildStatus createBuildStatus);
 
-    @Named("build:status-summary")
+    @Named("build-status:summary")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111484336"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/commits/stats/{commitId}")

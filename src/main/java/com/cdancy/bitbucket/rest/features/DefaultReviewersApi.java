@@ -61,7 +61,7 @@ public interface DefaultReviewersApi {
                               @PathParam("repo") String repo,
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 
-    @Named("defaultReviewers:update-Condition")
+    @Named("default-reviewers:update-Condition")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/{id}")
