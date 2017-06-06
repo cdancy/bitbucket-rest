@@ -51,7 +51,6 @@ import java.util.List;
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     protected final String defaultBitbucketGroup = "stash-users";
-    private String defaultUserAsString;
     private User defaultUser;
 
     public BaseBitbucketApiLiveTest() {
@@ -70,20 +69,14 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         return overrides;
     }
 
-    protected synchronized String getDefaultUserAsString() {
-        if (defaultUserAsString == null) {
-            if (this.credential.contains(":")) {
-                defaultUserAsString = this.credential.split(":")[0];
-            } else {
-                defaultUserAsString = new String(base64().decode(this.credential)).split(":")[0];
-            }
-        }
-        return defaultUserAsString;
-    }
-
     protected synchronized User getDefaultUser() {
         if (defaultUser == null) {
-            String username = getDefaultUserAsString();
+            String username;
+            if (this.credential.contains(":")) {
+                username = this.credential.split(":")[0];
+            } else {
+                username = new String(base64().decode(this.credential)).split(":")[0];
+            }
             final UserPage userPage = api.adminApi().listUserByGroup(defaultBitbucketGroup, null, null, null);
             assertThat(userPage).isNotNull();
             assertThat(userPage.size() > 0).isTrue();
@@ -94,6 +87,7 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
                 }
             }
         }
+        assertThat(defaultUser).isNotNull();
         return defaultUser;
     }
     
