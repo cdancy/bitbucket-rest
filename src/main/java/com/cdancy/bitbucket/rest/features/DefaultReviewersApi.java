@@ -73,7 +73,7 @@ public interface DefaultReviewersApi {
                               @PathParam("id") long id,
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 
-    @Named("defaultReviewers:delete-Condition")
+    @Named("default-reviewers:delete-Condition")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/{id}")
