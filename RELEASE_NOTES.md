@@ -4,6 +4,7 @@
 * ADDED: `AdminApi` gained endpoint `listUsers` - [PR 91](https://github.com/cdancy/bitbucket-rest/pull/91)
 * REFACTOR: `AdminApi` renamed endpoint `listUserByGroup` to `listUsersByGroup` - [PR 91](https://github.com/cdancy/bitbucket-rest/pull/91)
 * ADDED: `DefaultReviewersApi` gained endpoint `createCondition` - [PR 82](https://github.com/cdancy/bitbucket-rest/pull/82)
+* ADDED: `DefaultReviewersApi` gained endpoint `updateCondition` - [PR 83](https://github.com/cdancy/bitbucket-rest/pull/83)
 
 ### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
