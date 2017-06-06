@@ -78,6 +78,7 @@ tasks.withType(JavaCompile) {
 task mockTest(type: Test) {
     useTestNG() 
     include "**/**MockTest.class"
+    maxParallelForks = 2
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
