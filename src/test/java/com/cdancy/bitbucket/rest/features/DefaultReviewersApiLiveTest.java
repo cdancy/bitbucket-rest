@@ -101,6 +101,18 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
 
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testCreateConditionMatcherDifferent"})
+    public void testListConditions() {
+        List<Condition> listCondition = api().listConditions(projectKey, repoKey);
+        assertThat(listCondition.size()).isEqualTo(2);
+        for (Condition condition : listCondition) {
+            if (condition.id().equals(conditionId)) {
+                validCondition(condition, 1L, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
+            } else {
+                validCondition(condition, 1L, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
+            }
+        }
+    }
 
     @AfterClass
     public void fin() {
