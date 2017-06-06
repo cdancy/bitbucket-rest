@@ -29,6 +29,10 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import org.jclouds.rest.annotations.RequestFilters;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -42,18 +46,18 @@ import java.util.List;
 @Path("/rest/default-reviewers/{jclouds.api-version}/projects")
 public interface DefaultReviewersApi {
 
-    @Named("defaultReviewers:list-Conditions")
+    @Named("default-reviewers:list-conditions")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/conditions/")
+    @Path("/{project}/repos/{repo}/conditions")
     @GET
-    List<Condition> listConditions(@PathParam("project") String project,
-                                   @PathParam("repo") String repo);
+    List<Condition> listConditions(@PathParam("project") String projectKey,
+                                   @PathParam("repo") String repoKey);
 
-    @Named("defaultReviewers:create-Condition")
+    @Named("default-reviewers:create-condition")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/condition/")
+    @Path("/{project}/repos/{repo}/condition")
     @Fallback(BitbucketFallbacks.ConditionOnError.class)
     @POST
     Condition createCondition(@PathParam("project") String project,

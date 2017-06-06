@@ -23,6 +23,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -35,23 +36,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "live", testName = "DefaultReviewersApiLiveTest", singleThreaded = true)
 public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
-
     private GeneratedTestContents generatedTestContents;
-
+    private String projectKey;
+    private String repoKey;
 
     @BeforeClass
     public void init() {
         generatedTestContents = initGeneratedTestContents();
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
     }
 
     @Test
-    public void testListConditionsOnEmptyRepo() {
-        List<Condition> conditionList = api().listConditions(generatedTestContents.project.key(), generatedTestContents.repository.slug());
+    public void testListDefaultReviewersOnNewRepo() {
+        List<Condition> conditionList = api().listConditions(projectKey, repoKey);
         assertThat(conditionList).isEmpty();
     }
 
 
-    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo"})
     public void testCreateCondition() {
         Long requiredApprover = 1L;
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
@@ -65,7 +68,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
     }
 
-    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition"})
     public void testCreateConditionOnError() {
         Long requiredApprover = 1L;
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
@@ -83,7 +86,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnCondition.repository()).isNull();
     }
 
-    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo"})
     public void testCreateConditionMatcherDiff() {
         Long requiredApprover = 1L;
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.MASTER, true);
@@ -96,6 +99,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
+
 
     @AfterClass
     public void fin() {

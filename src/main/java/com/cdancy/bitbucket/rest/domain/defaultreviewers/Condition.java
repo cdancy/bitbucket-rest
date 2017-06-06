@@ -23,6 +23,8 @@ import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
+import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;

@@ -25,6 +25,8 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
+import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
@@ -35,7 +37,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by jdoire on 24/05/2017.
+ * Mock tests for the {@link CommitsApi} class.
  */
 @Test(groups = "unit", testName = "DefaultReviewersApiMockTest")
 public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
@@ -56,7 +58,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(conditions.size()).isEqualTo(3);
 
             assertSent(server, "GET", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/conditions/");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/conditions");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -87,7 +89,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(returnCondition.id()).isEqualTo(10);
 
             assertSent(server, "POST", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/");
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/condition");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -118,7 +120,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             assertThat(returnCondition.errors().size()).isEqualTo(1);
 
             assertSent(server, "POST", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/123456/condition/");
+                    + "/projects/" + projectKey + "/repos/123456/condition");
         } finally {
             baseApi.close();
             server.shutdown();
