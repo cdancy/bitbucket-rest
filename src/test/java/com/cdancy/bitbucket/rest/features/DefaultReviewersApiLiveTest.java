@@ -86,7 +86,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo"})
-    public void testCreateConditionMatcherDiff() {
+    public void testCreateConditionMatcherDifferent() {
         Long requiredApprover = 1L;
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.MASTER, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
