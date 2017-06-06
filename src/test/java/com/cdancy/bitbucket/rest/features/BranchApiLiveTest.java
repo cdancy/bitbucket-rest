@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
-    
+
     private GeneratedTestContents generatedTestContents;
 
     private String projectKey;
@@ -60,7 +60,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         generatedTestContents = initGeneratedTestContents();
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
-        
+
         Branch branch = api().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
         assertThat(branch.errors().isEmpty()).isTrue();
@@ -114,6 +114,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         List<BranchPermission> listBranchPermission = new ArrayList<>();
         listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
                 Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, null));
+        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.DEVELOPMENT, true), new ArrayList<User>(), groupPermission, null));
+        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.MASTER, true), new ArrayList<User>(), groupPermission, null));
 
         boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
         assertThat(success).isTrue();
@@ -232,7 +236,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
                 CreateBranchModelConfiguration.create(branchModelConfiguration));
             checkDefaultBranchConfiguration();
         }
-        
+
         terminateGeneratedTestContents(generatedTestContents);
     }
 

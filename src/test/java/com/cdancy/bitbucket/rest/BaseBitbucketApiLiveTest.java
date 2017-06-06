@@ -20,7 +20,9 @@ package com.cdancy.bitbucket.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.common.io.BaseEncoding.base64;
 
+import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
@@ -49,8 +51,8 @@ import java.util.List;
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     protected final String defaultBitbucketGroup = "stash-users";
-    private String defaultUser;
-    
+    private User defaultUser;
+
     public BaseBitbucketApiLiveTest() {
         provider = "bitbucket";
     }
@@ -67,14 +69,25 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         return overrides;
     }
 
-    protected synchronized String getDefaultUser() {
+    protected synchronized User getDefaultUser() {
         if (defaultUser == null) {
+            String username;
             if (this.credential.contains(":")) {
-                defaultUser = this.credential.split(":")[0];
+                username = this.credential.split(":")[0];
             } else {
-                defaultUser = new String(base64().decode(this.credential)).split(":")[0];
+                username = new String(base64().decode(this.credential)).split(":")[0];
+            }
+            final UserPage userPage = api.adminApi().listUserByGroup(defaultBitbucketGroup, null, null, null);
+            assertThat(userPage).isNotNull();
+            assertThat(userPage.size() > 0).isTrue();
+            for (User user : userPage.values()) {
+                if (username.equals(user.slug())) {
+                    defaultUser = user;
+                    break;
+                }
             }
         }
+        assertThat(defaultUser).isNotNull();
         return defaultUser;
     }
     

@@ -29,6 +29,7 @@ import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
@@ -113,6 +114,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class ConditionOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createConditionFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -334,6 +344,10 @@ public final class BitbucketFallbacks {
 
     public static UserPage createUserPageFromErrors(List<Error> errors) {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static Condition createConditionFromErrors(List<Error> errors) {
+        return Condition.create(null, null, null, null, null, null, errors);
     }
 
     public static StatusPage createStatusPageFromErrors(List<Error> errors) {

@@ -127,7 +127,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByUser() {
-        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", getDefaultUser());
+        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", getDefaultUser().slug());
         assertThat(success).isTrue();
     }
     
@@ -139,7 +139,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListPermissionByUser"})
     public void testDeletePermissionByUser() {
-        boolean success = api().deletePermissionsByUser(projectKey, repoKey, getDefaultUser());
+        boolean success = api().deletePermissionsByUser(projectKey, repoKey, getDefaultUser().slug());
         assertThat(success).isTrue();
     }
     

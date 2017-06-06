@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.defaultreviewers;
+package com.cdancy.bitbucket.rest.options;
 
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
-import com.cdancy.bitbucket.rest.domain.common.Error;
-import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -30,31 +28,29 @@ import org.jclouds.json.SerializedNames;
 import java.util.List;
 
 @AutoValue
-public abstract class Condition implements ErrorsHolder {
+public abstract class CreateCondition {
 
     @Nullable
     public abstract Long id();
 
-    @Nullable
     public abstract Repository repository();
 
-    @Nullable
-    public abstract Matcher sourceRefMatcher();
+    public abstract Matcher sourceMatcher();
 
-    @Nullable
-    public abstract Matcher targetRefMatcher();
+    public abstract Matcher targetMatcher();
 
-    @Nullable
     public abstract List<User> reviewers();
 
-    @Nullable
     public abstract Long requiredApprovals();
 
-    @SerializedNames({ "id", "repository", "sourceRefMatcher", "targetRefMatcher", "reviewers", "requiredApprovals", "errors"})
-    public static Condition create(Long id, Repository repository, Matcher sourceRefMatcher,
-                                   Matcher targetRefMatcher, List<User> reviewers, Long requiredApprovals,
-                                   @Nullable List<Error> errors) {
-        return new AutoValue_Condition(Utils.nullToEmpty(errors), id, repository, sourceRefMatcher, targetRefMatcher,
-            reviewers, requiredApprovals);
+    @SerializedNames({ "id", "repository", "sourceMatcher", "targetMatcher", "reviewers", "requiredApprovals"})
+    public static CreateCondition create(Long id, Repository repository, Matcher sourceMatcher,
+                                   Matcher targetMatcher, List<User> reviewers, Long requiredApprovals) {
+        return new AutoValue_CreateCondition(id, repository, sourceMatcher, targetMatcher, reviewers, requiredApprovals);
+    }
+
+    public static CreateCondition create(Condition condition) {
+        return new AutoValue_CreateCondition(condition.id(), condition.repository(), condition.sourceRefMatcher(),
+            condition.targetRefMatcher(), condition.reviewers(), condition.requiredApprovals());
     }
 }
