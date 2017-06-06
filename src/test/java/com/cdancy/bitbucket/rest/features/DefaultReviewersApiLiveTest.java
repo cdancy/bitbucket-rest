@@ -131,8 +131,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         }
     }
 
-    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition",
-            "testCreateConditionMatcherDiff", "testListConditions"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testUpdateCondition",
+            "testCreateConditionMatcherDifferent", "testListConditions"})
     public void testDeleteCondition() {
         boolean success = api().deleteCondition(generatedTestContents.project.key(),
                 generatedTestContents.repository.slug(), conditionId);
@@ -146,8 +146,8 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success).isFalse();
     }
 
-    @Test(dependsOnMethods = {"testListConditionsOnEmptyRepo", "testCreateCondition", "testUpdateCondition",
-            "testCreateConditionMatcherDiff", "testListConditions", "testDeleteCondition"})
+    @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testUpdateCondition",
+            "testCreateConditionMatcherDifferent", "testListConditions", "testDeleteCondition"})
     public void testListConditionsAfterDelete() {
         List<Condition> listCondition = api().listConditions(generatedTestContents.project.key(),
                 generatedTestContents.repository.slug());
