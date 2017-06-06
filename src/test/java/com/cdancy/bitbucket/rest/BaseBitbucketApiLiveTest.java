@@ -168,8 +168,8 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         boolean projectPreviouslyExists = true;
         Project project = api.projectApi().get(projectKey);
         assertThat(project).isNotNull();
-        if (project.errors().size() > 1) {
-            
+        if (!project.errors().isEmpty()) {
+
             projectPreviouslyExists = false;
 
             final CreateProject createProject = CreateProject.create(projectKey, null, null, null);
