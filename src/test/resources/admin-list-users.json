@@ -1,0 +1,23 @@
+
+{
+    "size": 1,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+        {
+            "name": "jcitizen",
+            "emailAddress": "jane@example.com",
+            "id": 101,
+            "displayName": "Jane Citizen",
+            "active": true,
+            "slug": "jcitizen",
+            "type": "NORMAL",
+            "directoryName": "Bitbucket Internal Directory",
+            "deletable": true,
+            "lastAuthenticationTimestamp": 1368145580548,
+            "mutableDetails": true,
+            "mutableGroups": true
+        }
+    ],
+    "start": 0
+}

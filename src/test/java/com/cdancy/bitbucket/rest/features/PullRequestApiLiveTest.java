@@ -182,7 +182,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test (dependsOnMethods = "testAssignDefaultParticipantsOnError")
     public void testAssignParticipants() {
-        final UserPage userPage = api.adminApi().listUserByGroup(defaultBitbucketGroup, null, null, null);
+        final UserPage userPage = api.adminApi().listUsersByGroup(defaultBitbucketGroup, null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() > 0).isTrue();
         
