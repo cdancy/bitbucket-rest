@@ -32,16 +32,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private GeneratedTestContents generatedTestContents;
-
-
+    private String projectKey;
+    private String repoKey;
+    
     @BeforeClass
     public void init() {
         generatedTestContents = initGeneratedTestContents();
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
     }
 
     @Test
-    public void testListDefaultReviewersOnEmptyRepo() {
-        List<Condition> conditionList = api().listConditions(generatedTestContents.project.key(), generatedTestContents.repository.slug());
+    public void testListDefaultReviewersOnNewRepo() {
+        List<Condition> conditionList = api().listConditions(projectKey, repoKey);
         assertThat(conditionList).isEmpty();
     }
 

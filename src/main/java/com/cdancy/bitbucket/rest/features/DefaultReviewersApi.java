@@ -36,11 +36,11 @@ import java.util.List;
 @Path("/rest/default-reviewers/{jclouds.api-version}/projects")
 public interface DefaultReviewersApi {
 
-    @Named("defaultReviewers:list-Conditions")
+    @Named("default-reviewers:list-conditions")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/conditions/")
+    @Path("/{project}/repos/{repo}/conditions")
     @GET
-    List<Condition> listConditions(@PathParam("project") String project,
-                                   @PathParam("repo") String repo);
+    List<Condition> listConditions(@PathParam("project") String projectKey,
+                                   @PathParam("repo") String repoKey);
 }

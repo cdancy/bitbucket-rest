@@ -30,7 +30,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by jdoire on 24/05/2017.
+ * Mock tests for the {@link CommitsApi} class.
  */
 @Test(groups = "unit", testName = "DefaultReviewersApiMockTest")
 public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
