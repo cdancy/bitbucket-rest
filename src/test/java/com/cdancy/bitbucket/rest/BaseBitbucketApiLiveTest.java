@@ -77,7 +77,7 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
             } else {
                 username = new String(base64().decode(this.credential)).split(":")[0];
             }
-            final UserPage userPage = api.adminApi().listUserByGroup(defaultBitbucketGroup, null, null, null);
+            final UserPage userPage = api.adminApi().listUsers(username, null, null);
             assertThat(userPage).isNotNull();
             assertThat(userPage.size() > 0).isTrue();
             for (User user : userPage.values()) {
@@ -86,8 +86,8 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
                     break;
                 }
             }
+            assertThat(defaultUser).isNotNull();
         }
-        assertThat(defaultUser).isNotNull();
         return defaultUser;
     }
     

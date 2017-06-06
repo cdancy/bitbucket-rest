@@ -44,8 +44,18 @@ public interface AdminApi {
     @Path("/groups/more-members")
     @Fallback(BitbucketFallbacks.UserPageOnError.class)
     @GET
-    UserPage listUserByGroup(@QueryParam("context") String context,
+    UserPage listUsersByGroup(@QueryParam("context") String context,
                              @Nullable @QueryParam("filter") String filter,
                              @Nullable @QueryParam("start") Integer start,
                              @Nullable @QueryParam("limit") Integer limit);
+    
+    @Named("admin:list-users")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45588158982432"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/users")
+    @Fallback(BitbucketFallbacks.UserPageOnError.class)
+    @GET
+    UserPage listUsers(@Nullable @QueryParam("filter") String filter,
+                        @Nullable @QueryParam("start") Integer start,
+                        @Nullable @QueryParam("limit") Integer limit);
 }
