@@ -23,7 +23,6 @@ import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
-import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

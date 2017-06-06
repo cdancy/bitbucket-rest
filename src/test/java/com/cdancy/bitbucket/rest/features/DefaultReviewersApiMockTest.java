@@ -25,8 +25,6 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
-import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
