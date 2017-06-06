@@ -107,12 +107,11 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
-        listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
+        listUser.add(getDefaultUser());
         CreateCondition condition = CreateCondition.create(conditionId, generatedTestContents.repository,
                 matcherSrc, matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().updateCondition(generatedTestContents.project.key(),
-                generatedTestContents.repository.slug(), conditionId, condition);
+        Condition returnCondition = api().updateCondition(projectKey, repoKey, conditionId, condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.DEVELOPMENT);
         assertThat(returnCondition.id()).isEqualTo(conditionId);
     }
