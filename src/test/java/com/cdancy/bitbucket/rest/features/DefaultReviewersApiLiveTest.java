@@ -41,7 +41,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        this.generatedTestContents = initGeneratedTestContents();
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
     }
@@ -63,7 +63,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
+        Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.ANY_REF, Matcher.MatcherId.ANY_REF);
     }
 
@@ -77,7 +77,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), "1234", condition);
+        Condition returnCondition = api().createCondition(projectKey, "1234", condition);
         assertThat(returnCondition.errors()).isNotEmpty();
         assertThat(returnCondition.targetRefMatcher()).isNull();
         assertThat(returnCondition.sourceRefMatcher()).isNull();
@@ -95,7 +95,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
-        Condition returnCondition = api().createCondition(generatedTestContents.project.key(), generatedTestContents.repository.slug(), condition);
+        Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
         validCondition(returnCondition, requiredApprover, Matcher.MatcherId.MASTER, Matcher.MatcherId.DEVELOPMENT);
     }
 
@@ -111,7 +111,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private void validCondition(Condition returnValue, Long requiredApprover, Matcher.MatcherId matcherSrc, Matcher.MatcherId matcherDst) {
         assertThat(returnValue.errors()).isEmpty();
-        assertThat(returnValue.repository().name().equals(generatedTestContents.repository.slug()));
+        assertThat(returnValue.repository().name().equals(repoKey));
         assertThat(returnValue.id()).isNotNull();
         assertThat(returnValue.errors()).isEmpty();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
