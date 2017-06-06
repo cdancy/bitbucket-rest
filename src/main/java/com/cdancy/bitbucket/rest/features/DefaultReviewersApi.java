@@ -49,8 +49,8 @@ public interface DefaultReviewersApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/conditions")
     @GET
-    List<Condition> listConditions(@PathParam("project") String projectKey,
-                                   @PathParam("repo") String repoKey);
+    List<Condition> listConditions(@PathParam("project") String project,
+                                   @PathParam("repo") String repo);
 
     @Named("default-reviewers:create-condition")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
@@ -62,7 +62,7 @@ public interface DefaultReviewersApi {
                               @PathParam("repo") String repo,
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 
-    @Named("default-reviewers:update-Condition")
+    @Named("default-reviewers:update-condition")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/{id}")
@@ -82,4 +82,5 @@ public interface DefaultReviewersApi {
     boolean deleteCondition(@PathParam("project") String project,
                               @PathParam("repo") String repo,
                               @PathParam("id") long id);
+
 }
