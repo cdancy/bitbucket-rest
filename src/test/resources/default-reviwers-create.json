@@ -1,57 +1,17 @@
 {
-  "id": 10,
-  "repository": {
-    "forkable": true,
-    "id": 71,
-    "links": {
-      "clone": [
-        {
-          "href": "http://root@192.168.99.100:32775/scm/zluwzttzaw/mszwjhlwvt.git",
-          "name": "http"
-        },
-        {
-          "href": "ssh://git@192.168.99.100:7999/zluwzttzaw/mszwjhlwvt.git",
-          "name": "ssh"
-        }
-      ],
-      "self": [
-        {
-          "href": "http://192.168.99.100:32775/projects/ZLUWZTTZAW/repos/mszwjhlwvt/browse"
-        }
-      ]
-    },
-    "name": "MSZWJHLWVT",
-    "project": {
-      "id": 103,
-      "key": "ZLUWZTTZAW",
-      "links": {
-        "self": [
-          {
-            "href": "http://192.168.99.100:32775/projects/ZLUWZTTZAW"
-          }
-        ]
-      },
-      "name": "ZLUWZTTZAW",
-      "public": false,
-      "type": "NORMAL"
-    },
-    "public": false,
-    "scmId": "git",
-    "slug": "mszwjhlwvt",
-    "state": "AVAILABLE",
-    "statusMessage": "Available"
-  },
+  "id": 3,
   "requiredApprovals": 1,
   "reviewers": [
     {
       "active": true,
+      "avatarUrl": "http://www.gravatar.com/avatar/7f08d8c2a996003767fbe0cb09d89589.jpg?s=32&d=mm",
       "displayName": "root",
-      "emailAddress": "root@test.com",
+      "emailAddress": "root@root.com",
       "id": 1,
       "links": {
         "self": [
           {
-            "href": "http://192.168.99.100:32775/users/root"
+            "href": "http://192.168.99.100:32770/users/root"
           }
         ]
       },
@@ -60,6 +20,10 @@
       "type": "NORMAL"
     }
   ],
+  "scope": {
+    "resourceId": 10,
+    "type": "REPOSITORY"
+  },
   "sourceRefMatcher": {
     "active": true,
     "displayId": "ANY_REF_MATCHER_ID",

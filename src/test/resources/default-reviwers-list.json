@@ -1,46 +1,9 @@
 [
   {
     "id": 3,
-    "repository": {
-      "slug": "dancc-test",
-      "id": 33,
-      "name": "dancc-test",
-      "scmId": "git",
-      "state": "AVAILABLE",
-      "statusMessage": "Available",
-      "forkable": true,
-      "project": {
-        "key": "BUILD",
-        "id": 42,
-        "name": "BUILD",
-        "public": false,
-        "type": "NORMAL",
-        "links": {
-          "self": [
-            {
-              "href": "http://192.168.99.100:32775/projects/BUILD"
-            }
-          ]
-        }
-      },
-      "public": false,
-      "links": {
-        "clone": [
-          {
-            "href": "http://root@192.168.99.100:32775/scm/build/dancc-test.git",
-            "name": "http"
-          },
-          {
-            "href": "ssh://git@192.168.99.100:7999/build/dancc-test.git",
-            "name": "ssh"
-          }
-        ],
-        "self": [
-          {
-            "href": "http://192.168.99.100:32775/projects/BUILD/repos/dancc-test/browse"
-          }
-        ]
-      }
+    "scope": {
+      "type": "REPOSITORY",
+      "resourceId": 10
     },
     "sourceRefMatcher": {
       "active": true,
@@ -63,7 +26,7 @@
     "reviewers": [
       {
         "name": "root",
-        "emailAddress": "root@test.com",
+        "emailAddress": "root@root.com",
         "id": 1,
         "displayName": "root",
         "active": true,
@@ -72,7 +35,7 @@
         "links": {
           "self": [
             {
-              "href": "http://192.168.99.100:32775/users/root"
+              "href": "http://192.168.99.100:32770/users/root"
             }
           ]
         }
@@ -82,46 +45,9 @@
   },
   {
     "id": 4,
-    "repository": {
-      "slug": "dancc-test",
-      "id": 33,
-      "name": "dancc-test",
-      "scmId": "git",
-      "state": "AVAILABLE",
-      "statusMessage": "Available",
-      "forkable": true,
-      "project": {
-        "key": "BUILD",
-        "id": 42,
-        "name": "BUILD",
-        "public": false,
-        "type": "NORMAL",
-        "links": {
-          "self": [
-            {
-              "href": "http://192.168.99.100:32775/projects/BUILD"
-            }
-          ]
-        }
-      },
-      "public": false,
-      "links": {
-        "clone": [
-          {
-            "href": "http://root@192.168.99.100:32775/scm/build/dancc-test.git",
-            "name": "http"
-          },
-          {
-            "href": "ssh://git@192.168.99.100:7999/build/dancc-test.git",
-            "name": "ssh"
-          }
-        ],
-        "self": [
-          {
-            "href": "http://192.168.99.100:32775/projects/BUILD/repos/dancc-test/browse"
-          }
-        ]
-      }
+    "scope": {
+      "type": "PROJECT",
+      "resourceId": 10
     },
     "sourceRefMatcher": {
       "active": true,
@@ -134,17 +60,17 @@
     },
     "targetRefMatcher": {
       "active": true,
-      "id": "development",
-      "displayId": "Development",
+      "id": "ANY_REF_MATCHER_ID",
+      "displayId": "ANY_REF_MATCHER_ID",
       "type": {
-        "id": "MODEL_BRANCH",
-        "name": "Branching model branch"
+        "id": "ANY_REF",
+        "name": "Any branch"
       }
     },
     "reviewers": [
       {
         "name": "root",
-        "emailAddress": "root@test.com",
+        "emailAddress": "root@root.com",
         "id": 1,
         "displayName": "root",
         "active": true,
@@ -153,79 +79,42 @@
         "links": {
           "self": [
             {
-              "href": "http://192.168.99.100:32775/users/root"
+              "href": "http://192.168.99.100:32770/users/root"
             }
           ]
         }
       }
     ],
-    "requiredApprovals": 0
+    "requiredApprovals": 1
   },
   {
     "id": 5,
-    "repository": {
-      "slug": "dancc-test",
-      "id": 33,
-      "name": "dancc-test",
-      "scmId": "git",
-      "state": "AVAILABLE",
-      "statusMessage": "Available",
-      "forkable": true,
-      "project": {
-        "key": "BUILD",
-        "id": 42,
-        "name": "BUILD",
-        "public": false,
-        "type": "NORMAL",
-        "links": {
-          "self": [
-            {
-              "href": "http://192.168.99.100:32775/projects/BUILD"
-            }
-          ]
-        }
-      },
-      "public": false,
-      "links": {
-        "clone": [
-          {
-            "href": "http://root@192.168.99.100:32775/scm/build/dancc-test.git",
-            "name": "http"
-          },
-          {
-            "href": "ssh://git@192.168.99.100:7999/build/dancc-test.git",
-            "name": "ssh"
-          }
-        ],
-        "self": [
-          {
-            "href": "http://192.168.99.100:32775/projects/BUILD/repos/dancc-test/browse"
-          }
-        ]
-      }
+    "scope": {
+      "type": "PROJECT",
+      "resourceId": 10
     },
     "sourceRefMatcher": {
       "active": true,
-      "id": "production",
-      "displayId": "Production",
+      "id": "BUGFIX",
+      "displayId": "Bugfix",
       "type": {
-        "id": "MODEL_BRANCH",
-        "name": "Branching model branch"
+        "id": "MODEL_CATEGORY",
+        "name": "Branching model category"
       }
     },
     "targetRefMatcher": {
       "active": true,
-      "id": "ANY_REF_MATCHER_ID",
-      "displayId": "ANY_REF_MATCHER_ID",
+      "id": "HOTFIX",
+      "displayId": "Hotfix",
       "type": {
-        "id": "ANY_REF",
-        "name": "Any branch"
+        "id": "MODEL_CATEGORY",
+        "name": "Branching model category"
       }
     },
     "reviewers": [
       {
         "name": "root",
-        "emailAddress": "root@test.com",
+        "emailAddress": "root@root.com",
         "id": 1,
         "displayName": "root",
         "active": true,
@@ -234,7 +123,7 @@
         "links": {
           "self": [
             {
-              "href": "http://192.168.99.100:32775/users/root"
+              "href": "http://192.168.99.100:32770/users/root"
             }
           ]
         }

@@ -21,7 +21,6 @@ import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
@@ -36,7 +35,7 @@ public abstract class Condition implements ErrorsHolder {
     public abstract Long id();
 
     @Nullable
-    public abstract Repository repository();
+    public abstract Scope scope();
 
     @Nullable
     public abstract Matcher sourceRefMatcher();
@@ -50,11 +49,11 @@ public abstract class Condition implements ErrorsHolder {
     @Nullable
     public abstract Long requiredApprovals();
 
-    @SerializedNames({ "id", "repository", "sourceRefMatcher", "targetRefMatcher", "reviewers", "requiredApprovals", "errors"})
-    public static Condition create(Long id, Repository repository, Matcher sourceRefMatcher,
+    @SerializedNames({ "id", "scope", "sourceRefMatcher", "targetRefMatcher", "reviewers", "requiredApprovals", "errors"})
+    public static Condition create(Long id, Scope scope, Matcher sourceRefMatcher,
                                    Matcher targetRefMatcher, List<User> reviewers, Long requiredApprovals,
                                    @Nullable List<Error> errors) {
-        return new AutoValue_Condition(Utils.nullToEmpty(errors), id, repository, sourceRefMatcher, targetRefMatcher,
+        return new AutoValue_Condition(Utils.nullToEmpty(errors), id, scope, sourceRefMatcher, targetRefMatcher,
             reviewers, requiredApprovals);
     }
 }

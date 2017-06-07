@@ -21,6 +21,7 @@ import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Scope;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
 import org.testng.annotations.AfterClass;
@@ -61,7 +62,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(getDefaultUser());
-        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
+        CreateCondition condition = CreateCondition.create(null, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
@@ -76,7 +77,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(getDefaultUser());
-        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
+        CreateCondition condition = CreateCondition.create(null, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(projectKey, "1234", condition);
@@ -84,7 +85,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(returnCondition.targetRefMatcher()).isNull();
         assertThat(returnCondition.sourceRefMatcher()).isNull();
         assertThat(returnCondition.reviewers()).isNull();
-        assertThat(returnCondition.repository()).isNull();
+        assertThat(returnCondition.scope()).isNull();
     }
 
     @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo"})
@@ -94,7 +95,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(getDefaultUser());
-        CreateCondition condition = CreateCondition.create(null, generatedTestContents.repository, matcherSrc,
+        CreateCondition condition = CreateCondition.create(null, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().createCondition(projectKey, repoKey, condition);
@@ -108,7 +109,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
         listUser.add(getDefaultUser());
-        CreateCondition condition = CreateCondition.create(conditionId, generatedTestContents.repository,
+        CreateCondition condition = CreateCondition.create(conditionId,
                 matcherSrc, matcherDst, listUser, requiredApprover);
 
         Condition returnCondition = api().updateCondition(projectKey, repoKey, conditionId, condition);
@@ -164,7 +165,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private void validCondition(Condition returnValue, Long requiredApprover, Matcher.MatcherId matcherSrc, Matcher.MatcherId matcherDst) {
         assertThat(returnValue.errors()).isEmpty();
-        assertThat(returnValue.repository().name()).isEqualTo(repoKey);
+        assertThat(returnValue.scope().type()).isEqualTo(Scope.ScopeType.REPOSITORY);
         assertThat(returnValue.id()).isNotNull();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);

@@ -22,7 +22,6 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateCondition;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -75,8 +74,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
             List<User> listUser = new ArrayList<>();
             listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-            Repository repository = Repository.create(null, -1, null, null, null, null, false, null, false, null, null);
-            CreateCondition condition = CreateCondition.create(null, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+            CreateCondition condition = CreateCondition.create(null, matcherSrc, matcherDst, listUser, requiredApprover);
 
             String projectKey = "test";
             String repoKey = "1234";
@@ -84,7 +82,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             Condition returnCondition = api.createCondition(projectKey, repoKey, condition);
             assertThat(returnCondition).isNotNull();
             assertThat(returnCondition.errors()).isEmpty();
-            assertThat(returnCondition.id()).isEqualTo(10);
+            assertThat(returnCondition.id()).isEqualTo(3L);
 
             assertSent(server, "POST", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/condition");
@@ -106,8 +104,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
             List<User> listUser = new ArrayList<>();
             listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-            Repository repository = Repository.create(null, -1, null, null, null, null, false, null, false, null, null);
-            CreateCondition condition = CreateCondition.create(null, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+            CreateCondition condition = CreateCondition.create(null, matcherSrc, matcherDst, listUser, requiredApprover);
 
             String projectKey = "test";
             String repoKey = "1234";
@@ -137,8 +134,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
             List<User> listUser = new ArrayList<>();
             listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-            Repository repository = Repository.create(null, -1, null, null, null, null, false, null, false, null, null);
-            CreateCondition condition = CreateCondition.create(10L, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+            CreateCondition condition = CreateCondition.create(10L, matcherSrc, matcherDst, listUser, requiredApprover);
 
             String projectKey = "test";
             String repoKey = "1234";
@@ -146,7 +142,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             Condition returnCondition = api.updateCondition(projectKey, repoKey, 10L, condition);
             assertThat(returnCondition).isNotNull();
             assertThat(returnCondition.errors()).isEmpty();
-            assertThat(returnCondition.id()).isEqualTo(10L);
+            assertThat(returnCondition.id()).isEqualTo(3L);
 
             assertSent(server, "PUT", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
@@ -168,8 +164,7 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
             List<User> listUser = new ArrayList<>();
             listUser.add(User.create("test", "test@test.com", 1, "test", true, "test", "NORMAL"));
-            Repository repository = Repository.create(null, -1, null, null, null, null, false, null, false, null, null);
-            CreateCondition condition = CreateCondition.create(10L, repository, matcherSrc, matcherDst, listUser, requiredApprover);
+            CreateCondition condition = CreateCondition.create(10L, matcherSrc, matcherDst, listUser, requiredApprover);
 
             String projectKey = "test";
             String repoKey = "1234";
