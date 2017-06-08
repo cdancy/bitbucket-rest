@@ -165,7 +165,11 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private void validCondition(Condition returnValue, Long requiredApprover, Matcher.MatcherId matcherSrc, Matcher.MatcherId matcherDst) {
         assertThat(returnValue.errors()).isEmpty();
-        assertThat(returnValue.scope().type()).isEqualTo(Scope.ScopeType.REPOSITORY);
+        
+        // fix for Bitbucket server 4.x where scope is not defined
+        if (returnValue.scope() != null) {
+            assertThat(returnValue.scope().type()).isEqualTo(Scope.ScopeType.REPOSITORY);
+        }
         assertThat(returnValue.id()).isNotNull();
         assertThat(returnValue.requiredApprovals()).isEqualTo(requiredApprover);
         assertThat(returnValue.reviewers().size()).isEqualTo(1);
