@@ -45,7 +45,7 @@ import java.util.List;
 public interface DefaultReviewersApi {
 
     @Named("default-reviewers:list-conditions")
-    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-default-reviewers-rest.html#idm46188393150720"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/conditions")
     @GET
@@ -53,7 +53,7 @@ public interface DefaultReviewersApi {
                                    @PathParam("repo") String repo);
 
     @Named("default-reviewers:create-condition")
-    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-default-reviewers-rest.html#idm46188393242752"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition")
     @Fallback(BitbucketFallbacks.ConditionOnError.class)
@@ -63,7 +63,7 @@ public interface DefaultReviewersApi {
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 
     @Named("default-reviewers:update-condition")
-    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-default-reviewers-rest.html#idm46188393163680"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/{id}")
     @Fallback(BitbucketFallbacks.ConditionOnError.class)
@@ -74,7 +74,7 @@ public interface DefaultReviewersApi {
                               @BinderParam(BindToJsonPayload.class) CreateCondition condition);
 
     @Named("default-reviewers:delete-condition")
-    @Documentation({"https://jira.atlassian.com/browse/BSERV-8988"})
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-default-reviewers-rest.html#idm46188393163680"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/condition/{id}")
     @Fallback(BitbucketFallbacks.FalseOnError.class)
