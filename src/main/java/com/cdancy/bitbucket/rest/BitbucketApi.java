@@ -25,6 +25,7 @@ import com.cdancy.bitbucket.rest.features.BranchApi;
 import com.cdancy.bitbucket.rest.features.CommentsApi;
 import com.cdancy.bitbucket.rest.features.CommitsApi;
 import com.cdancy.bitbucket.rest.features.DefaultReviewersApi;
+import com.cdancy.bitbucket.rest.features.FileApi;
 import com.cdancy.bitbucket.rest.features.ProjectApi;
 import com.cdancy.bitbucket.rest.features.PullRequestApi;
 import com.cdancy.bitbucket.rest.features.RepositoryApi;
@@ -54,6 +55,9 @@ public interface BitbucketApi extends Closeable {
     @Delegate
     DefaultReviewersApi defaultReviewersApi();
 
+    @Delegate
+    FileApi fileApi();
+    
     @Delegate
     ProjectApi projectApi();
 
