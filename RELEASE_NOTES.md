@@ -10,7 +10,7 @@
 
 ### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
-* ADDED: `RepositoryApi` gained endpoints `createPermissionsByGroup` and `createPermissionsByGroup` - [PR 62](https://github.com/cdancy/bitbucket-rest/pull/62)
+* ADDED: `RepositoryApi` gained endpoints `createPermissionsByGroup` and `deletePermissionsByGroup` - [PR 62](https://github.com/cdancy/bitbucket-rest/pull/62)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByUser` - [PR 63](https://github.com/cdancy/bitbucket-rest/pull/63)
 * ADDED: `RepositoryApi` gained endpoints `createPermissionsByUser` and `deletePermissionsByUser` - [PR 64](https://github.com/cdancy/bitbucket-rest/pull/64)
 * ADDED: `RepositoryApi` gained endpoints `getPullRequestSettings` and `updatePullRequestSettings` - [PR 65](https://github.com/cdancy/bitbucket-rest/pull/65)
