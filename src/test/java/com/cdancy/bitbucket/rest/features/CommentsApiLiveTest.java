@@ -54,7 +54,6 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     
     private int prId = -1;
     private int commentId = -1;
-    private int commentIdVersion = -1;
     private int commentReplyId = -1;
     private int commentReplyIdVersion = -1;
 
@@ -99,7 +98,6 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text()).isEqualTo(commentText);
         commentId = comm.id();
-        commentIdVersion = comm.version();
     }
 
     @Test (dependsOnMethods = "testComment")

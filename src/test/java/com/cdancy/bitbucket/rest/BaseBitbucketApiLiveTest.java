@@ -211,10 +211,7 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
             throw Throwables.propagate(e);
         }
         
-        final GeneratedTestContents generatedTestContents = new GeneratedTestContents(project, repository, projectPreviouslyExists);
-        
-        
-        return generatedTestContents;
+        return new GeneratedTestContents(project, repository, projectPreviouslyExists);        
     }
     
     /**
@@ -234,9 +231,16 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         for (int i = 0; i < 3; i++) {
             Path genFile = initGeneratedFile(gitDirectory.toPath());
             String addGit = executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
-            System.out.println("git-add: " + addGit.trim());
+            System.out.println("git-add-1: " + addGit.trim());
             String commitGit = executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
-            System.out.println("git-commit: " + commitGit.trim());
+            System.out.println("git-commit-1: " + commitGit.trim());
+            
+            // edit file again and create another commit
+            genFile = Files.write(genFile, Arrays.asList(randomString()), Charset.forName("UTF-8"));
+            addGit = executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
+            System.out.println("git-add-2: " + addGit.trim());
+            commitGit = executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
+            System.out.println("git-commit-2: " + commitGit.trim());
         }
         
         // 3.) push changes to remote repository

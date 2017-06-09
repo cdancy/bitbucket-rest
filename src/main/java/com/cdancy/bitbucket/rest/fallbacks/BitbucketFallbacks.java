@@ -30,6 +30,7 @@ import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
+import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
@@ -325,7 +326,20 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
+    
+    public static final class LinePageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createLinePageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
 
+    public static LinePage createLinePageFromErrors(List<Error> errors) {
+        return LinePage.create(-1, -1, -1, -1, true, null, null, errors);
+    }
+        
     public static Branch createBranchFromErrors(List<Error> errors) {
         return Branch.create(null, null, null, null, null, false, null, errors);
     }
