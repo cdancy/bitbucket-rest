@@ -6,7 +6,8 @@
 * ADDED: `DefaultReviewersApi` gained endpoint `createCondition` - [PR 82](https://github.com/cdancy/bitbucket-rest/pull/82)
 * ADDED: `DefaultReviewersApi` gained endpoint `updateCondition` - [PR 83](https://github.com/cdancy/bitbucket-rest/pull/83)
 * ADDED: `DefaultReviewersApi` gained endpoint `deleteCondition` - [PR 84](https://github.com/cdancy/bitbucket-rest/pull/84)
-* ADDED: `FileApi` with single endpoint `rawContent` - [PR 96](https://github.com/cdancy/bitbucket-rest/pull/96)
+* ADDED: `FileApi` with single endpoint `getContent` - [PR 96](https://github.com/cdancy/bitbucket-rest/pull/96)
+* ADDED: `FileApi` gained endpoint `listlines` - [PR 97](https://github.com/cdancy/bitbucket-rest/pull/97)
 
 ### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
