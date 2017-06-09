@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.file.LinePage;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.Fallback;
@@ -35,17 +37,32 @@ import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
-@Path("/projects")
 public interface FileApi {
 
     @Named("file:raw-content")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-4036"})
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path("/{project}/repos/{repo}/raw/{filePath}")
+    @Path("/projects/{project}/repos/{repo}/raw/{filePath}")
     @Fallback(NullOnNotFoundOr404.class)
     @GET
-    String rawContent(@PathParam("project") String project,
+    String getContent(@PathParam("project") String project,
                         @PathParam("repo") String repo,
                         @PathParam("filePath") String filePath,
                         @Nullable @QueryParam("at") String commitHash);
+    
+    @Named("file:list-lines")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.1.0/bitbucket-rest.html#idm45588158357840"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/browse/{filePath}")
+    @Fallback(BitbucketFallbacks.LinePageOnError.class)
+    @GET
+    LinePage listLines(@PathParam("project") String project,
+                           @PathParam("repo") String repo,
+                           @PathParam("filePath") String filePath,
+                           @Nullable @QueryParam("at") String commitHash,
+                           @Nullable @QueryParam("type") Boolean type,
+                           @Nullable @QueryParam("blame") Boolean blame,
+                           @Nullable @QueryParam("noContent") Boolean noContent,
+                           @Nullable @QueryParam("start") Integer start,
+                           @Nullable @QueryParam("limit") Integer limit);
 }

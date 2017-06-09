@@ -1,0 +1,30 @@
+{  
+   "size": 1,
+   "limit": 25,
+   "isLastPage": true,
+   "start": 0,
+   "lines":[  
+      {  
+         "text":"BEARS"
+      }
+   ],
+   "blame":[  
+      {  
+         "author":{  
+            "name":"JordanPeterson",
+            "emailAddress":"jordan.peterson@whatever.com"
+         },
+         "authorTimestamp":1497013186000,
+         "commitHash":"cba97d2b0c71e56850f50f0d5882a4bf3d92c65b",
+         "displayCommitHash":"cba97d2b0c7",
+         "commitId":"cba97d2b0c71e56850f50f0d5882a4bf3d92c65b",
+         "commitDisplayId":"cba97d2b0c7",
+         "fileName":"faf4b2275e434c4aae775ea043d0e3cc.txt",
+         "lineNumber":1,
+         "spannedLines":1
+      }
+   ],
+   "start":0,
+   "size":1,
+   "isLastPage":true
+}
