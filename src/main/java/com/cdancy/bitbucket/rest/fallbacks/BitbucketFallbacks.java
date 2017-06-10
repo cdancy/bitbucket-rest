@@ -31,6 +31,7 @@ import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
+import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
@@ -61,6 +62,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.propagate;
+import com.google.gson.JsonSyntaxException;
 
 public final class BitbucketFallbacks {
 
@@ -335,7 +337,26 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
+    
+    public static final class RawContentOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                try {
+                    return createRawContentFromErrors(getErrors(throwable.getMessage()));
+                } catch (JsonSyntaxException e) {
+                    final Error error = Error.create(null, "Failed retrieving raw content", throwable.getClass().getName());
+                    final List<Error> errors = Lists.newArrayList(error);
+                    return RawContent.create(null, errors);
+                }
+            }
+            throw propagate(throwable);
+        }
+    }
 
+    public static RawContent createRawContentFromErrors(List<Error> errors) {
+        return RawContent.create(null, errors);
+    }
+        
     public static LinePage createLinePageFromErrors(List<Error> errors) {
         return LinePage.create(-1, -1, -1, -1, true, null, null, errors);
     }

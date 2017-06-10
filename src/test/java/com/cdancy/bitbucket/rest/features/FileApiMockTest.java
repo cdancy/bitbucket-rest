@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
+import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -44,9 +45,10 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             final String projectKey = "PRJ";
             final String repoKey = "myrepo";
             final String filePath = "some/random/path/MyFile.txt";
-            final String rawContent = api.getContent(projectKey, repoKey, filePath, null);
+            final RawContent rawContent = api.raw(projectKey, repoKey, filePath, null);
             assertThat(rawContent).isNotNull();
-            assertThat(rawContent).isEqualTo(content);
+            assertThat(rawContent.errors().isEmpty()).isTrue();
+            assertThat(rawContent.value()).isEqualTo(content);
             assertSentAcceptText(server, "GET", "/projects/" + projectKey + "/repos/" + repoKey + "/raw/" + filePath);
 
         } finally {
@@ -58,7 +60,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
     public void testGetContentOnNotFound() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setResponseCode(404));
+        server.enqueue(new MockResponse().setBody("<html>randomString</html>").setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         FileApi api = baseApi.fileApi();
         try {
@@ -66,8 +68,11 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             final String projectKey = "PRJ";
             final String repoKey = "myrepo";
             final String filePath = "some/random/path/MyFile.txt";
-            final String rawContent = api.getContent(projectKey, repoKey, filePath, null);
-            assertThat(rawContent).isNull();
+            final RawContent rawContent = api.raw(projectKey, repoKey, filePath, null);
+            assertThat(rawContent).isNotNull();
+            assertThat(rawContent.value()).isNull();
+            assertThat(rawContent.errors().isEmpty()).isFalse();
+            assertThat(rawContent.errors().get(0).message()).isEqualTo("Failed retrieving raw content");
             assertSentAcceptText(server, "GET", "/projects/" + projectKey + "/repos/" + repoKey + "/raw/" + filePath);
 
         } finally {

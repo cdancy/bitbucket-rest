@@ -24,6 +24,7 @@ import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.file.Line;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
+import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -42,7 +43,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     private String commitHashOne;
     private String commitHashTwo;
     private String filePath;
-    private String content;
+    private RawContent content;
 
     @BeforeClass
     public void init() {
@@ -67,8 +68,9 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void getContent() {
-        this.content = api().getContent(projectKey, repoKey, filePath, commitHashOne);
+        this.content = api().raw(projectKey, repoKey, filePath, commitHashOne);
         assertThat(content).isNotNull();
+        assertThat(content.errors().isEmpty()).isTrue();
     }
     
     @Test (dependsOnMethods = "getContent")
@@ -93,7 +95,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         for (final Line possibleLine : allLines) {
             possibleContent.append(possibleLine.text());
         }
-        assertThat(possibleContent.toString()).isEqualTo(this.content.trim());
+        assertThat(possibleContent.toString()).isEqualTo(this.content.value().trim());
     }
     
     @Test (dependsOnMethods = "getContent")
@@ -119,7 +121,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         for (final Line possibleLine : allLines) {
             possibleContent.append(possibleLine.text());
         }
-        assertThat(possibleContent.toString()).isNotEqualTo(this.content.trim());
+        assertThat(possibleContent.toString()).isNotEqualTo(this.content.value().trim());
     }
     
     @Test 
@@ -131,8 +133,11 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void getContentOnNotFound() {
-        final String possibleContent = api().getContent(projectKey, repoKey, randomString() + ".txt", null);
-        assertThat(possibleContent).isNull();
+        final RawContent possibleContent = api().raw(projectKey, repoKey, randomString() + ".txt", null);
+        assertThat(possibleContent).isNotNull();
+        assertThat(possibleContent.value()).isNull();
+        assertThat(possibleContent.errors().isEmpty()).isFalse();
+        assertThat(possibleContent.errors().get(0).message()).isEqualTo("Failed retrieving raw content");
     }
     
     @AfterClass
