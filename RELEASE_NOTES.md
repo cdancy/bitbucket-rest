@@ -8,6 +8,7 @@
 * ADDED: `DefaultReviewersApi` gained endpoint `deleteCondition` - [PR 84](https://github.com/cdancy/bitbucket-rest/pull/84)
 * ADDED: `FileApi` with single endpoint `getContent` - [PR 96](https://github.com/cdancy/bitbucket-rest/pull/96)
 * ADDED: `FileApi` gained endpoint `listlines` - [PR 97](https://github.com/cdancy/bitbucket-rest/pull/97)
+* REFACTOR: `FileApi` renamed endpoint `getContent` to `raw` and now returns domain object `RawContent` - [Commit 03def](https://github.com/cdancy/bitbucket-rest/commit/03def8350e87e43bcd092bf9e21579f4e54a60c0)
 
 ### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
