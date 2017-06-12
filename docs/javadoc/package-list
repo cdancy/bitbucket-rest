@@ -8,6 +8,8 @@ com.cdancy.bitbucket.rest.domain.build
 com.cdancy.bitbucket.rest.domain.comment
 com.cdancy.bitbucket.rest.domain.commit
 com.cdancy.bitbucket.rest.domain.common
+com.cdancy.bitbucket.rest.domain.defaultreviewers
+com.cdancy.bitbucket.rest.domain.file
 com.cdancy.bitbucket.rest.domain.participants
 com.cdancy.bitbucket.rest.domain.project
 com.cdancy.bitbucket.rest.domain.pullrequest
@@ -21,4 +23,5 @@ com.cdancy.bitbucket.rest.features
 com.cdancy.bitbucket.rest.filters
 com.cdancy.bitbucket.rest.handlers
 com.cdancy.bitbucket.rest.options
+com.cdancy.bitbucket.rest.parsers
 com.cdancy.bitbucket.rest.utils
