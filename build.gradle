@@ -32,16 +32,20 @@ repositories {
 }
 
 dependencies {
-    compileApi ('org.apache.jclouds:jclouds-core:2.0.1') 
-    compileApi ('com.google.auto.service:auto-service:1.0-rc3') 
+    compile ('com.google.code.gson:gson:2.5') {
+        force = true
+    }
+    compileApi ('org.apache.jclouds:jclouds-core:2.0.1')
+    compileApi ('com.google.auto.service:auto-service:1.0-rc3')
     compileApi ('com.google.auto.value:auto-value:1.4.1')
-    
+    compileApi ('com.ryanharter.auto.value:auto-value-gson:0.4.5')
+
     testCompile ('org.apache.jclouds:jclouds-core:2.0.1:tests')
-    testCompile ('org.testng:testng:6.11') 
-    testCompile ('org.assertj:assertj-core:3.6.2') 
-    testCompile ('com.squareup.okhttp:mockwebserver:2.2.0') 
-    testCompile ('org.apache.jclouds.driver:jclouds-slf4j:2.0.1') 
-    testCompile ('ch.qos.logback:logback-core:1.2.1') 
+    testCompile ('org.testng:testng:6.11')
+    testCompile ('org.assertj:assertj-core:3.6.2')
+    testCompile ('com.squareup.okhttp:mockwebserver:2.2.0')
+    testCompile ('org.apache.jclouds.driver:jclouds-slf4j:2.0.1')
+    testCompile ('ch.qos.logback:logback-core:1.2.1')
     testCompile ('ch.qos.logback:logback-classic:1.2.1')
 }
 
@@ -76,7 +80,7 @@ tasks.withType(JavaCompile) {
 }
 
 task mockTest(type: Test) {
-    useTestNG() 
+    useTestNG()
     include "**/**MockTest.class"
     maxParallelForks = 2
     testLogging {
@@ -94,12 +98,12 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
             }
         }
     }
-    useTestNG() 
+    useTestNG()
     include "**/**LiveTest.class"
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
-    } 
+    }
     systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketEndpoint}",
                         "test.bitbucket.credential" : "${testBitbucketCredential}",
                         "test.bitbucket.project" : "${testBitbucketProject}",
