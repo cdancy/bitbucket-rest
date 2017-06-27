@@ -20,6 +20,8 @@ package com.cdancy.bitbucket.rest.domain.branch;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.sshkey.AccessKey;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -57,5 +59,9 @@ public abstract class BranchPermission {
             }
         }
         return BranchPermission.createWithId(id, type, matcher, users, groups, accessKeyId);
+    }
+
+    public static TypeAdapter<BranchPermission> typeAdapter(Gson gson) {
+        return new AutoValue_BranchPermission.GsonTypeAdapter(gson);
     }
 }

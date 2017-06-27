@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -30,5 +32,9 @@ public abstract class Properties {
     @SerializedNames({"openTaskCount", "resolvedTaskCount"})
     public static Properties create(long openTaskCount, long resolvedTaskCount) {
         return new AutoValue_Properties(openTaskCount, resolvedTaskCount);
+    }
+
+    public static TypeAdapter<Properties> typeAdapter(Gson gson) {
+        return new AutoValue_Properties.GsonTypeAdapter(gson);
     }
 }

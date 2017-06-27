@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.branch;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -75,5 +77,9 @@ public abstract class Matcher {
 
     public static Matcher create(MatcherId matcherId, Boolean active) {
         return new AutoValue_Matcher(matcherId.getId(), matcherId.getName(), BranchPermissionType.create(matcherId), active);
+    }
+
+    public static TypeAdapter<Matcher> typeAdapter(Gson gson) {
+        return new AutoValue_Matcher.GsonTypeAdapter(gson);
     }
 }

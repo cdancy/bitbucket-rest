@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.repository;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -79,5 +81,9 @@ public abstract class MergeStrategy {
     @SerializedNames({ "description", "enabled", "flag", "id", "name"})
     public static MergeStrategy create(String description, Boolean enabled, String flag, MergeStrategyId id, String name) {
         return new AutoValue_MergeStrategy(description, enabled, flag, id, name);
+    }
+
+    public static TypeAdapter<MergeStrategy> typeAdapter(Gson gson) {
+        return new AutoValue_MergeStrategy.GsonTypeAdapter(gson);
     }
 }

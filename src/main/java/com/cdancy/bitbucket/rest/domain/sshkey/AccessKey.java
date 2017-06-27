@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.sshkey;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -28,5 +30,9 @@ public abstract class AccessKey {
     @SerializedNames({"key"})
     public static AccessKey create(Key key) {
         return new AutoValue_AccessKey(key);
+    }
+
+    public static TypeAdapter<AccessKey> typeAdapter(Gson gson) {
+        return new AutoValue_AccessKey.GsonTypeAdapter(gson);
     }
 }

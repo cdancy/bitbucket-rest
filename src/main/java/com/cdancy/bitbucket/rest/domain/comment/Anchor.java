@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -97,5 +99,9 @@ public abstract class Anchor {
                 possibleFileType,
                 path,
                 srcPath);
+    }
+
+    public static TypeAdapter<Anchor> typeAdapter(Gson gson) {
+        return new AutoValue_Anchor.GsonTypeAdapter(gson);
     }
 }

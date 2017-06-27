@@ -30,7 +30,7 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class RawContent implements Value<String>, ErrorsHolder {
-    
+
     @SerializedNames({ "value", "errors" })
     public static RawContent create(@Nullable String value, List<Error> errors) {
         return new AutoValue_RawContent(value, Utils.nullToEmpty(errors));

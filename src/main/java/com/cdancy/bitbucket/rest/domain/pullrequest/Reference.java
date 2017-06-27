@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -58,5 +60,9 @@ public abstract class Reference {
     @SerializedNames({"id", "repository", "displayId", "latestCommit"})
     public static Reference create(String id, MinimalRepository repository, String displayId, String latestCommit) {
         return new AutoValue_Reference(id != null ? id : "refs/heads/master", repository, displayId, latestCommit);
+    }
+
+    public static TypeAdapter<Reference> typeAdapter(Gson gson) {
+        return new AutoValue_Reference.GsonTypeAdapter(gson);
     }
 }

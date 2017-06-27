@@ -19,6 +19,8 @@ package com.cdancy.bitbucket.rest.domain.repository;
 
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -66,5 +68,9 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
                                     Project project, boolean _public, Links links, List<Error> errors) {
         return new AutoValue_Repository(Utils.nullToEmpty(errors), links, slug, id, name, scmId, state,
                 statusMessage, forkable, project, _public);
+    }
+
+    public static TypeAdapter<Repository> typeAdapter(Gson gson) {
+        return new AutoValue_Repository.GsonTypeAdapter(gson);
     }
 }

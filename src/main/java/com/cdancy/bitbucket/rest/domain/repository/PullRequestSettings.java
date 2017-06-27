@@ -21,6 +21,8 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -51,5 +53,9 @@ public abstract class PullRequestSettings implements ErrorsHolder {
                                              Long requiredSuccessfulBuilds, @Nullable List<Error> errors) {
         return new AutoValue_PullRequestSettings(Utils.nullToEmpty(errors), mergeConfig, requiredAllApprovers,
             requiredAllTasksComplete, requiredApprovers, requiredSuccessfulBuilds);
+    }
+
+    public static TypeAdapter<PullRequestSettings> typeAdapter(Gson gson) {
+        return new AutoValue_PullRequestSettings.GsonTypeAdapter(gson);
     }
 }

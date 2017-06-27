@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.repository;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 import java.util.List;
@@ -39,5 +41,9 @@ public abstract class MergeConfig {
     @SerializedNames({ "defaultStrategy", "strategies", "type"})
     public static MergeConfig create(MergeStrategy defaultStrategy, List<MergeStrategy> strategies, MergeConfigType type) {
         return new AutoValue_MergeConfig(defaultStrategy, strategies, type);
+    }
+
+    public static TypeAdapter<MergeConfig> typeAdapter(Gson gson) {
+        return new AutoValue_MergeConfig.GsonTypeAdapter(gson);
     }
 }

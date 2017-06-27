@@ -17,13 +17,14 @@
 
 package com.cdancy.bitbucket.rest.domain.common;
 
-import java.util.List;
-import java.util.Map;
-
-import org.jclouds.json.SerializedNames;
-
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import org.jclouds.json.SerializedNames;
+
+import java.util.List;
+import java.util.Map;
 
 @AutoValue
 public abstract class Links {
@@ -38,5 +39,9 @@ public abstract class Links {
     @SerializedNames({ "clone", "self" })
     public static Links create(List<Map<String, String>> clone, List<Map<String, String>> self) {
         return new AutoValue_Links(Utils.nullToEmpty(clone), Utils.nullToEmpty(self));
+    }
+
+    public static TypeAdapter<Links> typeAdapter(Gson gson) {
+        return new AutoValue_Links.GsonTypeAdapter(gson);
     }
 }

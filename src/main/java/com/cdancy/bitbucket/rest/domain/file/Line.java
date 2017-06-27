@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.domain.file;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
@@ -37,5 +39,9 @@ public abstract class Line {
     @SerializedNames({ "text", "type" })
     public static Line create(String text, String type) {
         return new AutoValue_Line(text, type);
+    }
+
+    public static TypeAdapter<Line> typeAdapter(Gson gson) {
+        return new AutoValue_Line.GsonTypeAdapter(gson);
     }
 }

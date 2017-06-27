@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
@@ -45,5 +47,9 @@ public abstract class User {
     public static User create(String name, String emailAddress, int id,
                               String displayName, boolean active, String slug, String type) {
         return new AutoValue_User(name, emailAddress, id, displayName, active, slug, type);
+    }
+
+    public static TypeAdapter<User> typeAdapter(Gson gson) {
+        return new AutoValue_User.GsonTypeAdapter(gson);
     }
 }

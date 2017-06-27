@@ -17,9 +17,10 @@
 
 package com.cdancy.bitbucket.rest.domain.system;
 
-import org.jclouds.json.SerializedNames;
-
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class Version {
@@ -38,5 +39,9 @@ public abstract class Version {
     @SerializedNames({ "version", "buildNumber", "buildDate", "displayName" })
     public static Version create(String version, String buildNumber, String buildDate, String displayName) {
         return new AutoValue_Version(version, buildNumber, buildDate, displayName);
+    }
+
+    public static TypeAdapter<Version> typeAdapter(Gson gson) {
+        return new AutoValue_Version.GsonTypeAdapter(gson);
     }
 }

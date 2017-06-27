@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -36,5 +38,9 @@ public abstract class Veto {
     @SerializedNames({ "summaryMessage", "detailedMessage" })
     public static Veto create(String summaryMessage, String detailedMessage) {
         return new AutoValue_Veto(summaryMessage, detailedMessage);
+    }
+
+    public static TypeAdapter<Veto> typeAdapter(Gson gson) {
+        return new AutoValue_Veto.GsonTypeAdapter(gson);
     }
 }

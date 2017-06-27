@@ -19,6 +19,8 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -83,5 +85,9 @@ public abstract class PullRequest implements ErrorsHolder, LinksHolder {
                                      List<Error> errors) {
         return new AutoValue_PullRequest(Utils.nullToEmpty(errors), links, id, version, title, description, state, open, closed, createdDate,
             updatedDate, fromRef, toRef, locked, author, Utils.nullToEmpty(reviewers), Utils.nullToEmpty(participants), properties);
+    }
+
+    public static TypeAdapter<PullRequest> typeAdapter(Gson gson) {
+        return new AutoValue_PullRequest.GsonTypeAdapter(gson);
     }
 }

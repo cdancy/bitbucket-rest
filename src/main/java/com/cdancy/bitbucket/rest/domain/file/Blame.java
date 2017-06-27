@@ -18,42 +18,47 @@
 package com.cdancy.bitbucket.rest.domain.file;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
-import org.jclouds.json.SerializedNames;
-
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class Blame {
-    
+
     public abstract Author author();
 
     public abstract String authorTimestamp();
-    
+
     public abstract String commitHash();
-    
+
     public abstract String displayCommitHash();
-    
+
     public abstract String commitId();
-    
+
     public abstract String commitDisplayId();
-    
+
     public abstract String fileName();
 
     public abstract int lineNumber();
-    
+
     public abstract int spannedLines();
-    
+
     Blame() {
     }
 
-    @SerializedNames({ "author", "authorTimestamp", "commitHash", 
-            "displayCommitHash", "commitId", "commitDisplayId", 
+    @SerializedNames({ "author", "authorTimestamp", "commitHash",
+            "displayCommitHash", "commitId", "commitDisplayId",
             "fileName", "lineNumber", "spannedLines" })
-    public static Blame create(Author author, String authorTimestamp, String commitHash, 
-            String displayCommitHash, String commitId, String commitDisplayId, 
+    public static Blame create(Author author, String authorTimestamp, String commitHash,
+            String displayCommitHash, String commitId, String commitDisplayId,
             String fileName, int lineNumber, int spannedLines) {
-        return new AutoValue_Blame(author, authorTimestamp, commitHash, 
-                displayCommitHash, commitId, commitDisplayId, 
+        return new AutoValue_Blame(author, authorTimestamp, commitHash,
+                displayCommitHash, commitId, commitDisplayId,
                 fileName, lineNumber, spannedLines);
+    }
+
+    public static TypeAdapter<Blame> typeAdapter(Gson gson) {
+        return new AutoValue_Blame.GsonTypeAdapter(gson);
     }
 }

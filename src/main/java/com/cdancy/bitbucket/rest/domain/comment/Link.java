@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -33,5 +35,9 @@ public abstract class Link {
     @SerializedNames({ "url", "rel" })
     public static Link create(String url, String rel) {
         return new AutoValue_Link(url, rel);
+    }
+
+    public static TypeAdapter<Link> typeAdapter(Gson gson) {
+        return new AutoValue_Link.GsonTypeAdapter(gson);
     }
 }

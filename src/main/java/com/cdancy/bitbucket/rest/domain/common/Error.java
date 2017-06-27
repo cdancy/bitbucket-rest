@@ -17,10 +17,11 @@
 
 package com.cdancy.bitbucket.rest.domain.common;
 
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
-
-import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Error {
@@ -40,5 +41,9 @@ public abstract class Error {
     @SerializedNames({ "context", "message", "exceptionName" })
     public static Error create(String context, String message, String exceptionName) {
         return new AutoValue_Error(context, message, exceptionName);
+    }
+
+    public static TypeAdapter<Error> typeAdapter(Gson gson) {
+        return new AutoValue_Error.GsonTypeAdapter(gson);
     }
 }

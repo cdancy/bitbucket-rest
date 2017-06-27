@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.build;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -45,5 +47,9 @@ public abstract class Status {
     public static Status create(long dateAdded, String description, String key, String name, StatusState state,
                                 String url) {
         return new AutoValue_Status(dateAdded, description, key, name, state, url);
+    }
+
+    public static TypeAdapter<Status> typeAdapter(Gson gson) {
+        return new AutoValue_Status.GsonTypeAdapter(gson);
     }
 }

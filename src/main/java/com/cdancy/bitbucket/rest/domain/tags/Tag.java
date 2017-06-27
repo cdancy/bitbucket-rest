@@ -17,15 +17,16 @@
 
 package com.cdancy.bitbucket.rest.domain.tags;
 
-import java.util.List;
-
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
-
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
+
+import java.util.List;
 
 @AutoValue
 public abstract class Tag implements ErrorsHolder {
@@ -55,5 +56,9 @@ public abstract class Tag implements ErrorsHolder {
     public static Tag create(String id, String displayId, String type,
                              String latestCommit, String latestChangeset, String hash, List<Error> errors) {
         return new AutoValue_Tag(Utils.nullToEmpty(errors), id, displayId, type, latestCommit, latestChangeset, hash);
+    }
+
+    public static TypeAdapter<Tag> typeAdapter(Gson gson) {
+        return new AutoValue_Tag.GsonTypeAdapter(gson);
     }
 }

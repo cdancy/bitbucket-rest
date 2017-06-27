@@ -20,6 +20,8 @@ package com.cdancy.bitbucket.rest.domain.comment;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -54,7 +56,7 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
 
     @Nullable
     public abstract Anchor anchor();
-    
+
     @Nullable
     public abstract Link link();
 
@@ -77,5 +79,9 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
                                   List<Error> errors) {
         return new AutoValue_Comments(Utils.nullToEmpty(errors), links, Utils.nullToEmpty(properties),
                 id, version, text, author, createdDate, updatedDate, Utils.nullToEmpty(comments), anchor, link);
+    }
+
+    public static TypeAdapter<Comments> typeAdapter(Gson gson) {
+        return new AutoValue_Comments.GsonTypeAdapter(gson);
     }
 }
