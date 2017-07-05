@@ -1,4 +1,5 @@
 ### Version 0.9.1 (TBA)
+* ADDED: `TasksApi` with single endpoint `create` - [PR 104](https://github.com/cdancy/bitbucket-rest/pull/104)
 
 ### Version 0.9.0 (6/12/2017)
 * ADDED: `Activities` pojo gained value `REOPENED` - [PR 88](https://github.com/cdancy/bitbucket-rest/pull/88)
