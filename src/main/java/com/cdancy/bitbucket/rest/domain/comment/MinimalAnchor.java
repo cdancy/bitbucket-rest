@@ -25,10 +25,10 @@ public abstract class MinimalAnchor {
 
     public abstract int id();
 
-    public abstract String comment();
+    public abstract String type();
 
-    @SerializedNames({ "id", "comment" })
-    public static MinimalAnchor create(int id, String comment) {
-        return new AutoValue_MinimalAnchor(id, comment);
+    @SerializedNames({ "id", "type" })
+    public static MinimalAnchor create(int id, String type) {
+        return new AutoValue_MinimalAnchor(id, type);
     }
 }
