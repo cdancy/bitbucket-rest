@@ -38,7 +38,8 @@ public abstract class Activities {
         OPENED,
         UPDATED,
         UNAPPROVED,
-        REOPENED
+        REOPENED,
+        MERGED
     }
 
     public abstract long id();
