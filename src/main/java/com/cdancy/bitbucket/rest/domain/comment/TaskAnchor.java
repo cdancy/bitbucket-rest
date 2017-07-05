@@ -44,6 +44,7 @@ public abstract class TaskAnchor {
     
     public abstract PermittedOperations permittedOperations();
 
+    @Nullable
     public abstract String type();
 
     TaskAnchor() {

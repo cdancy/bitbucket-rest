@@ -31,6 +31,7 @@ import com.cdancy.bitbucket.rest.features.PullRequestApi;
 import com.cdancy.bitbucket.rest.features.RepositoryApi;
 import com.cdancy.bitbucket.rest.features.SystemApi;
 import com.cdancy.bitbucket.rest.features.TagApi;
+import com.cdancy.bitbucket.rest.features.TasksApi;
 
 import org.jclouds.rest.annotations.Delegate;
 
@@ -72,4 +73,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     TagApi tagApi();
+    
+    @Delegate
+    TasksApi tasksApi();
 }

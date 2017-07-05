@@ -21,7 +21,7 @@ import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
-import com.cdancy.bitbucket.rest.options.CreateTag;
+import com.cdancy.bitbucket.rest.options.CreateTask;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
@@ -45,5 +45,5 @@ public interface TasksApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @POST
-    Task create(@BinderParam(BindToJsonPayload.class) CreateTag createTag);
+    Task create(@BinderParam(BindToJsonPayload.class) CreateTask createTask);
 }
