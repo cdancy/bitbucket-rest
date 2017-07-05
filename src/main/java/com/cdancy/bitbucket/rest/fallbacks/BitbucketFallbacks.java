@@ -26,6 +26,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
@@ -198,6 +199,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createTagFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class TaskOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createTaskFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -415,6 +425,10 @@ public final class BitbucketFallbacks {
 
     public static Tag createTagFromErrors(List<Error> errors) {
         return Tag.create(null, null, null, null, null, null, errors);
+    }
+    
+    public static Task createTaskFromErrors(List<Error> errors) {
+        return Task.create(null, null, -1, -1, null, null, null, errors);
     }
 
     public static Repository createRepositoryFromErrors(List<Error> errors) {
