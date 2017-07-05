@@ -37,6 +37,9 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.activities.Activities;
+import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
@@ -434,8 +437,23 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             ActivitiesPage activities = api.listActivities(project, repo, 1, 5, 0);
             assertThat(activities).isNotNull();
             assertThat(activities.errors()).isEmpty();
-            assertThat(activities.values()).hasSize(2);
+            assertThat(activities.values()).hasSize(3);
             assertThat(activities.values().get(1).id() == 29733L).isTrue();
+            Activities foundActivities = null;
+            for (final Activities act : activities.values()) {
+                if (act.commentAction() != null && act.commentAction().equals("ADDED") && act.comment() != null) {
+                    foundActivities = act;
+                }
+            }
+            assertThat(foundActivities).isNotNull();
+            final Comments comments = foundActivities.comment();
+            assertThat(comments.permittedOperations()).isNotNull();
+            assertThat(comments.permittedOperations().deletable()).isTrue();
+            assertThat(comments.permittedOperations().transitionable()).isFalse();
+            assertThat(comments.tasks().size()).isEqualTo(1);
+            final Task task = comments.tasks().get(0);
+            assertThat(task.anchor().type()).isEqualTo("COMMENT");
+            assertThat(task.state()).isEqualTo("OPEN");
 
             Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
