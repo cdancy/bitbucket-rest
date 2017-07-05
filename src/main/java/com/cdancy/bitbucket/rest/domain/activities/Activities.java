@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.activities;
 
+import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
@@ -29,6 +30,7 @@ import java.util.List;
 public abstract class Activities {
 
     public enum ActivitiesType {
+        DECLINED,
         RESCOPED,
         APPROVED,
         REVIEWED,
@@ -47,6 +49,12 @@ public abstract class Activities {
 
     public abstract ActivitiesType action();
 
+    @Nullable
+    public abstract String commentAction();
+    
+    @Nullable
+    public abstract Comments comment();
+        
     @Nullable
     public abstract String fromHash();
 
@@ -71,14 +79,15 @@ public abstract class Activities {
     @Nullable
     public abstract List<User> removedReviewers();
 
-    @SerializedNames({"id", "createdDate", "user", "action", "fromHash", "previousFromHash", "previousToHash",
+    @SerializedNames({"id", "createdDate", "user", "action", "commentAction", "comment", "fromHash", "previousFromHash", "previousToHash",
             "toHash", "added", "removed", "addedReviewers", "removedReviewers"})
-    public static Activities create(long id, long createdDate, User user, ActivitiesType action, @Nullable String fromHash,
+    public static Activities create(long id, long createdDate, User user, ActivitiesType action, 
+                                        String commentAction, Comments comment, @Nullable String fromHash,
                                         @Nullable String previousFromHash,  @Nullable String previousToHash,
                                         @Nullable String toHash, @Nullable ActivitiesCommit added,
                                         @Nullable ActivitiesCommit removed, @Nullable List<User> addedReviewers,
                                         @Nullable List<User> removedReviewers) {
-        return new AutoValue_Activities(id, createdDate, user, action, fromHash, previousFromHash, previousToHash,
+        return new AutoValue_Activities(id, createdDate, user, action, commentAction, comment, fromHash, previousFromHash, previousToHash,
             toHash, added, removed, Utils.nullToEmpty(addedReviewers), Utils.nullToEmpty(removedReviewers));
     }
 }
