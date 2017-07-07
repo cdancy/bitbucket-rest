@@ -26,6 +26,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateComment;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonElement;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
@@ -149,6 +150,9 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertThat(firstComment.comments()).hasSize(1);
             assertThat(firstComment.comments().get(0).text()).isEqualTo("reply to comment in diff");
             assertThat(firstComment.comments().get(0).id()).isEqualTo(5);
+            final JsonElement jsonElement = firstComment.properties().get("repositoryId");
+            assertThat(jsonElement).isNotNull();
+            assertThat(jsonElement.getAsInt()).isEqualTo(1);
 
             Comments secondComment = pcr.values().get(1);
             assertThat(secondComment.anchor().path()).isEqualTo("hej");
