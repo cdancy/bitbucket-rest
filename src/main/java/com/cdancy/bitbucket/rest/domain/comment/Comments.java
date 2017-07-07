@@ -30,11 +30,12 @@ import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.JsonElement;
 
 @AutoValue
 public abstract class Comments implements ErrorsHolder, LinksHolder {
 
-    public abstract Map<String, String> properties();
+    public abstract Map<String, JsonElement> properties();
 
     public abstract int id();
 
@@ -69,7 +70,7 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
     @SerializedNames({ "properties", "id", "version", "text", "author",
             "createdDate", "updatedDate", "comments", "tasks", "anchor", "link", "links", 
             "permittedOperations", "errors" })
-    public static Comments create(Map<String, String> properties,
+    public static Comments create(Map<String, JsonElement> properties,
                                   int id,
                                   int version,
                                   String text,
