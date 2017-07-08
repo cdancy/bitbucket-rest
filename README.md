@@ -27,7 +27,11 @@ The user only needs to be concerned with which `Api` they need and then calling 
 (e.g. POJO's) modeled after the json returned by `bitbucket`. 
 
 Interacting with the remote service becomes transparent and allows developers to focus on getting things done rather than the internals of the API itself, or how to build a client, or how to parse the json. 
-      
+
+## On new features
+
+New Api's or endpoints are generally added as needed and/or requested. If there is something you want to see just open an ISSUE and ask or send in a PullRequest. However, putting together a PullRequest for a new feature is generally the faster route to go as it's much easier to review a PullRequest than to create one ourselves. There is no problem doing so of course but if you need something done now than a PullRequest is your best bet otherwise you may have to patiently wait for one of our contributors to take up the work.
+
 ## Latest release
 
 Can be sourced from jcenter like so:
