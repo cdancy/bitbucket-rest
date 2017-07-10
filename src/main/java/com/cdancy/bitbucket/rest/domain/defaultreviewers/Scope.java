@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.defaultreviewers;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -35,5 +37,9 @@ public abstract class Scope {
     @SerializedNames({ "type", "resourceId"})
     public static Scope create(ScopeType type, Long resourceId) {
         return new AutoValue_Scope(type, resourceId);
+    }
+
+    public static TypeAdapter<Scope> typeAdapter(Gson gson) {
+        return new AutoValue_Scope.GsonTypeAdapter(gson);
     }
 }

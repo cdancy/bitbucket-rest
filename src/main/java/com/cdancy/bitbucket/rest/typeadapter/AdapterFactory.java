@@ -15,30 +15,15 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.sshkey;
+package com.cdancy.bitbucket.rest.typeadapter;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
+import com.google.gson.TypeAdapterFactory;
+import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-@AutoValue
-public abstract class Key {
+@GsonTypeAdapterFactory
+public abstract class AdapterFactory implements TypeAdapterFactory {
 
-    @Nullable
-    public abstract Long id();
-
-    public abstract String text();
-
-    public abstract String label();
-
-    @SerializedNames({"id", "text", "label"})
-    public static Key create(@Nullable Long id, String text, String label) {
-        return new AutoValue_Key(id, text, label);
-    }
-
-    public static TypeAdapter<Key> typeAdapter(Gson gson) {
-        return new AutoValue_Key.GsonTypeAdapter(gson);
+    public static AdapterFactory create() {
+        return new AutoValueGson_AdapterFactory();
     }
 }

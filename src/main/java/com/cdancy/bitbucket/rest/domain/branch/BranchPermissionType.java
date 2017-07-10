@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.branch;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -33,5 +35,9 @@ public abstract class BranchPermissionType {
 
     public static BranchPermissionType create(Matcher.MatcherId matcherId) {
         return new AutoValue_BranchPermissionType(matcherId.getTypeId(), matcherId.getTypeName());
+    }
+
+    public static TypeAdapter<BranchPermissionType> typeAdapter(Gson gson) {
+        return new AutoValue_BranchPermissionType.GsonTypeAdapter(gson);
     }
 }

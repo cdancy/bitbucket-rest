@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -41,5 +43,9 @@ public abstract class Person {
     @SerializedNames({ "user", "role", "approved", "status" })
     public static Person create(User user, String role, boolean approved, String status) {
         return new AutoValue_Person(user, role, approved, status);
+    }
+
+    public static TypeAdapter<Person> typeAdapter(Gson gson) {
+        return new AutoValue_Person.GsonTypeAdapter(gson);
     }
 }

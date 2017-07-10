@@ -21,6 +21,8 @@ import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -90,5 +92,9 @@ public abstract class Activities {
                                         @Nullable List<User> removedReviewers) {
         return new AutoValue_Activities(id, createdDate, user, action, commentAction, comment, fromHash, previousFromHash, previousToHash,
             toHash, added, removed, Utils.nullToEmpty(addedReviewers), Utils.nullToEmpty(removedReviewers));
+    }
+
+    public static TypeAdapter<Activities> typeAdapter(Gson gson) {
+        return new AutoValue_Activities.GsonTypeAdapter(gson);
     }
 }

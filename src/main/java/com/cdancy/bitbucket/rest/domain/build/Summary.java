@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.build;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -32,5 +34,9 @@ public abstract class Summary {
     @SerializedNames({"failed", "inProgress", "successful"})
     public static Summary create(long failed, long inProgress, long successful) {
         return new AutoValue_Summary(failed, inProgress, successful);
+    }
+
+    public static TypeAdapter<Summary> typeAdapter(Gson gson) {
+        return new AutoValue_Summary.GsonTypeAdapter(gson);
     }
 }

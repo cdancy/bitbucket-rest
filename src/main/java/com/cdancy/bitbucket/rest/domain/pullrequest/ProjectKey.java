@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
@@ -32,5 +34,9 @@ public abstract class ProjectKey {
     @SerializedNames({ "key" })
     public static ProjectKey create(String key) {
         return new AutoValue_ProjectKey(key);
+    }
+
+    public static TypeAdapter<ProjectKey> typeAdapter(Gson gson) {
+        return new AutoValue_ProjectKey.GsonTypeAdapter(gson);
     }
 }

@@ -18,6 +18,8 @@
 package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
@@ -31,5 +33,9 @@ public abstract class Parent {
     @SerializedNames({ "id" })
     public static Parent create(int id) {
         return new AutoValue_Parent(id);
+    }
+
+    public static TypeAdapter<Parent> typeAdapter(Gson gson) {
+        return new AutoValue_Parent.GsonTypeAdapter(gson);
     }
 }

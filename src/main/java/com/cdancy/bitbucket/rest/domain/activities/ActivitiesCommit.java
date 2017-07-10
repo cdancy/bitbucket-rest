@@ -20,6 +20,8 @@ package com.cdancy.bitbucket.rest.domain.activities;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -36,5 +38,9 @@ public abstract class ActivitiesCommit {
     @SerializedNames({"commits", "total"})
     public static ActivitiesCommit create(@Nullable List<Commit> commits, long total) {
         return new AutoValue_ActivitiesCommit(Utils.nullToEmpty(commits), total);
+    }
+
+    public static TypeAdapter<ActivitiesCommit> typeAdapter(Gson gson) {
+        return new AutoValue_ActivitiesCommit.GsonTypeAdapter(gson);
     }
 }

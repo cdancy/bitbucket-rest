@@ -21,6 +21,8 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -44,5 +46,9 @@ public abstract class BranchModelConfiguration implements ErrorsHolder {
     public static BranchModelConfiguration create(BranchConfiguration development, BranchConfiguration production,
                                                   List<Type> types, List<Error> errors) {
         return new AutoValue_BranchModelConfiguration(Utils.nullToEmpty(errors), development, production, Utils.nullToEmpty(types));
+    }
+
+    public static TypeAdapter<BranchModelConfiguration> typeAdapter(Gson gson) {
+        return new AutoValue_BranchModelConfiguration.GsonTypeAdapter(gson);
     }
 }

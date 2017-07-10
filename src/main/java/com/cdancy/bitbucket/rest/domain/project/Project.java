@@ -17,17 +17,18 @@
 
 package com.cdancy.bitbucket.rest.domain.project;
 
-import java.util.List;
-
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
-
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Links;
 import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
+
+import java.util.List;
 
 @AutoValue
 public abstract class Project implements ErrorsHolder, LinksHolder {
@@ -55,5 +56,9 @@ public abstract class Project implements ErrorsHolder, LinksHolder {
     public static Project create(String key, int id, String name, String description,
                                  boolean _public, String type, Links links, List<Error> errors) {
         return new AutoValue_Project(Utils.nullToEmpty(errors), links, key, id, name, description, _public, type);
+    }
+
+    public static TypeAdapter<Project> typeAdapter(Gson gson) {
+        return new AutoValue_Project.GsonTypeAdapter(gson);
     }
 }

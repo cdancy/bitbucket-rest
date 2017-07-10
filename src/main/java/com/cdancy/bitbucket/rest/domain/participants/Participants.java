@@ -22,6 +22,8 @@ import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -62,5 +64,9 @@ public abstract class Participants implements ErrorsHolder {
                                       Role role, boolean approved, Status status,
                                       List<Error> errors) {
         return new AutoValue_Participants(Utils.nullToEmpty(errors), user, lastReviewedCommit, role, approved, status);
+    }
+
+    public static TypeAdapter<Participants> typeAdapter(Gson gson) {
+        return new AutoValue_Participants.GsonTypeAdapter(gson);
     }
 }

@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -59,5 +61,9 @@ public abstract class Change implements LinksHolder {
                                 boolean srcExecutable, Links links) {
         return new AutoValue_Change(links, contentId, fromContentId, path, executable,
                 percentUnchanged, type, nodeType, srcPath, srcExecutable);
+    }
+
+    public static TypeAdapter<Change> typeAdapter(Gson gson) {
+        return new AutoValue_Change.GsonTypeAdapter(gson);
     }
 }

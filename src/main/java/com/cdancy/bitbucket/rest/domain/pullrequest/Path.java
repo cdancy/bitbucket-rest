@@ -19,6 +19,8 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -46,5 +48,9 @@ public abstract class Path {
     public static Path create(List<String> components, String parent, String name,
                               String extension, String _toString) {
         return new AutoValue_Path(Utils.nullToEmpty(components), parent, name, extension, _toString);
+    }
+
+    public static TypeAdapter<Path> typeAdapter(Gson gson) {
+        return new AutoValue_Path.GsonTypeAdapter(gson);
     }
 }
