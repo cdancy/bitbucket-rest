@@ -122,8 +122,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
                 Matcher.create(Matcher.MatcherId.MASTER, true), new ArrayList<User>(), groupPermission, null));
 
-        boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty(); 
     }
 
     @Test (dependsOnMethods = "testCreateBranchPermission")
@@ -138,8 +140,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testListBranchPermission")
     public void testDeleteBranchPermission() {
         if (branchPermissionId != null) {
-            boolean success = api().deleteBranchPermission(projectKey, repoKey, branchPermissionId);
-            assertThat(success).isTrue();
+            final RequestStatus success = api().deleteBranchPermission(projectKey, repoKey, branchPermissionId);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
         } else {
             fail("branchPermissionId is null");
         }

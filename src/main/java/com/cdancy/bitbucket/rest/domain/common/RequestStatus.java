@@ -25,6 +25,14 @@ import org.jclouds.json.SerializedNames;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 
+/**
+ * Generic response to be returned when an endpoint returns 
+ * no content (i.e. 204 response code).
+ * 
+ * When the response code is valid the `value` parameter will 
+ * be set to true while a non-valid response has the value set to
+ * false along with any potential `error` objects returned from Bitbucket.
+ */
 @AutoValue
 public abstract class RequestStatus implements Value<Boolean>, ErrorsHolder {
     

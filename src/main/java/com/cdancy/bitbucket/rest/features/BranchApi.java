@@ -169,9 +169,10 @@ public interface BranchApi {
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Produces("application/vnd.atl.bitbucket.bulk+json")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @POST
-    boolean updateBranchPermission(@PathParam("project") String project,
+    RequestStatus updateBranchPermission(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
                                    @BinderParam(BindToJsonPayload.class) List<BranchPermission> listBranchPermission);
 
@@ -179,9 +180,10 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions/{id}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deleteBranchPermission(@PathParam("project") String project,
+    RequestStatus deleteBranchPermission(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
                                    @PathParam("id") long id);
 }

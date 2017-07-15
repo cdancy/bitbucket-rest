@@ -312,8 +312,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.updateBranchPermission(projectKey, repoKey, listBranchPermission);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.updateBranchPermission(projectKey, repoKey, listBranchPermission);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "POST", "/rest/branch-permissions/2.0"
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions");
         } finally {
@@ -332,8 +334,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
             Long idToDelete = 839L;
-            boolean success = api.deleteBranchPermission(projectKey, repoKey, idToDelete);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.deleteBranchPermission(projectKey, repoKey, idToDelete);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/branch-permissions/2.0"
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions/" + idToDelete);
         } finally {
