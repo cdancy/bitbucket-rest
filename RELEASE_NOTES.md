@@ -1,6 +1,7 @@
 ### Version 0.9.1 (TBA)
 * ADDED: `TasksApi` with single endpoint `create` - [PR 104](https://github.com/cdancy/bitbucket-rest/pull/104)
 * REFACTOR: `Comments` variable `properties` is now of type <String, JsonElement> instead of <String, String> to account variable value being returned - [PR 106](https://github.com/cdancy/bitbucket-rest/pull/106)
+* ADDED: Bump jclouds to version `2.0.2` - [PR 107](https://github.com/cdancy/bitbucket-rest/pull/107)
 
 ### Version 0.9.0 (6/12/2017)
 * ADDED: `Activities` pojo gained value `REOPENED` - [PR 88](https://github.com/cdancy/bitbucket-rest/pull/88)
