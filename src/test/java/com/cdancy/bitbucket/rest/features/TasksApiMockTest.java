@@ -74,4 +74,44 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+    
+    public void testGetTask() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/task.json")).setResponseCode(200));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        TasksApi api = baseApi.tasksApi();
+        try {
+
+            final int taskId = 99;
+            final Task task = api.get(taskId);
+            assertThat(task).isNotNull();
+            assertThat(task.errors().isEmpty()).isTrue();
+            assertThat(task.id()).isEqualTo(taskId);
+            assertSent(server, "GET", "/rest/api/1.0/tasks/" + taskId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testGetTaskOnErrors() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        TasksApi api = baseApi.tasksApi();
+        try {
+            
+            final int taskId = 99;
+            final Task task = api.get(taskId);
+            assertThat(task).isNotNull();
+            assertThat(task.errors().isEmpty()).isFalse();
+            assertThat(task.anchor()).isNull();
+            assertSent(server, "GET", "/rest/api/1.0/tasks/" + taskId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
 }

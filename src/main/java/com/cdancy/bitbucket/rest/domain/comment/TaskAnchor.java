@@ -42,6 +42,7 @@ public abstract class TaskAnchor {
 
     public abstract long updatedDate();
     
+    @Nullable
     public abstract PermittedOperations permittedOperations();
 
     @Nullable
