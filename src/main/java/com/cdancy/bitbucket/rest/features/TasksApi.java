@@ -19,9 +19,11 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateTask;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
@@ -29,6 +31,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,6 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import javax.ws.rs.core.MediaType;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -57,4 +61,13 @@ public interface TasksApi {
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @GET
     Task get(@PathParam("taskId") int taskId);
+    
+    @Named("tasks:delete")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45701777664960"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{taskId}")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @DELETE
+    RequestStatus delete(@PathParam("taskId") int taskId);
 }
