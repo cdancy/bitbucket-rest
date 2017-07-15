@@ -39,7 +39,7 @@ Can be sourced from jcenter like so:
 	<dependency>
 	  <groupId>com.cdancy</groupId>
 	  <artifactId>bitbucket-rest</artifactId>
-	  <version>0.9.0</version>
+	  <version>X.Y.Z</version>
 	  <classifier>sources|tests|javadoc|all</classifier> (Optional)
 	</dependency>
 	
