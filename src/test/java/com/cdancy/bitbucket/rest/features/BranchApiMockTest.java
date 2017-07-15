@@ -453,8 +453,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deleteModelConfiguration(projectKey, repoKey);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.deleteModelConfiguration(projectKey, repoKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {
@@ -472,8 +474,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deleteModelConfiguration(projectKey, repoKey);
-            assertThat(success).isFalse();
+            final RequestStatus success = api.deleteModelConfiguration(projectKey, repoKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
         } finally {

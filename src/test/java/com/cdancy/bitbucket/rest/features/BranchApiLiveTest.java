@@ -191,8 +191,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testUpdateBranchModelConfiguration"})
     public void testDeleteBranchModelConfiguration() {
-        boolean success = api().deleteModelConfiguration(projectKey, repoKey);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().deleteModelConfiguration(projectKey, repoKey);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty(); 
     }
 
     @Test(dependsOnMethods = {"testListBranches"})
