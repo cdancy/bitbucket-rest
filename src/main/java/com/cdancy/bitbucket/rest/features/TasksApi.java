@@ -29,8 +29,10 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import javax.ws.rs.core.MediaType;
@@ -46,4 +48,13 @@ public interface TasksApi {
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @POST
     Task create(@BinderParam(BindToJsonPayload.class) CreateTask createTask);
+    
+
+    @Named("tasks:get")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45701777641664"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{taskId}")
+    @Fallback(BitbucketFallbacks.TaskOnError.class)
+    @GET
+    Task get(@PathParam("taskId") int taskId);
 }

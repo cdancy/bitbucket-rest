@@ -46,6 +46,7 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     private final String commentText = randomString();
     private final String taskComment = randomString();
     private int commentId = -1;
+    private int taskId = -1;
     
     @BeforeClass
     public void init() {
@@ -93,6 +94,7 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(createdTask).isNotNull();
         assertThat(createdTask.errors().isEmpty()).isTrue();
         assertThat(createTask.text()).isEqualTo(taskComment);
+        this.taskId = createdTask.id();
     }
     
     @Test
@@ -101,6 +103,21 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         final Task createdTask = api().create(createTask);
         assertThat(createdTask).isNotNull();
         assertThat(createdTask.errors().isEmpty()).isFalse();
+    }
+    
+    @Test (dependsOnMethods = "testCreateTask")
+    public void testGetTask() {
+        final Task getTask = api().get(this.taskId);
+        assertThat(getTask).isNotNull();
+        assertThat(getTask.errors().isEmpty()).isTrue();
+        assertThat(getTask.text()).isEqualTo(taskComment);
+    }
+    
+    @Test
+    public void testGetTaskOnError() {
+        final Task getTask = api().get(99999);
+        assertThat(getTask).isNotNull();
+        assertThat(getTask.errors().isEmpty()).isFalse();
     }
     
     @AfterClass
