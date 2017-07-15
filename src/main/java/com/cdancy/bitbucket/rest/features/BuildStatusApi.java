@@ -20,9 +20,11 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
@@ -37,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.BinderParam;
+import org.jclouds.rest.annotations.ResponseParser;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -58,10 +61,11 @@ public interface BuildStatusApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111500128"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/commits/{commitId}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @POST
-    boolean add(@PathParam("commitId") String commitId, 
-                @BinderParam(BindToJsonPayload.class) CreateBuildStatus createBuildStatus);
+    RequestStatus add(@PathParam("commitId") String commitId, 
+                      @BinderParam(BindToJsonPayload.class) CreateBuildStatus createBuildStatus);
 
     @Named("build-status:summary")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111484336"})

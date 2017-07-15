@@ -25,6 +25,7 @@ import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
@@ -65,8 +66,10 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
                         name, 
                         url, 
                         description);
-        final boolean success = api().add(commitHash, cbs);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().add(commitHash, cbs);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
     
     @Test (dependsOnMethods = "testAddStatusToCommit")

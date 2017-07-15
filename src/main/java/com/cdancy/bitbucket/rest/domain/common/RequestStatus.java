@@ -29,8 +29,8 @@ import com.google.auto.value.AutoValue;
  * Generic response to be returned when an endpoint returns 
  * no content (i.e. 204 response code).
  * 
- * When the response code is valid the `value` parameter will 
- * be set to true while a non-valid response has the value set to
+ * <p>When the response code is valid the `value` parameter will 
+ * be set to true while a non-valid response has the `value` set to
  * false along with any potential `error` objects returned from Bitbucket.
  */
 @AutoValue

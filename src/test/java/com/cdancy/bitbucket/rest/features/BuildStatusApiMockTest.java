@@ -22,6 +22,7 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
 import com.google.common.collect.ImmutableMap;
@@ -115,8 +116,10 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
                                     "REPO-MASTER-42", 
                                     "https://bamboo.example.com/browse/REPO-MASTER-42", 
                                     "Changes by John Doe");
-            final boolean success = api.add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             
             assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
@@ -129,7 +132,7 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
     public void testAddBuildStatusOnError() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-post.json")).setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         BuildStatusApi api = baseApi.buildStatusApi();
         try {
@@ -138,8 +141,10 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
                                     "REPO-MASTER-42", 
                                     "https://bamboo.example.com/browse/REPO-MASTER-42", 
                                     "Changes by John Doe");
-            final boolean success = api.add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
-            assertThat(success).isFalse();
+            final RequestStatus success = api.add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             
             assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
