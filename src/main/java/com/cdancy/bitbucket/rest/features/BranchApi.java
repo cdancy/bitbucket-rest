@@ -24,10 +24,12 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -48,6 +50,7 @@ import javax.ws.rs.core.MediaType;
 
 import javax.inject.Named;
 import java.util.List;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -83,10 +86,11 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.10.0/bitbucket-branch-rest.html#idp47888"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @Payload("%7B \"name\": \"{branchPath}\" %7D")
     @DELETE
-    boolean delete(@PathParam("project") String project,
+    RequestStatus delete(@PathParam("project") String project,
                    @PathParam("repo") String repo,
                    @PayloadParam("branchPath") String branchPath);
 
@@ -94,10 +98,11 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295356975264"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/default")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @Payload("%7B \"id\": \"{id}\" %7D")
     @PUT
-    boolean updateDefault(@PathParam("project") String project,
+    RequestStatus updateDefault(@PathParam("project") String project,
                           @PathParam("repo") String repo,
                           @PayloadParam("id") String id);
 

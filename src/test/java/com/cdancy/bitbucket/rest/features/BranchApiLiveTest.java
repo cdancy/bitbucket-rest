@@ -28,6 +28,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.branch.Type;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
@@ -95,8 +96,10 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetBranchModel")
     public void testUpdateDefaultBranch() {
-        boolean success = api().updateDefault(projectKey, repoKey, "refs/heads/" + branchName);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().updateDefault(projectKey, repoKey, "refs/heads/" + branchName);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();    
     }
 
     @Test (dependsOnMethods = "testUpdateDefaultBranch")
@@ -227,17 +230,26 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        boolean success = api().updateDefault(projectKey, repoKey, defaultBranchId);
-        assertThat(success).isTrue();
-        success = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
-        assertThat(success).isTrue();
-        if (branchModelConfiguration != null) {
-            branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey,
-                CreateBranchModelConfiguration.create(branchModelConfiguration));
-            checkDefaultBranchConfiguration();
-        }
+        try {
+            
+            final RequestStatus updateStatus = api().updateDefault(projectKey, repoKey, defaultBranchId);
+            assertThat(updateStatus).isNotNull();
+            assertThat(updateStatus.value()).isTrue();
+            assertThat(updateStatus.errors()).isEmpty(); 
 
-        terminateGeneratedTestContents(generatedTestContents);
+            final RequestStatus deleteStatus = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
+            assertThat(deleteStatus).isNotNull();
+            assertThat(deleteStatus.value()).isTrue();
+            assertThat(deleteStatus.errors()).isEmpty(); 
+
+            if (branchModelConfiguration != null) {
+                branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey,
+                    CreateBranchModelConfiguration.create(branchModelConfiguration));
+                checkDefaultBranchConfiguration();
+            }
+        } finally {
+            terminateGeneratedTestContents(generatedTestContents);            
+        }
     }
 
     private BranchApi api() {

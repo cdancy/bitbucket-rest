@@ -29,6 +29,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.branch.Type;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
@@ -187,8 +188,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
         } finally {
@@ -229,8 +232,10 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
 
-            boolean success = api.updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
         } finally {
