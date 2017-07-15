@@ -25,6 +25,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
@@ -90,34 +91,50 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testCreateTask() {
         final CreateTask createTask = CreateTask.create(commentId, taskComment);
-        final Task createdTask = api().create(createTask);
-        assertThat(createdTask).isNotNull();
-        assertThat(createdTask.errors().isEmpty()).isTrue();
-        assertThat(createTask.text()).isEqualTo(taskComment);
-        this.taskId = createdTask.id();
+        final Task instance = api().create(createTask);
+        assertThat(instance).isNotNull();
+        assertThat(instance.errors().isEmpty()).isTrue();
+        assertThat(instance.text()).isEqualTo(taskComment);
+        this.taskId = instance.id();
     }
     
     @Test
     public void testCreateTaskOnError() {
         final CreateTask createTask = CreateTask.create(9999999, taskComment);
-        final Task createdTask = api().create(createTask);
-        assertThat(createdTask).isNotNull();
-        assertThat(createdTask.errors().isEmpty()).isFalse();
+        final Task instance = api().create(createTask);
+        assertThat(instance).isNotNull();
+        assertThat(instance.errors().isEmpty()).isFalse();
     }
     
     @Test (dependsOnMethods = "testCreateTask")
     public void testGetTask() {
-        final Task getTask = api().get(this.taskId);
-        assertThat(getTask).isNotNull();
-        assertThat(getTask.errors().isEmpty()).isTrue();
-        assertThat(getTask.text()).isEqualTo(taskComment);
+        final Task instance = api().get(this.taskId);
+        assertThat(instance).isNotNull();
+        assertThat(instance.errors().isEmpty()).isTrue();
+        assertThat(instance.text()).isEqualTo(taskComment);
     }
     
     @Test
     public void testGetTaskOnError() {
-        final Task getTask = api().get(99999);
-        assertThat(getTask).isNotNull();
-        assertThat(getTask.errors().isEmpty()).isFalse();
+        final Task instance = api().get(99999);
+        assertThat(instance).isNotNull();
+        assertThat(instance.errors().isEmpty()).isFalse();
+    }
+    
+    @Test (dependsOnMethods = "testGetTask")
+    public void testDeleteTask() {
+        final RequestStatus instance = api().delete(this.taskId);
+        assertThat(instance).isNotNull();
+        assertThat(instance.errors().isEmpty()).isTrue();
+        assertThat(instance.value()).isTrue();
+    }
+    
+    @Test
+    public void testDeleteTaskOnError() {
+        final RequestStatus instance = api().delete(99999);
+        assertThat(instance).isNotNull();
+        assertThat(instance.value()).isFalse();
+        assertThat(instance.errors().isEmpty()).isFalse();
     }
     
     @AfterClass

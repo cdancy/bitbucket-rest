@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateTask;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -32,6 +33,8 @@ import org.testng.annotations.Test;
  */
 @Test(groups = "unit", testName = "TasksApiMockTest")
 public class TasksApiMockTest extends BaseBitbucketMockTest {
+
+    final int taskId = 99;
 
     public void testCreateTask() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
@@ -83,7 +86,6 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         TasksApi api = baseApi.tasksApi();
         try {
 
-            final int taskId = 99;
             final Task task = api.get(taskId);
             assertThat(task).isNotNull();
             assertThat(task.errors().isEmpty()).isTrue();
@@ -103,12 +105,49 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         TasksApi api = baseApi.tasksApi();
         try {
             
-            final int taskId = 99;
             final Task task = api.get(taskId);
             assertThat(task).isNotNull();
             assertThat(task.errors().isEmpty()).isFalse();
             assertThat(task.anchor()).isNull();
             assertSent(server, "GET", "/rest/api/1.0/tasks/" + taskId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testDeleteTask() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setResponseCode(204));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        TasksApi api = baseApi.tasksApi();
+        try {
+
+            final RequestStatus task = api.delete(taskId);
+            assertThat(task).isNotNull();
+            assertThat(task.errors().isEmpty()).isTrue();
+            assertThat(task.value()).isTrue();
+            assertSent(server, "DELETE", "/rest/api/1.0/tasks/" + taskId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+    
+    public void testDeleteTaskOnErrors() throws Exception {
+        MockWebServer server = mockEtcdJavaWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(404));
+        BitbucketApi baseApi = api(server.getUrl("/"));
+        TasksApi api = baseApi.tasksApi();
+        try {
+            
+            final RequestStatus task = api.delete(taskId);
+            assertThat(task).isNotNull();
+            assertThat(task.value()).isFalse();
+            assertThat(task.errors().isEmpty()).isFalse();
+            assertSent(server, "DELETE", "/rest/api/1.0/tasks/" + taskId);
         } finally {
             baseApi.close();
             server.shutdown();

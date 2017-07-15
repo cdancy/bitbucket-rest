@@ -30,6 +30,7 @@ import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
@@ -362,7 +363,26 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
+    
+    public static final class RequestStatusOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                try {
+                    return createRequestStatusFromErrors(getErrors(throwable.getMessage()));
+                } catch (JsonSyntaxException e) {
+                    final Error error = Error.create(null, throwable.getMessage(), throwable.getClass().getName());
+                    final List<Error> errors = Lists.newArrayList(error);
+                    return RequestStatus.create(false, errors);
+                }
+            }
+            throw propagate(throwable);
+        }
+    }
 
+    public static RequestStatus createRequestStatusFromErrors(List<Error> errors) {
+        return RequestStatus.create(false, errors);
+    }
+        
     public static RawContent createRawContentFromErrors(List<Error> errors) {
         return RawContent.create(null, errors);
     }
