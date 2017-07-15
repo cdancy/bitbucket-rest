@@ -1,4 +1,4 @@
-### Version 0.9.1 (TBA)
+### Version 0.9.1 (7/15/2017)
 * ADDED: `TasksApi` was created with endpoint `create` - [PR 104](https://github.com/cdancy/bitbucket-rest/pull/104)
 * REFACTOR: `Comments` variable `properties` is now of type <String, JsonElement> instead of <String, String> to account variable value being returned - [PR 106](https://github.com/cdancy/bitbucket-rest/pull/106)
 * ADDED: Bump jclouds to version `2.0.2` - [PR 107](https://github.com/cdancy/bitbucket-rest/pull/107)
