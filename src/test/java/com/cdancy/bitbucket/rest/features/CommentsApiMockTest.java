@@ -22,6 +22,7 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateComment;
@@ -198,9 +199,11 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         BitbucketApi baseApi = api(server.getUrl("/"));
         CommentsApi api = baseApi.commentsApi();
         try {
-            boolean pr = api.delete("PRJ", "my-repo", 101, 1, 1);
-            assertThat(pr).isTrue();
-
+            final RequestStatus success = api.delete("PRJ", "my-repo", 101, 1, 1);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
+            
             Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1", queryParams);

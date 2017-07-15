@@ -26,6 +26,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Change;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
@@ -178,8 +179,10 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetFileCommentPage")
     public void testDeleteComment() {
-        final boolean success = api().delete(project, repo, prId, commentReplyId, commentReplyIdVersion);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().delete(project, repo, prId, commentReplyId, commentReplyIdVersion);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
 
     @AfterClass
