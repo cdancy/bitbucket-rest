@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
@@ -126,8 +127,10 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         ProjectApi api = baseApi.projectApi();
         try {
             String projectKey = "HELLO";
-            boolean success = api.delete(projectKey);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.delete(projectKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();
@@ -143,8 +146,10 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         ProjectApi api = baseApi.projectApi();
         try {
             String projectKey = "NOTEXIST";
-            boolean success = api.delete(projectKey);
-            assertThat(success).isFalse();
+            final RequestStatus success = api.delete(projectKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             baseApi.close();

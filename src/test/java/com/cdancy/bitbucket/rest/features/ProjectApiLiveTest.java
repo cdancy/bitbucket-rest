@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.options.CreateProject;
@@ -71,8 +72,10 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testDeleteProjectNonExistent() {
-        final boolean success = api().delete(randomStringLettersOnly());
-        assertThat(success).isFalse();
+        final RequestStatus success = api().delete(randomStringLettersOnly());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @Test

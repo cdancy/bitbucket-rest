@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static com.google.common.io.BaseEncoding.base64;
 
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -283,8 +284,10 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         
         // delete project
         if (!generatedTestContents.projectPreviouslyExists) {
-            success = api.projectApi().delete(project.key());
-            assertThat(success).isTrue();
+            final RequestStatus deleteStatus = api.projectApi().delete(project.key());
+            assertThat(deleteStatus).isNotNull();
+            assertThat(deleteStatus.value()).isTrue();
+            assertThat(deleteStatus.errors()).isEmpty();
         }
     }
 }
