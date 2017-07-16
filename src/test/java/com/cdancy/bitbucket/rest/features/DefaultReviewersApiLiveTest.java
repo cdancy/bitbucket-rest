@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Scope;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
@@ -133,14 +134,18 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testUpdateCondition",
             "testCreateConditionMatcherDifferent", "testListConditions"})
     public void testDeleteCondition() {
-        boolean success = api().deleteCondition(projectKey, repoKey, conditionId);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().deleteCondition(projectKey, repoKey, conditionId);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
 
     @Test()
     public void testDeleteConditionOnError() {
-        boolean success = api().deleteCondition(projectKey, repoKey, -1);
-        assertThat(success).isFalse();
+        final RequestStatus success = api().deleteCondition(projectKey, repoKey, -1);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @Test(dependsOnMethods = {"testListDefaultReviewersOnNewRepo", "testCreateCondition", "testUpdateCondition",

@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
@@ -192,9 +193,10 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "test";
             String repoKey = "1234";
 
-            boolean success = api.deleteCondition(projectKey, repoKey, 10L);
-            assertThat(success).isTrue();
-
+            final RequestStatus success = api.deleteCondition(projectKey, repoKey, 10L);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
         } finally {
@@ -213,9 +215,10 @@ public class DefaultReviewersApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "test";
             String repoKey = "1234";
 
-            boolean success = api.deleteCondition(projectKey, repoKey, 10L);
-            assertThat(success).isFalse();
-
+            final RequestStatus success = api.deleteCondition(projectKey, repoKey, 10L);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", "/rest/default-reviewers/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/condition/10");
         } finally {
