@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
@@ -157,8 +158,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test(dependsOnMethods = {"testListPermissionByGroup"})
     public void testDeletePermissionByGroup() {
-        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, defaultBitbucketGroup);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().deletePermissionsByGroup(projectKey, repoKey, defaultBitbucketGroup);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
 
     @Test(dependsOnMethods = {"testGetRepository"})
@@ -169,8 +172,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testDeletePermissionByGroupNonExistent() {
-        boolean success = api().deletePermissionsByGroup(projectKey, repoKey, randomString());
-        assertThat(success).isTrue();
+        final RequestStatus success = api().deletePermissionsByGroup(projectKey, repoKey, randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @Test(dependsOnMethods = {"testGetRepository"})

@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -28,6 +29,7 @@ import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
@@ -44,6 +46,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -153,9 +156,10 @@ public interface RepositoryApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/groups")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deletePermissionsByGroup(@PathParam("project") String project,
+    RequestStatus deletePermissionsByGroup(@PathParam("project") String project,
                                      @PathParam("repo") String repo,
                                      @QueryParam("name") String name);
 

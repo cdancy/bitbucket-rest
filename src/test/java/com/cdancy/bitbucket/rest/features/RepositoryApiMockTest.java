@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
@@ -531,8 +532,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
@@ -572,8 +575,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
 
-            boolean success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
-            assertThat(success).isFalse();
+            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
