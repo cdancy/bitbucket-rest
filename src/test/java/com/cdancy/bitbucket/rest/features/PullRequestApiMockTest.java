@@ -41,6 +41,7 @@ import com.cdancy.bitbucket.rest.domain.activities.Activities;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.google.common.collect.ImmutableMap;
@@ -593,8 +594,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             String userSlug = "bbdfgf";
-            boolean success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
                     + pullRequestId + "/participants/" + userSlug);
@@ -615,8 +618,10 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             String repoKey = "myrepo";
             Long pullRequestId = 839L;
             String userSlug = "bbdfgf";
-            boolean success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
-            assertThat(success).isFalse();
+            final RequestStatus success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
                     + pullRequestId + "/participants/" + userSlug);

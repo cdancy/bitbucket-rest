@@ -39,6 +39,7 @@ import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.AfterClass;
@@ -203,14 +204,18 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test (dependsOnMethods = "testAssignParticipants")
     public void testDeleteParticipant() {
-        boolean success = api().deleteParticipant(project, repo, prId, foundUser.slug());
-        assertThat(success).isTrue();
+        final RequestStatus success = api().deleteParticipant(project, repo, prId, foundUser.slug());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
     
     @Test 
     public void testDeleteParticipantNonExistent() {
-        boolean success = api().deleteParticipant(project, repo, prId, randomString());
-        assertThat(success).isFalse();
+        final RequestStatus success = api().deleteParticipant(project, repo, prId, randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @Test (dependsOnMethods = "testGetPullRequest")

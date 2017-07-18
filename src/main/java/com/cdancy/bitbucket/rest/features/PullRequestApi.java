@@ -44,10 +44,11 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ActivitiesPageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ChangePageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.CommitPageOnError;
-import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.FalseOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.MergeStatusOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ParticipantsOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ParticipantsPageOnError;
@@ -55,6 +56,8 @@ import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestPageOnError;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -206,9 +209,10 @@ public interface PullRequestApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978369040"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants/{userSlug}")
-    @Fallback(FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deleteParticipant(@PathParam("project") String project,
+    RequestStatus deleteParticipant(@PathParam("project") String project,
                                @PathParam("repo") String repo,
                                @PathParam("pullRequestId") long pullRequestId,
                                @PathParam("userSlug") String userSlug);
