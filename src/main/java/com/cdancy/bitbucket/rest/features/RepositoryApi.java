@@ -145,9 +145,10 @@ public interface RepositoryApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/groups")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @PUT
-    boolean createPermissionsByGroup(@PathParam("project") String project,
+    RequestStatus createPermissionsByGroup(@PathParam("project") String project,
                                      @PathParam("repo") String repo,
                                      @QueryParam("permission") String permission,
                                      @QueryParam("name") String name);

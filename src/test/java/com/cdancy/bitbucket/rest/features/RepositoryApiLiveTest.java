@@ -146,8 +146,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByGroup() {
-        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", defaultBitbucketGroup);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", defaultBitbucketGroup);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
     
     @Test(dependsOnMethods = "testCreatePermissionByGroup")
@@ -166,8 +168,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByGroupNonExistent() {
-        boolean success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", randomString());
-        assertThat(success).isFalse();
+        final RequestStatus success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @Test(dependsOnMethods = {"testGetRepository"})
