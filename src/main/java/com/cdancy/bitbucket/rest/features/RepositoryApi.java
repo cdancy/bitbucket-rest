@@ -124,9 +124,10 @@ public interface RepositoryApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/users")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deletePermissionsByUser(@PathParam("project") String project,
+    RequestStatus deletePermissionsByUser(@PathParam("project") String project,
                                     @PathParam("repo") String repo,
                                     @QueryParam("name") String name);
 

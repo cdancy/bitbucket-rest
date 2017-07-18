@@ -140,8 +140,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListPermissionByUser"})
     public void testDeletePermissionByUser() {
-        boolean success = api().deletePermissionsByUser(projectKey, repoKey, getDefaultUser().slug());
-        assertThat(success).isTrue();
+        final RequestStatus success = api().deletePermissionsByUser(projectKey, repoKey, getDefaultUser().slug());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
     
     @Test(dependsOnMethods = {"testGetRepository"})
@@ -264,8 +266,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testDeletePermissionByUserNonExistent() {
-        boolean success = api().deletePermissionsByUser(projectKey, repoKey, randomString());
-        assertThat(success).isFalse();
+        final RequestStatus success = api().deletePermissionsByUser(projectKey, repoKey, randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @AfterClass
