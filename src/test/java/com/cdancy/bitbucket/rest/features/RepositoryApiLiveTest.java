@@ -128,8 +128,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByUser() {
-        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", getDefaultUser().slug());
-        assertThat(success).isTrue();
+        final RequestStatus success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", getDefaultUser().slug());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty(); 
     }
     
     @Test(dependsOnMethods = "testCreatePermissionByUser")
@@ -260,8 +262,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetRepository"})
     public void testCreatePermissionByUserNonExistent() {
-        boolean success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", randomString());
-        assertThat(success).isFalse();
+        final RequestStatus success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();    
     }
 
     @Test(dependsOnMethods = {"testGetRepository"})

@@ -279,8 +279,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
@@ -424,8 +426,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
-            assertThat(success).isFalse();
+            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
