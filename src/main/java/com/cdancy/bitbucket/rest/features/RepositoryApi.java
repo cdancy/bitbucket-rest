@@ -75,9 +75,10 @@ public interface RepositoryApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277567792"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean delete(@PathParam("project") String project,
+    RequestStatus delete(@PathParam("project") String project,
                    @PathParam("repo") String repo);
 
     @Named("repository:list")

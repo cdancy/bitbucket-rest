@@ -84,8 +84,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testDeleteRepositoryNonExistent() {
-        boolean success = api().delete(projectKey, randomStringLettersOnly());
-        assertThat(success).isTrue();
+        final RequestStatus success = api().delete(projectKey, randomStringLettersOnly());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @Test

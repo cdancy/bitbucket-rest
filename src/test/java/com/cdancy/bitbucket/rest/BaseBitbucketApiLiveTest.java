@@ -279,9 +279,11 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         final Repository repository = generatedTestContents.repository;
         
         // delete repository 
-        boolean success = api.repositoryApi().delete(project.key(), repository.name());
-        assertThat(success).isTrue();
-        
+        final RequestStatus success = api.repositoryApi().delete(project.key(), repository.name());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+            
         // delete project
         if (!generatedTestContents.projectPreviouslyExists) {
             final RequestStatus deleteStatus = api.projectApi().delete(project.key());

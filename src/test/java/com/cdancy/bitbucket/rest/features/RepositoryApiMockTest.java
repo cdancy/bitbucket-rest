@@ -141,8 +141,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.delete(projectKey, repoKey);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.delete(projectKey, repoKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();
@@ -153,14 +155,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     public void testDeleteRepositoryNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setResponseCode(204));
+        server.enqueue(new MockResponse().setResponseCode(404));
         BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {
             String projectKey = "PRJ";
             String repoKey = "notexist";
-            boolean success = api.delete(projectKey, repoKey);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.delete(projectKey, repoKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();
