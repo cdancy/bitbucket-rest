@@ -30,13 +30,10 @@ public class RequestStatusParser implements Function<HttpResponse, RequestStatus
 
     @Override
     public RequestStatus apply(HttpResponse input) {
-        System.out.println("---------> STATUS-CODE: " + input.getStatusCode());
         final int statusCode = input.getStatusCode();
         if (statusCode >= 200 && statusCode < 400) {
-            System.out.println("++++++++ GOT HERE");
             return RequestStatus.create(true, null);
         } else {
-            System.out.println("++++++++ DOWN HERE");
             throw new RuntimeException(input.getStatusLine());
         }
     }
