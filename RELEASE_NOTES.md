@@ -1,6 +1,8 @@
 ### Version 1.0.0 (TBA)
 * **!!!!! BREAKING !!!!!**: All endpoints which previously returned a boolean will now return a `RequestStatus` object. This object has 2 parameters: `value` and `errors`. If the request was good `value` will be set to true and if the request was bad then `value` will be set to false. Additionally, and if the request was bad, the `errors` object will also be populated as per the standard set by this library.
 
+* **!!!!! BREAKING !!!!!**: All branch "permission" domain objects and endpoints have been renamed to "restrictions".
+
 ### Version 0.9.1 (7/15/2017)
 * ADDED: `TasksApi` was created with endpoint `create` - [PR 104](https://github.com/cdancy/bitbucket-rest/pull/104)
 * REFACTOR: `Comments` variable `properties` is now of type <String, JsonElement> instead of <String, String> to account variable value being returned - [PR 106](https://github.com/cdancy/bitbucket-rest/pull/106)
