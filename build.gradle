@@ -106,8 +106,3 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
                         "test.bitbucket.basedir" : "${buildDir}/integ-projects"]
 }
 
-task fish {
-    doLast {
-    println "bears"
-}
-}
