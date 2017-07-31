@@ -29,6 +29,7 @@ import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.cdancy.bitbucket.rest.parsers.DeleteRepositoryParser;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
 import org.jclouds.javax.annotation.Nullable;
@@ -76,10 +77,10 @@ public interface RepositoryApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
-    @ResponseParser(RequestStatusParser.class)
+    @ResponseParser(DeleteRepositoryParser.class)
     @DELETE
     RequestStatus delete(@PathParam("project") String project,
-                   @PathParam("repo") String repo);
+                         @PathParam("repo") String repo);
 
     @Named("repository:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277593152"})

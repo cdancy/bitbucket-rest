@@ -24,14 +24,14 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestriction;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionEnumType;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.branch.Type;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import com.google.common.collect.ImmutableMap;
@@ -254,7 +254,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
 
-            BranchPermissionPage branch = api.listBranchPermission(projectKey, repoKey, null, 1);
+            BranchRestrictionPage branch = api.listBranchRestriction(projectKey, repoKey, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.values().size() > 0).isTrue();
@@ -280,7 +280,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "hello";
             String repoKey = "world";
 
-            BranchPermissionPage branch = api.listBranchPermission(projectKey, repoKey, null, 1);
+            BranchRestrictionPage branch = api.listBranchRestriction(projectKey, repoKey, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().size() > 0).isTrue();
 
@@ -305,14 +305,14 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             groupPermission.add("Test12354");
             List<Long> listAccessKey = new ArrayList<>();
             listAccessKey.add(123L);
-            List<BranchPermission> listBranchPermission = new ArrayList<>();
-            listBranchPermission.add(BranchPermission.createWithId(839L, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+            List<BranchRestriction> listBranchPermission = new ArrayList<>();
+            listBranchPermission.add(BranchRestriction.createWithId(839L, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
                     Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission,
                     listAccessKey));
 
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            final RequestStatus success = api.updateBranchPermission(projectKey, repoKey, listBranchPermission);
+            final RequestStatus success = api.createBranchRestriction(projectKey, repoKey, listBranchPermission);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
@@ -334,7 +334,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
             Long idToDelete = 839L;
-            final RequestStatus success = api.deleteBranchPermission(projectKey, repoKey, idToDelete);
+            final RequestStatus success = api.deleteBranchRestriction(projectKey, repoKey, idToDelete);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();

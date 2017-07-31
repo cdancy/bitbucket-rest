@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
@@ -47,7 +48,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         String projectKey = generatedTestContents.project.key();
         String repoKey = generatedTestContents.repository.name();
         
@@ -88,7 +89,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testGetStatusByNonExistentCommit() {
-        final StatusPage statusPage = api().status(randomString(), 0, 100);
+        final StatusPage statusPage = api().status(TestUtilities.randomString(), 0, 100);
         assertThat(statusPage).isNotNull();
         assertThat(statusPage.size() == 0).isTrue();
     }
@@ -104,7 +105,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testGetSummaryByNonExistentCommit() {
-        final Summary summary = api().summary(randomString());
+        final Summary summary = api().summary(TestUtilities.randomString());
         assertThat(summary).isNotNull();
         assertThat(summary.successful() == 0).isTrue();
         assertThat(summary.inProgress() == 0).isTrue();
@@ -113,7 +114,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
     
     private BuildStatusApi api() {

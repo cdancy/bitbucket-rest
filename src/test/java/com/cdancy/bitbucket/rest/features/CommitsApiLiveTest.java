@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 
@@ -40,7 +41,7 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
     }
@@ -57,7 +58,7 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test 
     public void testListCommitsOnError() {
-        CommitPage pr = api().list(projectKey, randomStringLettersOnly(), true, 1, null);
+        CommitPage pr = api().list(projectKey, TestUtilities.randomStringLettersOnly(), true, 1, null);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isFalse();
         assertThat(pr.values().isEmpty()).isTrue();
@@ -96,7 +97,7 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private CommitsApi api() {

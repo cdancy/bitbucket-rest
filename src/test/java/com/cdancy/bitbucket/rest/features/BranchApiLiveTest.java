@@ -19,13 +19,14 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestriction;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionEnumType;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.branch.Type;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
@@ -52,13 +53,13 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     private String defaultBranchId;
     private String commitHash;
 
-    private final String branchName = randomStringLettersOnly();
+    private final String branchName = TestUtilities.randomStringLettersOnly();
     private Long branchPermissionId;
     private BranchModelConfiguration branchModelConfiguration;
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
 
@@ -106,7 +107,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetNewDefaultBranch() {
         Branch branch = api().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
-        assertThat(branch.errors().isEmpty()).isTrue();
+        assertThat(branch.errors()).isEmpty();
         assertThat(branch.id()).isNotNull();
     }
 
@@ -114,15 +115,15 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateBranchPermission() {
         List<String> groupPermission = new ArrayList<>();
         groupPermission.add(defaultBitbucketGroup);
-        List<BranchPermission> listBranchPermission = new ArrayList<>();
-        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+        final List<BranchRestriction> restrictions = new ArrayList<>();
+        restrictions.add(BranchRestriction.createWithId(null, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
                 Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, null));
-        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+        restrictions.add(BranchRestriction.createWithId(null, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
                 Matcher.create(Matcher.MatcherId.DEVELOPMENT, true), new ArrayList<User>(), groupPermission, null));
-        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
+        restrictions.add(BranchRestriction.createWithId(null, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
                 Matcher.create(Matcher.MatcherId.MASTER, true), new ArrayList<User>(), groupPermission, null));
 
-        final RequestStatus success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
+        final RequestStatus success = api().createBranchRestriction(projectKey, repoKey, restrictions);
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty(); 
@@ -130,7 +131,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testCreateBranchPermission")
     public void testListBranchPermission() {
-        BranchPermissionPage branchPermissionPage = api().listBranchPermission(projectKey, repoKey, null, 1);
+        BranchRestrictionPage branchPermissionPage = api().listBranchRestriction(projectKey, repoKey, null, 1);
         assertThat(branchPermissionPage).isNotNull();
         assertThat(branchPermissionPage.errors().isEmpty()).isTrue();
         assertThat(branchPermissionPage.values().size() > 0).isTrue();
@@ -140,7 +141,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testListBranchPermission")
     public void testDeleteBranchPermission() {
         if (branchPermissionId != null) {
-            final RequestStatus success = api().deleteBranchPermission(projectKey, repoKey, branchPermissionId);
+            final RequestStatus success = api().deleteBranchRestriction(projectKey, repoKey, branchPermissionId);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
@@ -203,7 +204,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListBranches"})
     public void testGetBranchModelConfigurationOnError() {
-        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, randomString());
+        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, TestUtilities.randomString());
         assertThat(configuration).isNotNull();
         assertThat(configuration.errors()).isNotEmpty();
     }
@@ -254,7 +255,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
                 checkDefaultBranchConfiguration();
             }
         } finally {
-            terminateGeneratedTestContents(generatedTestContents);            
+            TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);            
         }
     }
 

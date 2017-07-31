@@ -17,23 +17,21 @@
 
 package com.cdancy.bitbucket.rest.domain.branch;
 
-import com.cdancy.bitbucket.rest.domain.common.Error;
-import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
-import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import java.util.List;
-
 @AutoValue
-public abstract class BranchPermissionPage implements Page<BranchPermission>, ErrorsHolder {
+public abstract class BranchRestrictionType {
+    public abstract String id();
 
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static BranchPermissionPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                    @Nullable List<BranchPermission> values, @Nullable List<Error> errors) {
-        return new AutoValue_BranchPermissionPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    public abstract String name();
+
+    @SerializedNames({"id", "name"})
+    public static BranchRestrictionType create(String id, String name) {
+        return new AutoValue_BranchRestrictionType(id, name);
+    }
+
+    public static BranchRestrictionType create(Matcher.MatcherId matcherId) {
+        return new AutoValue_BranchRestrictionType(matcherId.getTypeId(), matcherId.getTypeName());
     }
 }

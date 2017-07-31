@@ -28,7 +28,7 @@ import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.google.common.collect.ImmutableMap;
@@ -155,7 +155,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     public void testDeleteRepositoryNonExistent() throws Exception {
         MockWebServer server = mockEtcdJavaWebServer();
 
-        server.enqueue(new MockResponse().setResponseCode(404));
+        server.enqueue(new MockResponse().setResponseCode(204));
         BitbucketApi baseApi = api(server.getUrl("/"));
         RepositoryApi api = baseApi.repositoryApi();
         try {

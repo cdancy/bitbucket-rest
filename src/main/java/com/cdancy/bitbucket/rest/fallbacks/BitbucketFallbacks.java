@@ -23,7 +23,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
@@ -419,8 +419,8 @@ public final class BitbucketFallbacks {
         return StatusPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
-    public static BranchPermissionPage createBranchPermissionPageFromErrors(List<Error> errors) {
-        return BranchPermissionPage.create(-1, -1, -1, -1, true, null, errors);
+    public static BranchRestrictionPage createBranchPermissionPageFromErrors(List<Error> errors) {
+        return BranchRestrictionPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static ChangePage createChangePageFromErrors(List<Error> errors) {

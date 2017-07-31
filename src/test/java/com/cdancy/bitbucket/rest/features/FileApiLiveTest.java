@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.file.Line;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
@@ -47,7 +48,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
         
@@ -126,14 +127,19 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test 
     public void listLinesOnError() {
-        final LinePage linePage = api().listLines(projectKey, repoKey, this.randomString() + ".txt", null, null, null, null, null, 100);
+        final LinePage linePage = api().listLines(projectKey, 
+                repoKey, 
+                TestUtilities.randomString() + ".txt", 
+                null, null, null, null, null, 100);
         assertThat(linePage).isNotNull();
         assertThat(linePage.errors().isEmpty()).isFalse();
     }
     
     @Test
     public void getContentOnNotFound() {
-        final RawContent possibleContent = api().raw(projectKey, repoKey, randomString() + ".txt", null);
+        final RawContent possibleContent = api().raw(projectKey, 
+                repoKey, 
+                TestUtilities.randomString() + ".txt", null);
         assertThat(possibleContent).isNotNull();
         assertThat(possibleContent.value()).isNull();
         assertThat(possibleContent.errors().isEmpty()).isFalse();
@@ -142,7 +148,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
     
     private FileApi api() {

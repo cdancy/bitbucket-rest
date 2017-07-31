@@ -21,22 +21,26 @@ import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.google.common.base.Function;
 import javax.inject.Singleton;
 import org.jclouds.http.HttpResponse;
+import org.jclouds.rest.ResourceNotFoundException;
 
 /**
- * Turn a valid response, but one that has no body, into a RequestStatus.
+ * When deleting a repository, and it doesn't exist, Bitbucket will return a 204. To account 
+ * for this we need to implement a custom parser that handles success, not found (204), 
+ * and all other failures appropriately.
  */
 @Singleton
-public class RequestStatusParser implements Function<HttpResponse, RequestStatus> {
-
+public class DeleteRepositoryParser implements Function<HttpResponse, RequestStatus> {
+    
     @Override
     public RequestStatus apply(HttpResponse input) {
-        System.out.println("---------> STATUS-CODE: " + input.getStatusCode());
         final int statusCode = input.getStatusCode();
         if (statusCode >= 200 && statusCode < 400) {
-            System.out.println("++++++++ GOT HERE");
-            return RequestStatus.create(true, null);
+            if (statusCode == 204) {
+                throw new ResourceNotFoundException("The repository does not exist in this project.");
+            } else {
+                return RequestStatus.create(true, null);
+            }
         } else {
-            System.out.println("++++++++ DOWN HERE");
             throw new RuntimeException(input.getStatusLine());
         }
     }

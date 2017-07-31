@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
@@ -41,12 +42,14 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
     private String projectKey;
     private String repoKey;
     private Long conditionId = null;
+    private User user = null;
 
     @BeforeClass
     public void init() {
-        this.generatedTestContents = initGeneratedTestContents();
+        this.generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
+        this.user = TestUtilities.getDefaultUser(this.credential, this.api);
     }
 
     @Test
@@ -62,7 +65,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
-        listUser.add(getDefaultUser());
+        listUser.add(user);
         CreateCondition condition = CreateCondition.create(null, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
@@ -77,7 +80,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.ANY, true);
         List<User> listUser = new ArrayList<>();
-        listUser.add(getDefaultUser());
+        listUser.add(user);
         CreateCondition condition = CreateCondition.create(null, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
@@ -95,7 +98,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.MASTER, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
-        listUser.add(getDefaultUser());
+        listUser.add(user);
         CreateCondition condition = CreateCondition.create(null, matcherSrc,
                 matcherDst, listUser, requiredApprover);
 
@@ -109,7 +112,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
         Matcher matcherSrc = Matcher.create(Matcher.MatcherId.ANY, true);
         Matcher matcherDst = Matcher.create(Matcher.MatcherId.DEVELOPMENT, true);
         List<User> listUser = new ArrayList<>();
-        listUser.add(getDefaultUser());
+        listUser.add(user);
         CreateCondition condition = CreateCondition.create(conditionId,
                 matcherSrc, matcherDst, listUser, requiredApprover);
 
@@ -161,7 +164,7 @@ public class DefaultReviewersApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private DefaultReviewersApi api() {

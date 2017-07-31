@@ -63,17 +63,17 @@ public abstract class Matcher {
 
     public abstract String displayId();
 
-    public abstract BranchPermissionType type();
+    public abstract BranchRestrictionType type();
 
     public abstract Boolean active();
 
     @SerializedNames({"id", "displayId", "type", "active"})
-    public static Matcher create(String id, String displayId, BranchPermissionType type,
+    public static Matcher create(String id, String displayId, BranchRestrictionType type,
                                   Boolean active) {
         return new AutoValue_Matcher(id, displayId, type, active);
     }
 
     public static Matcher create(MatcherId matcherId, Boolean active) {
-        return new AutoValue_Matcher(matcherId.getId(), matcherId.getName(), BranchPermissionType.create(matcherId), active);
+        return new AutoValue_Matcher(matcherId.getId(), matcherId.getName(), BranchRestrictionType.create(matcherId), active);
     }
 }

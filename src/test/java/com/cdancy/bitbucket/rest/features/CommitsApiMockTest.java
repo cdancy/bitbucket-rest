@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest.mockEtcdJavaWebServer;
+import static com.cdancy.bitbucket.rest.BaseBitbucketMockTest.mockEtcdJavaWebServer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -25,7 +25,7 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;

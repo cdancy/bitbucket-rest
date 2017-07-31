@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AutoValue
-public abstract class BranchPermission {
+public abstract class BranchRestriction {
     @Nullable
     public abstract Long id();
 
-    public abstract BranchPermissionEnumType type();
+    public abstract BranchRestrictionEnumType type();
 
     public abstract Matcher matcher();
 
@@ -42,13 +42,13 @@ public abstract class BranchPermission {
     @Nullable
     public abstract List<Long> accessKeys();
 
-    public static BranchPermission createWithId(Long id, BranchPermissionEnumType type, Matcher matcher,
+    public static BranchRestriction createWithId(Long id, BranchRestrictionEnumType type, Matcher matcher,
                                           List<User> users, List<String> groups, List<Long> accessKeysId) {
-        return new AutoValue_BranchPermission(id, type, matcher, users, groups, accessKeysId);
+        return new AutoValue_BranchRestriction(id, type, matcher, users, groups, accessKeysId);
     }
 
     @SerializedNames({"id", "type", "matcher", "users", "groups", "accessKeys"})
-    public static BranchPermission create(Long id, BranchPermissionEnumType type, Matcher matcher,
+    public static BranchRestriction create(Long id, BranchRestrictionEnumType type, Matcher matcher,
                                           List<User> users, List<String> groups, @Nullable List<AccessKey> accessKeys) {
         List<Long> accessKeyId = new ArrayList<>();
         if (accessKeys != null) {
@@ -56,6 +56,6 @@ public abstract class BranchPermission {
                 accessKeyId.add(accessKey.key().id());
             }
         }
-        return BranchPermission.createWithId(id, type, matcher, users, groups, accessKeyId);
+        return BranchRestriction.createWithId(id, type, matcher, users, groups, accessKeyId);
     }
 }

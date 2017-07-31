@@ -36,6 +36,7 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
@@ -60,7 +61,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
         
@@ -81,7 +82,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void createPullRequest() {
-        String randomChars = randomString();
+        String randomChars = TestUtilities.randomString();
         ProjectKey proj = ProjectKey.create(project);
         MinimalRepository repository = MinimalRepository.create(repo, null, proj);
         Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
@@ -212,7 +213,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test 
     public void testDeleteParticipantNonExistent() {
-        final RequestStatus success = api().deleteParticipant(project, repo, prId, randomString());
+        final RequestStatus success = api().deleteParticipant(project, repo, prId, TestUtilities.randomString());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -227,14 +228,14 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetNonExistentPullRequest() {
-        PullRequest pr = api().get(randomString(), randomString(), 999);
+        PullRequest pr = api().get(TestUtilities.randomString(), TestUtilities.randomString(), 999);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isFalse();
     }
     
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private PullRequestApi api() {

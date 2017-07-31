@@ -30,6 +30,7 @@ public abstract class Author implements LinksHolder {
 
     public abstract String name();
 
+    @Nullable
     public abstract String emailAddress();
 
     @Nullable

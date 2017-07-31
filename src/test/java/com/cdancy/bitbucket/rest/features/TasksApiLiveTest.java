@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
@@ -44,14 +45,14 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private String projectKey;
     private String repoKey;
-    private final String commentText = randomString();
-    private final String taskComment = randomString();
+    private final String commentText = TestUtilities.randomString();
+    private final String taskComment = TestUtilities.randomString();
     private int commentId = -1;
     private int taskId = -1;
     
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
         
@@ -69,7 +70,7 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         }
         assertThat(branchToMerge).isNotNull();
         
-        final String randomChars = randomString();
+        final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(projectKey);
         final MinimalRepository repository = MinimalRepository.create(repoKey, null, proj);
         final Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
@@ -139,7 +140,7 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private TasksApi api() {

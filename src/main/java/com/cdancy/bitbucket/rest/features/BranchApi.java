@@ -22,8 +22,8 @@ import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestriction;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
@@ -159,7 +159,7 @@ public interface BranchApi {
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Fallback(BitbucketFallbacks.BranchPermissionPageOnError.class)
     @GET
-    BranchPermissionPage listBranchPermission(@PathParam("project") String project,
+    BranchRestrictionPage listBranchRestriction(@PathParam("project") String project,
                                              @PathParam("repo") String repo,
                                              @Nullable @QueryParam("start") Integer start,
                                              @Nullable @QueryParam("limit") Integer limit);
@@ -172,9 +172,9 @@ public interface BranchApi {
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @POST
-    RequestStatus updateBranchPermission(@PathParam("project") String project,
+    RequestStatus createBranchRestriction(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
-                                   @BinderParam(BindToJsonPayload.class) List<BranchPermission> listBranchPermission);
+                                   @BinderParam(BindToJsonPayload.class) List<BranchRestriction> branchRestrictions);
 
     @Named("branch:delete-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
@@ -183,7 +183,7 @@ public interface BranchApi {
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
-    RequestStatus deleteBranchPermission(@PathParam("project") String project,
+    RequestStatus deleteBranchRestriction(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
                                    @PathParam("id") long id);
 }

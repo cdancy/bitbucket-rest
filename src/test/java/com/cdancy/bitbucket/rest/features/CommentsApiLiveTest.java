@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
@@ -50,8 +51,8 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     private String project;
     private String repo;
     private String filePath;
-    private final String commentText = randomString();
-    private final String commentReplyText = randomString();
+    private final String commentText = TestUtilities.randomString();
+    private final String commentReplyText = TestUtilities.randomString();
     
     private int prId = -1;
     private int commentId = -1;
@@ -60,7 +61,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = initGeneratedTestContents();
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
         
@@ -78,7 +79,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         }
         assertThat(branchToMerge).isNotNull();
         
-        final String randomChars = randomString();
+        final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(project);
         final MinimalRepository repository = MinimalRepository.create(repo, null, proj);
         final Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
@@ -137,7 +138,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
                         this.filePath, 
                         this.filePath);
         
-        final String randomText = this.randomString();
+        final String randomText = TestUtilities.randomString();
         final CreateComment createComment = CreateComment.create(randomText, null, anchor);
 
         final Comments comm = api().create(project, repo, prId, createComment);
@@ -187,7 +188,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        terminateGeneratedTestContents(generatedTestContents);
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private CommentsApi api() {

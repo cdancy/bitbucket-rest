@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketClient;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 
 @Test(groups = "unit", testName = "BitbucketClientMockTest")
 public class BitbucketClientMockTest extends BaseBitbucketMockTest {

@@ -18,7 +18,9 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,21 +37,22 @@ public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testListUsersByNonExistentGroup() {
-        UserPage userPage = api().listUsersByGroup(randomString(), null, null, null);
+        UserPage userPage = api().listUsersByGroup(TestUtilities.randomString(), null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
     }
     
     @Test
     public void testListUsers() {
-        UserPage userPage = api().listUsers(this.getDefaultUser().slug(), null, null);
+        final User user = TestUtilities.getDefaultUser(this.credential, this.api);
+        final UserPage userPage = api().listUsers(user.slug(), null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() > 0).isTrue();
     }
     
     @Test
     public void testListUsersNonExistent() {
-        UserPage userPage = api().listUsers(randomString(), null, null);
+        UserPage userPage = api().listUsers(TestUtilities.randomString(), null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
     }
