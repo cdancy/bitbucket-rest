@@ -1,3 +1,5 @@
+### Version 1.0.2 (TBA)
+
 ### Version 1.0.1 (7/31/2017)
 * FIX: remove debugging printlns that snuck in. No functionality added/removed.
 
