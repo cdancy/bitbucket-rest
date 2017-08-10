@@ -7,8 +7,8 @@
          "conflicted":false,
          "vetoes":[  
             {  
-               "summaryMessage":"some short message.",
-               "detailedMessage":"some detailed message."
+               "summaryMessage":"some short message",
+               "detailedMessage":"some detailed message"
             }
          ]
       }

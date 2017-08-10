@@ -17,6 +17,9 @@
 
 package com.cdancy.bitbucket.rest.fallbacks;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Throwables.propagate;
+
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
@@ -31,6 +34,7 @@ import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.domain.common.Veto;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
@@ -62,8 +66,6 @@ import org.jclouds.Fallback;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Throwables.propagate;
 import com.google.gson.JsonSyntaxException;
 
 public final class BitbucketFallbacks {
@@ -352,14 +354,9 @@ public final class BitbucketFallbacks {
     public static final class RawContentOnError implements Fallback<Object> {
         public Object createOrPropagate(Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
-                try {
-                    return createRawContentFromErrors(getErrors(throwable.getMessage()));
-                } catch (JsonSyntaxException e) {
-                    final Error error = Error.create(null, "Failed retrieving raw content", 
-                            throwable.getClass().getName(), false, null);
-                    final List<Error> errors = Lists.newArrayList(error);
-                    return RawContent.create(null, errors);
-                }
+                final Error error = Error.create(throwable.getMessage(), "Failed retrieving raw content", 
+                        throwable.getClass().getName(), false, null);
+                return RawContent.create(null, Lists.newArrayList(error));
             }
             throw propagate(throwable);
         }
@@ -518,21 +515,55 @@ public final class BitbucketFallbacks {
      * @param output json containing errors hash
      * @return List of Error's or empty list if none could be found
      */
-    public static List<Error> getErrors(String output) {
-        JsonElement element = parser.parse(output);
-        JsonObject object = element.getAsJsonObject();
-        JsonArray errorsArray = object.get("errors").getAsJsonArray();
+    public static List<Error> getErrors(final String output) {
+        
+        final List<Error> errors = Lists.newArrayList();
+        
+        try {
+            
+            final JsonElement element = parser.parse(output);
+            final JsonObject object = element.getAsJsonObject();
+            final JsonArray errorsArray = object.get("errors").getAsJsonArray();
 
-        List<Error> errors = Lists.newArrayList();
-        Iterator<JsonElement> it = errorsArray.iterator();
-        while (it.hasNext()) {
-            JsonObject obj = it.next().getAsJsonObject();
-            JsonElement context = obj.get("context");
-            JsonElement message = obj.get("message");
-            JsonElement exceptionName = obj.get("exceptionName");
-            Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
-                    !message.isJsonNull() ? message.getAsString() : null,
-                    !exceptionName.isJsonNull() ? exceptionName.getAsString() : null, false, null);
+            final Iterator<JsonElement> it = errorsArray.iterator();
+            while (it.hasNext()) {
+                                
+                final JsonObject obj = it.next().getAsJsonObject();
+                final JsonElement context = obj.get("context");
+                final JsonElement message = obj.get("message");
+                final JsonElement exceptionName = obj.get("exceptionName");
+                final JsonElement conflicted = obj.get("conflicted");
+                    
+                final List<Veto> vetos = Lists.newArrayList();
+                final JsonElement possibleVetoesArray = obj.get("vetoes");
+                if (possibleVetoesArray != null && !possibleVetoesArray.isJsonNull()) {
+                    
+                    final JsonArray vetoesArray = possibleVetoesArray.getAsJsonArray();
+                    final Iterator<JsonElement> vetoIterator = vetoesArray.iterator();
+                    while (vetoIterator.hasNext()) {
+                        final JsonObject vetoObj = vetoIterator.next().getAsJsonObject();
+                        final JsonElement summary = vetoObj.get("summaryMessage");
+                        final JsonElement detailed = vetoObj.get("detailedMessage");
+                        final Veto veto = Veto.create(!summary.isJsonNull() ? summary.getAsString() : null, 
+                                !detailed.isJsonNull() ? detailed.getAsString() : null);
+                        vetos.add(veto);
+                    }
+                }
+
+                final Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
+                        !message.isJsonNull() ? message.getAsString() : null,
+                        !exceptionName.isJsonNull() ? exceptionName.getAsString() : null, 
+                        conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, 
+                        vetos);
+
+                errors.add(error);
+            }
+        } catch (final Exception e) {
+            final Error error = Error.create(output, 
+                    "Failed to parse output: message=" + e.getMessage(), 
+                    e.getClass().getName(), 
+                    false, 
+                    null);
             errors.add(error);
         }
 

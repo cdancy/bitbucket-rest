@@ -32,6 +32,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Type;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.domain.common.Veto;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import com.google.common.collect.ImmutableMap;
@@ -126,9 +127,13 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "hello";
             String repoKey = "world";
 
-            BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
+            final BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().size() > 0).isTrue();
+            final List<Veto> vetoes = branch.errors().get(0).vetoes();
+            assertThat(vetoes.size() > 0).isTrue();
+            assertThat(vetoes.get(0).summaryMessage()).isEqualTo("some short message");
+            assertThat(vetoes.get(0).detailedMessage()).isEqualTo("some detailed message");
             Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/branches", queryParams);
