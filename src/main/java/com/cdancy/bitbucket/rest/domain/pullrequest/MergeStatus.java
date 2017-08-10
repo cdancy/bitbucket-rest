@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
+import com.cdancy.bitbucket.rest.domain.common.Veto;
 import java.util.List;
 
 import org.jclouds.json.SerializedNames;

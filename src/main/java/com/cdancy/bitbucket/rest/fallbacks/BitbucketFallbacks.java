@@ -355,7 +355,8 @@ public final class BitbucketFallbacks {
                 try {
                     return createRawContentFromErrors(getErrors(throwable.getMessage()));
                 } catch (JsonSyntaxException e) {
-                    final Error error = Error.create(null, "Failed retrieving raw content", throwable.getClass().getName());
+                    final Error error = Error.create(null, "Failed retrieving raw content", 
+                            throwable.getClass().getName(), false, null);
                     final List<Error> errors = Lists.newArrayList(error);
                     return RawContent.create(null, errors);
                 }
@@ -370,7 +371,8 @@ public final class BitbucketFallbacks {
                 try {
                     return createRequestStatusFromErrors(getErrors(throwable.getMessage()));
                 } catch (JsonSyntaxException e) {
-                    final Error error = Error.create(null, throwable.getMessage(), throwable.getClass().getName());
+                    final Error error = Error.create(null, throwable.getMessage(), 
+                            throwable.getClass().getName(), false, null);
                     final List<Error> errors = Lists.newArrayList(error);
                     return RequestStatus.create(false, errors);
                 }
@@ -530,7 +532,7 @@ public final class BitbucketFallbacks {
             JsonElement exceptionName = obj.get("exceptionName");
             Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
                     !message.isJsonNull() ? message.getAsString() : null,
-                    !exceptionName.isJsonNull() ? exceptionName.getAsString() : null);
+                    !exceptionName.isJsonNull() ? exceptionName.getAsString() : null, false, null);
             errors.add(error);
         }
 

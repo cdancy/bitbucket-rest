@@ -3,7 +3,14 @@
       {  
          "context":null,
          "message":"The repository 'hello' does not exist in project 'world'",
-         "exceptionName":"com.atlassian.stash.exception.NoSuchChangesetException"
+         "exceptionName":"com.atlassian.stash.exception.NoSuchChangesetException",
+         "conflicted":false,
+         "vetoes":[  
+            {  
+               "summaryMessage":"some short message.",
+               "detailedMessage":"some detailed message."
+            }
+         ]
       }
    ]
 }

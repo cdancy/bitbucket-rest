@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.common;
 
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
