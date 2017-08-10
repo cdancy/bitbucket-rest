@@ -1,3 +1,5 @@
+### Version 1.0.4 (TBA)
+
 ### Version 1.0.3 (8/10/2017)
 * FIX: Ensure `BitbucketFallbacks` properly parses `conflicted` and `vetoes` properties when constructing `Error` objects - [Commit 53908](https://github.com/cdancy/bitbucket-rest/commit/59ff2b30f209872d1ba23d52850d98201daf4cea)
 
