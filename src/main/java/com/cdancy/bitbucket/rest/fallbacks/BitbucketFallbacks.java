@@ -36,6 +36,7 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.common.Veto;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
+import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
@@ -383,6 +384,15 @@ public final class BitbucketFallbacks {
         }
     }
     
+    public static final class FilesPageOnError implements Fallback<Object> {
+        public Object createOrPropagate(Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createFilesPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
     public static final class RawContentOnError implements Fallback<Object> {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
@@ -422,6 +432,10 @@ public final class BitbucketFallbacks {
         
     public static LinePage createLinePageFromErrors(final List<Error> errors) {
         return LinePage.create(-1, -1, -1, -1, true, null, null, errors);
+    }
+    
+    public static FilesPage createFilesPageFromErrors(List<Error> errors) {
+        return FilesPage.create(-1, -1, -1, -1, true, null, errors);
     }
         
     public static Branch createBranchFromErrors(final List<Error> errors) {
