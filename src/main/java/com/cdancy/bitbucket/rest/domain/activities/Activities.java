@@ -81,22 +81,22 @@ public abstract class Activities {
     public abstract List<User> removedReviewers();
 
     @SerializedNames({"id", "createdDate", "user", "action", "commentAction", 
-        "comment", "fromHash", "previousFromHash", "previousToHash",
-        "toHash", "added", "removed", "addedReviewers", "removedReviewers"})
+            "comment", "fromHash", "previousFromHash", "previousToHash",
+            "toHash", "added", "removed", "addedReviewers", "removedReviewers"})
     public static Activities create(final long id, 
             final long createdDate, 
             final User user, 
             final ActivitiesType action, 
             final String commentAction, 
             final Comments comment, 
-            final @Nullable String fromHash,
-            final @Nullable String previousFromHash,  
-            final @Nullable String previousToHash,
-            final @Nullable String toHash, 
-            final @Nullable ActivitiesCommit added,
-            final @Nullable ActivitiesCommit removed, 
-            final @Nullable List<User> addedReviewers,
-            final @Nullable List<User> removedReviewers) {
+            @Nullable final String fromHash,
+            @Nullable final String previousFromHash,  
+            @Nullable final String previousToHash,
+            @Nullable final String toHash, 
+            @Nullable final ActivitiesCommit added,
+            @Nullable final ActivitiesCommit removed, 
+            @Nullable final List<User> addedReviewers,
+            @Nullable final List<User> removedReviewers) {
         
         return new AutoValue_Activities(id, 
                 createdDate, 

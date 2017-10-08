@@ -33,7 +33,7 @@ public abstract class Scope {
     public abstract Long resourceId();
 
     @SerializedNames({ "type", "resourceId"})
-    public static Scope create(ScopeType type, Long resourceId) {
+    public static Scope create(final ScopeType type, final Long resourceId) {
         return new AutoValue_Scope(type, resourceId);
     }
 }

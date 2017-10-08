@@ -58,7 +58,7 @@ public abstract class BranchRestriction {
             final Matcher matcher,
             final List<User> users, 
             final List<String> groups, 
-            final @Nullable List<AccessKey> accessKeys) {
+            @Nullable final List<AccessKey> accessKeys) {
         
         final List<Long> accessKeyId = new ArrayList<>();
         if (accessKeys != null) {

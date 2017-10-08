@@ -35,7 +35,7 @@ public abstract class Line {
     }
 
     @SerializedNames({ "text", "type" })
-    public static Line create(String text, String type) {
+    public static Line create(final String text, final String type) {
         return new AutoValue_Line(text, type);
     }
 }

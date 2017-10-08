@@ -71,9 +71,10 @@ import com.google.gson.JsonSyntaxException;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class BitbucketFallbacks {
 
-    private static final JsonParser parser = new JsonParser();
+    private static final JsonParser PARSER = new JsonParser();
 
     public static final class FalseOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return Boolean.FALSE;
@@ -83,6 +84,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class BranchOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchFromErrors(getErrors(throwable.getMessage()));
@@ -92,6 +94,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class BranchModelOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchModelFromErrors(getErrors(throwable.getMessage()));
@@ -101,6 +104,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class BranchModelConfigurationOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchModelConfigurationFromErrors(getErrors(throwable.getMessage()));
@@ -110,6 +114,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class BranchPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPageFromErrors(getErrors(throwable.getMessage()));
@@ -119,6 +124,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class UserPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
@@ -128,6 +134,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ConditionOnError implements Fallback<Object> {
+        @Override        
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createConditionFromErrors(getErrors(throwable.getMessage()));
@@ -137,6 +144,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class StatusPageOnError implements Fallback<Object> {
+        @Override       
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createStatusPageFromErrors(getErrors(throwable.getMessage()));
@@ -146,6 +154,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class BranchPermissionPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPermissionPageFromErrors(getErrors(throwable.getMessage()));
@@ -155,6 +164,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ChangePageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createChangePageFromErrors(getErrors(throwable.getMessage()));
@@ -164,6 +174,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class CommentsOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createCommentsFromErrors(getErrors(throwable.getMessage()));
@@ -173,6 +184,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class CommentPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createCommentPageFromErrors(getErrors(throwable.getMessage()));
@@ -182,6 +194,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class CommitPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createCommitPageFromErrors(getErrors(throwable.getMessage()));
@@ -191,6 +204,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class CommitOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createCommitFromErrors(getErrors(throwable.getMessage()));
@@ -200,6 +214,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class TagOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createTagFromErrors(getErrors(throwable.getMessage()));
@@ -209,6 +224,7 @@ public final class BitbucketFallbacks {
     }
     
     public static final class TaskOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createTaskFromErrors(getErrors(throwable.getMessage()));
@@ -218,6 +234,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class RepositoryOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createRepositoryFromErrors(getErrors(throwable.getMessage()));
@@ -227,6 +244,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class RepositoryPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createRepositoryPageFromErrors(getErrors(throwable.getMessage()));
@@ -236,6 +254,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class PermissionsPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createPermissionsPageFromErrors(getErrors(throwable.getMessage()));
@@ -245,6 +264,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class HookPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createHookPageFromErrors(getErrors(throwable.getMessage()));
@@ -254,6 +274,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class HookOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createHookFromErrors(getErrors(throwable.getMessage()));
@@ -263,6 +284,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ProjectOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createProjectFromErrors(getErrors(throwable.getMessage()));
@@ -272,6 +294,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class PullRequestSettingsOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createPullRequestSettingsFromErrors(getErrors(throwable.getMessage()));
@@ -281,6 +304,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ProjectPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createProjectPageFromErrors(getErrors(throwable.getMessage()));
@@ -290,6 +314,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class PullRequestOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createPullRequestFromErrors(getErrors(throwable.getMessage()));
@@ -299,6 +324,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ActivitiesPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createActivitiesPageFromErrors(getErrors(throwable.getMessage()));
@@ -308,6 +334,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ParticipantsPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createParticipantsPageFromErrors(getErrors(throwable.getMessage()));
@@ -317,6 +344,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class ParticipantsOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createParticipantsFromErrors(getErrors(throwable.getMessage()));
@@ -326,6 +354,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class PullRequestPageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createPullRequestPageFromErrors(getErrors(throwable.getMessage()));
@@ -335,6 +364,7 @@ public final class BitbucketFallbacks {
     }
 
     public static final class MergeStatusOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createMergeStatusFromErrors(getErrors(throwable.getMessage()));
@@ -344,6 +374,7 @@ public final class BitbucketFallbacks {
     }
     
     public static final class LinePageOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createLinePageFromErrors(getErrors(throwable.getMessage()));
@@ -353,6 +384,7 @@ public final class BitbucketFallbacks {
     }
     
     public static final class RawContentOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 final Error error = Error.create(throwable.getMessage(), "Failed retrieving raw content", 
@@ -364,6 +396,7 @@ public final class BitbucketFallbacks {
     }
     
     public static final class RequestStatusOnError implements Fallback<Object> {
+        @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 try {
@@ -447,7 +480,7 @@ public final class BitbucketFallbacks {
         return Tag.create(null, null, null, null, null, null, errors);
     }
     
-    public static Task createTaskFromErrors(List<Error> errors) {
+    public static Task createTaskFromErrors(final List<Error> errors) {
         return Task.create(null, null, -1, -1, null, null, null, errors);
     }
 
@@ -522,7 +555,7 @@ public final class BitbucketFallbacks {
         
         try {
             
-            final JsonElement element = parser.parse(output);
+            final JsonElement element = PARSER.parse(output);
             final JsonObject object = element.getAsJsonObject();
             final JsonArray errorsArray = object.get("errors").getAsJsonArray();
 
@@ -554,7 +587,7 @@ public final class BitbucketFallbacks {
                 final Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
                         !message.isJsonNull() ? message.getAsString() : null,
                         !exceptionName.isJsonNull() ? exceptionName.getAsString() : null, 
-                        conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, 
+                        conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, //NOPMD
                         vetos);
 
                 errors.add(error);

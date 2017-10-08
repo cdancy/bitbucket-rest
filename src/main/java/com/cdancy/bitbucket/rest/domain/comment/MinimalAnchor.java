@@ -28,7 +28,7 @@ public abstract class MinimalAnchor {
     public abstract String type();
 
     @SerializedNames({ "id", "type" })
-    public static MinimalAnchor create(int id, String type) {
+    public static MinimalAnchor create(final int id, final String type) {
         return new AutoValue_MinimalAnchor(id, type);
     }
 }

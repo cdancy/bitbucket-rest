@@ -32,11 +32,11 @@ public abstract class CreateTask {
     }
 
     @SerializedNames({"anchor", "text" })
-    public static CreateTask create(MinimalAnchor anchor, String text) {
+    public static CreateTask create(final MinimalAnchor anchor, final String text) {
         return new AutoValue_CreateTask(anchor, text);
     }
     
-    public static CreateTask create(int id, String text) {
+    public static CreateTask create(final int id, final String text) {
         return CreateTask.create(MinimalAnchor.create(id, "COMMENT"), text);
     }
 }

@@ -29,7 +29,7 @@ import org.jclouds.http.HttpResponse;
 public class RequestStatusParser implements Function<HttpResponse, RequestStatus> {
 
     @Override
-    public RequestStatus apply(HttpResponse input) {
+    public RequestStatus apply(final HttpResponse input) {
         final int statusCode = input.getStatusCode();
         if (statusCode >= 200 && statusCode < 400) {
             return RequestStatus.create(true, null);

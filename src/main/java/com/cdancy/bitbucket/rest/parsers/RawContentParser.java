@@ -32,11 +32,11 @@ import org.jclouds.util.Strings2;
 public class RawContentParser implements Function<HttpResponse, RawContent> {
 
     @Override
-    public RawContent apply(HttpResponse input) {
+    public RawContent apply(final HttpResponse input) {
         try (final InputStream inputStream = input.getPayload().openStream()) {
             final String value = Strings2.toStringAndClose(inputStream);
             return RawContent.create(value, null);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw Throwables.propagate(e);
         }
     }

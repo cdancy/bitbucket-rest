@@ -40,14 +40,27 @@ public abstract class CreateCondition {
 
     public abstract Long requiredApprovals();
 
-    @SerializedNames({ "id", "sourceMatcher", "targetMatcher", "reviewers", "requiredApprovals"})
-    public static CreateCondition create(Long id, Matcher sourceMatcher,
-                                   Matcher targetMatcher, List<User> reviewers, Long requiredApprovals) {
-        return new AutoValue_CreateCondition(id, sourceMatcher, targetMatcher, reviewers, requiredApprovals);
+    @SerializedNames({ "id", "sourceMatcher", 
+            "targetMatcher", "reviewers", "requiredApprovals"})
+    public static CreateCondition create(final Long id, 
+            final Matcher sourceMatcher,
+            final Matcher targetMatcher, 
+            final List<User> reviewers, 
+            final Long requiredApprovals) {
+        
+        return new AutoValue_CreateCondition(id, 
+                sourceMatcher, 
+                targetMatcher, 
+                reviewers, 
+                requiredApprovals);
     }
 
-    public static CreateCondition create(Condition condition) {
-        return new AutoValue_CreateCondition(condition.id(), condition.sourceRefMatcher(),
-            condition.targetRefMatcher(), condition.reviewers(), condition.requiredApprovals());
+    public static CreateCondition create(final Condition condition) {
+        
+        return new AutoValue_CreateCondition(condition.id(), 
+                condition.sourceRefMatcher(),
+                condition.targetRefMatcher(), 
+                condition.reviewers(), 
+                condition.requiredApprovals());
     }
 }
