@@ -20,18 +20,18 @@ package com.cdancy.bitbucket.rest.domain.branch;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.sshkey.AccessKey;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import java.util.List;
 
 @AutoValue
-public abstract class BranchPermission {
+public abstract class BranchRestriction {
     @Nullable
     public abstract Long id();
 
-    public abstract BranchPermissionEnumType type();
+    public abstract BranchRestrictionEnumType type();
 
     public abstract Matcher matcher();
 
@@ -42,28 +42,30 @@ public abstract class BranchPermission {
     @Nullable
     public abstract List<Long> accessKeys();
 
-    public static BranchPermission createWithId(final Long id, 
-            final BranchPermissionEnumType type, 
+    public static BranchRestriction createWithId(final Long id, 
+            final BranchRestrictionEnumType type, 
             final Matcher matcher,
             final List<User> users, 
             final List<String> groups, 
             final List<Long> accessKeysId) {
-        return new AutoValue_BranchPermission(id, type, matcher, users, groups, accessKeysId);
+        
+        return new AutoValue_BranchRestriction(id, type, matcher, users, groups, accessKeysId);
     }
 
     @SerializedNames({"id", "type", "matcher", "users", "groups", "accessKeys"})
-    public static BranchPermission create(final Long id, 
-            final BranchPermissionEnumType type, 
+    public static BranchRestriction create(final Long id, 
+            final BranchRestrictionEnumType type, 
             final Matcher matcher,
             final List<User> users, 
             final List<String> groups, 
-            @Nullable final List<AccessKey> accessKeys) {
-        final List<Long> accessKeyId = Lists.newArrayList();
+            final @Nullable List<AccessKey> accessKeys) {
+        
+        final List<Long> accessKeyId = new ArrayList<>();
         if (accessKeys != null) {
             for (final AccessKey accessKey : accessKeys) {
                 accessKeyId.add(accessKey.key().id());
             }
         }
-        return BranchPermission.createWithId(id, type, matcher, users, groups, accessKeyId);
+        return BranchRestriction.createWithId(id, type, matcher, users, groups, accessKeyId);
     }
 }

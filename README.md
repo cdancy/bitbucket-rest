@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/cdancy/bitbucket-rest.svg?branch=master)](https://travis-ci.org/cdancy/bitbucket-rest)
 [![codecov](https://codecov.io/gh/cdancy/bitbucket-rest/branch/master/graph/badge.svg)](https://codecov.io/gh/cdancy/bitbucket-rest)
 [![Download](https://api.bintray.com/packages/cdancy/java-libraries/bitbucket-rest/images/download.svg) ](https://bintray.com/cdancy/java-libraries/bitbucket-rest/_latestVersion)
-[![Stack Overflow](https://img.shields.io/badge/stack%20overflow-bitbucket-4183C4.svg)](https://stackoverflow.com/questions/tagged/bitbucket)
+[![Stack Overflow](https://img.shields.io/badge/stack%20overflow-bitbucket-4183C4.svg)](https://stackoverflow.com/questions/tagged/bitbucket+rest)
 
 # bitbucket-rest
 ![alt tag](https://wac-cdn.atlassian.com/dam/jcr:e2a6f06f-b3d5-4002-aed3-73539c56a2eb/bitbucket_rgb_blue.png?cdnVersion=cm)
@@ -27,7 +27,11 @@ The user only needs to be concerned with which `Api` they need and then calling 
 (e.g. POJO's) modeled after the json returned by `bitbucket`. 
 
 Interacting with the remote service becomes transparent and allows developers to focus on getting things done rather than the internals of the API itself, or how to build a client, or how to parse the json. 
-      
+
+## On new features
+
+New Api's or endpoints are generally added as needed and/or requested. If there is something you want to see just open an ISSUE and ask or send in a PullRequest. However, putting together a PullRequest for a new feature is generally the faster route to go as it's much easier to review a PullRequest than to create one ourselves. There is no problem doing so of course but if you need something done now than a PullRequest is your best bet otherwise you may have to patiently wait for one of our contributors to take up the work.
+
 ## Latest release
 
 Can be sourced from jcenter like so:
@@ -35,7 +39,7 @@ Can be sourced from jcenter like so:
 	<dependency>
 	  <groupId>com.cdancy</groupId>
 	  <artifactId>bitbucket-rest</artifactId>
-	  <version>0.0.15</version>
+	  <version>X.Y.Z</version>
 	  <classifier>sources|tests|javadoc|all</classifier> (Optional)
 	</dependency>
 	

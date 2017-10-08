@@ -17,10 +17,12 @@
 
 package com.cdancy.bitbucket.rest.domain.common;
 
+import com.cdancy.bitbucket.rest.utils.Utils;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
+import java.util.List;
 
 @AutoValue
 public abstract class Error {
@@ -33,14 +35,25 @@ public abstract class Error {
 
     @Nullable
     public abstract String exceptionName();
+    
+    public abstract boolean conflicted();
+
+    public abstract List<Veto> vetoes();
 
     Error() {
     }
 
-    @SerializedNames({ "context", "message", "exceptionName" })
+    @SerializedNames({ "context", "message", "exceptionName", "conflicted", "vetoes" })
     public static Error create(final String context, 
             final String message, 
-            final String exceptionName) {
-        return new AutoValue_Error(context, message, exceptionName);
+            final String exceptionName, 
+            final boolean conflicted, 
+            final List<Veto> vetoes) {
+        
+        return new AutoValue_Error(context, 
+                message, 
+                exceptionName, 
+                conflicted, 
+                Utils.nullToEmpty(vetoes));
     }
 }

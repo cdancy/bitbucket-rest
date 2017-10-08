@@ -22,7 +22,9 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.build.Status;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -91,6 +93,52 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
                     + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
+        } finally {
+            server.shutdown();
+        }
+    }
+    
+    public void testAddBuildStatus() throws Exception {
+        MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-post.json")).setResponseCode(204));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final CreateBuildStatus cbs = CreateBuildStatus.create(CreateBuildStatus.STATE.SUCCESSFUL, 
+                                    "REPO-MASTER", 
+                                    "REPO-MASTER-42", 
+                                    "https://bamboo.example.com/browse/REPO-MASTER-42", 
+                                    "Changes by John Doe");
+            final RequestStatus success = baseApi.buildStatusApi().add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
+            
+            assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
+                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
+        } finally {
+            server.shutdown();
+        }
+    }
+    
+    public void testAddBuildStatusOnError() throws Exception {
+        MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(404));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final CreateBuildStatus cbs = CreateBuildStatus.create(CreateBuildStatus.STATE.SUCCESSFUL, 
+                                    "REPO-MASTER", 
+                                    "REPO-MASTER-42", 
+                                    "https://bamboo.example.com/browse/REPO-MASTER-42", 
+                                    "Changes by John Doe");
+            final RequestStatus success = baseApi.buildStatusApi().add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
+            
+            assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
+                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
         } finally {
             server.shutdown();
         }

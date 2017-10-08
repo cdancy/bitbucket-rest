@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -43,7 +43,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final UserPage up = baseApi.adminApi().listUserByGroup(localContext, null, 0, 2);
+            final UserPage up = baseApi.adminApi().listUsersByGroup(localContext, null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isEmpty();
             assertThat(up.size() == 2).isTrue();
@@ -65,7 +65,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(401));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final UserPage up = baseApi.adminApi().listUserByGroup(localContext, null, 0, 2);
+            final UserPage up = baseApi.adminApi().listUsersByGroup(localContext, null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
@@ -73,6 +73,48 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/admin/groups/more-members", queryParams);
         } finally {
+            server.shutdown();
+        }
+    }
+    
+    public void testListUsers() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-users.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final AdminApi api = baseApi.adminApi();
+        try {
+            final UserPage up = api.listUsers("jcitizen", 0, 2);
+            assertThat(up).isNotNull();
+            assertThat(up.errors()).isEmpty();
+            assertThat(up.size() == 1).isTrue();
+            assertThat(up.values().get(0).slug().equals("jcitizen")).isTrue();
+
+            final Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen", "limit", 2, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/admin/users", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListUsersOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group-error.json")).setResponseCode(401));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final AdminApi api = baseApi.adminApi();
+        try {
+            final UserPage up = api.listUsers("blah blah", 0, 2);
+            assertThat(up).isNotNull();
+            assertThat(up.errors()).isNotEmpty();
+
+            final Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah", "limit", 2, "start", 0);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/admin/users", queryParams);
+        } finally {
+            baseApi.close();
             server.shutdown();
         }
     }

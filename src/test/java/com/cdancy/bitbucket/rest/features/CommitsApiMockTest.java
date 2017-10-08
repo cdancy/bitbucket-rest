@@ -22,8 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -114,6 +115,46 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             final Map<String, ?> queryParams = ImmutableMap.of("limit", 12, "start", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
+        } finally {
+            server.shutdown();
+        }
+    }
+    
+    public void testListCommits() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-commits.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+
+            CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isEmpty();
+            assertThat(pcr.values()).hasSize(1);
+            assertThat(pcr.totalCount()).isEqualTo(1);
+
+            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/myrepo/commits", queryParams);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testListCommitsOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+
+            CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
+            assertThat(pcr).isNotNull();
+            assertThat(pcr.errors()).isNotEmpty();
+
+            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
+            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/myrepo/commits", queryParams);
         } finally {
             server.shutdown();
         }

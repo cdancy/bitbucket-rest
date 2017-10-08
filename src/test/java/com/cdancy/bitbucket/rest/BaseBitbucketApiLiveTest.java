@@ -18,8 +18,6 @@
 package com.cdancy.bitbucket.rest;
 
 import java.util.Properties;
-import java.util.Random;
-import java.util.UUID;
 
 import org.jclouds.Constants;
 import org.jclouds.apis.BaseApiLiveTest;
@@ -30,6 +28,8 @@ import com.google.inject.Module;
 
 @Test(groups = "live")
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
+
+    protected final String defaultBitbucketGroup = "stash-users";
 
     public BaseBitbucketApiLiveTest() {
         provider = "bitbucket";
@@ -43,22 +43,8 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
     @Override
     protected Properties setupProperties() {
         final Properties overrides = super.setupProperties();
-        overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
+        overrides.setProperty(Constants.PROPERTY_MAX_RETRIES, "5");
         return overrides;
     }
-
-    protected String randomStringLettersOnly() {
-        final char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        final StringBuilder sb = new StringBuilder();
-        final Random random = new Random();
-        for (int i = 0; i < 10; i++) {
-            final char randomChar = chars[random.nextInt(chars.length)];
-            sb.append(randomChar);
-        }
-        return sb.toString().toUpperCase();
-    }
-
-    protected String randomString() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
-    }
 }
+

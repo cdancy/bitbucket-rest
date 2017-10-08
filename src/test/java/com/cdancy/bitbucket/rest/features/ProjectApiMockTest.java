@@ -25,9 +25,10 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -132,9 +133,11 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
             final String projectKey = "HELLO";
-            final boolean success = baseApi.projectApi().delete(projectKey);
-            assertThat(success).isTrue();
-            assertSent(server, "DELETE", restBasePath + BitbucketApiMetadata.API_VERSION + localPath + "/" + projectKey);
+            final RequestStatus success = baseApi.projectApi().delete(projectKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             server.shutdown();
         }
@@ -149,10 +152,11 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
             final String projectKey = "NOTEXIST";
-            final boolean success = baseApi.projectApi().delete(projectKey);
-            
-            assertThat(success).isFalse();
-            assertSent(server, "DELETE", restBasePath + BitbucketApiMetadata.API_VERSION + localPath + "/" + projectKey);
+            final RequestStatus success = baseApi.projectApi().delete(projectKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
+            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey);
         } finally {
             server.shutdown();
         }

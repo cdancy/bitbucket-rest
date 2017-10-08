@@ -30,11 +30,12 @@ import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
+import com.google.gson.JsonElement;
 
 @AutoValue
 public abstract class Comments implements ErrorsHolder, LinksHolder {
 
-    public abstract Map<String, String> properties();
+    public abstract Map<String, JsonElement> properties();
 
     public abstract int id();
 
@@ -51,30 +52,38 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
     public abstract long updatedDate();
 
     public abstract List<Comments> comments();
-
+    
+    public abstract List<Task> tasks();
+        
     @Nullable
     public abstract Anchor anchor();
     
     @Nullable
     public abstract Link link();
 
+    @Nullable
+    public abstract PermittedOperations permittedOperations();
+    
     Comments() {
     }
 
     @SerializedNames({ "properties", "id", "version", "text", "author",
-            "createdDate", "updatedDate", "comments", "anchor", "link", "links", "errors" })
-    public static Comments create(final Map<String, String> properties,
-            final int id,
-            final int version,
-            final String text,
-            final Author author,
-            final long createdDate,
-            final long updatedDate,
-            final List<Comments> comments,
-            final Anchor anchor,
-            final Link link,
-            final Links links,
-            final List<Error> errors) {
+            "createdDate", "updatedDate", "comments", "tasks", "anchor", "link", "links", 
+            "permittedOperations", "errors" })
+    public static Comments create(final Map<String, JsonElement> properties,
+                                  final int id,
+                                  final int version,
+                                  final String text,
+                                  final Author author,
+                                  final long createdDate,
+                                  final long updatedDate,
+                                  final List<Comments> comments,
+                                  final List<Task> tasks,
+                                  final Anchor anchor,
+                                  final Link link,
+                                  final Links links,
+                                  final PermittedOperations permittedOperations,
+                                  final List<Error> errors) {
         
         return new AutoValue_Comments(Utils.nullToEmpty(errors), 
                 links, 
@@ -86,7 +95,9 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
                 createdDate, 
                 updatedDate, 
                 Utils.nullToEmpty(comments), 
+                Utils.nullToEmpty(tasks), 
                 anchor, 
-                link);
+                link, 
+                permittedOperations);
     }
 }

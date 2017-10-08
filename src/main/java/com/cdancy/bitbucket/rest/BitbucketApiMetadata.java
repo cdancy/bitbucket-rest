@@ -17,16 +17,15 @@
 
 package com.cdancy.bitbucket.rest;
 
-import java.net.URI;
-import java.util.Properties;
-
-import org.jclouds.apis.ApiMetadata;
-import org.jclouds.rest.internal.BaseHttpApiMetadata;
-
 import com.cdancy.bitbucket.rest.config.BitbucketHttpApiModule;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
+import org.jclouds.apis.ApiMetadata;
+import org.jclouds.rest.internal.BaseHttpApiMetadata;
+
+import java.net.URI;
+import java.util.Properties;
 
 @AutoService(ApiMetadata.class)
 public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {

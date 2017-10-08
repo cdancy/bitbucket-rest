@@ -26,8 +26,10 @@ public abstract class Matcher {
     public enum MatcherId {
         
         RELEASE("RELEASE", "Release", "MODEL_CATEGORY", "Branching model category"),
-        DEVELOPMENT("development", "Development", "MODEL_BRANCH", "Branching model branch"),
-        MASTER("production", "Production", "MODEL_BRANCH", "Branching model branch");
+        DEVELOPMENT("Development", "Development", "MODEL_BRANCH", "Branching model branch"),
+        MASTER("Production", "Production", "MODEL_BRANCH", "Branching model branch"),
+        ANY_REF("ANY_REF_MATCHER_ID","ANY_REF_MATCHER_ID", "ANY_REF", "Any branch"),
+        ANY("any", "any", "ANY_REF", "ANY_REF");
 
         private final String id;
         private final String name;
@@ -65,22 +67,28 @@ public abstract class Matcher {
 
     public abstract String displayId();
 
-    public abstract BranchPermissionType type();
+    public abstract BranchRestrictionType type();
 
     public abstract Boolean active();
 
     @SerializedNames({"id", "displayId", "type", "active"})
     public static Matcher create(final String id, 
             final String displayId, 
-            final BranchPermissionType type,
+            final BranchRestrictionType type,
             final Boolean active) {
         
-        return new AutoValue_Matcher(id, displayId, type, active);
+        return new AutoValue_Matcher(id, 
+                displayId, 
+                type, 
+                active);
     }
 
-    public static Matcher create(final MatcherId matcherId, final Boolean active) {
+    public static Matcher create(final MatcherId matcherId, 
+            final Boolean active) {
+        
         return new AutoValue_Matcher(matcherId.getId(), 
                 matcherId.getName(), 
-                BranchPermissionType.create(matcherId), active);
+                BranchRestrictionType.create(matcherId), 
+                active);
     }
 }

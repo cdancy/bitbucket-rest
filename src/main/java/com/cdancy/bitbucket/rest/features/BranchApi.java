@@ -22,12 +22,14 @@ import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestriction;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -48,6 +50,7 @@ import javax.ws.rs.core.MediaType;
 
 import javax.inject.Named;
 import java.util.List;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -84,10 +87,11 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.10.0/bitbucket-branch-rest.html#idp47888"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @Payload("%7B \"name\": \"{branchPath}\" %7D")
     @DELETE
-    boolean delete(@PathParam("project") String project,
+    RequestStatus delete(@PathParam("project") String project,
                    @PathParam("repo") String repo,
                    @PayloadParam("branchPath") String branchPath);
 
@@ -95,10 +99,11 @@ public interface BranchApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45295356975264"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/default")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @Payload("%7B \"id\": \"{id}\" %7D")
     @PUT
-    boolean updateDefault(@PathParam("project") String project,
+    RequestStatus updateDefault(@PathParam("project") String project,
                           @PathParam("repo") String repo,
                           @PayloadParam("id") String id);
 
@@ -121,6 +126,7 @@ public interface BranchApi {
                       @PathParam("repo") String repo);
 
     @Named("branch:get-model-configuration")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
     @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
@@ -128,7 +134,8 @@ public interface BranchApi {
     BranchModelConfiguration getModelConfiguration(@PathParam("project") String project,
                                                    @PathParam("repo") String repo);
 
-    @Named("branch:get-model-configuration")
+    @Named("branch:update-model-configuration")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
     @Fallback(BitbucketFallbacks.BranchModelConfigurationOnError.class)
@@ -137,13 +144,23 @@ public interface BranchApi {
                                                       @PathParam("repo") String repo,
                                                       @BinderParam(BindToJsonPayload.class) CreateBranchModelConfiguration config);
 
+    @Named("branch:delete-model-configuration")
+    @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branchmodel/configuration")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @DELETE
+    RequestStatus deleteModelConfiguration(@PathParam("project") String project,
+                                     @PathParam("repo") String repo);
+
     @Named("branch:list-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Fallback(BitbucketFallbacks.BranchPermissionPageOnError.class)
     @GET
-    BranchPermissionPage listBranchPermission(@PathParam("project") String project,
+    BranchRestrictionPage listBranchRestriction(@PathParam("project") String project,
                                              @PathParam("repo") String repo,
                                              @Nullable @QueryParam("start") Integer start,
                                              @Nullable @QueryParam("limit") Integer limit);
@@ -153,19 +170,21 @@ public interface BranchApi {
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions")
     @Produces("application/vnd.atl.bitbucket.bulk+json")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @POST
-    boolean updateBranchPermission(@PathParam("project") String project,
+    RequestStatus createBranchRestriction(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
-                                   @BinderParam(BindToJsonPayload.class) List<BranchPermission> listBranchPermission);
+                                   @BinderParam(BindToJsonPayload.class) List<BranchRestriction> branchRestrictions);
 
     @Named("branch:delete-branch-permission")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.1/bitbucket-ref-restriction-rest.html#idm45354011023456"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/branch-permissions/2.0/projects/{project}/repos/{repo}/restrictions/{id}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deleteBranchPermission(@PathParam("project") String project,
+    RequestStatus deleteBranchRestriction(@PathParam("project") String project,
                                    @PathParam("repo") String repo,
                                    @PathParam("id") long id);
 }

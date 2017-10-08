@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -28,6 +29,8 @@ import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.cdancy.bitbucket.rest.parsers.DeleteRepositoryParser;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
@@ -44,6 +47,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
@@ -73,10 +77,11 @@ public interface RepositoryApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277567792"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(DeleteRepositoryParser.class)
     @DELETE
-    boolean delete(@PathParam("project") String project,
-                   @PathParam("repo") String repo);
+    RequestStatus delete(@PathParam("project") String project,
+                         @PathParam("repo") String repo);
 
     @Named("repository:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277593152"})
@@ -88,7 +93,7 @@ public interface RepositoryApi {
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
 
-    @Named("repository:get-PullRequest-Settings")
+    @Named("repository:get-pullrequest-settings")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054915136"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/pull-requests")
@@ -97,7 +102,7 @@ public interface RepositoryApi {
     PullRequestSettings getPullRequestSettings(@PathParam("project") String project,
                                                @PathParam("repo") String repo);
 
-    @Named("repository:update-PullRequest-Settings")
+    @Named("repository:update-pullrequest-settings")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054915136"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/pull-requests")
@@ -107,28 +112,30 @@ public interface RepositoryApi {
                                                   @PathParam("repo") String repo,
                                                   @BinderParam(BindToJsonPayload.class) CreatePullRequestSettings createPullRequestSettings);
 
-    @Named("repository:create-Permissions-Users")
+    @Named("repository:create-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/users")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @PUT
-    boolean createPermissionsByUser(@PathParam("project") String project,
+    RequestStatus createPermissionsByUser(@PathParam("project") String project,
                                     @PathParam("repo") String repo,
                                     @QueryParam("permission") String permission,
                                     @QueryParam("name") String name);
 
-    @Named("repository:delete-Permissions-Users")
+    @Named("repository:delete-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/users")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deletePermissionsByUser(@PathParam("project") String project,
+    RequestStatus deletePermissionsByUser(@PathParam("project") String project,
                                     @PathParam("repo") String repo,
                                     @QueryParam("name") String name);
 
-    @Named("repository:list-Permissions-User")
+    @Named("repository:list-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/users")
@@ -139,24 +146,26 @@ public interface RepositoryApi {
                                           @Nullable @QueryParam("start") Integer start,
                                           @Nullable @QueryParam("limit") Integer limit);
 
-    @Named("repository:create-Permissions-Group")
+    @Named("repository:create-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/groups")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @PUT
-    boolean createPermissionsByGroup(@PathParam("project") String project,
+    RequestStatus createPermissionsByGroup(@PathParam("project") String project,
                                      @PathParam("repo") String repo,
                                      @QueryParam("permission") String permission,
                                      @QueryParam("name") String name);
 
-    @Named("repository:delete-Permissions-Group")
+    @Named("repository:delete-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/permissions/groups")
-    @Fallback(BitbucketFallbacks.FalseOnError.class)
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
     @DELETE
-    boolean deletePermissionsByGroup(@PathParam("project") String project,
+    RequestStatus deletePermissionsByGroup(@PathParam("project") String project,
                                      @PathParam("repo") String repo,
                                      @QueryParam("name") String name);
 
@@ -171,7 +180,7 @@ public interface RepositoryApi {
                                          @Nullable @QueryParam("start") Integer start,
                                          @Nullable @QueryParam("limit") Integer limit);
 
-    @Named("repository:list-Hooks")
+    @Named("repository:list-hooks")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794419936"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks")
@@ -182,7 +191,7 @@ public interface RepositoryApi {
                        @Nullable @QueryParam("start") Integer start,
                        @Nullable @QueryParam("limit") Integer limit);
 
-    @Named("repository:get-Hook")
+    @Named("repository:get-hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}")
@@ -192,7 +201,7 @@ public interface RepositoryApi {
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey);
 
-    @Named("repository:enable-Hook")
+    @Named("repository:enable-hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/enabled")
@@ -202,7 +211,7 @@ public interface RepositoryApi {
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey);
 
-    @Named("repository:disable-Hook")
+    @Named("repository:disable-hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/enabled")

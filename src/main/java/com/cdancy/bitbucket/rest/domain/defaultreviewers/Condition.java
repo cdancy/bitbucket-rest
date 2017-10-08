@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.branch;
+package com.cdancy.bitbucket.rest.domain.defaultreviewers;
 
+import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.domain.common.Page;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.utils.Utils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
@@ -28,23 +29,31 @@ import org.jclouds.json.SerializedNames;
 import java.util.List;
 
 @AutoValue
-public abstract class BranchPermissionPage implements Page<BranchPermission>, ErrorsHolder {
+public abstract class Condition implements ErrorsHolder {
 
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static BranchPermissionPage create(final int start, 
-            final int limit, 
-            final int size, 
-            final int nextPageStart, 
-            final boolean isLastPage,
-            @Nullable final List<BranchPermission> values, 
-            @Nullable final List<Error> errors) {
-        
-        return new AutoValue_BranchPermissionPage(start, 
-                limit, 
-                size, 
-                nextPageStart, 
-                isLastPage,
-                Utils.nullToEmpty(values), 
-                Utils.nullToEmpty(errors));
+    @Nullable
+    public abstract Long id();
+
+    @Nullable
+    public abstract Scope scope();
+
+    @Nullable
+    public abstract Matcher sourceRefMatcher();
+
+    @Nullable
+    public abstract Matcher targetRefMatcher();
+
+    @Nullable
+    public abstract List<User> reviewers();
+
+    @Nullable
+    public abstract Long requiredApprovals();
+
+    @SerializedNames({ "id", "scope", "sourceRefMatcher", "targetRefMatcher", "reviewers", "requiredApprovals", "errors"})
+    public static Condition create(Long id, Scope scope, Matcher sourceRefMatcher,
+                                   Matcher targetRefMatcher, List<User> reviewers, Long requiredApprovals,
+                                   @Nullable List<Error> errors) {
+        return new AutoValue_Condition(Utils.nullToEmpty(errors), id, scope, sourceRefMatcher, targetRefMatcher,
+            reviewers, requiredApprovals);
     }
 }

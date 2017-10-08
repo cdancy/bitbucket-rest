@@ -1,0 +1,48 @@
+{
+    "properties": {
+        "diffAnchorPath": "path/to/file.txt"
+    },
+    "anchor": {
+        "properties": {
+            "key": "value"
+        },
+        "id": 1,
+        "version": 1,
+        "text": "An insightful comment.",
+        "author": {
+            "name": "jcitizen",
+            "emailAddress": "jane@example.com",
+            "id": 101,
+            "displayName": "Jane Citizen",
+            "active": true,
+            "slug": "jcitizen",
+            "type": "NORMAL"
+        },
+        "createdDate": 1499057503993,
+        "updatedDate": 1499057503993,
+        "comments": [],
+        "tasks": [],
+        "permittedOperations": {
+            "editable": true,
+            "deletable": true
+        }
+    },
+    "author": {
+        "name": "jcitizen",
+        "emailAddress": "jane@example.com",
+        "id": 101,
+        "displayName": "Jane Citizen",
+        "active": true,
+        "slug": "jcitizen",
+        "type": "NORMAL"
+    },
+    "createdDate": 1499057504642,
+    "id": 99,
+    "permittedOperations": {
+        "deletable": false,
+        "editable": false,
+        "transitionable": true
+    },
+    "text": "Resolve the merge conflicts",
+    "state": "OPEN"
+}

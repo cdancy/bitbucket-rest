@@ -33,15 +33,15 @@ repositories {
 }
 
 dependencies {
-    compileApi ('org.apache.jclouds:jclouds-core:2.0.1') 
+    compileApi ('org.apache.jclouds:jclouds-core:2.0.2') 
     compileApi ('com.google.auto.service:auto-service:1.0-rc3') 
     compileApi ('com.google.auto.value:auto-value:1.4.1')
     
-    testCompile ('org.apache.jclouds:jclouds-core:2.0.1:tests')
+    testCompile ('org.apache.jclouds:jclouds-core:2.0.2:tests')
     testCompile ('org.testng:testng:6.11') 
     testCompile ('org.assertj:assertj-core:3.6.2') 
     testCompile ('com.squareup.okhttp:mockwebserver:2.2.0') 
-    testCompile ('org.apache.jclouds.driver:jclouds-slf4j:2.0.1') 
+    testCompile ('org.apache.jclouds.driver:jclouds-slf4j:2.0.2') 
     testCompile ('ch.qos.logback:logback-core:1.2.1') 
     testCompile ('ch.qos.logback:logback-classic:1.2.1')
 }
@@ -93,6 +93,7 @@ tasks.withType(JavaCompile) {
 task mockTest(type: Test) {
     useTestNG() 
     include "**/**MockTest.class"
+    maxParallelForks = 2
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
@@ -100,6 +101,14 @@ task mockTest(type: Test) {
 }
 
 task integTest(type: Test, dependsOn: ['mockTest']) {
+    doFirst {
+        def integProjectDir = project.file("${buildDir}/integ-projects")
+        if (!integProjectDir.exists()) {
+            if (!integProjectDir.mkdirs()) {
+                throw new RuntimeException("Failed to create integ-project directory @ ${integProjectDir.path}")
+            }
+        }
+    }
     useTestNG() 
     include "**/**LiveTest.class"
     testLogging {
@@ -107,5 +116,8 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
         events 'started', 'passed', 'failed'
     } 
     systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketEndpoint}",
-                        "test.bitbucket.credential" : "${testBitbucketCredential}"]
+                        "test.bitbucket.credential" : "${testBitbucketCredential}",
+                        "test.bitbucket.project" : "${testBitbucketProject}",
+                        "test.bitbucket.basedir" : "${buildDir}/integ-projects"]
 }
+

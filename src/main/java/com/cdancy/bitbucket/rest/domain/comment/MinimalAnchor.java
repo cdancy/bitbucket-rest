@@ -15,24 +15,20 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.branch;
+package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class BranchPermissionType {
-    
-    public abstract String id();
+public abstract class MinimalAnchor {
 
-    public abstract String name();
+    public abstract int id();
 
-    @SerializedNames({"id", "name"})
-    public static BranchPermissionType create(final String id, final String name) {
-        return new AutoValue_BranchPermissionType(id, name);
-    }
+    public abstract String type();
 
-    public static BranchPermissionType create(final Matcher.MatcherId matcherId) {
-        return new AutoValue_BranchPermissionType(matcherId.getTypeId(), matcherId.getTypeName());
+    @SerializedNames({ "id", "type" })
+    public static MinimalAnchor create(int id, String type) {
+        return new AutoValue_MinimalAnchor(id, type);
     }
 }

@@ -18,15 +18,18 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermission;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionEnumType;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestriction;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionEnumType;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.branch.Type;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
@@ -43,25 +46,23 @@ import static org.assertj.core.api.Assertions.fail;
 @Test(groups = "live", testName = "BranchApiLiveTest", singleThreaded = true)
 public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
-    /*
-    String projectKey = randomStringLettersOnly();
-    String repoKey = randomStringLettersOnly();
-    String tagName = randomStringLettersOnly();
-    String commitHash = "";
-    */
+    private GeneratedTestContents generatedTestContents;
 
-    String projectKey = "BUILD";
-    String repoKey = "dancc-test";
-    String branchName = randomStringLettersOnly();
-    String commitHash = "5284b6cec569346855710b535dafb915423110c2";
-    String existingGroup = "dev-group";
-    Long branchPermissionId = null;
-    BranchModelConfiguration branchModelConfiguration = null;
+    private String projectKey;
+    private String repoKey;
+    private String defaultBranchId;
+    private String commitHash;
 
-    String defaultBranchId = "refs/heads/master";
+    private final String branchName = TestUtilities.randomStringLettersOnly();
+    private Long branchPermissionId;
+    private BranchModelConfiguration branchModelConfiguration;
 
     @BeforeClass
     public void init() {
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
+
         Branch branch = api().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
         assertThat(branch.errors().isEmpty()).isTrue();
@@ -96,35 +97,41 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetBranchModel")
     public void testUpdateDefaultBranch() {
-        boolean success = api().updateDefault(projectKey, repoKey, "refs/heads/" + branchName);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().updateDefault(projectKey, repoKey, "refs/heads/" + branchName);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();    
     }
 
     @Test (dependsOnMethods = "testUpdateDefaultBranch")
     public void testGetNewDefaultBranch() {
         Branch branch = api().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
-        assertThat(branch.errors().isEmpty()).isTrue();
+        assertThat(branch.errors()).isEmpty();
         assertThat(branch.id()).isNotNull();
     }
 
     @Test (dependsOnMethods = "testGetNewDefaultBranch")
     public void testCreateBranchPermission() {
         List<String> groupPermission = new ArrayList<>();
-        groupPermission.add(existingGroup);
-        List<Long> listAccessKey = new ArrayList<>();
-        listAccessKey.add(123L);
-        List<BranchPermission> listBranchPermission = new ArrayList<>();
-        listBranchPermission.add(BranchPermission.createWithId(null, BranchPermissionEnumType.FAST_FORWARD_ONLY,
-                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, listAccessKey));
+        groupPermission.add(defaultBitbucketGroup);
+        final List<BranchRestriction> restrictions = new ArrayList<>();
+        restrictions.add(BranchRestriction.createWithId(null, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission, null));
+        restrictions.add(BranchRestriction.createWithId(null, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.DEVELOPMENT, true), new ArrayList<User>(), groupPermission, null));
+        restrictions.add(BranchRestriction.createWithId(null, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
+                Matcher.create(Matcher.MatcherId.MASTER, true), new ArrayList<User>(), groupPermission, null));
 
-        boolean success = api().updateBranchPermission(projectKey, repoKey, listBranchPermission);
-        assertThat(success).isTrue();
+        final RequestStatus success = api().createBranchRestriction(projectKey, repoKey, restrictions);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty(); 
     }
 
     @Test (dependsOnMethods = "testCreateBranchPermission")
     public void testListBranchPermission() {
-        BranchPermissionPage branchPermissionPage = api().listBranchPermission(projectKey, repoKey, null, 1);
+        BranchRestrictionPage branchPermissionPage = api().listBranchRestriction(projectKey, repoKey, null, 1);
         assertThat(branchPermissionPage).isNotNull();
         assertThat(branchPermissionPage.errors().isEmpty()).isTrue();
         assertThat(branchPermissionPage.values().size() > 0).isTrue();
@@ -134,20 +141,22 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testListBranchPermission")
     public void testDeleteBranchPermission() {
         if (branchPermissionId != null) {
-            boolean success = api().deleteBranchPermission(projectKey, repoKey, branchPermissionId);
-            assertThat(success).isTrue();
+            final RequestStatus success = api().deleteBranchRestriction(projectKey, repoKey, branchPermissionId);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
         } else {
             fail("branchPermissionId is null");
         }
     }
 
-    @Test(dependsOnMethods = {"testCreateBranch", "testListBranches"})
+    @Test(dependsOnMethods = {"testListBranches"})
     public void testGetBranchModelConfiguration() {
         branchModelConfiguration = api().getModelConfiguration(projectKey, repoKey);
         checkDefaultBranchConfiguration();
     }
 
-    @Test(dependsOnMethods = {"testGetBranchModelConfiguration", "testCreateBranch", "testListBranches"})
+    @Test(dependsOnMethods = {"testGetBranchModelConfiguration"})
     public void testUpdateBranchModelConfiguration() {
         List<Type> types = new ArrayList<>();
         types.add(Type.create(Type.TypeId.BUGFIX, null, "bug/", false));
@@ -156,12 +165,12 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         types.add(Type.create(Type.TypeId.FEATURE, null, "fea/", true));
         CreateBranchModelConfiguration configuration = CreateBranchModelConfiguration.create(branchModelConfiguration.development(), null, types);
 
-        BranchModelConfiguration branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey, configuration);
-        assertThat(branchModelConfiguration).isNotNull();
-        assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
-        assertThat(branchModelConfiguration.production()).isNull();
-        assertThat(branchModelConfiguration.types().size() == 4);
-        for (Type type : branchModelConfiguration.types()) {
+        BranchModelConfiguration bmc = api().updateModelConfiguration(projectKey, repoKey, configuration);
+        assertThat(bmc).isNotNull();
+        assertThat(bmc.errors().isEmpty()).isTrue();
+        assertThat(bmc.production()).isNull();
+        assertThat(bmc.types().size()).isEqualTo(4);
+        for (Type type : bmc.types()) {
             switch (type.id()) {
                 case BUGFIX:
                     assertThat(type.prefix()).isEqualTo("bug/");
@@ -185,20 +194,26 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         }
     }
 
-    @Test(dependsOnMethods = {"testCreateBranch", "testListBranches"})
+    @Test(dependsOnMethods = {"testUpdateBranchModelConfiguration"})
+    public void testDeleteBranchModelConfiguration() {
+        final RequestStatus success = api().deleteModelConfiguration(projectKey, repoKey);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty(); 
+    }
+
+    @Test(dependsOnMethods = {"testListBranches"})
     public void testGetBranchModelConfigurationOnError() {
-        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, "12345");
+        BranchModelConfiguration configuration = api().getModelConfiguration(projectKey, TestUtilities.randomString());
+        assertThat(configuration).isNotNull();
         assertThat(configuration.errors()).isNotEmpty();
-        assertThat(configuration.development()).isNull();
-        assertThat(configuration.production()).isNull();
-        assertThat(configuration.types()).isEmpty();
     }
 
     private void checkDefaultBranchConfiguration() {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
         assertThat(branchModelConfiguration.production()).isNull();
-        assertThat(branchModelConfiguration.types().size() == 4);
+        assertThat(branchModelConfiguration.types().size()).isEqualTo(4);
         for (Type type : branchModelConfiguration.types()) {
             switch (type.id()) {
                 case BUGFIX:
@@ -222,14 +237,25 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @AfterClass
     public void fin() {
-        boolean success = api().updateDefault(projectKey, repoKey, defaultBranchId);
-        assertThat(success).isTrue();
-        success = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
-        assertThat(success).isTrue();
-        if (branchModelConfiguration != null) {
-            branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey,
-                CreateBranchModelConfiguration.create(branchModelConfiguration));
-            checkDefaultBranchConfiguration();
+        try {
+            
+            final RequestStatus updateStatus = api().updateDefault(projectKey, repoKey, defaultBranchId);
+            assertThat(updateStatus).isNotNull();
+            assertThat(updateStatus.value()).isTrue();
+            assertThat(updateStatus.errors()).isEmpty(); 
+
+            final RequestStatus deleteStatus = api().delete(projectKey, repoKey, "refs/heads/" + branchName);
+            assertThat(deleteStatus).isNotNull();
+            assertThat(deleteStatus.value()).isTrue();
+            assertThat(deleteStatus.errors()).isEmpty(); 
+
+            if (branchModelConfiguration != null) {
+                branchModelConfiguration = api().updateModelConfiguration(projectKey, repoKey,
+                    CreateBranchModelConfiguration.create(branchModelConfiguration));
+                checkDefaultBranchConfiguration();
+            }
+        } finally {
+            TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);            
         }
     }
 

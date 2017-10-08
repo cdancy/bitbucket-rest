@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
@@ -27,7 +28,7 @@ import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.cdancy.bitbucket.rest.internal.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.google.common.collect.ImmutableMap;
@@ -140,8 +141,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.delete(projectKey, repoKey);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.delete(projectKey, repoKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();
@@ -158,8 +161,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "notexist";
-            boolean success = api.delete(projectKey, repoKey);
-            assertThat(success).isTrue();
+            final RequestStatus success = api.delete(projectKey, repoKey);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
         } finally {
             baseApi.close();
@@ -278,8 +283,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
@@ -347,8 +354,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
 
-            boolean success = api.createPermissionsByGroup(projectKey, repoKey, "test123", "123");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.createPermissionsByGroup(projectKey, repoKey, "test123", "123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
@@ -421,8 +430,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
-            assertThat(success).isFalse();
+            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
@@ -491,8 +502,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.createPermissionsByGroup(projectKey, repoKey, "test123", "123");
-            assertThat(success).isFalse();
+            final RequestStatus success = api.createPermissionsByGroup(projectKey, repoKey, "test123", "123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
@@ -511,8 +524,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
@@ -531,8 +546,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
-            assertThat(success).isTrue();
+            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
@@ -551,8 +568,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         try {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
-            boolean success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
-            assertThat(success).isFalse();
+            final RequestStatus success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
@@ -572,8 +591,10 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             String projectKey = "PRJ";
             String repoKey = "myrepo";
 
-            boolean success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
-            assertThat(success).isFalse();
+            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
             Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
             assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);

@@ -17,18 +17,27 @@
 
 package com.cdancy.bitbucket.rest.fallbacks;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Throwables.propagate;
+
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModel;
 import com.cdancy.bitbucket.rest.domain.branch.BranchModelConfiguration;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
-import com.cdancy.bitbucket.rest.domain.branch.BranchPermissionPage;
+import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.domain.common.Veto;
+import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
+import com.cdancy.bitbucket.rest.domain.file.LinePage;
+import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
@@ -57,8 +66,7 @@ import org.jclouds.Fallback;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Throwables.propagate;
+import com.google.gson.JsonSyntaxException;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class BitbucketFallbacks {
@@ -114,6 +122,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class ConditionOnError implements Fallback<Object> {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createConditionFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -186,6 +203,15 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createTagFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class TaskOnError implements Fallback<Object> {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createTaskFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -316,7 +342,55 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
+    
+    public static final class LinePageOnError implements Fallback<Object> {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createLinePageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class RawContentOnError implements Fallback<Object> {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                final Error error = Error.create(throwable.getMessage(), "Failed retrieving raw content", 
+                        throwable.getClass().getName(), false, null);
+                return RawContent.create(null, Lists.newArrayList(error));
+            }
+            throw propagate(throwable);
+        }
+    }
+    
+    public static final class RequestStatusOnError implements Fallback<Object> {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                try {
+                    return createRequestStatusFromErrors(getErrors(throwable.getMessage()));
+                } catch (JsonSyntaxException e) {
+                    final Error error = Error.create(null, throwable.getMessage(), 
+                            throwable.getClass().getName(), false, null);
+                    final List<Error> errors = Lists.newArrayList(error);
+                    return RequestStatus.create(false, errors);
+                }
+            }
+            throw propagate(throwable);
+        }
+    }
 
+    public static RequestStatus createRequestStatusFromErrors(final List<Error> errors) {
+        return RequestStatus.create(false, errors);
+    }
+        
+    public static RawContent createRawContentFromErrors(final List<Error> errors) {
+        return RawContent.create(null, errors);
+    }
+        
+    public static LinePage createLinePageFromErrors(final List<Error> errors) {
+        return LinePage.create(-1, -1, -1, -1, true, null, null, errors);
+    }
+        
     public static Branch createBranchFromErrors(final List<Error> errors) {
         return Branch.create(null, null, null, null, null, false, null, errors);
     }
@@ -337,12 +411,16 @@ public final class BitbucketFallbacks {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
+    public static Condition createConditionFromErrors(final List<Error> errors) {
+        return Condition.create(null, null, null, null, null, null, errors);
+    }
+
     public static StatusPage createStatusPageFromErrors(final List<Error> errors) {
         return StatusPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
-    public static BranchPermissionPage createBranchPermissionPageFromErrors(final List<Error> errors) {
-        return BranchPermissionPage.create(-1, -1, -1, -1, true, null, errors);
+    public static BranchRestrictionPage createBranchPermissionPageFromErrors(final List<Error> errors) {
+        return BranchRestrictionPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static ChangePage createChangePageFromErrors(final List<Error> errors) {
@@ -350,7 +428,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Comments createCommentsFromErrors(final List<Error> errors) {
-        return Comments.create(null, 0, 0, null, null, 0, 0, null, null, null, null, errors);
+        return Comments.create(null, 0, 0, null, null, 0, 0, null, null, null, null, null, null, errors);
     }
 
     public static CommentPage createCommentPageFromErrors(final List<Error> errors) {
@@ -367,6 +445,10 @@ public final class BitbucketFallbacks {
 
     public static Tag createTagFromErrors(final List<Error> errors) {
         return Tag.create(null, null, null, null, null, null, errors);
+    }
+    
+    public static Task createTaskFromErrors(List<Error> errors) {
+        return Task.create(null, null, -1, -1, null, null, null, errors);
     }
 
     public static Repository createRepositoryFromErrors(final List<Error> errors) {
@@ -435,20 +517,54 @@ public final class BitbucketFallbacks {
      * @return List of Error's or empty list if none could be found
      */
     public static List<Error> getErrors(final String output) {
-        final JsonElement element = parser.parse(output);
-        final JsonObject object = element.getAsJsonObject();
-        final JsonArray errorsArray = object.get("errors").getAsJsonArray();
 
         final List<Error> errors = Lists.newArrayList();
-        final Iterator<JsonElement> it = errorsArray.iterator();
-        while (it.hasNext()) {
-            final JsonObject obj = it.next().getAsJsonObject();
-            final JsonElement context = obj.get("context");
-            final JsonElement message = obj.get("message");
-            final JsonElement exceptionName = obj.get("exceptionName");
-            final Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
-                    !message.isJsonNull() ? message.getAsString() : null,
-                    !exceptionName.isJsonNull() ? exceptionName.getAsString() : null);
+        
+        try {
+            
+            final JsonElement element = parser.parse(output);
+            final JsonObject object = element.getAsJsonObject();
+            final JsonArray errorsArray = object.get("errors").getAsJsonArray();
+
+            final Iterator<JsonElement> it = errorsArray.iterator();
+            while (it.hasNext()) {
+                                
+                final JsonObject obj = it.next().getAsJsonObject();
+                final JsonElement context = obj.get("context");
+                final JsonElement message = obj.get("message");
+                final JsonElement exceptionName = obj.get("exceptionName");
+                final JsonElement conflicted = obj.get("conflicted");
+                    
+                final List<Veto> vetos = Lists.newArrayList();
+                final JsonElement possibleVetoesArray = obj.get("vetoes");
+                if (possibleVetoesArray != null && !possibleVetoesArray.isJsonNull()) {
+                    
+                    final JsonArray vetoesArray = possibleVetoesArray.getAsJsonArray();
+                    final Iterator<JsonElement> vetoIterator = vetoesArray.iterator();
+                    while (vetoIterator.hasNext()) {
+                        final JsonObject vetoObj = vetoIterator.next().getAsJsonObject();
+                        final JsonElement summary = vetoObj.get("summaryMessage");
+                        final JsonElement detailed = vetoObj.get("detailedMessage");
+                        final Veto veto = Veto.create(!summary.isJsonNull() ? summary.getAsString() : null, 
+                                !detailed.isJsonNull() ? detailed.getAsString() : null);
+                        vetos.add(veto);
+                    }
+                }
+
+                final Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
+                        !message.isJsonNull() ? message.getAsString() : null,
+                        !exceptionName.isJsonNull() ? exceptionName.getAsString() : null, 
+                        conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, 
+                        vetos);
+
+                errors.add(error);
+            }
+        } catch (final Exception e) {
+            final Error error = Error.create(output, 
+                    "Failed to parse output: message=" + e.getMessage(), 
+                    e.getClass().getName(), 
+                    false, 
+                    null);
             errors.add(error);
         }
 

@@ -1,0 +1,134 @@
+[
+  {
+    "id": 3,
+    "scope": {
+      "type": "REPOSITORY",
+      "resourceId": 10
+    },
+    "sourceRefMatcher": {
+      "active": true,
+      "id": "ANY_REF_MATCHER_ID",
+      "displayId": "ANY_REF_MATCHER_ID",
+      "type": {
+        "id": "ANY_REF",
+        "name": "Any branch"
+      }
+    },
+    "targetRefMatcher": {
+      "active": true,
+      "id": "ANY_REF_MATCHER_ID",
+      "displayId": "ANY_REF_MATCHER_ID",
+      "type": {
+        "id": "ANY_REF",
+        "name": "Any branch"
+      }
+    },
+    "reviewers": [
+      {
+        "name": "root",
+        "emailAddress": "root@root.com",
+        "id": 1,
+        "displayName": "root",
+        "active": true,
+        "slug": "root",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://192.168.99.100:32770/users/root"
+            }
+          ]
+        }
+      }
+    ],
+    "requiredApprovals": 1
+  },
+  {
+    "id": 4,
+    "scope": {
+      "type": "PROJECT",
+      "resourceId": 10
+    },
+    "sourceRefMatcher": {
+      "active": true,
+      "id": "ANY_REF_MATCHER_ID",
+      "displayId": "ANY_REF_MATCHER_ID",
+      "type": {
+        "id": "ANY_REF",
+        "name": "Any branch"
+      }
+    },
+    "targetRefMatcher": {
+      "active": true,
+      "id": "ANY_REF_MATCHER_ID",
+      "displayId": "ANY_REF_MATCHER_ID",
+      "type": {
+        "id": "ANY_REF",
+        "name": "Any branch"
+      }
+    },
+    "reviewers": [
+      {
+        "name": "root",
+        "emailAddress": "root@root.com",
+        "id": 1,
+        "displayName": "root",
+        "active": true,
+        "slug": "root",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://192.168.99.100:32770/users/root"
+            }
+          ]
+        }
+      }
+    ],
+    "requiredApprovals": 1
+  },
+  {
+    "id": 5,
+    "scope": {
+      "type": "PROJECT",
+      "resourceId": 10
+    },
+    "sourceRefMatcher": {
+      "active": true,
+      "id": "BUGFIX",
+      "displayId": "Bugfix",
+      "type": {
+        "id": "MODEL_CATEGORY",
+        "name": "Branching model category"
+      }
+    },
+    "targetRefMatcher": {
+      "active": true,
+      "id": "HOTFIX",
+      "displayId": "Hotfix",
+      "type": {
+        "id": "MODEL_CATEGORY",
+        "name": "Branching model category"
+      }
+    },
+    "reviewers": [
+      {
+        "name": "root",
+        "emailAddress": "root@root.com",
+        "id": 1,
+        "displayName": "root",
+        "active": true,
+        "slug": "root",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://192.168.99.100:32770/users/root"
+            }
+          ]
+        }
+      }
+    ],
+    "requiredApprovals": 1
+  }
+]

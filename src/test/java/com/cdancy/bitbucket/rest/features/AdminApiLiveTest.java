@@ -18,17 +18,41 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test(groups = "live", testName = "AdminApiLiveTest")
+@Test(groups = "live", testName = "AdminApiLiveTest", singleThreaded = true)
 public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
+    public void testListUsersByGroup() {
+        UserPage userPage = api().listUsersByGroup(defaultBitbucketGroup, null, null, null);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.size() > 0).isTrue();
+    }
+    
+    @Test
     public void testListUsersByNonExistentGroup() {
-        final UserPage userPage = api().listUserByGroup(randomString(), null, null, null);
+        final UserPage userPage = api().listUsersByGroup(TestUtilities.randomString(), null, null, null);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.size() == 0).isTrue();
+    }
+    
+    @Test
+    public void testListUsers() {
+        final User user = TestUtilities.getDefaultUser(this.credential, this.api);
+        final UserPage userPage = api().listUsers(user.slug(), null, null);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.size() > 0).isTrue();
+    }
+    
+    @Test
+    public void testListUsersNonExistent() {
+        final UserPage userPage = api().listUsers(TestUtilities.randomString(), null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
     }

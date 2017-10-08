@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.internal;
+package com.cdancy.bitbucket.rest;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,6 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 
-import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.google.common.base.Charsets;
 import com.google.common.base.Functions;
 import com.google.common.base.Throwables;

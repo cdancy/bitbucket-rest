@@ -20,19 +20,37 @@ package com.cdancy.bitbucket.rest.features;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.GeneratedTestContents;
+import com.cdancy.bitbucket.rest.TestUtilities;
+import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.options.CreateTag;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "TagApiLiveTest", singleThreaded = true)
 public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
+    
+    private GeneratedTestContents generatedTestContents;
 
-    final String projectKey = "TEST";
-    final String repoKey = "dev";
-    final String tagName = randomStringLettersOnly();
-    final String commitHash = "d90ca08fa076e2e4c076592fce3832aba80a494f";
+    private String projectKey = null;
+    private String repoKey = null;
+    private String commitHash = null;
+    final String tagName = TestUtilities.randomStringLettersOnly();
 
+    @BeforeClass
+    public void init() {
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
+        this.projectKey = generatedTestContents.project.key();
+        this.repoKey = generatedTestContents.repository.name();
+        
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, Boolean.TRUE, 1, 0);
+        assertThat(commitPage.values().isEmpty()).isFalse();
+        this.commitHash = commitPage.values().get(0).id();
+    }
+    
     @Test
     public void testCreateTag() {
         final CreateTag createTag = CreateTag.create(tagName, commitHash, null);
@@ -56,6 +74,11 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testGetTagNonExistent() {
         final Tag tag = api().get(projectKey, repoKey, tagName + "9999");
         assertThat(tag).isNull();
+    }
+    
+    @AfterClass
+    public void fin() {
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private TagApi api() {

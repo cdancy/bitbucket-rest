@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.branch;
 
-public enum BranchPermissionEnumType {
+public enum BranchRestrictionEnumType {
     
     FAST_FORWARD_ONLY("Rewriting history", 
             "fast-forward-only",
@@ -40,7 +40,7 @@ public enum BranchPermissionEnumType {
     private final String apiName;
     private final String description;
 
-    BranchPermissionEnumType(final String name, final String apiName, final String description) {
+    BranchRestrictionEnumType(final String name, final String apiName, final String description) {
         this.name = name;
         this.apiName = apiName;
         this.description = description;
@@ -64,8 +64,8 @@ public enum BranchPermissionEnumType {
      * @param apiName ApiName
      * @return value
      */
-    public static BranchPermissionEnumType fromValue(final String apiName) {
-        for (final BranchPermissionEnumType enumType : BranchPermissionEnumType.values()) {
+    public static BranchRestrictionEnumType fromValue(final String apiName) {
+        for (final BranchRestrictionEnumType enumType : BranchRestrictionEnumType.values()) {
             if (enumType.getApiName().equals(apiName)) {
                 return enumType;
             }

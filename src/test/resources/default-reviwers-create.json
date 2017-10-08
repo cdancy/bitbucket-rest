@@ -1,0 +1,45 @@
+{
+  "id": 3,
+  "requiredApprovals": 1,
+  "reviewers": [
+    {
+      "active": true,
+      "avatarUrl": "http://www.gravatar.com/avatar/7f08d8c2a996003767fbe0cb09d89589.jpg?s=32&d=mm",
+      "displayName": "root",
+      "emailAddress": "root@root.com",
+      "id": 1,
+      "links": {
+        "self": [
+          {
+            "href": "http://192.168.99.100:32770/users/root"
+          }
+        ]
+      },
+      "name": "root",
+      "slug": "root",
+      "type": "NORMAL"
+    }
+  ],
+  "scope": {
+    "resourceId": 10,
+    "type": "REPOSITORY"
+  },
+  "sourceRefMatcher": {
+    "active": true,
+    "displayId": "ANY_REF_MATCHER_ID",
+    "id": "ANY_REF_MATCHER_ID",
+    "type": {
+      "id": "ANY_REF",
+      "name": "Any branch"
+    }
+  },
+  "targetRefMatcher": {
+    "active": true,
+    "displayId": "ANY_REF_MATCHER_ID",
+    "id": "ANY_REF_MATCHER_ID",
+    "type": {
+      "id": "ANY_REF",
+      "name": "Any branch"
+    }
+  }
+}

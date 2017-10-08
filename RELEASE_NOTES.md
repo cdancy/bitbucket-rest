@@ -1,6 +1,41 @@
-### Version 0.0.16 (TBA)
+### Version 1.0.4 (TBA)
+
+### Version 1.0.3 (8/10/2017)
+* FIX: Ensure `BitbucketFallbacks` properly parses `conflicted` and `vetoes` properties when constructing `Error` objects - [Commit 53908](https://github.com/cdancy/bitbucket-rest/commit/59ff2b30f209872d1ba23d52850d98201daf4cea)
+
+### Version 1.0.2 (8/10/2017)
+* ADDED: `Error` object gained properties `conflicted` and `vetoes` - [Commit 53908](https://github.com/cdancy/bitbucket-rest/commit/539081b531fffa7448cc27b69fc96a38043a907d)
+
+### Version 1.0.1 (7/31/2017)
+* FIX: remove debugging printlns that snuck in. No functionality added/removed.
+
+### Version 1.0.0 (7/30/2017)
+* **!!!!! BREAKING !!!!!**: All endpoints which previously returned a boolean will now return a `RequestStatus` object. This object has 2 parameters: `value` and `errors`. If the request was good `value` will be set to true and if the request was bad then `value` will be set to false. Additionally, and if the request was bad, the `errors` object will also be populated as per the standard set by this library.
+
+* **!!!!! BREAKING !!!!!**: All branch "permission" domain objects and endpoints have been renamed to "restrictions".
+
+### Version 0.9.1 (7/15/2017)
+* ADDED: `TasksApi` was created with endpoint `create` - [PR 104](https://github.com/cdancy/bitbucket-rest/pull/104)
+* REFACTOR: `Comments` variable `properties` is now of type <String, JsonElement> instead of <String, String> to account variable value being returned - [PR 106](https://github.com/cdancy/bitbucket-rest/pull/106)
+* ADDED: Bump jclouds to version `2.0.2` - [PR 107](https://github.com/cdancy/bitbucket-rest/pull/107)
+* ADDED: `TasksApi` gained endpoint `get` - [PR 108](https://github.com/cdancy/bitbucket-rest/pull/108)
+* ADDED: `TasksApi` gained endpoint `delete` - [PR 109](https://github.com/cdancy/bitbucket-rest/pull/109)
+
+### Version 0.9.0 (6/12/2017)
+* ADDED: `Activities` pojo gained value `REOPENED` - [PR 88](https://github.com/cdancy/bitbucket-rest/pull/88)
+* ADDED: `DefaultReviewersApi` gained endpoint `listConditions` - [PR 81](https://github.com/cdancy/bitbucket-rest/pull/81)
+* ADDED: `AdminApi` gained endpoint `listUsers` - [PR 91](https://github.com/cdancy/bitbucket-rest/pull/91)
+* REFACTOR: `AdminApi` renamed endpoint `listUserByGroup` to `listUsersByGroup` - [PR 91](https://github.com/cdancy/bitbucket-rest/pull/91)
+* ADDED: `DefaultReviewersApi` gained endpoint `createCondition` - [PR 82](https://github.com/cdancy/bitbucket-rest/pull/82)
+* ADDED: `DefaultReviewersApi` gained endpoint `updateCondition` - [PR 83](https://github.com/cdancy/bitbucket-rest/pull/83)
+* ADDED: `DefaultReviewersApi` gained endpoint `deleteCondition` - [PR 84](https://github.com/cdancy/bitbucket-rest/pull/84)
+* ADDED: `FileApi` with single endpoint `getContent` - [PR 96](https://github.com/cdancy/bitbucket-rest/pull/96)
+* ADDED: `FileApi` gained endpoint `listlines` - [PR 97](https://github.com/cdancy/bitbucket-rest/pull/97)
+* REFACTOR: `FileApi` renamed endpoint `getContent` to `raw` and now returns domain object `RawContent` - [Commit 03def](https://github.com/cdancy/bitbucket-rest/commit/03def8350e87e43bcd092bf9e21579f4e54a60c0)
+
+### Version 0.0.16 (6/2/2017)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByGroup` - [PR 61](https://github.com/cdancy/bitbucket-rest/pull/61)
-* ADDED: `RepositoryApi` gained endpoints `createPermissionsByGroup` and `createPermissionsByGroup` - [PR 62](https://github.com/cdancy/bitbucket-rest/pull/62)
+* ADDED: `RepositoryApi` gained endpoints `createPermissionsByGroup` and `deletePermissionsByGroup` - [PR 62](https://github.com/cdancy/bitbucket-rest/pull/62)
 * ADDED: `RepositoryApi` gained endpoints `listPermissionsByUser` - [PR 63](https://github.com/cdancy/bitbucket-rest/pull/63)
 * ADDED: `RepositoryApi` gained endpoints `createPermissionsByUser` and `deletePermissionsByUser` - [PR 64](https://github.com/cdancy/bitbucket-rest/pull/64)
 * ADDED: `RepositoryApi` gained endpoints `getPullRequestSettings` and `updatePullRequestSettings` - [PR 65](https://github.com/cdancy/bitbucket-rest/pull/65)
@@ -12,6 +47,10 @@
 * ADDED: Checkstyle module to catch windows based line-endings - [PR 78](https://github.com/cdancy/bitbucket-rest/pull/78)
 * ADDED: Checkstyle module to catch author annotations - [PR 79](https://github.com/cdancy/bitbucket-rest/pull/79)
 * ADDED: `Branch` model gained attribute `metadata`  - [PR 72](https://github.com/cdancy/bitbucket-rest/pull/72)
+* ADDED: `CommitsApi` gained endpoint `list` - [PR 85](https://github.com/cdancy/bitbucket-rest/pull/85)
+* ADDED: `BuildStatusApi` gained endpoint `add` - [PR 86](https://github.com/cdancy/bitbucket-rest/pull/86)
+* REFACTOR: All live tests can now be run successfully OOTB - [PR 87](https://github.com/cdancy/bitbucket-rest/pull/87)
+* ADDED: `BranchApi` gained endpoint `deleteModelConfiguration` - [PR 70](https://github.com/cdancy/bitbucket-rest/pull/70)
 
 ### Version 0.0.15 (4/28/2017)
 * ADDED: `PullRequestApi` gained endpoints `listActivities`, `listParticipants`, `assignParticipant`, and `deleteParticipant`. - [PR 55](https://github.com/cdancy/bitbucket-rest/pull/55)

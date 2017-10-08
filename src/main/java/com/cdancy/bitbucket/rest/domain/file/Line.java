@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.file;
+
+import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Veto {
+public abstract class Line {
 
     @Nullable
-    public abstract String summaryMessage();
+    public abstract String text();
 
     @Nullable
-    public abstract String detailedMessage();
+    public abstract String type();
 
-    Veto() {
+    Line() {
     }
 
-    @SerializedNames({ "summaryMessage", "detailedMessage" })
-    public static Veto create(final String summaryMessage, final String detailedMessage) {
-        return new AutoValue_Veto(summaryMessage, detailedMessage);
+    @SerializedNames({ "text", "type" })
+    public static Line create(String text, String type) {
+        return new AutoValue_Line(text, type);
     }
 }
