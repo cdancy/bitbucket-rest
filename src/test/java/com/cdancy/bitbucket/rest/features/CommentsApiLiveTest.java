@@ -168,11 +168,9 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(allComments.isEmpty()).isFalse();
         boolean foundComment = false;
         for (final Comments comm : allComments) {
-            if (comm.anchor() != null) {
-                if (comm.anchor().path().equalsIgnoreCase(this.filePath)) {
-                    foundComment = true;
-                    break;
-                }
+            if (comm.anchor() != null && comm.anchor().path().equalsIgnoreCase(this.filePath)) {
+                foundComment = true;
+                break;
             }
         }
         assertThat(foundComment).isTrue();

@@ -65,7 +65,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
         
-        BranchPage branchPage = api.branchApi().list(project, repo, null, null, null, null, null, null);
+        final BranchPage branchPage = api.branchApi().list(project, repo, null, null, null, null, null, null);
         assertThat(branchPage).isNotNull();
         assertThat(branchPage.errors().isEmpty()).isTrue();
         assertThat(branchPage.values().size()).isEqualTo(2);
@@ -82,13 +82,13 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void createPullRequest() {
-        String randomChars = TestUtilities.randomString();
-        ProjectKey proj = ProjectKey.create(project);
-        MinimalRepository repository = MinimalRepository.create(repo, null, proj);
-        Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
-        Reference toRef = Reference.create(null, repository);
-        CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
-        PullRequest pr = api().create(project, repo, cpr);
+        final String randomChars = TestUtilities.randomString();
+        final ProjectKey proj = ProjectKey.create(project);
+        final MinimalRepository repository = MinimalRepository.create(repo, null, proj);
+        final Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
+        final Reference toRef = Reference.create(null, repository);
+        final CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
+        final PullRequest pr = api().create(project, repo, cpr);
         assertThat(pr).isNotNull();
         assertThat(project.equals(pr.fromRef().repository().project().key())).isTrue();
         assertThat(repo.equals(pr.fromRef().repository().name())).isTrue();
@@ -98,7 +98,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "createPullRequest")
     public void testGetPullRequest() {
-        PullRequest pr = api().get(project, repo, prId);
+        final PullRequest pr = api().get(project, repo, prId);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isTrue();
         assertThat(project.equals(pr.fromRef().repository().project().key())).isTrue();
@@ -108,7 +108,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "createPullRequest")
     public void testListPullRequest() {
-        PullRequestPage pr = api().list(project, repo, null, null, null, null, null, null, null, 10);
+        final PullRequestPage pr = api().list(project, repo, null, null, null, null, null, null, null, 10);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isTrue();
         assertThat(pr.values().size() > 0).isTrue();
@@ -116,7 +116,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testListPullRequest")
     public void testGetPullRequestChanges() {
-        ChangePage pr = api().changes(project, repo, prId, null, null, null);
+        final ChangePage pr = api().changes(project, repo, prId, null, null, null);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isTrue();
         assertThat(pr.values().size() > 0).isTrue();
@@ -124,7 +124,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequestChanges")
     public void testGetPullRequestCommits() {
-        CommitPage pr = api().commits(project, repo, prId, true, 1, null);
+        final CommitPage pr = api().commits(project, repo, prId, true, 1, null);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isTrue();
         assertThat(pr.values().size() == 1).isTrue();
@@ -133,7 +133,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequestCommits")
     public void testDeclinePullRequest() {
-        PullRequest pr = api().decline(project, repo, prId, version);
+        final PullRequest pr = api().decline(project, repo, prId, version);
         assertThat(pr).isNotNull();
         assertThat("DECLINED".equalsIgnoreCase(pr.state())).isTrue();
         assertThat(pr.open()).isFalse();
@@ -150,7 +150,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testReopenPullRequest")
     public void testCanMergePullRequest() {
-        MergeStatus mergeStatus = api().canMerge(project, repo, prId);
+        final MergeStatus mergeStatus = api().canMerge(project, repo, prId);
         assertThat(mergeStatus).isNotNull();
         assertThat(mergeStatus.canMerge()).isTrue();
     }
@@ -166,7 +166,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequest")
     public void testGetListParticipants() {
-        ParticipantsPage pg = api().listParticipants(project, repo, prId, 100, 0);
+        final ParticipantsPage pg = api().listParticipants(project, repo, prId, 100, 0);
         assertThat(pg).isNotNull();
         assertThat(pg.errors()).isEmpty();
         assertThat(pg.values()).isNotEmpty();
@@ -175,9 +175,9 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetListParticipants")
     public void testAssignDefaultParticipantsOnError() {
-        CreateParticipants createParticipants = CreateParticipants.create(participants.user(),
+        final CreateParticipants createParticipants = CreateParticipants.create(participants.user(),
                 participants.lastReviewedCommit(), Participants.Role.REVIEWER, participants.approved(), participants.status());
-        Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
+        final Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
         assertThat(localParticipants).isNotNull();
         assertThat(localParticipants.errors()).isNotEmpty();
     }
@@ -198,7 +198,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         
         final CreateParticipants createParticipants = CreateParticipants.create(foundUser,
                 participants.lastReviewedCommit(), Participants.Role.REVIEWER, participants.approved(), participants.status());
-        Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
+        final Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
         assertThat(localParticipants).isNotNull();
         assertThat(localParticipants.errors()).isEmpty();
     }
@@ -221,14 +221,14 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetPullRequest")
     public void testGetListActivities() {
-        ActivitiesPage ac = api().listActivities(project, repo, prId, 100, 0);
+        final ActivitiesPage ac = api().listActivities(project, repo, prId, 100, 0);
         assertThat(ac).isNotNull();
         assertThat(ac.errors()).isEmpty();
     }
 
     @Test
     public void testGetNonExistentPullRequest() {
-        PullRequest pr = api().get(TestUtilities.randomString(), TestUtilities.randomString(), 999);
+        final PullRequest pr = api().get(TestUtilities.randomString(), TestUtilities.randomString(), 999);
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isFalse();
     }

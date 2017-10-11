@@ -47,20 +47,20 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
 public class BaseBitbucketMockTest {
 
     protected final String restBasePath = "/rest/api/";
-    protected String provider;
+    protected final String provider;
     private final JsonParser parser = new JsonParser();
 
     public BaseBitbucketMockTest() {
         provider = "bitbucket";
     }
 
-    public BitbucketApi api(URL url) {
+    public BitbucketApi api(final URL url) {
         return ContextBuilder.newBuilder(provider).endpoint(url.toString()).overrides(setupProperties())
                 .buildApi(BitbucketApi.class);
     }
 
     protected Properties setupProperties() {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         properties.setProperty(Constants.PROPERTY_MAX_RETRIES, "0");
         return properties;
     }
@@ -73,7 +73,7 @@ public class BaseBitbucketMockTest {
      *             if unable to start/play server
      */
     public static MockWebServer mockWebServer() throws IOException {
-        MockWebServer server = new MockWebServer();
+        final MockWebServer server = new MockWebServer();
         server.play();
         return server;
     }
@@ -85,7 +85,7 @@ public class BaseBitbucketMockTest {
      *            String representation of a given resource
      * @return payload in String form
      */
-    public String payloadFromResource(String resource) {
+    public String payloadFromResource(final String resource) {
         try {
             return new String(toStringAndClose(getClass().getResourceAsStream(resource)).getBytes(Charsets.UTF_8));
         } catch (IOException e) {
@@ -93,18 +93,18 @@ public class BaseBitbucketMockTest {
         }
     }
 
-    private static Map<String, String> extractParams(String path) {
+    private static Map<String, String> extractParams(final String path) {
 
-        int qmIndex = path.indexOf('?');
+        final int qmIndex = path.indexOf('?');
         if (qmIndex <= 0) {
             return ImmutableMap.of();
         }
 
-        ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+        final ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
 
-        String[] params = path.substring(qmIndex + 1).split("&");
-        for (String param : params) {
-            String[] keyValue = param.split("=", 2);
+        final String[] params = path.substring(qmIndex + 1).split("&");
+        for (final String param : params) {
+            final String[] keyValue = param.split("=", 2);
             if (keyValue.length > 1) {
                 builder.put(keyValue[0], keyValue[1]);
             }
@@ -113,49 +113,62 @@ public class BaseBitbucketMockTest {
         return builder.build();
     }
 
-    protected RecordedRequest assertSent(MockWebServer server, String method, String path) throws InterruptedException {
+    protected RecordedRequest assertSent(final MockWebServer server, 
+            final String method, 
+            final String path) throws InterruptedException {
+        
         return assertSent(server, method, path, ImmutableMap.<String, Void> of());
     }
 
-    protected RecordedRequest assertSent(MockWebServer server, String method, String expectedPath, Map<String, ?> queryParams)
-            throws InterruptedException {
+    protected RecordedRequest assertSent(final MockWebServer server, 
+            final String method, 
+            final String expectedPath, 
+            final Map<String, ?> queryParams) throws InterruptedException {
 
-        RecordedRequest request = server.takeRequest();
+        final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
-        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
+        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(APPLICATION_JSON);
 
-        String path = request.getPath();
-        String rawPath = path.contains("?") ? path.substring(0, path.indexOf('?')) : path;
+        final String path = request.getPath();
+        final String rawPath = path.contains("?") ? path.substring(0, path.indexOf('?')) : path;
         assertThat(rawPath).isEqualTo(expectedPath);
 
-        Map<String, String> normalizedParams = Maps.transformValues(queryParams, Functions.toStringFunction());
+        final Map<String, String> normalizedParams = Maps.transformValues(queryParams, Functions.toStringFunction());
         assertThat(normalizedParams).isEqualTo(extractParams(path));
 
         return request;
     }
 
-    protected RecordedRequest assertSent(MockWebServer server, String method, String path, String json)
-            throws InterruptedException {
-        RecordedRequest request = assertSent(server, method, path);
+    protected RecordedRequest assertSent(final MockWebServer server, 
+            final String method, 
+            final String path, 
+            final String json) throws InterruptedException {
+        
+        final RecordedRequest request = assertSent(server, method, path);
         assertThat(APPLICATION_JSON).isEqualTo(request.getHeader("Content-Type"));
         assertThat(parser.parse(json)).isEqualTo(parser.parse(request.getUtf8Body()));
         return request;
     }
 
-    protected RecordedRequest assertSentWithFormData(MockWebServer server, String method, String path, String body)
-            throws InterruptedException {
-        RecordedRequest request = server.takeRequest();
+    protected RecordedRequest assertSentWithFormData(final MockWebServer server, 
+            final String method, 
+            final String path, 
+            final String body) throws InterruptedException {
+        
+        final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
         assertThat(request.getPath()).isEqualTo(path);
         assertThat(request.getUtf8Body()).isEqualTo(body);
-        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.APPLICATION_JSON);
+        assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(APPLICATION_JSON);
         assertThat(request.getHeader(HttpHeaders.CONTENT_TYPE)).isEqualTo(MediaType.APPLICATION_FORM_URLENCODED);
         return request;
     }
 
-    protected RecordedRequest assertSentAcceptText(MockWebServer server, String method, String path)
-            throws InterruptedException {
-        RecordedRequest request = server.takeRequest();
+    protected RecordedRequest assertSentAcceptText(final MockWebServer server, 
+            final String method, 
+            final String path) throws InterruptedException {
+        
+        final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
         assertThat(request.getPath()).isEqualTo(path);
         assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(MediaType.TEXT_PLAIN);

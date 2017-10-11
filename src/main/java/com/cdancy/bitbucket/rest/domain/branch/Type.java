@@ -57,9 +57,10 @@ public abstract class Type {
             final String prefix, 
             final Boolean enabled) {
         
+        final boolean isEnabled = (enabled != null) ? enabled : false; //NOPMD
         return new AutoValue_Type(id, 
                 displayName, 
                 prefix, 
-                enabled || false);
+                isEnabled);
     }
 }

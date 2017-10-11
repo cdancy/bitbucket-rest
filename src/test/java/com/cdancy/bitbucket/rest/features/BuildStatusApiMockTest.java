@@ -40,21 +40,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "BuildStatusApiMockTest")
 public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
 
+    private final String restBuildStatusPath = "/rest/build-status/";
+    private final String commitHash = "306bcf274566f2e89f75ae6f7faf10beff38382012";
+    private final String commitPath = "/commits/" + commitHash;
+    
     public void testGetStatus() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final StatusPage statusPage = baseApi.buildStatusApi().status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
+            final StatusPage statusPage = baseApi.buildStatusApi().status(commitHash, 0, 100);
             assertThat(statusPage).isNotNull();
             assertThat(statusPage.errors()).isEmpty();
             assertThat(statusPage.size() == 2).isTrue();
             assertThat(statusPage.values().get(0).state().equals(Status.StatusState.FAILED)).isTrue();
 
             final Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
+            assertSent(server, "GET", restBuildStatusPath + BitbucketApiMetadata.API_VERSION
+                    + commitPath, queryParams);
         } finally {
             server.shutdown();
         }
@@ -66,14 +70,14 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-error.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final StatusPage statusPage = baseApi.buildStatusApi().status("306bcf274566f2e89f75ae6f7faf10beff38382012", 0, 100);
+            final StatusPage statusPage = baseApi.buildStatusApi().status(commitHash, 0, 100);
             assertThat(statusPage).isNotNull();
             assertThat(statusPage.values()).isEmpty();
             assertThat(statusPage.errors().size() == 1).isTrue();
 
             final Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012", queryParams);
+            assertSent(server, "GET", restBuildStatusPath + BitbucketApiMetadata.API_VERSION
+                    + commitPath, queryParams);
         } finally {
             server.shutdown();
         }
@@ -85,13 +89,13 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-summary.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final Summary summary = baseApi.buildStatusApi().summary("306bcf274566f2e89f75ae6f7faf10beff38382012");
+            final Summary summary = baseApi.buildStatusApi().summary(commitHash);
             assertThat(summary).isNotNull();
             assertThat(summary.failed() == 1).isTrue();
             assertThat(summary.inProgress() == 2).isTrue();
             assertThat(summary.successful() == 3).isTrue();
 
-            assertSent(server, "GET", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, "GET", restBuildStatusPath + BitbucketApiMetadata.API_VERSION
                     + "/commits/stats/306bcf274566f2e89f75ae6f7faf10beff38382012");
         } finally {
             server.shutdown();
@@ -99,7 +103,7 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
     }
     
     public void testAddBuildStatus() throws Exception {
-        MockWebServer server = mockWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/build-status-post.json")).setResponseCode(204));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
@@ -109,20 +113,20 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
                                     "REPO-MASTER-42", 
                                     "https://bamboo.example.com/browse/REPO-MASTER-42", 
                                     "Changes by John Doe");
-            final RequestStatus success = baseApi.buildStatusApi().add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            final RequestStatus success = baseApi.buildStatusApi().add(commitHash, cbs);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
             
-            assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
+            assertSent(server, "POST", restBuildStatusPath + BitbucketApiMetadata.API_VERSION
+                    + commitPath);
         } finally {
             server.shutdown();
         }
     }
     
     public void testAddBuildStatusOnError() throws Exception {
-        MockWebServer server = mockWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
@@ -132,13 +136,13 @@ public class BuildStatusApiMockTest extends BaseBitbucketMockTest {
                                     "REPO-MASTER-42", 
                                     "https://bamboo.example.com/browse/REPO-MASTER-42", 
                                     "Changes by John Doe");
-            final RequestStatus success = baseApi.buildStatusApi().add("306bcf274566f2e89f75ae6f7faf10beff38382012", cbs);
+            final RequestStatus success = baseApi.buildStatusApi().add(commitHash, cbs);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
             
-            assertSent(server, "POST", "/rest/build-status/" + BitbucketApiMetadata.API_VERSION
-                    + "/commits/306bcf274566f2e89f75ae6f7faf10beff38382012");
+            assertSent(server, "POST", restBuildStatusPath + BitbucketApiMetadata.API_VERSION
+                    + commitPath);
         } finally {
             server.shutdown();
         }

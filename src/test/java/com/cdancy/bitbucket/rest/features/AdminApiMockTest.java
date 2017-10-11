@@ -33,6 +33,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "AdminApiMockTest")
 public class AdminApiMockTest extends BaseBitbucketMockTest {
 
+    private final String limitKeyword = "limit";
+    private final String startKeyword = "start";
+    private final String restApiPath = "/rest/api/";
+    private final String getMethod = "GET";
+
     private final String localContext = "test";
             
     public void testGetListUserByGroup() throws Exception {
@@ -49,8 +54,8 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertThat(up.size() == 2).isTrue();
             assertThat(up.values().get(0).slug().equals("bob123")).isTrue();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("context", localContext, "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("context", localContext, limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/groups/more-members", queryParams);
         } finally {
             server.shutdown();
@@ -69,8 +74,8 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("context", localContext, "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("context", localContext, limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/groups/more-members", queryParams);
         } finally {
             server.shutdown();
@@ -90,8 +95,8 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertThat(up.size() == 1).isTrue();
             assertThat(up.values().get(0).slug().equals("jcitizen")).isTrue();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen", "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen", limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/users", queryParams);
         } finally {
             baseApi.close();
@@ -110,8 +115,8 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah", "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah", limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/users", queryParams);
         } finally {
             baseApi.close();

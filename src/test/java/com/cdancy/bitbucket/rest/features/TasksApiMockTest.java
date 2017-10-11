@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
 @Test(groups = "unit", testName = "TasksApiMockTest")
 public class TasksApiMockTest extends BaseBitbucketMockTest {
 
-    final int taskId = 99;
+    private final String tasksEndpoint = "/rest/api/1.0/tasks";
+    private final int taskId = 99;
 
     public void testCreateTask() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -51,7 +52,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(task.errors().isEmpty()).isTrue();
             assertThat(task.text()).isEqualTo(taskComment);
             assertThat(task.anchor().id()).isEqualTo(1);
-            assertSent(server, "POST", "/rest/api/1.0/tasks");
+            assertSent(server, "POST", tasksEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -71,7 +72,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(task).isNotNull();
             assertThat(task.errors().isEmpty()).isFalse();
             assertThat(task.anchor()).isNull();
-            assertSent(server, "POST", "/rest/api/1.0/tasks");
+            assertSent(server, "POST", tasksEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -90,7 +91,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(task).isNotNull();
             assertThat(task.errors().isEmpty()).isTrue();
             assertThat(task.id()).isEqualTo(taskId);
-            assertSent(server, "GET", "/rest/api/1.0/tasks/" + taskId);
+            assertSent(server, "GET", tasksEndpoint + "/" +  taskId);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -109,7 +110,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(task).isNotNull();
             assertThat(task.errors().isEmpty()).isFalse();
             assertThat(task.anchor()).isNull();
-            assertSent(server, "GET", "/rest/api/1.0/tasks/" + taskId);
+            assertSent(server, "GET", tasksEndpoint + "/" + taskId);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -128,7 +129,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(task).isNotNull();
             assertThat(task.errors().isEmpty()).isTrue();
             assertThat(task.value()).isTrue();
-            assertSent(server, "DELETE", "/rest/api/1.0/tasks/" + taskId);
+            assertSent(server, "DELETE", tasksEndpoint + "/" + taskId);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -147,7 +148,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(task).isNotNull();
             assertThat(task.value()).isFalse();
             assertThat(task.errors().isEmpty()).isFalse();
-            assertSent(server, "DELETE", "/rest/api/1.0/tasks/" + taskId);
+            assertSent(server, "DELETE", tasksEndpoint + "/" + taskId);
         } finally {
             baseApi.close();
             server.shutdown();

@@ -42,7 +42,9 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
     private final String repoKey = "myrepo";
     private final String commitHash = "abcdef0123abcdef4567abcdef8987abcdef6543";
 
-    private final String localMethod = "GET";
+    private final String getMethod = "GET";
+    private final String restApiPath = "/rest/api/";
+    private final String limitKeyword = "limit";
     
     public void testGetCommit() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -55,7 +57,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(commit.errors().isEmpty()).isTrue();
             assertThat(commit.id().equalsIgnoreCase(commitHash)).isTrue();
 
-            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
         } finally {
             server.shutdown();
@@ -72,7 +74,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(commit).isNotNull();
             assertThat(commit.errors().size() > 0).isTrue();
 
-            assertSent(server, localMethod, restBasePath + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
         } finally {
             server.shutdown();
@@ -92,8 +94,8 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(changePage.errors()).isEmpty();
             assertThat(changePage.values()).hasSize(1);
 
-            final Map<String, ?> queryParams = ImmutableMap.of("limit", 12);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 12);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
             server.shutdown();
@@ -112,8 +114,8 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(changePage).isNotNull();
             assertThat(changePage.errors()).isNotEmpty();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("limit", 12, "start", 1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 12, "start", 1);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
             server.shutdown();
@@ -127,14 +129,14 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
+            final CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
             assertThat(pcr.totalCount()).isEqualTo(1);
 
-            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, limitKeyword, 1);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits", queryParams);
         } finally {
             server.shutdown();
@@ -148,12 +150,12 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
+            final CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, limitKeyword, 1);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits", queryParams);
         } finally {
             server.shutdown();

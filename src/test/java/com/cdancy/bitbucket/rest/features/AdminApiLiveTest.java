@@ -30,7 +30,7 @@ public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testListUsersByGroup() {
-        UserPage userPage = api().listUsersByGroup(defaultBitbucketGroup, null, null, null);
+        final UserPage userPage = api().listUsersByGroup(defaultBitbucketGroup, null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() > 0).isTrue();
     }

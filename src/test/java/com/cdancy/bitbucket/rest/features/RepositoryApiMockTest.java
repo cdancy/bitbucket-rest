@@ -48,23 +48,49 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "RepositoryApiMockTest")
 public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
+    private final String projectKey = "PRJ";
+    private final String repoKey = "my-repo";
+    private final String getMethod = "GET";
+    private final String postMethod = "POST";
+    private final String deleteMethod = "DELETE";
+    private final String putMethod = "PUT";
+
+    private final String restApiPath = "/rest/api/";    
+    private final String projectsPath = "/projects/";
+    private final String permissionsPath = "/permissions/";
+    private final String usersPath = permissionsPath + "users";
+    private final String groupsPath = permissionsPath + "groups";
+    private final String settingsPath = "/settings/";
+    private final String pullRequestsPath = settingsPath + "pull-requests";
+    private final String hooksPath = settingsPath + "hooks";
+    private final String reposPath = "/repos/";
+    private final String reposEndpoint = "/repos";
+    private final String enabledEndpoint = "/enabled";
+
+    private final String qwertyKeyword = "qwerty";
+    private final String limitKeyword = "limit";
+    private final String startKeyword = "start";
+    private final String nameKeyword = "name";
+    private final String permissionKeyword = "permission";
+    private final String oneTwoThreeKeyword = "123";
+    private final String testOneTwoThreeKeyword = "test" + oneTwoThreeKeyword;
+
     public void testCreateRepository() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository.json")).setResponseCode(201));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            CreateRepository createRepository = CreateRepository.create(repoKey, true);
-            Repository repository = api.create(projectKey, createRepository);
+
+            final CreateRepository createRepository = CreateRepository.create(repoKey, true);
+            final Repository repository = api.create(projectKey, createRepository);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isEmpty();
             assertThat(repository.slug()).isEqualToIgnoringCase(repoKey);
             assertThat(repository.name()).isEqualToIgnoringCase(repoKey);
             assertThat(repository.links()).isNotNull();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -76,15 +102,14 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-illegal-name.json")).setResponseCode(400));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "!_myrepo";
-            CreateRepository createRepository = CreateRepository.create(repoKey, true);
-            Repository repository = api.create(projectKey, createRepository);
+
+            final CreateRepository createRepository = CreateRepository.create("!_myrepo", true);
+            final Repository repository = api.create(projectKey, createRepository);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isNotEmpty();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -96,17 +121,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            Repository repository = api.get(projectKey, repoKey);
+
+            final Repository repository = api.get(projectKey, repoKey);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isEmpty();
             assertThat(repository.slug()).isEqualToIgnoringCase(repoKey);
             assertThat(repository.name()).isEqualToIgnoringCase(repoKey);
             assertThat(repository.links()).isNotNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposPath + repoKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -118,14 +142,18 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "notexist";
-            Repository repository = api.get(projectKey, repoKey);
+            final String nonExistentRepoKey = "notexist";
+            final Repository repository = api.get(projectKey, nonExistentRepoKey);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isNotEmpty();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
+            assertSent(server, getMethod, restApiPath 
+                    + BitbucketApiMetadata.API_VERSION 
+                    + projectsPath 
+                    + projectKey 
+                    + reposPath 
+                    + nonExistentRepoKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -137,15 +165,14 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(202));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
+
             final RequestStatus success = api.delete(projectKey, repoKey);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposPath + repoKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -157,15 +184,20 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "notexist";
-            final RequestStatus success = api.delete(projectKey, repoKey);
+            
+            final String nonExistentRepoKey = "notexist";
+            final RequestStatus success = api.delete(projectKey, nonExistentRepoKey);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos/" + repoKey);
+            assertSent(server, deleteMethod, restApiPath 
+                    + BitbucketApiMetadata.API_VERSION 
+                    + projectsPath 
+                    + projectKey 
+                    + reposPath 
+                    + nonExistentRepoKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -177,23 +209,20 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-full.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            RepositoryApi api = baseApi.repositoryApi();
+            final RepositoryApi api = baseApi.repositoryApi();
 
-            String projectKey = "PRJ1";
-            RepositoryPage repositoryPage = api.list(projectKey, null, null);
+            final RepositoryPage repositoryPage = api.list(projectKey, null, null);
 
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
-
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposEndpoint);
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isEmpty();
 
-            int size = repositoryPage.size();
-            int limit = repositoryPage.limit();
+            final int size = repositoryPage.size();
+            final int limit = repositoryPage.limit();
 
             assertThat(size).isLessThanOrEqualTo(limit);
             assertThat(repositoryPage.start()).isEqualTo(0);
             assertThat(repositoryPage.isLastPage()).isTrue();
-
             assertThat(repositoryPage.values()).hasSize(size);
             assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
         } finally {
@@ -206,27 +235,24 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-truncated.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            RepositoryApi api = baseApi.repositoryApi();
+            final RepositoryApi api = baseApi.repositoryApi();
 
-            String projectKey = "PRJ1";
-            int start = 0;
-            int limit = 2;
-            RepositoryPage repositoryPage = api.list(projectKey, start, limit);
+            final int start = 0;
+            final int limit = 2;
+            final RepositoryPage repositoryPage = api.list(projectKey, start, limit);
 
-            Map<String, ?> queryParams = ImmutableMap.of("start", start, "limit", limit);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos", queryParams);
-
+            final Map<String, ?> queryParams = ImmutableMap.of(startKeyword, start, limitKeyword, limit);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposEndpoint, queryParams);
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isEmpty();
 
-            int size = repositoryPage.size();
+            final int size = repositoryPage.size();
 
             assertThat(size).isEqualTo(limit);
             assertThat(repositoryPage.start()).isEqualTo(start);
             assertThat(repositoryPage.limit()).isEqualTo(limit);
             assertThat(repositoryPage.isLastPage()).isFalse();
             assertThat(repositoryPage.nextPageStart()).isEqualTo(size);
-
             assertThat(repositoryPage.values()).hasSize(size);
             assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
         } finally {
@@ -239,14 +265,14 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            RepositoryApi api = baseApi.repositoryApi();
+            final RepositoryApi api = baseApi.repositoryApi();
 
-            String projectKey = "non-existent";
-            RepositoryPage repositoryPage = api.list(projectKey, null, null);
+            final String nonExistentProjectKey = "non-existent";
+            final RepositoryPage repositoryPage = api.list(nonExistentProjectKey, null, null);
 
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isNotEmpty();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/projects/" + projectKey + "/repos");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION + projectsPath + nonExistentProjectKey + reposEndpoint);
         } finally {
             server.shutdown();
         }
@@ -257,18 +283,15 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            RepositoryApi api = baseApi.repositoryApi();
-
-            String projectKey = "PRJ1";
-            String repoKey = "test";
-            PullRequestSettings settings = api.getPullRequestSettings(projectKey, repoKey);
+            final RepositoryApi api = baseApi.repositoryApi();
+            final PullRequestSettings settings = api.getPullRequestSettings(projectKey, repoKey);
 
             assertThat(settings).isNotNull();
             assertThat(settings.errors()).isEmpty();
             assertThat(settings.requiredAllApprovers()).isFalse();
             assertThat(settings.requiredAllTasksComplete()).isTrue();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath);
         } finally {
             server.shutdown();
         }
@@ -279,17 +302,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
+
+            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, testOneTwoThreeKeyword, oneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, oneTwoThreeKeyword, permissionKeyword, testOneTwoThreeKeyword);
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + usersPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -301,21 +323,19 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
 
-            PermissionsPage permissionsPage = api.listPermissionsByUser(projectKey, repoKey, 0, 100);
+            final PermissionsPage permissionsPage = api.listPermissionsByUser(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.errors()).isEmpty();
             assertThat(permissionsPage.size() == 1).isTrue();
             assertThat(permissionsPage.values().get(0).group() == null).isTrue();
             assertThat(permissionsPage.values().get(0).user().name().equals("test")).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + usersPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -327,18 +347,15 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            RepositoryApi api = baseApi.repositoryApi();
-
-            String projectKey = "PRJ1";
-            String repoKey = "test";
-            PullRequestSettings settings = api.getPullRequestSettings(projectKey, repoKey);
+            final RepositoryApi api = baseApi.repositoryApi();
+            final PullRequestSettings settings = api.getPullRequestSettings(projectKey, repoKey);
 
             assertThat(settings).isNotNull();
             assertThat(settings.errors()).isNotEmpty();
             assertThat(settings.requiredAllApprovers()).isNull();
             assertThat(settings.requiredAllTasksComplete()).isNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath);
         } finally {
             server.shutdown();
         }
@@ -349,18 +366,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
 
-            final RequestStatus success = api.createPermissionsByGroup(projectKey, repoKey, "test123", "123");
+            final RequestStatus success = api.createPermissionsByGroup(projectKey, repoKey, testOneTwoThreeKeyword, oneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, oneTwoThreeKeyword, permissionKeyword, testOneTwoThreeKeyword);
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -372,21 +387,19 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-group.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
 
-            PermissionsPage permissionsPage = api.listPermissionsByGroup(projectKey, repoKey, 0, 100);
+            final PermissionsPage permissionsPage = api.listPermissionsByGroup(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.errors()).isEmpty();
             assertThat(permissionsPage.size() == 1).isTrue();
             assertThat(permissionsPage.values().get(0).user() == null).isTrue();
             assertThat(permissionsPage.values().get(0).group().name().equals("test12345")).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -398,23 +411,22 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
-            List<MergeStrategy> listStrategy = new ArrayList<>();
+
+            final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
+            final List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
-            MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
-            CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
-            PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
+            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+            final PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
 
             assertThat(settings).isNotNull();
             assertThat(settings.errors()).isEmpty();
             assertThat(settings.requiredAllApprovers()).isFalse();
             assertThat(settings.requiredAllTasksComplete()).isTrue();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -426,17 +438,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, "test123", "123");
+
+            final RequestStatus success = api.createPermissionsByUser(projectKey, repoKey, testOneTwoThreeKeyword, oneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, oneTwoThreeKeyword, permissionKeyword, testOneTwoThreeKeyword);
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + usersPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -448,23 +459,21 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-settings-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            RepositoryApi api = baseApi.repositoryApi();
+            final RepositoryApi api = baseApi.repositoryApi();
 
-            String projectKey = "PRJ1";
-            String repoKey = "test";
-            MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
-            List<MergeStrategy> listStrategy = new ArrayList<>();
+            final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
+            final List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
-            MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
-            CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
-            PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
+            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+            final PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
 
             assertThat(settings).isNotNull();
             assertThat(settings.errors()).isNotEmpty();
             assertThat(settings.requiredAllApprovers()).isNull();
             assertThat(settings.requiredAllTasksComplete()).isNull();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/pull-requests");
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath);
         } finally {
             server.shutdown();
         }
@@ -475,18 +484,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-users-error.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            PermissionsPage permissionsPage = api.listPermissionsByUser(projectKey, repoKey, 0, 100);
+
+            final PermissionsPage permissionsPage = api.listPermissionsByUser(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.values()).isEmpty();
             assertThat(permissionsPage.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + usersPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -498,17 +506,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.createPermissionsByGroup(projectKey, repoKey, "test123", "123");
+
+            final RequestStatus success = api.createPermissionsByGroup(projectKey, repoKey, testOneTwoThreeKeyword, oneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "123", "permission", "test123");
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, oneTwoThreeKeyword, permissionKeyword, testOneTwoThreeKeyword);
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -520,17 +527,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
+
+            final RequestStatus success = api.deletePermissionsByUser(projectKey, repoKey, testOneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, testOneTwoThreeKeyword);
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + usersPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -542,17 +548,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
+
+            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, testOneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, testOneTwoThreeKeyword);
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -564,17 +569,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.deletePermissionsByUser(projectKey, repoKey, "test123");
+
+            final RequestStatus success = api.deletePermissionsByUser(projectKey, repoKey, testOneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/users", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, testOneTwoThreeKeyword);
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + usersPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -586,18 +590,16 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
 
-            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, "test123");
+            final RequestStatus success = api.deletePermissionsByGroup(projectKey, repoKey, testOneTwoThreeKeyword);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("name", "test123");
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, testOneTwoThreeKeyword);
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -609,18 +611,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-permission-group-error.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            PermissionsPage permissionsPage = api.listPermissionsByGroup(projectKey, repoKey, 0, 100);
+
+            final PermissionsPage permissionsPage = api.listPermissionsByGroup(projectKey, repoKey, 0, 100);
             assertThat(permissionsPage).isNotNull();
             assertThat(permissionsPage.values()).isEmpty();
             assertThat(permissionsPage.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/permissions/groups", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -632,18 +633,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hooks.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
+
+            final HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.values()).isNotEmpty();
             assertThat(hookPage.errors()).isEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -655,18 +655,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
+
+            final HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.values()).isEmpty();
             assertThat(hookPage.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 100, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -678,18 +677,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            String hookKey = "qwerty";
-            Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
+
+            final String hookKey = qwertyKeyword;
+            final Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
 
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -701,18 +699,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            String hookKey = "qwerty";
-            Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
+
+            final String hookKey = qwertyKeyword;
+            final Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
 
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -724,18 +721,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            String hookKey = "qwerty";
-            Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
+
+            final String hookKey = qwertyKeyword;
+            final Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
 
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -747,18 +743,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            String hookKey = "qwerty";
-            Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
+
+            final String hookKey = qwertyKeyword;
+            final Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
 
-            assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -770,18 +765,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            String hookKey = "qwerty";
-            Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
+
+            final String hookKey = qwertyKeyword;
+            final Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
 
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -793,18 +787,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        RepositoryApi api = baseApi.repositoryApi();
+        final RepositoryApi api = baseApi.repositoryApi();
         try {
-            String projectKey = "PRJ1";
-            String repoKey = "1234";
-            String hookKey = "qwerty";
-            Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
+
+            final String hookKey = qwertyKeyword;
+            final Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
 
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/settings/hooks/" + hookKey + "/enabled");
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();

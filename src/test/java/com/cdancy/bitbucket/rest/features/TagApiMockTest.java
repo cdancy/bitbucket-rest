@@ -34,20 +34,21 @@ import org.testng.annotations.Test;
 @Test(groups = "unit", testName = "TagApiMockTest")
 public class TagApiMockTest extends BaseBitbucketMockTest {
 
+    private final String projectKey = "PRJ";
+    private final String repoKey = "myrepo";
+            
     public void testCreateTag() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/tag.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        TagApi api = baseApi.tagApi();
+        final TagApi api = baseApi.tagApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            String tagName = "release-2.0.0";
-            String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
+            final String tagName = "release-2.0.0";
+            final String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
 
-            CreateTag createTag = CreateTag.create(tagName, commitHash, null);
-            Tag tag = api.create(projectKey, repoKey, createTag);
+            final CreateTag createTag = CreateTag.create(tagName, commitHash, null);
+            final Tag tag = api.create(projectKey, repoKey, createTag);
             assertThat(tag).isNotNull();
             assertThat(tag.errors().isEmpty()).isTrue();
             assertThat(tag.id().endsWith(tagName)).isTrue();
@@ -65,18 +66,16 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/tag.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        TagApi api = baseApi.tagApi();
+        final TagApi api = baseApi.tagApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            String tagName = "release-2.0.0";
+            final String tagName = "release-2.0.0";
 
-            Tag tag = api.get(projectKey, repoKey, tagName);
+            final Tag tag = api.get(projectKey, repoKey, tagName);
             assertThat(tag).isNotNull();
             assertThat(tag.errors().isEmpty()).isTrue();
             assertThat(tag.id().endsWith(tagName)).isTrue();
             
-            String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
+            final String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
             assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
@@ -91,13 +90,11 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        TagApi api = baseApi.tagApi();
+        final TagApi api = baseApi.tagApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            String tagName = "non-existent-tag";
+            final String tagName = "non-existent-tag";
 
-            Tag tag = api.get(projectKey, repoKey, tagName);
+            final Tag tag = api.get(projectKey, repoKey, tagName);
             assertThat(tag).isNull();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);

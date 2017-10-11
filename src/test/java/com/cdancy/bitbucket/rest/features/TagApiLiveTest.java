@@ -35,9 +35,10 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
     
     private GeneratedTestContents generatedTestContents;
 
-    private String projectKey = null;
-    private String repoKey = null;
-    private String commitHash = null;
+    private String projectKey;
+    private String repoKey;
+    private String commitHash;
+    
     final String tagName = TestUtilities.randomStringLettersOnly();
 
     @BeforeClass

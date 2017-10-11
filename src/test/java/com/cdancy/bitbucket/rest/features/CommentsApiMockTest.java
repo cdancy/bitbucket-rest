@@ -42,18 +42,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "CommentsApiMockTest")
 public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
+    private final String projectKey = "PRJ";
+    private final String repoKey = "my-repo";
+    private final String restApiPath = "/rest/api/";
+    private final String getMethod = "GET";
+    private final String hejKeyword = "hej";
+    private final String measuredReplyKeyword = "A measured reply.";
+
     public void testComment() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json")).setResponseCode(201));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final Comments pr = baseApi.commentsApi().comment("PRJ", "my-repo", 101, "A measured reply.");
+            final Comments pr = baseApi.commentsApi().comment(projectKey, repoKey, 101, measuredReplyKeyword);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.text()).isEqualTo("A measured reply.");
+            assertThat(pr.text()).isEqualTo(measuredReplyKeyword);
             assertThat(pr.links()).isNull();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
         } finally {
             server.shutdown();
@@ -68,13 +75,13 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
             final Parent parent = Parent.create(1);
             final Anchor anchor = Anchor.create(1, Anchor.LineType.CONTEXT, Anchor.FileType.FROM, "path/to/file", "path/to/file");
-            final CreateComment createComment = CreateComment.create("A measured reply.", parent, anchor);
-            final Comments pr = baseApi.commentsApi().create("PRJ", "my-repo", 101, createComment);
+            final CreateComment createComment = CreateComment.create(measuredReplyKeyword, parent, anchor);
+            final Comments pr = baseApi.commentsApi().create(projectKey, repoKey, 101, createComment);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.text()).isEqualTo("A measured reply.");
+            assertThat(pr.text()).isEqualTo(measuredReplyKeyword);
             assertThat(pr.links()).isNull();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments");
         } finally {
             server.shutdown();
@@ -87,12 +94,12 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final Comments pr = baseApi.commentsApi().get("PRJ", "my-repo", 101, 1);
+            final Comments pr = baseApi.commentsApi().get(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.text()).isEqualTo("A measured reply.");
+            assertThat(pr.text()).isEqualTo(measuredReplyKeyword);
             assertThat(pr.links()).isNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
         } finally {
             server.shutdown();
@@ -105,11 +112,11 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final Comments pr = baseApi.commentsApi().get("PRJ", "my-repo", 101, 1);
+            final Comments pr = baseApi.commentsApi().get(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isNotEmpty();
 
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1");
         } finally {
             server.shutdown();
@@ -122,13 +129,13 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-comments.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, "hej", 0, 100);
+            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, hejKeyword, 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(2);
 
             final Comments firstComment = pcr.values().get(0);
-            assertThat(firstComment.anchor().path()).isEqualTo("hej");
+            assertThat(firstComment.anchor().path()).isEqualTo(hejKeyword);
             assertThat(firstComment.text()).isEqualTo("comment in diff");
             assertThat(firstComment.id()).isEqualTo(4);
             assertThat(firstComment.comments()).hasSize(1);
@@ -139,13 +146,13 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
             assertThat(jsonElement.getAsInt()).isEqualTo(1);
 
             final Comments secondComment = pcr.values().get(1);
-            assertThat(secondComment.anchor().path()).isEqualTo("hej");
+            assertThat(secondComment.anchor().path()).isEqualTo(hejKeyword);
             assertThat(secondComment.text()).isEqualTo("another commet in diff");
             assertThat(secondComment.id()).isEqualTo(6);
             assertThat(secondComment.comments()).isEmpty();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("path", "hej", "start", "0", "limit", "100");
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("path", hejKeyword, "start", "0", "limit", "100");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                         + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
             server.shutdown();
@@ -158,12 +165,12 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, "hej", 0, 100);
+            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, hejKeyword, 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 
-            final Map<String, ?> queryParams = ImmutableMap.of("path", "hej", "start", "0", "limit", "100");
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("path", hejKeyword, "start", "0", "limit", "100");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/project/repos/repo/pull-requests/101/comments", queryParams);
         } finally {
             server.shutdown();
@@ -176,13 +183,13 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setResponseCode(204));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             
-            final RequestStatus success = baseApi.commentsApi().delete("PRJ", "my-repo", 101, 1, 1);
+            final RequestStatus success = baseApi.commentsApi().delete(projectKey, repoKey, 101, 1, 1);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
             
             final Map<String, ?> queryParams = ImmutableMap.of("version", 1);
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1", queryParams);
         } finally {
             server.shutdown();
