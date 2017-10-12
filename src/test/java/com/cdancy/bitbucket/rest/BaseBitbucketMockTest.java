@@ -74,7 +74,7 @@ public class BaseBitbucketMockTest {
      */
     public static MockWebServer mockWebServer() throws IOException {
         final MockWebServer server = new MockWebServer();
-        server.play();
+        server.start();
         return server;
     }
 
