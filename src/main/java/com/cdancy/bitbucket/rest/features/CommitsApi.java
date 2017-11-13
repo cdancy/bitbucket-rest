@@ -77,4 +77,20 @@ public interface CommitsApi {
                     @Nullable @QueryParam("withCounts") Boolean withCounts,
                     @Nullable @QueryParam("limit") Integer limit,
                     @Nullable @QueryParam("start") Integer start);
+
+    @Named("commits:list")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm140236729804608"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/commits")
+    @Fallback(BitbucketFallbacks.CommitPageOnError.class)
+    @GET
+    CommitPage list(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @Nullable @QueryParam("followRenames") Boolean followRenames,
+                    @Nullable @QueryParam("ignoreMissing") Boolean ignoreMissing,
+                    @Nullable @QueryParam("merges") String merges,
+                    @Nullable @QueryParam("path") String path,
+                    @QueryParam("since") String since,
+                    @QueryParam("until") String until,
+                    @Nullable @QueryParam("withCounts") Boolean withCounts);
 }
