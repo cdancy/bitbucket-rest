@@ -38,6 +38,7 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
     private String projectKey;
     private String repoKey;
     private String commitHash;
+    private CommitPage commitPage;
 
     @BeforeClass
     public void init() {
@@ -48,14 +49,24 @@ public class CommitsApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test 
     public void testListCommits() {
-        final CommitPage commitPage = api().list(projectKey, repoKey, true, 1, null);
+        commitPage = api().list(projectKey, repoKey, true, 3, null);
         assertThat(commitPage).isNotNull();
         assertThat(commitPage.errors().isEmpty()).isTrue();
         assertThat(commitPage.values().isEmpty()).isFalse();
         assertThat(commitPage.totalCount() > 0).isTrue();
         this.commitHash = commitPage.values().get(0).id();
     }
-    
+
+    @Test (dependsOnMethods = "testListCommits")
+    public void testListCommitsBetweenCommitHashes() {
+        final CommitPage page = api().list(projectKey, repoKey, null, null, null, null,
+                commitPage.values().get(2).id(), commitPage.values().get(0).id(), true);
+        assertThat(page).isNotNull();
+        assertThat((page.errors()).isEmpty()).isTrue();
+        assertThat((page.values().size() == 2)).isTrue();
+        assertThat(page.values().get(1).id().equals(commitPage.values().get(1).id())).isTrue();
+    }
+
     @Test 
     public void testListCommitsOnError() {
         final CommitPage pr = api().list(projectKey, TestUtilities.randomStringLettersOnly(), true, 1, null);
