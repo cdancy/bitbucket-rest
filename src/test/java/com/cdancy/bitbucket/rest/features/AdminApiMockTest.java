@@ -33,63 +33,70 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "AdminApiMockTest")
 public class AdminApiMockTest extends BaseBitbucketMockTest {
 
-    public void testListUsersByGroup() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+    private final String limitKeyword = "limit";
+    private final String startKeyword = "start";
+    private final String restApiPath = "/rest/api/";
+    private final String getMethod = "GET";
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        AdminApi api = baseApi.adminApi();
-        try {
-            UserPage up = api.listUsersByGroup("test", null, 0, 2);
+    private final String localContext = "test";
+            
+    public void testGetListUserByGroup() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/admin-list-user-by-group.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final UserPage up = baseApi.adminApi().listUsersByGroup(localContext, null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isEmpty();
             assertThat(up.size() == 2).isTrue();
             assertThat(up.values().get(0).slug().equals("bob123")).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("context", localContext, limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/groups/more-members", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
-    public void testListUsersByGroupOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+    public void testGetListUserByGroupOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group-error.json")).setResponseCode(401));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        AdminApi api = baseApi.adminApi();
-        try {
-            UserPage up = api.listUsersByGroup("test", null, 0, 2);
+        server.enqueue(new MockResponse()
+                .setBody(payloadFromResource("/admin-list-user-by-group-error.json"))
+                .setResponseCode(401));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final UserPage up = baseApi.adminApi().listUsersByGroup(localContext, null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("context", "test", "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("context", localContext, limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/groups/more-members", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
     
     public void testListUsers() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-users.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        AdminApi api = baseApi.adminApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final AdminApi api = baseApi.adminApi();
         try {
-            UserPage up = api.listUsers("jcitizen", 0, 2);
+            final UserPage up = api.listUsers("jcitizen", 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isEmpty();
             assertThat(up.size() == 1).isTrue();
             assertThat(up.values().get(0).slug().equals("jcitizen")).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen", "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen", limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/users", queryParams);
         } finally {
             baseApi.close();
@@ -98,18 +105,18 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListUsersOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/admin-list-user-by-group-error.json")).setResponseCode(401));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        AdminApi api = baseApi.adminApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final AdminApi api = baseApi.adminApi();
         try {
-            UserPage up = api.listUsers("blah blah", 0, 2);
+            final UserPage up = api.listUsers("blah blah", 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah", "limit", 2, "start", 0);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah", limitKeyword, 2, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/admin/users", queryParams);
         } finally {
             baseApi.close();

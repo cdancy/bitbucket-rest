@@ -38,7 +38,9 @@ public abstract class CreateComment {
     }
 
     @SerializedNames({ "text", "parent", "anchor" })
-    public static CreateComment create(String text, Parent parent, Anchor anchor) {
+    public static CreateComment create(final String text,
+            final Parent parent,
+            final Anchor anchor) {
         return new AutoValue_CreateComment(text, parent, anchor);
     }
 }

@@ -49,10 +49,10 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     @BeforeClass
     public void init() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
-        String projectKey = generatedTestContents.project.key();
-        String repoKey = generatedTestContents.repository.name();
+        final String projectKey = generatedTestContents.project.key();
+        final String repoKey = generatedTestContents.repository.name();
         
-        CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, 1, null);
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 1, null);
         assertThat(commitPage).isNotNull();
         assertThat(commitPage.errors().isEmpty()).isTrue();
         assertThat(commitPage.values().isEmpty()).isFalse();
@@ -75,6 +75,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test (dependsOnMethods = "testAddStatusToCommit")
     public void testGetStatusByCommit() {
+
         final StatusPage statusPage = api().status(commitHash, 0, 100);
         assertThat(statusPage).isNotNull();
         assertThat(statusPage.size() == 1).isTrue();
@@ -89,6 +90,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testGetStatusByNonExistentCommit() {
+
         final StatusPage statusPage = api().status(TestUtilities.randomString(), 0, 100);
         assertThat(statusPage).isNotNull();
         assertThat(statusPage.size() == 0).isTrue();
@@ -96,6 +98,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testGetStatusByCommit")
     public void testGetSummaryByCommit() {
+
         final Summary summary = api().summary(commitHash);
         assertThat(summary).isNotNull();
         assertThat(summary.successful() == 1).isTrue();
@@ -105,6 +108,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testGetSummaryByNonExistentCommit() {
+
         final Summary summary = api().summary(TestUtilities.randomString());
         assertThat(summary).isNotNull();
         assertThat(summary.successful() == 0).isTrue();

@@ -36,6 +36,7 @@ import com.cdancy.bitbucket.rest.domain.common.Veto;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -54,443 +55,374 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Test(groups = "unit", testName = "BranchApiMockTest")
 public class BranchApiMockTest extends BaseBitbucketMockTest {
 
+    private final String projectKey = "PRJ";
+    private final String repoKey = "myrepo";
+    private final String testKeyword = "test";
+    private final String localRestPath = "/rest/branch-utils/";
+    private final String localBranchesPath = "/branches";
+    private final String localProjectsPath = "/projects/";
+    private final String branchPermissionsPath = "/rest/branch-permissions/2.0";
+    private final String branchModelPath = "/branchmodel/configuration";
+    private final String localReposPath = "/repos/";
+    private final String localGetMethod = "GET";
+    private final String localDeleteMethod = "DELETE";
+    private final String localLimit = "limit";
+    
     public void testCreateBranch() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            String branchName = "dev-branch";
-            String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final String branchName = "dev-branch";
+            final String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
 
-            CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
-            Branch branch = api.create(projectKey, repoKey, createBranch);
+            final CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
+            final Branch branch = baseApi.branchApi().create(projectKey, repoKey, createBranch);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.id().endsWith(branchName)).isTrue();
             assertThat(commitHash.equalsIgnoreCase(branch.latestChangeset())).isTrue();
-            assertSent(server, "POST", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
+            assertSent(server, "POST", localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + localBranchesPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testListBranches() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-
-            BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchPage branch = baseApi.branchApi().list(projectKey, repoKey, null, null, null, null, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.values().size() > 0).isTrue();
             assertThat("hello-world".equals(branch.values().get(0).displayId())).isTrue();
             assertThat(branch.values().get(0).metadata()).isNotNull();
 
-            String jiraIssuesKey = "com.atlassian.bitbucket.server.bitbucket-jira:branch-list-jira-issues";
-            String commitInfoKey = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata";
-            String buildStatusKey = "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata";
+            final String jiraIssuesKey = "com.atlassian.bitbucket.server.bitbucket-jira:branch-list-jira-issues";
+            final String commitInfoKey = "com.atlassian.bitbucket.server.bitbucket-branch:latest-commit-metadata";
+            final String buildStatusKey = "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata";
             assertThat(branch.values().get(0).metadata().containsKey(jiraIssuesKey)).isNotNull();
             assertThat(branch.values().get(0).metadata().containsKey(commitInfoKey)).isNotNull();
             assertThat(branch.values().get(0).metadata().containsKey(buildStatusKey)).isNotNull();
 
-            JsonObject buildStatusMetadata = ((JsonElement)branch.values().get(0).metadata().get(buildStatusKey)).getAsJsonObject();
-            int success = buildStatusMetadata.get("successful").getAsInt();
+            final JsonObject buildStatusMetadata = ((JsonElement)branch.values().get(0).metadata().get(buildStatusKey)).getAsJsonObject();
+            final int success = buildStatusMetadata.get("successful").getAsInt();
             assertThat(success).isEqualTo(1);
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(localLimit, 1);
+            assertSent(server, localGetMethod, restBasePath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + localBranchesPath, queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testListBranchesNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "hello";
-            String repoKey = "world";
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final BranchPage branch = api.list(projectKey, repoKey, null, null, null, null, null, 1);
+            final BranchPage branch = baseApi.branchApi().list(projectKey, repoKey, null, null, null, null, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().size() > 0).isTrue();
             final List<Veto> vetoes = branch.errors().get(0).vetoes();
             assertThat(vetoes.size() > 0).isTrue();
             assertThat(vetoes.get(0).summaryMessage()).isEqualTo("some short message");
             assertThat(vetoes.get(0).detailedMessage()).isEqualTo("some detailed message");
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
+            final Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches", queryParams);
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/branches", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetBranchModel() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            BranchModel branchModel = api.model(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchModel branchModel = baseApi.branchApi().model(projectKey, repoKey);
             assertThat(branchModel).isNotNull();
+            System.out.println(branchModel.errors());
             assertThat(branchModel.errors().isEmpty()).isTrue();
             assertThat(branchModel.types().size() > 0).isTrue();
-            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel");
+            assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/branchmodel");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetBranchModelOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            BranchModel branchModel = api.model(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchModel branchModel = baseApi.branchApi().model(projectKey, repoKey);
             assertThat(branchModel).isNotNull();
             assertThat(branchModel.errors()).isNotEmpty();
-            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel");
+            assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/branchmodel");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteBranch() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.delete(projectKey, repoKey, "refs/heads/some-branch-name");
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final RequestStatus success = baseApi.branchApi().delete(projectKey, repoKey, "refs/heads/some-branch-name");
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches");
+            assertSent(server, localDeleteMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/branches");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetDefaultBranch() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-default.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-
-            Branch branch = api.getDefault(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final Branch branch = baseApi.branchApi().getDefault(projectKey, repoKey);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.id()).isNotNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
+            assertSent(server, localGetMethod, restBasePath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + localBranchesPath + "/default");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testUpdateDefaultBranch() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-
-            final RequestStatus success = api.updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final RequestStatus success = baseApi.branchApi().updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
             assertSent(server, "PUT", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branches/default");
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/branches/default");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testListBranchePermissions() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-permission-list.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-
-            BranchRestrictionPage branch = api.listBranchRestriction(projectKey, repoKey, null, 1);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchRestrictionPage branch = baseApi.branchApi().listBranchRestriction(projectKey, repoKey, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.values().size() > 0).isTrue();
             assertThat(839L == branch.values().get(0).id()).isTrue();
             assertThat(2 == branch.values().get(0).accessKeys().size()).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
-            assertSent(server, "GET", "/rest/branch-permissions/2.0"
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(localLimit, 1);
+            assertSent(server, localGetMethod, branchPermissionsPath
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/restrictions", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testListBranchesPermissionsNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-permission-list-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "hello";
-            String repoKey = "world";
-
-            BranchRestrictionPage branch = api.listBranchRestriction(projectKey, repoKey, null, 1);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchRestrictionPage branch = baseApi.branchApi().listBranchRestriction(projectKey, repoKey, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().size() > 0).isTrue();
 
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 1);
-            assertSent(server, "GET", "/rest/branch-permissions/2.0"
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(localLimit, 1);
+            assertSent(server, localGetMethod, branchPermissionsPath
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/restrictions", queryParams);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testUpdateBranchesPermissions() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            List<String> groupPermission = new ArrayList<>();
+            final List<String> groupPermission = new ArrayList<>();
             groupPermission.add("Test12354");
-            List<Long> listAccessKey = new ArrayList<>();
+            final List<Long> listAccessKey = new ArrayList<>();
             listAccessKey.add(123L);
-            List<BranchRestriction> listBranchPermission = new ArrayList<>();
+            final List<BranchRestriction> listBranchPermission = new ArrayList<>();
             listBranchPermission.add(BranchRestriction.createWithId(839L, BranchRestrictionEnumType.FAST_FORWARD_ONLY,
                     Matcher.create(Matcher.MatcherId.RELEASE, true), new ArrayList<User>(), groupPermission,
                     listAccessKey));
 
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.createBranchRestriction(projectKey, repoKey, listBranchPermission);
+            final RequestStatus success = baseApi.branchApi().createBranchRestriction(projectKey, repoKey, listBranchPermission);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "POST", "/rest/branch-permissions/2.0"
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions");
+            assertSent(server, "POST", branchPermissionsPath
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/restrictions");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteBranchesPermissions() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            Long idToDelete = 839L;
-            final RequestStatus success = api.deleteBranchRestriction(projectKey, repoKey, idToDelete);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final Long idToDelete = 839L;
+            final RequestStatus success = baseApi.branchApi().deleteBranchRestriction(projectKey, repoKey, idToDelete);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "DELETE", "/rest/branch-permissions/2.0"
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/restrictions/" + idToDelete);
+            assertSent(server, localDeleteMethod, branchPermissionsPath
+                    + localProjectsPath + projectKey + localReposPath + repoKey + "/restrictions/" + idToDelete);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetBranchModelConfiguration() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            BranchModelConfiguration configuration = api.getModelConfiguration(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchModelConfiguration configuration = baseApi.branchApi().getModelConfiguration(projectKey, repoKey);
             assertThat(configuration).isNotNull();
             assertThat(configuration.errors().isEmpty()).isTrue();
             assertThat(configuration.types().size() > 0).isTrue();
             assertThat(configuration.development().refId().equals("refs/heads/master")).isTrue();
             assertThat(configuration.production()).isNull();
-            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+            assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testGetBranchModelConfigurationOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            BranchModelConfiguration configuration = api.getModelConfiguration(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchModelConfiguration configuration = baseApi.branchApi().getModelConfiguration(projectKey, repoKey);
             assertThat(configuration).isNotNull();
             assertThat(configuration.errors()).isNotEmpty();
             assertThat(configuration.production()).isNull();
             assertThat(configuration.development()).isNull();
-            assertSent(server, "GET", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+            assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testUpdateBranchModelConfiguration() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchConfiguration branchConfiguration = BranchConfiguration.create(testKeyword, false);
+            final List<Type> types = Lists.newArrayList(Type.create(Type.TypeId.BUGFIX, testKeyword, testKeyword, true));
 
-            BranchConfiguration branchConfiguration = BranchConfiguration.create("test", false);
-            List<Type> types = new ArrayList<>();
-            types.add(Type.create(Type.TypeId.BUGFIX, "test", "test", true));
+            final CreateBranchModelConfiguration bcm = CreateBranchModelConfiguration.create(branchConfiguration, null, types);
 
-            CreateBranchModelConfiguration branchModelConfiguration = CreateBranchModelConfiguration.create(branchConfiguration, null, types);
-
-            BranchModelConfiguration configuration = api.updateModelConfiguration(projectKey, repoKey, branchModelConfiguration);
+            final BranchModelConfiguration configuration = baseApi.branchApi().updateModelConfiguration(projectKey, repoKey, bcm);
             assertThat(configuration).isNotNull();
             assertThat(configuration.errors().isEmpty()).isTrue();
             assertThat(configuration.types().size() > 0).isTrue();
-            assertSent(server, "PUT", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+            assertSent(server, "PUT", localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testUpdateBranchModelConfigurationOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration-error.json")).setResponseCode(400));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchConfiguration branchConfiguration = BranchConfiguration.create(testKeyword, false);
+            final List<Type> types = Lists.newArrayList(Type.create(Type.TypeId.BUGFIX, testKeyword, testKeyword, true));
 
-            BranchConfiguration branchConfiguration = BranchConfiguration.create("test", false);
-            List<Type> types = new ArrayList<>();
-            types.add(Type.create(Type.TypeId.BUGFIX, "test", "test", true));
+            final CreateBranchModelConfiguration bcm = CreateBranchModelConfiguration.create(branchConfiguration, null, types);
 
-            CreateBranchModelConfiguration branchModelConfiguration = CreateBranchModelConfiguration.create(branchConfiguration, null, types);
-
-            BranchModelConfiguration configuration = api.updateModelConfiguration(projectKey, repoKey, branchModelConfiguration);
+            final BranchModelConfiguration configuration = baseApi.branchApi().updateModelConfiguration(projectKey, repoKey, bcm);
             assertThat(configuration).isNotNull();
             assertThat(configuration.errors()).isNotEmpty();
             assertThat(configuration.production()).isNull();
             assertThat(configuration.development()).isNull();
-            assertSent(server, "PUT", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+            assertSent(server, "PUT", localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteBranchModelConfiguration() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.deleteModelConfiguration(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+
+            final RequestStatus success = baseApi.branchApi().deleteModelConfiguration(projectKey, repoKey);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+            assertSent(server, localDeleteMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDeleteBranchModelConfigurationOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        BranchApi api = baseApi.branchApi();
-        try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            final RequestStatus success = api.deleteModelConfiguration(projectKey, repoKey);
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+
+            final RequestStatus success = baseApi.branchApi().deleteModelConfiguration(projectKey, repoKey);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            assertSent(server, "DELETE", "/rest/branch-utils/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/branchmodel/configuration");
+            assertSent(server, localDeleteMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }

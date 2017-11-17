@@ -41,6 +41,7 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface TagApi {
 
     @Named("tag:create")

@@ -33,7 +33,7 @@ public abstract class Parents {
     }
 
     @SerializedNames({ "id", "displayId" })
-    public static Parents create(String id, String displayId) {
+    public static Parents create(final String id, final String displayId) {
         return new AutoValue_Parents(id, displayId);
     }
 }

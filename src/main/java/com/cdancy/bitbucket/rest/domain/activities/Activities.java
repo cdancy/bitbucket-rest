@@ -80,15 +80,37 @@ public abstract class Activities {
     @Nullable
     public abstract List<User> removedReviewers();
 
-    @SerializedNames({"id", "createdDate", "user", "action", "commentAction", "comment", "fromHash", "previousFromHash", "previousToHash",
+    @SerializedNames({"id", "createdDate", "user", "action", "commentAction", 
+            "comment", "fromHash", "previousFromHash", "previousToHash",
             "toHash", "added", "removed", "addedReviewers", "removedReviewers"})
-    public static Activities create(long id, long createdDate, User user, ActivitiesType action, 
-                                        String commentAction, Comments comment, @Nullable String fromHash,
-                                        @Nullable String previousFromHash,  @Nullable String previousToHash,
-                                        @Nullable String toHash, @Nullable ActivitiesCommit added,
-                                        @Nullable ActivitiesCommit removed, @Nullable List<User> addedReviewers,
-                                        @Nullable List<User> removedReviewers) {
-        return new AutoValue_Activities(id, createdDate, user, action, commentAction, comment, fromHash, previousFromHash, previousToHash,
-            toHash, added, removed, Utils.nullToEmpty(addedReviewers), Utils.nullToEmpty(removedReviewers));
+    public static Activities create(final long id, 
+            final long createdDate, 
+            final User user, 
+            final ActivitiesType action, 
+            final String commentAction, 
+            final Comments comment, 
+            @Nullable final String fromHash,
+            @Nullable final String previousFromHash,  
+            @Nullable final String previousToHash,
+            @Nullable final String toHash, 
+            @Nullable final ActivitiesCommit added,
+            @Nullable final ActivitiesCommit removed, 
+            @Nullable final List<User> addedReviewers,
+            @Nullable final List<User> removedReviewers) {
+        
+        return new AutoValue_Activities(id, 
+                createdDate, 
+                user, 
+                action, 
+                commentAction, 
+                comment, 
+                fromHash, 
+                previousFromHash, 
+                previousToHash,
+                toHash, 
+                added, 
+                removed, 
+                Utils.nullToEmpty(addedReviewers), 
+                Utils.nullToEmpty(removedReviewers));
     }
 }

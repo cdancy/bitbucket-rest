@@ -35,10 +35,11 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
     
     private GeneratedTestContents generatedTestContents;
 
-    String projectKey;
-    String repoKey;
-    String commitHash;
-    String tagName = TestUtilities.randomStringLettersOnly();
+    private String projectKey;
+    private String repoKey;
+    private String commitHash;
+    
+    final String tagName = TestUtilities.randomStringLettersOnly();
 
     @BeforeClass
     public void init() {
@@ -46,15 +47,15 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
         
-        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, Boolean.TRUE, 1, 0);
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 1, 0);
         assertThat(commitPage.values().isEmpty()).isFalse();
         this.commitHash = commitPage.values().get(0).id();
     }
     
     @Test
     public void testCreateTag() {
-        CreateTag createTag = CreateTag.create(tagName, commitHash, null);
-        Tag tag = api().create(projectKey, repoKey, createTag);
+        final CreateTag createTag = CreateTag.create(tagName, commitHash, null);
+        final Tag tag = api().create(projectKey, repoKey, createTag);
         assertThat(tag).isNotNull();
         assertThat(tag.errors().isEmpty()).isTrue();
         assertThat(tag.id().endsWith(tagName)).isTrue();
@@ -63,7 +64,7 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testCreateTag")
     public void testGetTag() {
-        Tag tag = api().get(projectKey, repoKey, tagName);
+        final Tag tag = api().get(projectKey, repoKey, tagName);
         assertThat(tag).isNotNull();
         assertThat(tag.errors().isEmpty()).isTrue();
         assertThat(tag.id().endsWith(tagName)).isTrue();
@@ -72,7 +73,7 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetTagNonExistent() {
-        Tag tag = api().get(projectKey, repoKey, tagName + "9999");
+        final Tag tag = api().get(projectKey, repoKey, tagName + "9999");
         assertThat(tag).isNull();
     }
     

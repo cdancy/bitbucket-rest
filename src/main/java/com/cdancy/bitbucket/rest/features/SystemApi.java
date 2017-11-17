@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface SystemApi {
 
     @Named("system:version")

@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/cdancy/bitbucket-rest.svg?branch=master)](https://travis-ci.org/cdancy/bitbucket-rest)
 [![codecov](https://codecov.io/gh/cdancy/bitbucket-rest/branch/master/graph/badge.svg)](https://codecov.io/gh/cdancy/bitbucket-rest)
 [![Download](https://api.bintray.com/packages/cdancy/java-libraries/bitbucket-rest/images/download.svg) ](https://bintray.com/cdancy/java-libraries/bitbucket-rest/_latestVersion)
-[![Stack Overflow](https://img.shields.io/badge/stack%20overflow-bitbucket-4183C4.svg)](https://stackoverflow.com/questions/tagged/bitbucket+rest)
+[![Stack Overflow](https://img.shields.io/badge/stack%20overflow-bitbucket&#8211;rest-4183C4.svg)](https://stackoverflow.com/questions/tagged/bitbucket+rest)
 
 # bitbucket-rest
 ![alt tag](https://wac-cdn.atlassian.com/dam/jcr:e2a6f06f-b3d5-4002-aed3-73539c56a2eb/bitbucket_rgb_blue.png?cdnVersion=cm)

@@ -30,10 +30,22 @@ import java.util.List;
 @AutoValue
 public abstract class BranchRestrictionPage implements Page<BranchRestriction>, ErrorsHolder {
 
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static BranchRestrictionPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                    @Nullable List<BranchRestriction> values, @Nullable List<Error> errors) {
-        return new AutoValue_BranchRestrictionPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    @SerializedNames({ "start", "limit", "size", 
+            "nextPageStart", "isLastPage", "values", "errors" })
+    public static BranchRestrictionPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<BranchRestriction> values, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_BranchRestrictionPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

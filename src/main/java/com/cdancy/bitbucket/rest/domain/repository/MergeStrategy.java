@@ -25,15 +25,16 @@ import org.jclouds.json.SerializedNames;
 public abstract class MergeStrategy {
 
     public enum MergeStrategyId {
+        
         NO_FF("no-ff"),
         FF("ff"),
         FF_ONLY("ff-only"),
         SQUASH("squash"),
         SQUASH_FF_ONLY("squash-ff-only");
 
-        private String apiName;
+        private final String apiName;
 
-        MergeStrategyId(String apiName) {
+        MergeStrategyId(final String apiName) {
             this.apiName = apiName;
         }
 
@@ -47,8 +48,8 @@ public abstract class MergeStrategy {
          * @param apiName ApiName
          * @return value
          */
-        public static MergeStrategyId fromValue(String apiName) {
-            for (MergeStrategyId enumType : MergeStrategyId.values()) {
+        public static MergeStrategyId fromValue(final String apiName) {
+            for (final MergeStrategyId enumType : MergeStrategyId.values()) {
                 if (enumType.getApiName().equals(apiName)) {
                     return enumType;
                 }
@@ -77,7 +78,17 @@ public abstract class MergeStrategy {
     public abstract String name();
 
     @SerializedNames({ "description", "enabled", "flag", "id", "name"})
-    public static MergeStrategy create(String description, Boolean enabled, String flag, MergeStrategyId id, String name) {
-        return new AutoValue_MergeStrategy(description, enabled, flag, id, name);
+    public static MergeStrategy create(final String description, 
+            final Boolean enabled, 
+            final String flag, 
+            final MergeStrategyId id, 
+            final String name) {
+        
+        return new AutoValue_MergeStrategy(
+                description, 
+                enabled, 
+                flag, 
+                id, 
+                name);
     }
 }

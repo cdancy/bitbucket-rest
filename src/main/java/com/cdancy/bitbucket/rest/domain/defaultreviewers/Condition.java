@@ -49,11 +49,22 @@ public abstract class Condition implements ErrorsHolder {
     @Nullable
     public abstract Long requiredApprovals();
 
-    @SerializedNames({ "id", "scope", "sourceRefMatcher", "targetRefMatcher", "reviewers", "requiredApprovals", "errors"})
-    public static Condition create(Long id, Scope scope, Matcher sourceRefMatcher,
-                                   Matcher targetRefMatcher, List<User> reviewers, Long requiredApprovals,
-                                   @Nullable List<Error> errors) {
-        return new AutoValue_Condition(Utils.nullToEmpty(errors), id, scope, sourceRefMatcher, targetRefMatcher,
-            reviewers, requiredApprovals);
+    @SerializedNames({ "id", "scope", "sourceRefMatcher", 
+            "targetRefMatcher", "reviewers", "requiredApprovals", "errors"})
+    public static Condition create(final Long id, 
+            final Scope scope, 
+            final Matcher sourceRefMatcher,
+            final Matcher targetRefMatcher, 
+            final List<User> reviewers, 
+            final Long requiredApprovals,
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_Condition(Utils.nullToEmpty(errors), 
+                id, 
+                scope, 
+                sourceRefMatcher, 
+                targetRefMatcher,
+                reviewers, 
+                requiredApprovals);
     }
 }

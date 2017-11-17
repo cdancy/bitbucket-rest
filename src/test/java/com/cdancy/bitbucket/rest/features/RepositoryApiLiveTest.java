@@ -46,10 +46,13 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private GeneratedTestContents generatedTestContents;
 
+    private final String testGetRepoKeyword = "testGetRepository";
+    private final String repoWriteKeyword = "REPO_WRITE";
+
     private String projectKey;
     private String repoKey;
-    private String hookKey = null;
-    private User user = null;
+    private String hookKey;
+    private User user;
 
     @BeforeClass
     public void init() {
@@ -61,15 +64,15 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test 
     public void testGetRepository() {
-        Repository repository = api().get(projectKey, repoKey);
+        final Repository repository = api().get(projectKey, repoKey);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isTrue();
         assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testListRepositories() {
-        RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
+        final RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
 
         assertThat(repositoryPage).isNotNull();
         assertThat(repositoryPage.errors()).isEmpty();
@@ -88,9 +91,8 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testDeleteRepositoryNonExistent() {
-        String fish = TestUtilities.randomStringLettersOnly();
-        System.out.println("!!!!!!!!!!!!!!!!!!! SHOULD FAIL ON " + fish);
-        final RequestStatus success = api().delete(projectKey, fish);
+        final String random = TestUtilities.randomStringLettersOnly();
+        final RequestStatus success = api().delete(projectKey, random);
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -98,28 +100,28 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetRepositoryNonExistent() {
-        Repository repository = api().get(projectKey, TestUtilities.randomStringLettersOnly());
+        final Repository repository = api().get(projectKey, TestUtilities.randomStringLettersOnly());
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
     }
 
     @Test
     public void testCreateRepositoryWithIllegalName() {
-        CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
-        Repository repository = api().create(projectKey, createRepository);
+        final CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
+        final Repository repository = api().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
     }
 
-    @Test (dependsOnMethods = "testGetRepository")
+    @Test (dependsOnMethods = testGetRepoKeyword)
     public void testUpdatePullRequestSettings() {
-        MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.SQUASH, null);
-        List<MergeStrategy> listStrategy = new ArrayList<>();
+        final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.SQUASH, null);
+        final List<MergeStrategy> listStrategy = new ArrayList<>();
         listStrategy.add(strategy);
-        MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
-        CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+        final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+        final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
 
-        PullRequestSettings settings = api().updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
+        final PullRequestSettings settings = api().updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
         assertThat(settings).isNotNull();
         assertThat(settings.errors().isEmpty()).isTrue();
         assertThat(settings.mergeConfig().strategies()).isNotEmpty();
@@ -128,15 +130,15 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test (dependsOnMethods = "testUpdatePullRequestSettings")
     public void testGetPullRequestSettings() {
-        PullRequestSettings settings = api().getPullRequestSettings(projectKey, repoKey);
+        final PullRequestSettings settings = api().getPullRequestSettings(projectKey, repoKey);
         assertThat(settings).isNotNull();
         assertThat(settings.errors().isEmpty()).isTrue();
         assertThat(settings.mergeConfig().strategies()).isNotEmpty();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testCreatePermissionByUser() {
-        final RequestStatus success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", user.slug());
+        final RequestStatus success = api().createPermissionsByUser(projectKey, repoKey, repoWriteKeyword, user.slug());
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty(); 
@@ -144,7 +146,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test(dependsOnMethods = "testCreatePermissionByUser")
     public void testListPermissionByUser() {
-        PermissionsPage permissionsPage = api().listPermissionsByUser(projectKey, repoKey, 0, 100);
+        final PermissionsPage permissionsPage = api().listPermissionsByUser(projectKey, repoKey, 0, 100);
         assertThat(permissionsPage.values()).isNotEmpty();
     }
 
@@ -156,9 +158,9 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success.errors()).isEmpty();
     }
     
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testCreatePermissionByGroup() {
-        final RequestStatus success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", defaultBitbucketGroup);
+        final RequestStatus success = api().createPermissionsByGroup(projectKey, repoKey, repoWriteKeyword, defaultBitbucketGroup);
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();
@@ -166,7 +168,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test(dependsOnMethods = "testCreatePermissionByGroup")
     public void testListPermissionByGroup() {
-        PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
+        final PermissionsPage permissionsPage = api().listPermissionsByGroup(projectKey, repoKey, 0, 100);
         assertThat(permissionsPage.values()).isNotEmpty();
     }
     
@@ -178,15 +180,15 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success.errors()).isEmpty();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testCreatePermissionByGroupNonExistent() {
-        final RequestStatus success = api().createPermissionsByGroup(projectKey, repoKey, "REPO_WRITE", TestUtilities.randomString());
+        final RequestStatus success = api().createPermissionsByGroup(projectKey, repoKey, repoWriteKeyword, TestUtilities.randomString());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testDeletePermissionByGroupNonExistent() {
         final RequestStatus success = api().deletePermissionsByGroup(projectKey, repoKey, TestUtilities.randomString());
         assertThat(success).isNotNull();
@@ -194,13 +196,13 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success.errors()).isEmpty();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testListHooks() {
-        HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
+        final HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isEmpty();
         assertThat(hookPage.size()).isGreaterThan(0);
-        for (Hook hook : hookPage.values()) {
+        for (final Hook hook : hookPage.values()) {
             if (hook.details().configFormKey() == null) {
                 assertThat(hook.details().key()).isNotNull();
                 hookKey = hook.details().key();
@@ -211,7 +213,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test()
     public void testListHookOnError() {
-        HookPage hookPage = api().listHooks(projectKey, TestUtilities.randomString(), 0, 100);
+        final HookPage hookPage = api().listHooks(projectKey, TestUtilities.randomString(), 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isNotEmpty();
         assertThat(hookPage.values()).isEmpty();
@@ -219,16 +221,16 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListHooks"})
     public void testGetHook() {
-        Hook hook = api().getHook(projectKey, repoKey, hookKey);
+        final Hook hook = api().getHook(projectKey, repoKey, hookKey);
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isEmpty();
         assertThat(hook.details().key().equals(hookKey)).isTrue();
         assertThat(hook.enabled()).isFalse();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testGetHookOnError() {
-        Hook hook = api().getHook(projectKey, 
+        final Hook hook = api().getHook(projectKey, 
                 repoKey, 
                 TestUtilities.randomStringLettersOnly() 
                         + ":" 
@@ -240,16 +242,16 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetHook"})
     public void testEnableHook() {
-        Hook hook = api().enableHook(projectKey, repoKey, hookKey);
+        final Hook hook = api().enableHook(projectKey, repoKey, hookKey);
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isEmpty();
         assertThat(hook.details().key().equals(hookKey)).isTrue();
         assertThat(hook.enabled()).isTrue();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testEnableHookOnError() {
-        Hook hook = api().enableHook(projectKey, 
+        final Hook hook = api().enableHook(projectKey, 
                 repoKey, 
                 TestUtilities.randomStringLettersOnly() 
                         + ":" 
@@ -261,16 +263,16 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testEnableHook"})
     public void testDisableHook() {
-        Hook hook = api().disableHook(projectKey, repoKey, hookKey);
+        final Hook hook = api().disableHook(projectKey, repoKey, hookKey);
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isEmpty();
         assertThat(hook.details().key().equals(hookKey)).isTrue();
         assertThat(hook.enabled()).isFalse();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testDisableHookOnError() {
-        Hook hook = api().disableHook(projectKey, 
+        final Hook hook = api().disableHook(projectKey, 
                 repoKey, 
                 TestUtilities.randomStringLettersOnly() 
                         + ":" 
@@ -280,15 +282,15 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(hook.enabled()).isFalse();
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testCreatePermissionByUserNonExistent() {
-        final RequestStatus success = api().createPermissionsByUser(projectKey, repoKey, "REPO_WRITE", TestUtilities.randomString());
+        final RequestStatus success = api().createPermissionsByUser(projectKey, repoKey, repoWriteKeyword, TestUtilities.randomString());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();    
     }
 
-    @Test(dependsOnMethods = {"testGetRepository"})
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testDeletePermissionByUserNonExistent() {
         final RequestStatus success = api().deletePermissionsByUser(projectKey, repoKey, TestUtilities.randomString());
         assertThat(success).isNotNull();

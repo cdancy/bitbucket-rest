@@ -26,7 +26,7 @@ public abstract class Group {
     public abstract String name();
 
     @SerializedNames({"name"})
-    public static Group create(String name) {
+    public static Group create(final String name) {
         return new AutoValue_Group(name);
     }
 }

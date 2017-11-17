@@ -45,6 +45,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/build-status/{jclouds.api-version}")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface BuildStatusApi {
 
     @Named("build-status:status")

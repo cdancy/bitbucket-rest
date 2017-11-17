@@ -54,37 +54,50 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Test(groups = "unit", testName = "PullRequestApiMockTest")
 public class PullRequestApiMockTest extends BaseBitbucketMockTest {
-
-    final String project = "PRJ";
-    final String repo = "my-repo";
-
+ 
+    private final String projectKey = "PRJ";
+    private final String repoKey = "my-repo";
+    private final String restApiPath = "/rest/api/";
+    private final String getMethod = "GET";
+    private final String postMethod = "POST";
+    
+    private final String limitKeyword = "limit";
+    private final String versionKeyword = "version";
+    private final String startKeyword = "start";
+    private final String projectsPath = "/projects/";
+    private final String pullRequestsPath = "/pull-requests/";
+    private final String specificPullRequestPath = "/projects/PRJ/repos/my-repo/pull-requests/101";
+    private final String specificPullRequestMergePath = specificPullRequestPath + "/merge";
+    private final String bobKeyword = "bob";
+    private final String reposPath = "/repos/";
+    
     public void testCreatePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(201));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ProjectKey proj1 = ProjectKey.create("PRJ");
-            ProjectKey proj2 = ProjectKey.create("PRJ");
-            MinimalRepository repository1 = MinimalRepository.create("my-repo", null, proj1);
-            MinimalRepository repository2 = MinimalRepository.create("my-repo", null, proj2);
+            final ProjectKey proj1 = ProjectKey.create(projectKey);
+            final ProjectKey proj2 = ProjectKey.create(projectKey);
+            final MinimalRepository repository1 = MinimalRepository.create(repoKey, null, proj1);
+            final MinimalRepository repository2 = MinimalRepository.create(repoKey, null, proj2);
 
-            String commitId = "930228bb501e07c2653771858320873d94518e33";
-            Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, "feature-ABC-123", commitId);
-            Reference toRef = Reference.create("refs/heads/master", repository2);
-            CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
-            PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
+            final String commitId = "930228bb501e07c2653771858320873d94518e33";
+            final Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, "feature-ABC-123", commitId);
+            final Reference toRef = Reference.create("refs/heads/master", repository2);
+            final CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
+            final PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);
 
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
-            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.links()).isNotNull();
             assertThat(pr.fromRef().latestCommit().equals(commitId));
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests");
         } finally {
             baseApi.close();
@@ -93,21 +106,21 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.get(project, repo, 101);
+            final PullRequest pr = api.get(projectKey, repoKey, 101);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(project);
-            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repo);
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.links()).isNotNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + specificPullRequestPath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -115,18 +128,18 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequestPage pr = api.list(project, repo, null, null, null, null, null, null, null, 10);
+            final PullRequestPage pr = api.list(projectKey, repoKey, null, null, null, null, null, null, null, 10);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
             assertThat(pr.values()).isNotEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 10);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 10);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests", queryParams);
         } finally {
             baseApi.close();
@@ -135,17 +148,17 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testListPullRequestNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequestPage pr = api.list(project, repo, null, null, null, null, null, null, null, 10);
+            final PullRequestPage pr = api.list(projectKey, repoKey, null, null, null, null, null, null, null, 10);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isNotEmpty();
-            Map<String, ?> queryParams = ImmutableMap.of("limit", 10);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 10);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests", queryParams);
         } finally {
             baseApi.close();
@@ -154,24 +167,24 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeclinePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-decline.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.decline(project, repo, 101, 1);
+            final PullRequest pr = api.decline(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
-            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.state()).isEqualToIgnoringCase("DECLINED");
             assertThat(pr.open()).isFalse();
             assertThat(pr.links()).isNotNull();
 
-            Map<String, ?> queryParams = ImmutableMap.of("version", 1);
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(versionKeyword, 1);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/decline", queryParams);
         } finally {
             baseApi.close();
@@ -180,24 +193,24 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testReopenPullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.reopen(project, repo, 101, 1);
+            final PullRequest pr = api.reopen(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
-            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.state()).isEqualToIgnoringCase("OPEN");
             assertThat(pr.open()).isTrue();
             assertThat(pr.links()).isNotNull();
 
-            Map<String, ?> queryParams = ImmutableMap.of("version", 1);
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(versionKeyword, 1);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/reopen", queryParams);
 
         } finally {
@@ -207,19 +220,19 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCanMergePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-can-merge-succeed.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            MergeStatus ms = api.canMerge(project, repo, 101);
+            final MergeStatus ms = api.canMerge(projectKey, repoKey, 101);
             assertThat(ms).isNotNull();
             assertThat(ms.errors()).isEmpty();
             assertThat(ms.canMerge()).isTrue();
             assertThat(ms.vetoes()).isEmpty();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + specificPullRequestMergePath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -227,19 +240,19 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testCanMergePullRequestFail() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-can-merge-fail.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            MergeStatus ms = api.canMerge(project, repo, 101);
+            final MergeStatus ms = api.canMerge(projectKey, repoKey, 101);
             assertThat(ms).isNotNull();
             assertThat(ms.errors()).isEmpty();
             assertThat(ms.canMerge()).isFalse();
             assertThat(ms.vetoes()).hasSize(1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + specificPullRequestMergePath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -247,25 +260,25 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testMergePullRequest() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-merge.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.merge(project, repo, 101, 1);
+            final PullRequest pr = api.merge(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
-            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.state()).isEqualToIgnoringCase("MERGED");
             assertThat(pr.open()).isFalse();
             assertThat(pr.links()).isNotNull();
 
-            Map<String, ?> queryParams = ImmutableMap.of("version", 1);
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(versionKeyword, 1);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + specificPullRequestMergePath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -273,16 +286,16 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
     
     public void testMergePullRequestNeedsRetry() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/merge-failed-retry.json")).setResponseCode(409));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
             
-            AtomicInteger retries = new AtomicInteger(5);
+            final AtomicInteger retries = new AtomicInteger(5);
             
-            PullRequest pr = api.merge(project, repo, 101, 1);
+            PullRequest pr = api.merge(projectKey, repoKey, 101, 1);
             while (retries.get() > 0 && pr.errors().size() > 0 && pr.errors().get(0).message().contains("Please retry the merge")) {
                 
                 System.out.println("Bitbucket is under load. Waiting for some time period and then retrying");
@@ -290,26 +303,30 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
                 retries.decrementAndGet();
                 
                 if (retries.get() == 0) {
-                    server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-merge.json")).setResponseCode(200));
+                    server.enqueue(new MockResponse() //NOPMD
+                            .setBody(payloadFromResource("/pull-request-merge.json"))
+                            .setResponseCode(200));
                 } else {
-                    server.enqueue(new MockResponse().setBody(payloadFromResource("/merge-failed-retry.json")).setResponseCode(409));
+                    server.enqueue(new MockResponse() //NOPMD
+                            .setBody(payloadFromResource("/merge-failed-retry.json"))
+                            .setResponseCode(409));
                 }
 
-                pr = api.merge(project, repo, 101, 1);
+                pr = api.merge(projectKey, repoKey, 101, 1);
             } 
 
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
-            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase("PRJ");
-            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase("my-repo");
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
             assertThat(pr.id()).isEqualTo(101);
             assertThat(pr.state()).isEqualToIgnoringCase("MERGED");
             assertThat(pr.open()).isFalse();
             assertThat(pr.links()).isNotNull();
 
-            Map<String, ?> queryParams = ImmutableMap.of("version", 1);
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101/merge", queryParams);
+            final Map<String, ?> queryParams = ImmutableMap.of(versionKeyword, 1);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + specificPullRequestMergePath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -317,18 +334,18 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestNonExistent() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-not-exist.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            PullRequest pr = api.get(project, repo, 101);
+            final PullRequest pr = api.get(projectKey, repoKey, 101);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isNotEmpty();
             assertThat(pr.errors().get(0).exceptionName()).endsWith("NoSuchPullRequestException");
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/my-repo/pull-requests/101");
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + specificPullRequestPath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -336,21 +353,21 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestChanges() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-changes.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ChangePage pcr = api.changes(project, repo, 101, true, 12, null);
+            final ChangePage pcr = api.changes(projectKey, repoKey, 101, true, 12, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
 
-            Map<String, ?> queryParams = ImmutableMap.of("withComments", true, "limit", 12);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("withComments", true, limitKeyword, 12);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/changes", queryParams);
         } finally {
             baseApi.close();
@@ -359,20 +376,20 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestChangesOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ChangePage pcr = api.changes(project, repo, 101, true, 12, null);
+            final ChangePage pcr = api.changes(projectKey, repoKey, 101, true, 12, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("withComments", true, "limit", 12);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("withComments", true, limitKeyword, 12);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/changes", queryParams);
         } finally {
             baseApi.close();
@@ -381,22 +398,22 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestCommits() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-commits.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            CommitPage pcr = api.commits(project, repo, 101, true, 1, null);
+            final CommitPage pcr = api.commits(projectKey, repoKey, 101, true, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
             assertThat(pcr.totalCount()).isEqualTo(1);
 
-            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, limitKeyword, 1);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/commits", queryParams);
         } finally {
             baseApi.close();
@@ -405,20 +422,20 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestCommitsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            CommitPage pcr = api.commits(project, repo, 101, true, 1, null);
+            final CommitPage pcr = api.commits(projectKey, repoKey, 101, true, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, "limit", 1);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of("withCounts", true, limitKeyword, 1);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/commits", queryParams);
         } finally {
             baseApi.close();
@@ -427,15 +444,15 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestActivities() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ActivitiesPage activities = api.listActivities(project, repo, 1, 5, 0);
+            final ActivitiesPage activities = api.listActivities(projectKey, repoKey, 1, 5, 0);
             assertThat(activities).isNotNull();
             assertThat(activities.errors()).isEmpty();
             assertThat(activities.values()).hasSize(3);
@@ -456,8 +473,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(task.anchor().type()).isEqualTo("COMMENT");
             assertThat(task.state()).isEqualTo("OPEN");
 
-            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(startKeyword, "0", limitKeyword, 5);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
         } finally {
             baseApi.close();
@@ -466,20 +483,20 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestActivitiesOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-activities-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ActivitiesPage activities = api.listActivities(project, repo, 1, 5, 0);
+            final ActivitiesPage activities = api.listActivities(projectKey, repoKey, 1, 5, 0);
             assertThat(activities).isNotNull();
             assertThat(activities.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(startKeyword, "0", limitKeyword, 5);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/1/activities", queryParams);
         } finally {
             baseApi.close();
@@ -488,22 +505,22 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestParticipants() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants.json"))
                 .setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ParticipantsPage participants = api.listParticipants(project, repo, 1, 5, 0);
+            final ParticipantsPage participants = api.listParticipants(projectKey, repoKey, 1, 5, 0);
             assertThat(participants).isNotNull();
             assertThat(participants.errors()).isEmpty();
             assertThat(participants.values()).hasSize(1);
             assertThat(participants.values().get(0).approved()).isFalse();
 
-            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(startKeyword, "0", limitKeyword, 5);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
         } finally {
             baseApi.close();
@@ -512,20 +529,20 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testGetPullRequestParticipantsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-participants-error.json"))
                 .setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
 
-            ParticipantsPage participants = api.listParticipants(project, repo, 1, 5, 0);
+            final ParticipantsPage participants = api.listParticipants(projectKey, repoKey, 1, 5, 0);
             assertThat(participants).isNotNull();
             assertThat(participants.errors()).isNotEmpty();
 
-            Map<String, ?> queryParams = ImmutableMap.of("start", "0", "limit", 5);
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            final Map<String, ?> queryParams = ImmutableMap.of(startKeyword, "0", limitKeyword, 5);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/1/participants", queryParams);
         } finally {
             baseApi.close();
@@ -534,23 +551,22 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testPullRequestAssignPaticipants() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/participants.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            Long pullRequestId = 839L;
-            User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
-            CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+
+            final Long pullRequestId = 839L;
+            final User user = User.create(bobKeyword, "bob@acme.ic", 123, bobKeyword, true, bobKeyword, "asd");
+            final CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
                     false, Participants.Status.UNAPPROVED);
-            Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
+            final Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
             assertThat(success).isNotNull();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
                     + pullRequestId + "/participants");
         } finally {
             baseApi.close();
@@ -559,23 +575,22 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testPullRequestAssignPaticipantsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/participants-error.json")).setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            Long pullRequestId = 839L;
-            User user = User.create("bob", "bob@acme.ic", 123, "bob", true, "bob", "asd");
-            CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+
+            final Long pullRequestId = 839L;
+            final User user = User.create(bobKeyword, "bob@acme.ic", 123, bobKeyword, true, bobKeyword, "asd");
+            final CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
                     false, Participants.Status.UNAPPROVED);
-            Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
+            final Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
             assertThat(success).isNotNull();
             assertThat(success.errors()).isNotEmpty();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
                     + pullRequestId + "/participants");
         } finally {
             baseApi.close();
@@ -584,22 +599,21 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePullRequestPaticipants() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            Long pullRequestId = 839L;
-            String userSlug = "bbdfgf";
+
+            final Long pullRequestId = 839L;
+            final String userSlug = "bbdfgf";
             final RequestStatus success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+            assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
                     + pullRequestId + "/participants/" + userSlug);
         } finally {
             baseApi.close();
@@ -608,22 +622,21 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testDeletePullRequestPaticipantsOnError() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(404));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        PullRequestApi api = baseApi.pullRequestApi();
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            String projectKey = "PRJ";
-            String repoKey = "myrepo";
-            Long pullRequestId = 839L;
-            String userSlug = "bbdfgf";
+
+            final Long pullRequestId = 839L;
+            final String userSlug = "bbdfgf";
             final RequestStatus success = api.deleteParticipant(projectKey, repoKey, pullRequestId, userSlug);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            assertSent(server, "DELETE", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/pull-requests/"
+            assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
                     + pullRequestId + "/participants/" + userSlug);
         } finally {
             baseApi.close();

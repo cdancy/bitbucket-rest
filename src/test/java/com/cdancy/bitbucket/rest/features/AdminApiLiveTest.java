@@ -30,14 +30,14 @@ public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testListUsersByGroup() {
-        UserPage userPage = api().listUsersByGroup(defaultBitbucketGroup, null, null, null);
+        final UserPage userPage = api().listUsersByGroup(defaultBitbucketGroup, null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() > 0).isTrue();
     }
     
     @Test
     public void testListUsersByNonExistentGroup() {
-        UserPage userPage = api().listUsersByGroup(TestUtilities.randomString(), null, null, null);
+        final UserPage userPage = api().listUsersByGroup(TestUtilities.randomString(), null, null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
     }
@@ -52,7 +52,7 @@ public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testListUsersNonExistent() {
-        UserPage userPage = api().listUsers(TestUtilities.randomString(), null, null);
+        final UserPage userPage = api().listUsers(TestUtilities.randomString(), null, null);
         assertThat(userPage).isNotNull();
         assertThat(userPage.size() == 0).isTrue();
     }

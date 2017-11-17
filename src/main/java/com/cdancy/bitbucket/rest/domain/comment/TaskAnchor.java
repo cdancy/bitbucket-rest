@@ -53,10 +53,24 @@ public abstract class TaskAnchor {
 
     @SerializedNames({ "properties", "id", "version", "text", 
             "author", "createdDate", "updatedDate", "permittedOperations", "type" })
-    public static TaskAnchor create(Map<String, String> properties, int id, int version, String text, 
-            Author author, long createdDate, long updatedDate, 
-            PermittedOperations permittedOperations, String type) {
-        return new AutoValue_TaskAnchor(Utils.nullToEmpty(properties), id, version, text, 
-                author, createdDate, updatedDate, permittedOperations, type);
+    public static TaskAnchor create(final Map<String, String> properties, 
+            final int id, 
+            final int version, 
+            final String text, 
+            final Author author, 
+            final long createdDate, 
+            final long updatedDate, 
+            final PermittedOperations permittedOperations, 
+            final String type) {
+        
+        return new AutoValue_TaskAnchor(Utils.nullToEmpty(properties), 
+                id, 
+                version, 
+                text, 
+                author, 
+                createdDate, 
+                updatedDate, 
+                permittedOperations, 
+                type);
     }
 }

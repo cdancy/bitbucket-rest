@@ -31,7 +31,7 @@ public abstract class Link {
     }
 
     @SerializedNames({ "url", "rel" })
-    public static Link create(String url, String rel) {
+    public static Link create(final String url, final String rel) {
         return new AutoValue_Link(url, rel);
     }
 }

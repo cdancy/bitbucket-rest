@@ -22,16 +22,17 @@ import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class BranchRestrictionType {
+
     public abstract String id();
 
     public abstract String name();
 
     @SerializedNames({"id", "name"})
-    public static BranchRestrictionType create(String id, String name) {
+    public static BranchRestrictionType create(final String id, final String name) {
         return new AutoValue_BranchRestrictionType(id, name);
     }
 
-    public static BranchRestrictionType create(Matcher.MatcherId matcherId) {
+    public static BranchRestrictionType create(final Matcher.MatcherId matcherId) {
         return new AutoValue_BranchRestrictionType(matcherId.getTypeId(), matcherId.getTypeName());
     }
 }

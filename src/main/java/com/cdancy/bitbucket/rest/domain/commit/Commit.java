@@ -49,11 +49,22 @@ public abstract class Commit implements ErrorsHolder {
     Commit() {
     }
 
-    @SerializedNames({ "id", "displayId", "author", "authorTimestamp",
-            "message", "parents", "errors" })
-    public static Commit create(String id, String displayId, Author author,
-                                long authorTimestamp, String message, List<Parents> parents, List<Error> errors) {
-        return new AutoValue_Commit(Utils.nullToEmpty(errors), id, displayId, author, 
-                authorTimestamp, message, Utils.nullToEmpty(parents));
+    @SerializedNames({ "id", "displayId", "author", 
+            "authorTimestamp", "message", "parents", "errors" })
+    public static Commit create(final String id, 
+            final String displayId, 
+            final Author author,
+            final long authorTimestamp, 
+            final String message, 
+            final List<Parents> parents, 
+            final List<Error> errors) {
+        
+        return new AutoValue_Commit(Utils.nullToEmpty(errors), 
+                id, 
+                displayId, 
+                author, 
+                authorTimestamp, 
+                message, 
+                Utils.nullToEmpty(parents));
     }
 }

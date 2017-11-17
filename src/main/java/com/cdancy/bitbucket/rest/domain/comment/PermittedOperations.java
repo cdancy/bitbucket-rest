@@ -33,9 +33,9 @@ public abstract class PermittedOperations {
     }
 
     @SerializedNames({ "editable", "deletable", "transitionable" })
-    public static PermittedOperations create(boolean editable, 
-            boolean deletable, 
-            boolean transitionable) {
+    public static PermittedOperations create(final boolean editable, 
+            final boolean deletable, 
+            final boolean transitionable) {
         return new AutoValue_PermittedOperations(editable, deletable, transitionable);
     }
 }

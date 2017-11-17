@@ -36,7 +36,10 @@ public abstract class MinimalRepository {
     }
 
     @SerializedNames({ "slug", "name", "project" })
-    public static MinimalRepository create(String slug, String name, ProjectKey project) {
+    public static MinimalRepository create(final String slug, 
+            final String name, 
+            final ProjectKey project) {
+        
         return new AutoValue_MinimalRepository(slug, name, project);
     }
 }

@@ -46,7 +46,16 @@ public abstract class CreateBuildStatus {
     }
 
     @SerializedNames({ "state", "key", "name", "url", "description" })
-    public static CreateBuildStatus create(STATE state, String key, String name, String url, String description) {
-        return new AutoValue_CreateBuildStatus(state != null ? state.toString() : null, key, name, url, description);
+    public static CreateBuildStatus create(final STATE state, 
+            final String key, 
+            final String name, 
+            final String url, 
+            final String description) {
+        
+        return new AutoValue_CreateBuildStatus(state != null ? state.toString() : null, 
+                key, 
+                name, 
+                url, 
+                description);
     }
 }

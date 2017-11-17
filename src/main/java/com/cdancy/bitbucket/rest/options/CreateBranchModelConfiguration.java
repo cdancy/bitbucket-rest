@@ -39,12 +39,14 @@ public abstract class CreateBranchModelConfiguration {
     CreateBranchModelConfiguration() {
     }
 
-    public static CreateBranchModelConfiguration create(BranchModelConfiguration configuration) {
+    public static CreateBranchModelConfiguration create(final BranchModelConfiguration configuration) {
         return new AutoValue_CreateBranchModelConfiguration(configuration.development(), configuration.production(), configuration.types());
     }
 
     @SerializedNames({ "development", "production", "types" })
-    public static CreateBranchModelConfiguration create(BranchConfiguration development, BranchConfiguration production, List<Type> types) {
+    public static CreateBranchModelConfiguration create(final BranchConfiguration development,
+            final BranchConfiguration production,
+            final List<Type> types) {
         return new AutoValue_CreateBranchModelConfiguration(development, production, types);
     }
 }

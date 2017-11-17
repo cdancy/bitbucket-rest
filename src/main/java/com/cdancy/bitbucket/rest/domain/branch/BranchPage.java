@@ -32,9 +32,20 @@ import com.google.auto.value.AutoValue;
 public abstract class BranchPage implements Page<Branch>, ErrorsHolder {
 
     @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static BranchPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                     @Nullable List<Branch> values, @Nullable List<Error> errors) {
-        return new AutoValue_BranchPage(start, limit, size, nextPageStart, isLastPage,
-                Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+    public static BranchPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<Branch> values, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_BranchPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors));
     }
 }

@@ -32,7 +32,9 @@ public abstract class Key {
     public abstract String label();
 
     @SerializedNames({"id", "text", "label"})
-    public static Key create(@Nullable Long id, String text, String label) {
+    public static Key create(@Nullable final Long id, 
+            final String text, 
+            final String label) {
         return new AutoValue_Key(id, text, label);
     }
 }

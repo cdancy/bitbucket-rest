@@ -44,12 +44,21 @@ public abstract class PullRequestSettings implements ErrorsHolder {
     @Nullable
     public abstract Long requiredSuccessfulBuilds();
 
-    @SerializedNames({ "mergeConfig", "requiredAllApprovers", "requiredAllTasksComplete", "requiredApprovers",
+    @SerializedNames({ "mergeConfig", "requiredAllApprovers", 
+            "requiredAllTasksComplete", "requiredApprovers",
             "requiredSuccessfulBuilds", "errors" })
-    public static PullRequestSettings create(MergeConfig mergeConfig, Boolean requiredAllApprovers,
-                                             Boolean requiredAllTasksComplete, Long requiredApprovers,
-                                             Long requiredSuccessfulBuilds, @Nullable List<Error> errors) {
-        return new AutoValue_PullRequestSettings(Utils.nullToEmpty(errors), mergeConfig, requiredAllApprovers,
-            requiredAllTasksComplete, requiredApprovers, requiredSuccessfulBuilds);
+    public static PullRequestSettings create(final MergeConfig mergeConfig, 
+            final Boolean requiredAllApprovers,
+            final Boolean requiredAllTasksComplete, 
+            final Long requiredApprovers,
+            final Long requiredSuccessfulBuilds, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_PullRequestSettings(Utils.nullToEmpty(errors), 
+                mergeConfig, 
+                requiredAllApprovers,
+                requiredAllTasksComplete, 
+                requiredApprovers, 
+                requiredSuccessfulBuilds);
     }
 }

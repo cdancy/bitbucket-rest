@@ -42,9 +42,18 @@ public abstract class Path {
     Path() {
     }
 
-    @SerializedNames({ "components", "parent", "name", "extension", "toString" })
-    public static Path create(List<String> components, String parent, String name,
-                              String extension, String _toString) {
-        return new AutoValue_Path(Utils.nullToEmpty(components), parent, name, extension, _toString);
+    @SerializedNames({ "components", "parent", "name", 
+            "extension", "toString" })
+    public static Path create(final List<String> components, 
+            final String parent, 
+            final String name,
+            final String extension, 
+            final String _toString) {
+        
+        return new AutoValue_Path(Utils.nullToEmpty(components), 
+                parent, 
+                name, 
+                extension, 
+                _toString);
     }
 }

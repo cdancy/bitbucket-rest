@@ -37,10 +37,25 @@ public abstract class CommitPage implements Page<Commit>, ErrorsHolder {
     @Nullable
     public abstract Integer totalCount();
 
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors", "authorCount", "totalCount" })
-    public static CommitPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                     @Nullable List<Commit> values, @Nullable List<Error> errors, Integer authorCount, Integer totalCount) {
-        return new AutoValue_CommitPage(start, limit, size, nextPageStart, isLastPage,
-                Utils.nullToEmpty(values), Utils.nullToEmpty(errors), authorCount, totalCount);
+    @SerializedNames({ "start", "limit", "size", "nextPageStart", 
+            "isLastPage", "values", "errors", "authorCount", "totalCount" })
+    public static CommitPage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage,
+            @Nullable final List<Commit> values, 
+            @Nullable final List<Error> errors, 
+            final Integer authorCount, 
+            final Integer totalCount) {
+        return new AutoValue_CommitPage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(values), 
+                Utils.nullToEmpty(errors), 
+                authorCount, 
+                totalCount);
     }
 }

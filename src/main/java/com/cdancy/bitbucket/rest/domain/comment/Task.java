@@ -55,10 +55,22 @@ public abstract class Task implements ErrorsHolder {
 
     @SerializedNames({ "anchor", "author", "createdDate", "id", "text",
             "state", "permittedOperations", "errors" })
-    public static Task create(TaskAnchor anchor, Author author, 
-            long createdDate, int id, String text, 
-            String state, PermittedOperations permittedOperations, List<Error> errors) {
-        return new AutoValue_Task(Utils.nullToEmpty(errors), anchor, author, createdDate, 
-                id, text, state, permittedOperations);
+    public static Task create(final TaskAnchor anchor, 
+            final Author author, 
+            final long createdDate, 
+            final int id, 
+            final String text, 
+            final String state, 
+            final PermittedOperations permittedOperations, 
+            final List<Error> errors) {
+        
+        return new AutoValue_Task(Utils.nullToEmpty(errors), 
+                anchor, 
+                author, 
+                createdDate, 
+                id, 
+                text, 
+                state, 
+                permittedOperations);
     }
 }

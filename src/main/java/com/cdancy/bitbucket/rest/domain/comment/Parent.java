@@ -29,7 +29,7 @@ public abstract class Parent {
     }
 
     @SerializedNames({ "id" })
-    public static Parent create(int id) {
+    public static Parent create(final int id) {
         return new AutoValue_Parent(id);
     }
 }

@@ -34,11 +34,24 @@ public abstract class LinePage implements Page<Line>, ErrorsHolder {
     @Nullable
     public abstract List<Blame> blame();
     
-    @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "lines", "blame", "errors" })
-    public static LinePage create(int start, int limit, int size, int nextPageStart, 
-            boolean isLastPage,@Nullable List<Line> lines, 
-            @Nullable List<Blame> blame, @Nullable List<Error> errors) {
-        return new AutoValue_LinePage(start, limit, size, nextPageStart, isLastPage,
-                Utils.nullToEmpty(lines), Utils.nullToEmpty(errors), Utils.nullToEmpty(blame));
+    @SerializedNames({ "start", "limit", "size", "nextPageStart", 
+            "isLastPage", "lines", "blame", "errors" })
+    public static LinePage create(final int start, 
+            final int limit, 
+            final int size, 
+            final int nextPageStart, 
+            final boolean isLastPage, 
+            @Nullable final List<Line> lines, 
+            @Nullable final List<Blame> blame, 
+            @Nullable final List<Error> errors) {
+        
+        return new AutoValue_LinePage(start, 
+                limit, 
+                size, 
+                nextPageStart, 
+                isLastPage,
+                Utils.nullToEmpty(lines), 
+                Utils.nullToEmpty(errors), 
+                Utils.nullToEmpty(blame));
     }
 }

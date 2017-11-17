@@ -36,7 +36,13 @@ public abstract class Version {
     }
 
     @SerializedNames({ "version", "buildNumber", "buildDate", "displayName" })
-    public static Version create(String version, String buildNumber, String buildDate, String displayName) {
-        return new AutoValue_Version(version, buildNumber, buildDate, displayName);
+    public static Version create(final String version, 
+            final String buildNumber, 
+            final String buildDate, 
+            final String displayName) {
+        return new AutoValue_Version(version, 
+                buildNumber, 
+                buildDate, 
+                displayName);
     }
 }

@@ -34,7 +34,7 @@ public abstract class Veto {
     }
 
     @SerializedNames({ "summaryMessage", "detailedMessage" })
-    public static Veto create(String summaryMessage, String detailedMessage) {
+    public static Veto create(final String summaryMessage, final String detailedMessage) {
         return new AutoValue_Veto(summaryMessage, detailedMessage);
     }
 }

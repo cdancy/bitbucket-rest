@@ -28,7 +28,7 @@ public abstract class Properties {
     public abstract long resolvedTaskCount();
 
     @SerializedNames({"openTaskCount", "resolvedTaskCount"})
-    public static Properties create(long openTaskCount, long resolvedTaskCount) {
+    public static Properties create(final long openTaskCount, final long resolvedTaskCount) {
         return new AutoValue_Properties(openTaskCount, resolvedTaskCount);
     }
 }

@@ -45,6 +45,9 @@ import org.jclouds.util.Strings2;
  */
 public class TestUtilities {
     
+    private static final String GIT_COMMAND = "git";
+    private static final char[] CHARS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+
     private static User defaultUser;
 
     /**
@@ -69,7 +72,7 @@ public class TestUtilities {
             final UserPage userPage = api.adminApi().listUsers(username, null, null);
             assertThat(userPage).isNotNull();
             assertThat(userPage.size() > 0).isTrue();
-            for (User user : userPage.values()) {
+            for (final User user : userPage.values()) {
                 if (username.equals(user.slug())) {
                     defaultUser = user;
                     break;
@@ -108,7 +111,7 @@ public class TestUtilities {
      * @return Path pointing at generated file.
      * @throws Exception if file could not be written.
      */
-    public static Path initGeneratedFile(Path baseDir) throws Exception {
+    public static Path initGeneratedFile(final Path baseDir) throws Exception {
         assertThat(baseDir).isNotNull();
         assertThat(baseDir.toFile().isDirectory()).isTrue();
         
@@ -188,7 +191,7 @@ public class TestUtilities {
 
             generateGitContentsAndPush(generatedFileDir, generatedEndpoint);
             
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw Throwables.propagate(e);
         }
         
@@ -202,48 +205,55 @@ public class TestUtilities {
      * @param gitRepoURL git repository URL with embedded credentials.
      * @throws Exception if git repository could not be created or files added.
      */
-    public static void generateGitContentsAndPush(File gitDirectory, String gitRepoURL) throws Exception {
+    public static void generateGitContentsAndPush(final File gitDirectory, final String gitRepoURL) throws Exception {
         
         // 1.) initialize git repository
-        String initGit = TestUtilities.executionToString(Arrays.asList("git", "init"), gitDirectory.toPath());
+        final String initGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "init"), gitDirectory.toPath());
         System.out.println("git-init: " + initGit.trim());
         
         // 2.) create some random files and commit them
         for (int i = 0; i < 3; i++) {
             Path genFile = initGeneratedFile(gitDirectory.toPath());
-            String addGit = TestUtilities.executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
+            String addGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "add", genFile.toFile().getPath()), gitDirectory.toPath());
             System.out.println("git-add-1: " + addGit.trim());
-            String commitGit = TestUtilities.executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
+            String commitGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "commit", "-m", "added"), gitDirectory.toPath());
             System.out.println("git-commit-1: " + commitGit.trim());
             
             // edit file again and create another commit
             genFile = Files.write(genFile, Arrays.asList(randomString()), Charset.forName("UTF-8"));
-            addGit = TestUtilities.executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
+            addGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "add", genFile.toFile().getPath()), gitDirectory.toPath());
             System.out.println("git-add-2: " + addGit.trim());
-            commitGit = TestUtilities.executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
+            commitGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "commit", "-m", "added"), gitDirectory.toPath());
             System.out.println("git-commit-2: " + commitGit.trim());
         }
         
         // 3.) push changes to remote repository
-        String pushGit = TestUtilities.executionToString(Arrays.asList("git", "push", "--set-upstream", gitRepoURL, "master"), gitDirectory.toPath());
+        final String pushGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, 
+                "push", 
+                "--set-upstream", 
+                gitRepoURL, 
+                "master"), gitDirectory.toPath());
         System.out.println("git-push: " + pushGit);
         
         // 4.) create branch 
-        String generatedBranchName = randomString();
-        String branchGit = TestUtilities.executionToString(Arrays.asList("git", "checkout", "-b", generatedBranchName), gitDirectory.toPath());
+        final String generatedBranchName = randomString();
+        final String branchGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, 
+                "checkout", "-b", 
+                generatedBranchName), 
+                gitDirectory.toPath());
         System.out.println("git-branch: " + branchGit.trim());
 
         
         // 5.) generate random file for new branch
-        Path genFile = initGeneratedFile(gitDirectory.toPath());
-        String addGit = TestUtilities.executionToString(Arrays.asList("git", "add", genFile.toFile().getPath()), gitDirectory.toPath());
+        final Path genFile = initGeneratedFile(gitDirectory.toPath());
+        final String addGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "add", genFile.toFile().getPath()), gitDirectory.toPath());
         System.out.println("git-branch-add: " + addGit.trim());
-        String commitGit = TestUtilities.executionToString(Arrays.asList("git", "commit", "-m", "added"), gitDirectory.toPath());
+        final String commitGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "commit", "-m", "added"), gitDirectory.toPath());
         System.out.println("git-branch-commit: " + commitGit.trim());
         
         // 6.) push branch
-        List<String> args = Arrays.asList("git", "push", "-u", gitRepoURL, generatedBranchName);
-        String pushBranchGit = TestUtilities.executionToString(args, gitDirectory.toPath());
+        final List<String> args = Arrays.asList(GIT_COMMAND, "push", "-u", gitRepoURL, generatedBranchName);
+        final String pushBranchGit = TestUtilities.executionToString(args, gitDirectory.toPath());
         System.out.println("git-branch-push: " + pushBranchGit);
     }
     
@@ -253,7 +263,8 @@ public class TestUtilities {
      * @param api BitbucketApi object
      * @param generatedTestContents to terminate.
      */
-    public static synchronized void terminateGeneratedTestContents(final BitbucketApi api, final GeneratedTestContents generatedTestContents) {
+    public static synchronized void terminateGeneratedTestContents(final BitbucketApi api, 
+            final GeneratedTestContents generatedTestContents) {
         assertThat(api).isNotNull();
         assertThat(generatedTestContents).isNotNull();
         
@@ -281,11 +292,10 @@ public class TestUtilities {
      * @return random String.
      */
     public static String randomStringLettersOnly() {
-        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
+        final StringBuilder sb = new StringBuilder();
+        final Random random = new Random();
         for (int i = 0; i < 10; i++) {
-            char randomChar = chars[random.nextInt(chars.length)];
+            final char randomChar = CHARS[random.nextInt(CHARS.length)];
             sb.append(randomChar);
         }
         return sb.toString().toUpperCase();

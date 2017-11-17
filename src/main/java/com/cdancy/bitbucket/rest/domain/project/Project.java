@@ -51,9 +51,24 @@ public abstract class Project implements ErrorsHolder, LinksHolder {
     Project() {
     }
 
-    @SerializedNames({ "key", "id", "name", "description", "public", "type", "links", "errors" })
-    public static Project create(String key, int id, String name, String description,
-                                 boolean _public, String type, Links links, List<Error> errors) {
-        return new AutoValue_Project(Utils.nullToEmpty(errors), links, key, id, name, description, _public, type);
+    @SerializedNames({ "key", "id", "name", "description", 
+            "public", "type", "links", "errors" })
+    public static Project create(final String key, 
+            final int id, 
+            final String name, 
+            final String description,
+            final boolean _public, 
+            final String type, 
+            final Links links, 
+            final List<Error> errors) {
+        
+        return new AutoValue_Project(Utils.nullToEmpty(errors), 
+                links, 
+                key, 
+                id, 
+                name, 
+                description, 
+                _public, 
+                type);
     }
 }

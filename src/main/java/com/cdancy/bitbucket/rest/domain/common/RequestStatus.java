@@ -37,7 +37,10 @@ import com.google.auto.value.AutoValue;
 public abstract class RequestStatus implements Value<Boolean>, ErrorsHolder {
     
     @SerializedNames({ "value", "errors" })
-    public static RequestStatus create(@Nullable Boolean value, List<Error> errors) {
-        return new AutoValue_RequestStatus(value, Utils.nullToEmpty(errors));
+    public static RequestStatus create(@Nullable final Boolean value, 
+            final List<Error> errors) {
+        
+        return new AutoValue_RequestStatus(value, 
+                Utils.nullToEmpty(errors));
     }
 }

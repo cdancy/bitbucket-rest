@@ -46,14 +46,11 @@ public class BitbucketErrorHandler implements HttpErrorHandler {
     protected Logger logger = Logger.NULL;
 
     @Override
-    public void handleError(HttpCommand command, HttpResponse response) {
+    public void handleError(final HttpCommand command, final HttpResponse response) {
 
-        String message = parseMessage(response);
         Exception exception = null;
         try {
-            message = message != null ? message : String.format("%s -> %s",
-                    command.getCurrentRequest().getRequestLine(), response.getStatusLine());
-
+            final String message = parseMessage(command, response);
             switch (response.getStatusCode()) {
                 case 400:
                     exception = new IllegalArgumentException(message);
@@ -82,24 +79,23 @@ public class BitbucketErrorHandler implements HttpErrorHandler {
         } catch (Exception e) {
             exception = new HttpResponseException(command, response, e);
         } finally {
-            if (exception == null) {
-                exception = message != null ? new HttpResponseException(command, response, message)
-                        : new HttpResponseException(command, response);
-            }
             closeQuietly(response.getPayload());
             command.setException(exception);
         }
     }
 
-    private String parseMessage(HttpResponse response) {
-        if (response.getPayload() == null) {
-            return null;
-        }
-
-        try {
-            return Strings2.toStringAndClose(response.getPayload().openStream());
-        } catch (IOException e) {
-            throw Throwables.propagate(e);
+    private String parseMessage(final HttpCommand command, final HttpResponse response) {
+        if (response.getPayload() != null) {
+            try {
+                return Strings2.toStringAndClose(response.getPayload().openStream());
+            } catch (IOException e) {
+                throw Throwables.propagate(e);
+            }
+        } else {
+            return new StringBuffer(command.getCurrentRequest().getRequestLine())
+                    .append(" -> ")
+                    .append(response.getStatusLine())
+                    .toString();
         }
     }
 }

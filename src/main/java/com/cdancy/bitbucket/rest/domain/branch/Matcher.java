@@ -24,18 +24,22 @@ import org.jclouds.json.SerializedNames;
 public abstract class Matcher {
 
     public enum MatcherId {
+        
         RELEASE("RELEASE", "Release", "MODEL_CATEGORY", "Branching model category"),
         DEVELOPMENT("Development", "Development", "MODEL_BRANCH", "Branching model branch"),
         MASTER("Production", "Production", "MODEL_BRANCH", "Branching model branch"),
         ANY_REF("ANY_REF_MATCHER_ID","ANY_REF_MATCHER_ID", "ANY_REF", "Any branch"),
         ANY("any", "any", "ANY_REF", "ANY_REF");
 
-        private String id;
-        private String name;
-        private String typeId;
-        private String typeName;
+        private final String id;
+        private final String name;
+        private final String typeId;
+        private final String typeName;
 
-        MatcherId(String id, String name, String typeId, String typeName) {
+        MatcherId(final String id, 
+                final String name, 
+                final String typeId, 
+                final String typeName) {
             this.id = id;
             this.name = name;
             this.typeId = typeId;
@@ -68,12 +72,23 @@ public abstract class Matcher {
     public abstract Boolean active();
 
     @SerializedNames({"id", "displayId", "type", "active"})
-    public static Matcher create(String id, String displayId, BranchRestrictionType type,
-                                  Boolean active) {
-        return new AutoValue_Matcher(id, displayId, type, active);
+    public static Matcher create(final String id, 
+            final String displayId, 
+            final BranchRestrictionType type,
+            final Boolean active) {
+        
+        return new AutoValue_Matcher(id, 
+                displayId, 
+                type, 
+                active);
     }
 
-    public static Matcher create(MatcherId matcherId, Boolean active) {
-        return new AutoValue_Matcher(matcherId.getId(), matcherId.getName(), BranchRestrictionType.create(matcherId), active);
+    public static Matcher create(final MatcherId matcherId, 
+            final Boolean active) {
+        
+        return new AutoValue_Matcher(matcherId.getId(), 
+                matcherId.getName(), 
+                BranchRestrictionType.create(matcherId), 
+                active);
     }
 }

@@ -52,12 +52,30 @@ public abstract class Change implements LinksHolder {
     Change() {
     }
 
-    @SerializedNames({ "contentId", "fromContentId", "path", "executable",
-            "percentUnchanged", "type", "nodeType", "srcPath", "srcExecutable", "links" })
-    public static Change create(String contentId, String fromContentId, Path path, boolean executable,
-                                int percentUnchanged, String type, String nodeType, Path srcPath,
-                                boolean srcExecutable, Links links) {
-        return new AutoValue_Change(links, contentId, fromContentId, path, executable,
-                percentUnchanged, type, nodeType, srcPath, srcExecutable);
+    @SerializedNames({ "contentId", "fromContentId", "path", 
+            "executable", "percentUnchanged", "type", 
+            "nodeType", "srcPath", "srcExecutable", 
+            "links" })
+    public static Change create(final String contentId, 
+            final String fromContentId, 
+            final Path path, 
+            final boolean executable,
+            final int percentUnchanged, 
+            final String type, 
+            final String nodeType, 
+            final Path srcPath,
+            final boolean srcExecutable, 
+            final Links links) {
+        
+        return new AutoValue_Change(links, 
+                contentId, 
+                fromContentId, 
+                path, 
+                executable,
+                percentUnchanged, 
+                type, 
+                nodeType, 
+                srcPath, 
+                srcExecutable);
     }
 }

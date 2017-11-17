@@ -32,15 +32,15 @@ public class UnsupportedMediaTypeException extends RuntimeException {
       super();
     }
 
-    public UnsupportedMediaTypeException(String arg0, Throwable arg1) {
+    public UnsupportedMediaTypeException(final String arg0, final Throwable arg1) {
       super(arg0, arg1);
     }
 
-    public UnsupportedMediaTypeException(String arg0) {
+    public UnsupportedMediaTypeException(final String arg0) {
       super(arg0);
     }
 
-    public UnsupportedMediaTypeException(Throwable arg0) {
+    public UnsupportedMediaTypeException(final Throwable arg0) {
       super(arg0);
     }
 }

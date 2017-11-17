@@ -44,7 +44,16 @@ public abstract class Error {
     }
 
     @SerializedNames({ "context", "message", "exceptionName", "conflicted", "vetoes" })
-    public static Error create(String context, String message, String exceptionName, boolean conflicted, List<Veto> vetoes) {
-        return new AutoValue_Error(context, message, exceptionName, conflicted, Utils.nullToEmpty(vetoes));
+    public static Error create(final String context, 
+            final String message, 
+            final String exceptionName, 
+            final boolean conflicted, 
+            final List<Veto> vetoes) {
+        
+        return new AutoValue_Error(context, 
+                message, 
+                exceptionName, 
+                conflicted, 
+                Utils.nullToEmpty(vetoes));
     }
 }

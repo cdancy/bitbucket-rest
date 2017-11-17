@@ -53,7 +53,12 @@ public abstract class Anchor {
     }
 
     @SerializedNames({ "line", "lineType", "fileType", "path", "srcPath" })
-    public static Anchor create(Integer line, LineType lineType, FileType fileType, String path, String srcPath) {
+    public static Anchor create(final Integer line, 
+            final LineType lineType, 
+            final FileType fileType, 
+            final String path, 
+            final String srcPath) {
+        
         return new AutoValue_Anchor(line,
                 lineType != null ? lineType.toString() : null,
                 fileType != null ? fileType.toString() : null,
@@ -62,12 +67,16 @@ public abstract class Anchor {
     }
 
     @SerializedNames({ "line", "lineType", "fileType", "path", "srcPath" })
-    public static Anchor create(Integer line, String lineType, String fileType, String path, String srcPath) {
+    public static Anchor create(final Integer line, 
+            final String lineType, 
+            final String fileType, 
+            final String path, 
+            final String srcPath) {
 
         String possibleLineType = null;
         if (lineType != null) {
-            for (LineType type : LineType.values()) {
-                String foundType = type.toString();
+            for (final LineType type : LineType.values()) {
+                final String foundType = type.toString();
                 if (foundType.equalsIgnoreCase(lineType)) {
                     possibleLineType = foundType;
                     break;
@@ -80,8 +89,8 @@ public abstract class Anchor {
 
         String possibleFileType = null;
         if (fileType != null) {
-            for (FileType type : FileType.values()) {
-                String foundType = type.toString();
+            for (final FileType type : FileType.values()) {
+                final String foundType = type.toString();
                 if (foundType.equalsIgnoreCase(fileType)) {
                     possibleFileType = foundType;
                     break;

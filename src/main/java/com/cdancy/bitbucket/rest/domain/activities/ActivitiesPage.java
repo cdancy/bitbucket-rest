@@ -31,8 +31,9 @@ import java.util.List;
 public abstract class ActivitiesPage implements Page<Activities>, ErrorsHolder {
 
     @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static ActivitiesPage create(int start, int limit, int size, int nextPageStart, boolean isLastPage,
-                                    @Nullable List<Activities> values, @Nullable List<Error> errors) {
+    public static ActivitiesPage create(final int start, final int limit, 
+            final int size, final int nextPageStart, final boolean isLastPage,
+            @Nullable final List<Activities> values, @Nullable final List<Error> errors) {
         return new AutoValue_ActivitiesPage(start, limit, size, nextPageStart, isLastPage,
             Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
     }

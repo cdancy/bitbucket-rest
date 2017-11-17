@@ -37,18 +37,16 @@ public class SystemApiMockTest extends BaseBitbucketMockTest {
     private final String versionRegex = "^\\d+\\.\\d+\\.\\d+$";
 
     public void testGetVersion() throws Exception {
-        MockWebServer server = mockEtcdJavaWebServer();
+        final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/version.json")).setResponseCode(200));
-        BitbucketApi baseApi = api(server.getUrl("/"));
-        SystemApi api = baseApi.systemApi();
-        try {
-            Version version = api.version();
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final Version version = baseApi.systemApi().version();
             assertThat(version).isNotNull();
             assertThat(version.version().matches(versionRegex)).isTrue();
             assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION + "/application-properties");
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }

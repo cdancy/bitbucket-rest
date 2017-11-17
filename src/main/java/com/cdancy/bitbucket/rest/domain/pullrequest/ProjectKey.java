@@ -30,7 +30,7 @@ public abstract class ProjectKey {
     }
 
     @SerializedNames({ "key" })
-    public static ProjectKey create(String key) {
+    public static ProjectKey create(final String key) {
         return new AutoValue_ProjectKey(key);
     }
 }

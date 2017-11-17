@@ -55,6 +55,7 @@ import org.jclouds.rest.annotations.ResponseParser;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface BranchApi {
 
     @Named("branch:list")

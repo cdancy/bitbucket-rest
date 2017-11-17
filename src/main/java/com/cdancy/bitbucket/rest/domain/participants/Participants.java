@@ -57,10 +57,18 @@ public abstract class Participants implements ErrorsHolder {
     public abstract Status status();
 
     @SerializedNames({"user", "lastReviewedCommit", "role", "approved", "status", "errors"})
-    public static Participants create(User user,
-                                      String lastReviewedCommit,
-                                      Role role, boolean approved, Status status,
-                                      List<Error> errors) {
-        return new AutoValue_Participants(Utils.nullToEmpty(errors), user, lastReviewedCommit, role, approved, status);
+    public static Participants create(final User user, 
+            final String lastReviewedCommit,
+            final Role role, 
+            final boolean approved, 
+            final Status status,
+            final List<Error> errors) {
+        
+        return new AutoValue_Participants(Utils.nullToEmpty(errors), 
+                user, 
+                lastReviewedCommit, 
+                role, 
+                approved, 
+                status);
     }
 }

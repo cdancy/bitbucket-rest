@@ -37,7 +37,10 @@ public class GeneratedTestContents {
      * @param repository previously created Repository.
      * @param projectPreviouslyExists whether the test suite created or user passed in.
      */
-    public GeneratedTestContents(Project project, Repository repository, boolean projectPreviouslyExists) {
+    public GeneratedTestContents(final Project project, 
+            final Repository repository, 
+            final boolean projectPreviouslyExists) {
+        
         this.project = project;
         this.repository = repository;
         this.projectPreviouslyExists = projectPreviouslyExists;

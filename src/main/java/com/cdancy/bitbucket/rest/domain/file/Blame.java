@@ -49,11 +49,24 @@ public abstract class Blame {
     @SerializedNames({ "author", "authorTimestamp", "commitHash", 
             "displayCommitHash", "commitId", "commitDisplayId", 
             "fileName", "lineNumber", "spannedLines" })
-    public static Blame create(Author author, String authorTimestamp, String commitHash, 
-            String displayCommitHash, String commitId, String commitDisplayId, 
-            String fileName, int lineNumber, int spannedLines) {
-        return new AutoValue_Blame(author, authorTimestamp, commitHash, 
-                displayCommitHash, commitId, commitDisplayId, 
-                fileName, lineNumber, spannedLines);
+    public static Blame create(final Author author, 
+            final String authorTimestamp, 
+            final String commitHash, 
+            final String displayCommitHash, 
+            final String commitId, 
+            final String commitDisplayId, 
+            final String fileName, 
+            final int lineNumber, 
+            final int spannedLines) {
+        
+        return new AutoValue_Blame(author, 
+                authorTimestamp, 
+                commitHash, 
+                displayCommitHash, 
+                commitId, 
+                commitDisplayId, 
+                fileName, 
+                lineNumber, 
+                spannedLines);
     }
 }

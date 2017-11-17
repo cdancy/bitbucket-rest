@@ -40,6 +40,7 @@ import org.jclouds.javax.annotation.Nullable;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthentication.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface CommitsApi {
 
     @Named("commits:get")
@@ -62,11 +63,11 @@ public interface CommitsApi {
     ChangePage listChanges(@PathParam("project") String project,
                            @PathParam("repo") String repo,
                            @PathParam("commitId") String commitId,
-                           @Nullable @QueryParam("start") Integer start,
-                           @Nullable @QueryParam("limit") Integer limit);
+                           @Nullable @QueryParam("limit") Integer limit,
+                           @Nullable @QueryParam("start") Integer start);
     
     @Named("commits:list")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45078268232736"})
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm140236729804608"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/commits")
     @Fallback(BitbucketFallbacks.CommitPageOnError.class)
@@ -74,6 +75,12 @@ public interface CommitsApi {
     CommitPage list(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @Nullable @QueryParam("withCounts") Boolean withCounts,
+                    @Nullable @QueryParam("followRenames") Boolean followRenames,
+                    @Nullable @QueryParam("ignoreMissing") Boolean ignoreMissing,
+                    @Nullable @QueryParam("merges") String merges,
+                    @Nullable @QueryParam("path") String path,
+                    @Nullable @QueryParam("since") String since,
+                    @Nullable @QueryParam("until") String until,
                     @Nullable @QueryParam("limit") Integer limit,
                     @Nullable @QueryParam("start") Integer start);
 }

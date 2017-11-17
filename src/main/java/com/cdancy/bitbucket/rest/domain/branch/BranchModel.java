@@ -42,7 +42,14 @@ public abstract class BranchModel implements ErrorsHolder {
     }
 
     @SerializedNames({ "development", "production", "types", "errors" })
-    public static BranchModel create(Branch development, Branch production, List<Type> types, List<Error> errors) {
-        return new AutoValue_BranchModel(Utils.nullToEmpty(errors), development, production, Utils.nullToEmpty(types));
+    public static BranchModel create(final Branch development, 
+            final Branch production, 
+            final List<Type> types, 
+            final List<Error> errors) {
+        
+        return new AutoValue_BranchModel(Utils.nullToEmpty(errors), 
+                development, 
+                production, 
+                Utils.nullToEmpty(types));
     }
 }

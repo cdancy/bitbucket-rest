@@ -67,7 +67,7 @@ public final class BitbucketClient {
      * @return found endpoint or null
      */
     private String initEndPoint() {
-        String possibleValue = retrivePropertyValue(ENDPOINT_PROPERTIES);
+        final String possibleValue = retrivePropertyValue(ENDPOINT_PROPERTIES);
         return possibleValue != null ? possibleValue : "http://127.0.0.1:7990";
     }
 
@@ -77,13 +77,16 @@ public final class BitbucketClient {
      * @return found credentials or empty String
      */
     private String initCredentials() {
-        String possibleValue = retrivePropertyValue(CREDENTIALS_PROPERTIES);
+        final String possibleValue = retrivePropertyValue(CREDENTIALS_PROPERTIES);
         return possibleValue != null ? possibleValue : "";
     }
 
-    public BitbucketApi createApi(String endPoint, String credentials) {
-        return ContextBuilder.newBuilder(new BitbucketApiMetadata.Builder().build()).endpoint(endPoint)
-                .credentials("N/A", credentials).buildApi(BitbucketApi.class);
+    public BitbucketApi createApi(final String endPoint, final String credentials) {
+        return ContextBuilder
+                .newBuilder(new BitbucketApiMetadata.Builder().build())
+                .endpoint(endPoint)
+                .credentials("N/A", credentials)
+                .buildApi(BitbucketApi.class);
     }
 
     /**
@@ -92,15 +95,14 @@ public final class BitbucketClient {
      * @param keys list of keys to search
      * @return the first value found from list of keys
      */
-    private String retrivePropertyValue(String... keys) {
-        String value = null;
-        for (String possibleKey : keys) {
-            value = retrivePropertyValue(possibleKey);
+    private String retrivePropertyValue(final String... keys) {
+        for (final String possibleKey : keys) {
+            final String value = retrivePropertyValue(possibleKey);
             if (value != null) {
-                break;
+                return value;
             }
         }
-        return value;
+        return null;
     }
 
     /**
@@ -109,8 +111,8 @@ public final class BitbucketClient {
      * @param key the key to search for
      * @return the value of key or null if not found
      */
-    private String retrivePropertyValue(String key) {
-        String value = System.getProperty(key);
+    private String retrivePropertyValue(final String key) {
+        final String value = System.getProperty(key);
         return value != null ? value : System.getenv(key);
     }
 
@@ -135,12 +137,12 @@ public final class BitbucketClient {
         private String endPoint;
         private String credentials;
 
-        public Builder endPoint(String endPoint) {
+        public Builder endPoint(final String endPoint) {
             this.endPoint = endPoint;
             return this;
         }
 
-        public Builder credentials(String credentials) {
+        public Builder credentials(final String credentials) {
             this.credentials = credentials;
             return this;
         }

@@ -34,7 +34,7 @@ public abstract class ActivitiesCommit {
     public abstract long total();
 
     @SerializedNames({"commits", "total"})
-    public static ActivitiesCommit create(@Nullable List<Commit> commits, long total) {
+    public static ActivitiesCommit create(@Nullable final List<Commit> commits, final long total) {
         return new AutoValue_ActivitiesCommit(Utils.nullToEmpty(commits), total);
     }
 }

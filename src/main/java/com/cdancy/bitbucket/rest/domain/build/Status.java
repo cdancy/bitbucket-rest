@@ -42,8 +42,12 @@ public abstract class Status {
     public abstract String url();
 
     @SerializedNames({"dateAdded", "description", "key", "name", "state", "url"})
-    public static Status create(long dateAdded, String description, String key, String name, StatusState state,
-                                String url) {
+    public static Status create(final long dateAdded, 
+            final String description, 
+            final String key, 
+            final String name, 
+            final StatusState state,
+            final String url) {
         return new AutoValue_Status(dateAdded, description, key, name, state, url);
     }
 }

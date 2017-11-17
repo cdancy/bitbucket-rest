@@ -1,4 +1,13 @@
 ### Version 1.0.4 (TBA)
+* ADDED: support for PMD - [Commit 8fd1c](https://github.com/cdancy/bitbucket-rest/commit/8fd1c565d47a94a49088fed0c8f12a391e5ce252)
+* UPDATE: defalt to jdk 1.8 for building - [Commit 57cd639](https://github.com/cdancy/bitbucket-rest/commit/57cd639cd854bca8edda1f4fbc408e6832959b48)
+* UPDATE: Bump logback to `1.2.3` - [Commit 01bc72](https://github.com/cdancy/bitbucket-rest/commit/01bc72b9d1f6a18eb9356d67f33e09da3970253b)
+* UPDATE: Bump mock-webserver to `2.7.5` - [Commit 569ae](https://github.com/cdancy/bitbucket-rest/commit/569ae08b2e30d01f365f1d30959d936a77d228e1)
+* UPDATE: Bump assertj-core to `3.8.0` - [Commit 75e3a4](https://github.com/cdancy/bitbucket-rest/commit/75e3a465807692f938d3c684de27c278449d0138)
+* UPDATE: Bump auto-value to `1.5.1` - [Commit 8286702](https://github.com/cdancy/bitbucket-rest/commit/8286702aa17ba2dba22a04048e86f51b68d74da3)
+* UPDATE: Bump gradle to `4.2.1` - [Commit a5171b](https://github.com/cdancy/bitbucket-rest/commit/a5171b1fdf7b503df80fc88e3497a5381cdc9e1b)
+* REFACTOR: `CommitsApi.listFiles` gained additional optional parameters - [PR 117](https://github.com/cdancy/bitbucket-rest/pull/117)
+* ADDED: Bump gradle to `4.3.1` - [PR 118](https://github.com/cdancy/bitbucket-rest/pull/118)
 
 ### Version 1.0.3 (8/10/2017)
 * FIX: Ensure `BitbucketFallbacks` properly parses `conflicted` and `vetoes` properties when constructing `Error` objects - [Commit 53908](https://github.com/cdancy/bitbucket-rest/commit/59ff2b30f209872d1ba23d52850d98201daf4cea)

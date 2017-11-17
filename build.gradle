@@ -19,6 +19,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'nebula.compile-api'
+apply plugin: 'pmd'
 
 apply from: "$rootDir/gradle/additional-artifacts.gradle"
 apply from: "$rootDir/gradle/dependencies.gradle"
@@ -32,20 +33,22 @@ repositories {
 }
 
 dependencies {
-    compileApi ('org.apache.jclouds:jclouds-core:2.0.2') 
-    compileApi ('com.google.auto.service:auto-service:1.0-rc3') 
-    compileApi ('com.google.auto.value:auto-value:1.4.1')
+    ext.jcloudsVersion = '2.0.2'
     
-    testCompile ('org.apache.jclouds:jclouds-core:2.0.2:tests')
+    compileApi ("org.apache.jclouds:jclouds-core:${jcloudsVersion}") 
+    compileApi ('com.google.auto.service:auto-service:1.0-rc3') 
+    compileApi ('com.google.auto.value:auto-value:1.5.1')
+    
+    testCompile ("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
+    testCompile ("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}") 
     testCompile ('org.testng:testng:6.11') 
-    testCompile ('org.assertj:assertj-core:3.6.2') 
-    testCompile ('com.squareup.okhttp:mockwebserver:2.2.0') 
-    testCompile ('org.apache.jclouds.driver:jclouds-slf4j:2.0.2') 
-    testCompile ('ch.qos.logback:logback-core:1.2.1') 
-    testCompile ('ch.qos.logback:logback-classic:1.2.1')
+    testCompile ('org.assertj:assertj-core:3.8.0') 
+    testCompile ('com.squareup.okhttp:mockwebserver:2.7.5') 
+    testCompile ('ch.qos.logback:logback-core:1.2.3') 
+    testCompile ('ch.qos.logback:logback-classic:1.2.3')
 }
 
-ext.compatibilityVersion = '1.7'
+ext.compatibilityVersion = '1.8'
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
@@ -64,7 +67,21 @@ checkstyle {
     toolVersion = "6.13"
 }
 
+pmd {
+    ruleSetConfig = resources.text.fromFile(rootProject.file("config/pmd/pmd.xml"))
+    consoleOutput = true
+    ignoreFailures = false
+    ruleSets = []
+}
+
 jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+tasks.withType(Pmd) {
     reports {
         xml.enabled = true
         html.enabled = true

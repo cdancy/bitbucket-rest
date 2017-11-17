@@ -52,7 +52,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
         
-        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, 10, null);
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 10, null);
         assertThat(commitPage).isNotNull();
         assertThat(commitPage.errors().isEmpty()).isTrue();
         assertThat(commitPage.values().isEmpty()).isFalse();
