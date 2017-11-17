@@ -1,4 +1,4 @@
-### Version 1.0.4 (TBA)
+### Version 1.0.4 (11/17/2017)
 * ADDED: support for PMD - [Commit 8fd1c](https://github.com/cdancy/bitbucket-rest/commit/8fd1c565d47a94a49088fed0c8f12a391e5ce252)
 * UPDATE: defalt to jdk 1.8 for building - [Commit 57cd639](https://github.com/cdancy/bitbucket-rest/commit/57cd639cd854bca8edda1f4fbc408e6832959b48)
 * UPDATE: Bump logback to `1.2.3` - [Commit 01bc72](https://github.com/cdancy/bitbucket-rest/commit/01bc72b9d1f6a18eb9356d67f33e09da3970253b)
