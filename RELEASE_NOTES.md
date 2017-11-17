@@ -8,6 +8,7 @@
 * UPDATE: Bump gradle to `4.2.1` - [Commit a5171b](https://github.com/cdancy/bitbucket-rest/commit/a5171b1fdf7b503df80fc88e3497a5381cdc9e1b)
 * REFACTOR: `CommitsApi.listFiles` gained additional optional parameters - [PR 117](https://github.com/cdancy/bitbucket-rest/pull/117)
 * ADDED: Bump gradle to `4.3.1` - [PR 118](https://github.com/cdancy/bitbucket-rest/pull/118)
+* ADDED: `FileApi` gained endpoint `listFiles` - [PR 119](https://github.com/cdancy/bitbucket-rest/pull/119)
 
 ### Version 1.0.3 (8/10/2017)
 * FIX: Ensure `BitbucketFallbacks` properly parses `conflicted` and `vetoes` properties when constructing `Error` objects - [Commit 53908](https://github.com/cdancy/bitbucket-rest/commit/59ff2b30f209872d1ba23d52850d98201daf4cea)
