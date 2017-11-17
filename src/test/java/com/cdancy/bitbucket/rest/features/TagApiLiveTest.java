@@ -47,7 +47,7 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
         
-        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, Boolean.TRUE, 1, 0);
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 1, 0);
         assertThat(commitPage.values().isEmpty()).isFalse();
         this.commitHash = commitPage.values().get(0).id();
     }
