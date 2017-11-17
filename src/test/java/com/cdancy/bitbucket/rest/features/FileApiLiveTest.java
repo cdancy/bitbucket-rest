@@ -23,6 +23,7 @@ import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.cdancy.bitbucket.rest.domain.file.Line;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
@@ -60,7 +61,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         this.commitHashOne = commitPage.values().get(0).id();
         this.commitHashTwo = commitPage.values().get(1).id();
         
-        final ChangePage commit = api.commitsApi().listChanges(projectKey, repoKey, commitHashOne, 0, 100);
+        final ChangePage commit = api.commitsApi().listChanges(projectKey, repoKey, commitHashOne, 100, 0);
         assertThat(commit).isNotNull();
         assertThat(commit.errors().isEmpty()).isTrue();
         assertThat(commit.size() > 0).isTrue();
@@ -134,7 +135,36 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(linePage).isNotNull();
         assertThat(linePage.errors().isEmpty()).isFalse();
     }
+
+    @Test (dependsOnMethods = "getContent")
+    public void listFilesAtCommit() throws Exception {
+        final List<String> allFiles = Lists.newArrayList();
+        Integer start = null;
+        while (true) {
+            final FilesPage ref = api().listFiles(projectKey, repoKey, this.commitHashTwo, start, 100);
+            assertThat(ref.errors().isEmpty()).isTrue();
+            
+            allFiles.addAll(ref.values());
+            start = ref.nextPageStart();
+            if (ref.isLastPage()) {
+                break;
+            } else {
+                System.out.println("Sleeping for 1 seconds before querying for next page");
+                Thread.sleep(1000);
+            }
+        }
+        assertThat(allFiles.size() > 0).isEqualTo(true);
+    }
     
+    @Test 
+    public void listFilesOnError() {
+        final FilesPage ref = api().listFiles(projectKey, 
+                repoKey, 
+                TestUtilities.randomString(), null, 100);
+        assertThat(ref).isNotNull();
+        assertThat(ref.errors().isEmpty()).isFalse();
+    }
+
     @Test
     public void getContentOnNotFound() {
         final RawContent possibleContent = api().raw(projectKey, 

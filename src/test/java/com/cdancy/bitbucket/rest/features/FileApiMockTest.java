@@ -22,6 +22,7 @@ import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -36,6 +37,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
     private final String projectKey = "PRJ";
     private final String repoKey = "myrepo";
     private final String filePath = "some/random/path/MyFile.txt";
+    private final String restApiPath = "/rest/api/";
     private final String getMethod = "GET";
             
     public void testGetContent() throws Exception {
@@ -93,7 +95,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             assertThat(linePage.errors().isEmpty()).isTrue();
             assertThat(linePage.values().isEmpty()).isFalse();
             assertThat(linePage.values().get(0).text()).isEqualTo("BEARS");
-            assertSent(server, getMethod, "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/browse/" + filePath);
         } finally {
             baseApi.close();
@@ -117,7 +119,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             assertThat(linePage.values().get(0).text()).isEqualTo("BEARS");
             
             final Map<String, ?> queryParams = ImmutableMap.of("blame", "true");
-            assertSent(server, getMethod, "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/browse/" + filePath, queryParams);
         } finally {
             baseApi.close();
@@ -136,8 +138,55 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             final LinePage linePage = api.listLines(projectKey, repoKey, filePath, null, null, null, null, null, null);
             assertThat(linePage).isNotNull();
             assertThat(linePage.errors().isEmpty()).isFalse();
-            assertSent(server, getMethod, "/rest/api/" + BitbucketApiMetadata.API_VERSION
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListFiles() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/files-page.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final FileApi api = baseApi.fileApi();
+        try {
+
+            final String gitRef = "some-existing-commit-or-tag-or-branch";
+            final FilesPage ref = api.listFiles(projectKey, repoKey, gitRef, null, null);
+            assertThat(ref).isNotNull();
+            assertThat(ref.errors().isEmpty()).isTrue();
+            assertThat(ref.values().isEmpty()).isFalse();
+            assertThat(ref.values().get(0)).isEqualTo("path/to/file.txt");
+
+            final Map<String, ?> queryParams = ImmutableMap.of("at", gitRef);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/myrepo/files", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListFilesOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final FileApi api = baseApi.fileApi();
+        try {
+
+            final String gitRef = "some-NON-existing-commit-or-tag-or-branch";
+            final FilesPage ref = api.listFiles(projectKey, repoKey, gitRef, null, null);
+            assertThat(ref).isNotNull();
+            assertThat(ref.errors().isEmpty()).isFalse();
+            assertThat(ref.values().isEmpty()).isTrue();
+
+            final Map<String, ?> queryParams = ImmutableMap.of("at", gitRef);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/myrepo/files", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();

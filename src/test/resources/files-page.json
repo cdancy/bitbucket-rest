@@ -1,0 +1,9 @@
+{
+    "size": 1,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+        "path/to/file.txt"
+    ],
+    "start": 0
+}

@@ -47,4 +47,3 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
         return overrides;
     }
 }
-

@@ -30,10 +30,10 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class FilesPage implements Page<String>, ErrorsHolder {
-    
+
     @SerializedNames({ "start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors" })
-    public static FilesPage create(int start, int limit, int size, int nextPageStart, 
-            boolean isLastPage,@Nullable List<String> lines, @Nullable List<Error> errors) {
+    public static FilesPage create(final int start, final int limit, final int size, final int nextPageStart, 
+            final boolean isLastPage, @Nullable final List<String> lines, @Nullable final List<Error> errors) {
         return new AutoValue_FilesPage(start, limit, size, nextPageStart, isLastPage,
                 Utils.nullToEmpty(lines), Utils.nullToEmpty(errors));
     }
