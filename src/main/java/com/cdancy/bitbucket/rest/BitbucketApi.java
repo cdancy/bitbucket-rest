@@ -26,7 +26,6 @@ import com.cdancy.bitbucket.rest.features.CommentsApi;
 import com.cdancy.bitbucket.rest.features.CommitsApi;
 import com.cdancy.bitbucket.rest.features.DefaultReviewersApi;
 import com.cdancy.bitbucket.rest.features.FileApi;
-import com.cdancy.bitbucket.rest.features.FilesApi;
 import com.cdancy.bitbucket.rest.features.ProjectApi;
 import com.cdancy.bitbucket.rest.features.PullRequestApi;
 import com.cdancy.bitbucket.rest.features.RepositoryApi;
@@ -37,7 +36,6 @@ import com.cdancy.bitbucket.rest.features.TasksApi;
 import org.jclouds.rest.annotations.Delegate;
 
 public interface BitbucketApi extends Closeable {
-
 
     @Delegate
     AdminApi adminApi();
@@ -59,10 +57,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     FileApi fileApi();
-    
-    @Delegate
-    FilesApi filesApi();
-    
+
     @Delegate
     ProjectApi projectApi();
 
@@ -77,7 +72,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     TagApi tagApi();
-    
+
     @Delegate
     TasksApi tasksApi();
 }

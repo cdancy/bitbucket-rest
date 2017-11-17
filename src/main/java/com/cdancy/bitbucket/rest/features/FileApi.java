@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
@@ -66,6 +67,18 @@ public interface FileApi {
                            @Nullable @QueryParam("type") Boolean type,
                            @Nullable @QueryParam("blame") Boolean blame,
                            @Nullable @QueryParam("noContent") Boolean noContent,
+                           @Nullable @QueryParam("start") Integer start,
+                           @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("file:list-files")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.1.0/bitbucket-rest.html#idm45588159557712"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/files")
+    @Fallback(BitbucketFallbacks.FilesPageOnError.class)
+    @GET
+    FilesPage listFiles(@PathParam("project") String project,
+                           @PathParam("repo") String repo,
+                           @Nullable @QueryParam("at") String commitIdOrRef,
                            @Nullable @QueryParam("start") Integer start,
                            @Nullable @QueryParam("limit") Integer limit);
 }

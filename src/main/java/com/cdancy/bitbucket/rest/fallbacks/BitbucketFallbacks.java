@@ -383,9 +383,9 @@ public final class BitbucketFallbacks {
             throw propagate(throwable);
         }
     }
-    
+
     public static final class FilesPageOnError implements Fallback<Object> {
-        public Object createOrPropagate(Throwable throwable) throws Exception {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createFilesPageFromErrors(getErrors(throwable.getMessage()));
             }
@@ -434,7 +434,7 @@ public final class BitbucketFallbacks {
         return LinePage.create(-1, -1, -1, -1, true, null, null, errors);
     }
     
-    public static FilesPage createFilesPageFromErrors(List<Error> errors) {
+    public static FilesPage createFilesPageFromErrors(final List<Error> errors) {
         return FilesPage.create(-1, -1, -1, -1, true, null, errors);
     }
         
