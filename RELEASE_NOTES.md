@@ -6,6 +6,7 @@
 * UPDATE: Bump assertj-core to `3.8.0` - [Commit 75e3a4](https://github.com/cdancy/bitbucket-rest/commit/75e3a465807692f938d3c684de27c278449d0138)
 * UPDATE: Bump auto-value to `1.5.1` - [Commit 8286702](https://github.com/cdancy/bitbucket-rest/commit/8286702aa17ba2dba22a04048e86f51b68d74da3)
 * UPDATE: Bump gradle to `4.2.1` - [Commit a5171b](https://github.com/cdancy/bitbucket-rest/commit/a5171b1fdf7b503df80fc88e3497a5381cdc9e1b)
+* REFACTOR: `CommitsApi.listFiles` gained additional optional parameters - [PR 117](https://github.com/cdancy/bitbucket-rest/pull/117)
 
 ### Version 1.0.3 (8/10/2017)
 * FIX: Ensure `BitbucketFallbacks` properly parses `conflicted` and `vetoes` properties when constructing `Error` objects - [Commit 53908](https://github.com/cdancy/bitbucket-rest/commit/59ff2b30f209872d1ba23d52850d98201daf4cea)
