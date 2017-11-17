@@ -89,7 +89,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final ChangePage changePage = baseApi.commitsApi().listChanges(projectKey, repoKey, commitHash, null, 12);
+            final ChangePage changePage = baseApi.commitsApi().listChanges(projectKey, repoKey, commitHash, 12, null);
             assertThat(changePage).isNotNull();
             assertThat(changePage.errors()).isEmpty();
             assertThat(changePage.values()).hasSize(1);
@@ -114,7 +114,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(changePage).isNotNull();
             assertThat(changePage.errors()).isNotEmpty();
 
-            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 12, "start", 1);
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 1, "start", 12);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/myrepo/commits/abcdef0123abcdef4567abcdef8987abcdef6543/changes", queryParams);
         } finally {
@@ -129,7 +129,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
+            final CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(1);
@@ -150,7 +150,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, 1, null);
+            final CommitPage pcr = baseApi.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 1, null);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 

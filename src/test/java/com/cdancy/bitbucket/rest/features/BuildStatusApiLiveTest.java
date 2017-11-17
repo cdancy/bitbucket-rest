@@ -52,7 +52,7 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
         final String projectKey = generatedTestContents.project.key();
         final String repoKey = generatedTestContents.repository.name();
         
-        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, 1, null);
+        final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 1, null);
         assertThat(commitPage).isNotNull();
         assertThat(commitPage.errors().isEmpty()).isTrue();
         assertThat(commitPage.values().isEmpty()).isFalse();
