@@ -1,12 +1,10 @@
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
     }
     dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
         classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-        classpath 'com.netflix.nebula:nebula-publishing-plugin:4.10.0'
     }
 }
 
@@ -18,7 +16,6 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
-apply plugin: 'nebula.compile-api'
 apply plugin: 'pmd'
 
 apply from: "$rootDir/gradle/additional-artifacts.gradle"
@@ -29,15 +26,14 @@ apply from: "$rootDir/gradle/release.gradle"
 
 repositories {
     jcenter()
-    mavenCentral()
 }
 
 dependencies {
     ext.jcloudsVersion = '2.0.2'
     
-    compileApi ("org.apache.jclouds:jclouds-core:${jcloudsVersion}") 
-    compileApi ('com.google.auto.service:auto-service:1.0-rc3') 
-    compileApi ('com.google.auto.value:auto-value:1.5.1')
+    compile ("org.apache.jclouds:jclouds-core:${jcloudsVersion}") 
+    compile ('com.google.auto.service:auto-service:1.0-rc3') 
+    compile ('com.google.auto.value:auto-value:1.5.1')
     
     testCompile ("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
     testCompile ("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}") 
@@ -68,7 +64,7 @@ checkstyle {
 }
 
 pmd {
-    ruleSetConfig = resources.text.fromFile(rootProject.file("config/pmd/pmd.xml"))
+    ruleSetConfig = resources.text.fromFile(rootProject.file('config/pmd/pmd.xml'))
     consoleOutput = true
     ignoreFailures = false
     ruleSets = []
@@ -89,12 +85,12 @@ tasks.withType(Pmd) {
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ["-Xlint:-options"]
+    options.compilerArgs += ['-Xlint:-options']
 }
 
 task mockTest(type: Test) {
     useTestNG() 
-    include "**/**MockTest.class"
+    include '**/**MockTest.class'
     maxParallelForks = 2
     testLogging {
         showStandardStreams = true
@@ -112,7 +108,7 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
         }
     }
     useTestNG() 
-    include "**/**LiveTest.class"
+    include '**/**LiveTest.class'
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
