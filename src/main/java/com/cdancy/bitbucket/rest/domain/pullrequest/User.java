@@ -20,12 +20,14 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 
 @AutoValue
 public abstract class User {
 
     public abstract String name();
 
+    @Nullable
     public abstract String emailAddress();
 
     public abstract int id();
