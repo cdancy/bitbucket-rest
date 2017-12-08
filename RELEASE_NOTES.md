@@ -1,3 +1,5 @@
+### Version 1.0.6 (TBA)
+
 ### Version 1.0.5 (12/8/2017)
 
 * ADDED: Annotated `emailAddress` property of `User` object with `Nullable` - [Commit 3fd95](https://github.com/cdancy/bitbucket-rest/commit/3fd9551a6ec180bc57ccb4f491258dc1ca930ed1)
