@@ -1,4 +1,6 @@
-### Version 1.0.5 (TBA)
+### Version 1.0.5 (12/8/2017)
+
+* ADDED: Annotated `emailAddress` property of `User` object with `Nullable` - [Commit 3fd95](https://github.com/cdancy/bitbucket-rest/commit/3fd9551a6ec180bc57ccb4f491258dc1ca930ed1)
 
 ### Version 1.0.4 (11/17/2017)
 * ADDED: support for PMD - [Commit 8fd1c](https://github.com/cdancy/bitbucket-rest/commit/8fd1c565d47a94a49088fed0c8f12a391e5ce252)
