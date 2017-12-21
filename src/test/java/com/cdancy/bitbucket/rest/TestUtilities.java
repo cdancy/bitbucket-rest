@@ -66,6 +66,9 @@ public class TestUtilities {
             String username;
             if (credential.contains(":")) {
                 username = credential.split(":")[0];
+            } else if (credential.startsWith("Bearer ")) {
+                // Not sure how to set the username
+                username = "does it matter?";
             } else {
                 username = new String(base64().decode(credential)).split(":")[0];
             }

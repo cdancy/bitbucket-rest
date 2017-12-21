@@ -48,15 +48,22 @@ public class BitbucketAuthentication implements HttpRequestFilter {
         final Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
         if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {
             /*
-            * client can pass in credential string in 1 of 2 ways:
+            * client can pass in credential string in 1 of 3 ways:
             *
             * 1.) As colon delimited username and password: admin:password
             *
             * 2.) As base64 encoded value of colon delimited username and
             * password: YWRtaW46cGFzc3dvcmQ=
             *
+            * 3.) As Bitbucket personal access token obtained from Bitbucket:
+            *     Bearer 9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M
             */
             String foundCredential = currentCreds.credential;
+
+            if (foundCredential.startsWith("Bearer ")) {
+                return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, foundCredential).build();
+            }
+
             if (foundCredential.contains(":")) {
                 foundCredential = base64().encode(foundCredential.getBytes());
             }
@@ -64,8 +71,9 @@ public class BitbucketAuthentication implements HttpRequestFilter {
             if (isBase64Encoded(foundCredential)) {
                 return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, "Basic " + foundCredential).build();
             } else {
-                throw new IllegalArgumentException("Credential is not in base64 format: credential=" + foundCredential);
+                throw new IllegalArgumentException("Credential is not Basic, Bearer or base64 format: credential=" + foundCredential);
             }
+
         } else {
             return request.toBuilder().build();
         }
