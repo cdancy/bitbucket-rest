@@ -64,11 +64,15 @@ public class TestUtilities {
 
         if (defaultUser == null) {
             String username;
-            if (credential.contains(":")) {
+            if (credential.startsWith("bearer@")) {
+                return User.create("someone", "someone@domain.com", 0, "Some One", true, "someslug", "handsome");
+            } else if (credential.startsWith("basic@")) {
+                username = credential.split("@",2)[1];
+                if (username.contains(":")) {
+                    username = username.split(":")[0];
+                }
+            } else if (credential.contains(":")) {
                 username = credential.split(":")[0];
-            } else if (credential.startsWith("Bearer ")) {
-                // Not sure how to set the username
-                username = "does it matter?";
             } else {
                 username = new String(base64().decode(credential)).split(":")[0];
             }
