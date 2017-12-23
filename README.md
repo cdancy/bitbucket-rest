@@ -70,9 +70,9 @@ Setting the `credentials` can be done with any of the following (searched in ord
 
 bitbucket-rest credentials can take 1 of 3 forms:
 
-- Colon delimited username and password: __admin:password__ 
-- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__ 
-- Personal access token: __Bearer 9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
+- Colon delimited username and password: __admin:password__, or __basic@admin:password__
+- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__, or __basic@YWRtaW46cGFzc3dvcmQ=__
+- Personal access token: __bearer@9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
 
 ## Understanding Error objects
 
