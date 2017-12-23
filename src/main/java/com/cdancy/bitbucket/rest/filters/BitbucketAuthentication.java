@@ -48,20 +48,29 @@ public class BitbucketAuthentication implements HttpRequestFilter {
         final Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
         if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {
             /*
-            * client can pass in credential string in 1 of 3 ways:
+            * client can pass in credential string in 1 of 5 ways:
             *
-            * 1.) As colon delimited username and password: admin:password
+            * 1.) As colon delimited username and password:
+            *     a.) admin:password
+            *     b.) basic@admin:password
             *
             * 2.) As base64 encoded value of colon delimited username and
-            * password: YWRtaW46cGFzc3dvcmQ=
+            * password:
+            *     a.) YWRtaW46cGFzc3dvcmQ=
+            *     b.) basic@YWRtaW46cGFzc3dvcmQ=
             *
             * 3.) As Bitbucket personal access token obtained from Bitbucket:
-            *     Bearer 9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M
+            *     a.) bearer@9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M
             */
             String foundCredential = currentCreds.credential;
 
-            if (foundCredential.startsWith("Bearer ")) {
-                return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, foundCredential).build();
+            if (foundCredential.startsWith("bearer@")) {
+                final String[] credArray = foundCredential.split("@",2);
+                return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + credArray[1]).build();
+            }
+
+            if (foundCredential.startsWith("basic@")) {
+                foundCredential = foundCredential.split("@",2)[1];
             }
 
             if (foundCredential.contains(":")) {
