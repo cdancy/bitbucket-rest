@@ -39,6 +39,7 @@ public class BitbucketAuthenticationMockTest {
     private final String admin = "admin";
     private final String authorization = "authorization";
     private final String basic = "Basic ";
+    private final String basicAt = "basic@";
 
     private HttpRequest httpRequest;
 
@@ -56,16 +57,28 @@ public class BitbucketAuthenticationMockTest {
     @Test
     public void testBasicAt() {
         final String credential = "admin:password";
-        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,"basic@" + credential));
+        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,basicAt + credential));
         final BitbucketAuthentication bitbucketAuthentication = new BitbucketAuthentication(creds);
         httpRequest = bitbucketAuthentication.filter(httpRequest);
         assertThat(httpRequest.getFirstHeaderOrNull(authorization)).isEqualTo(basic + base64().encode(credential.getBytes()));
     }
 
     @Test
+    public void testBasicAtEmpty() {
+        final String credential = "";
+        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,basicAt + credential));
+        final BitbucketAuthentication bitbucketAuthentication = new BitbucketAuthentication(creds);
+        try {
+            httpRequest = bitbucketAuthentication.filter(httpRequest);
+        } catch (IllegalArgumentException exception) {
+            assertThat(httpRequest.getFirstHeaderOrNull(authorization)).isEqualTo(null);
+        }
+    }
+
+    @Test
     public void testBasicAtWithAtInPassword() {
         final String credential = "admin:pass@word";
-        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,"basic@" + credential));
+        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,basicAt + credential));
         final BitbucketAuthentication bitbucketAuthentication = new BitbucketAuthentication(creds);
         httpRequest = bitbucketAuthentication.filter(httpRequest);
         assertThat(httpRequest.getFirstHeaderOrNull(authorization)).isEqualTo(basic + base64().encode(credential.getBytes()));
@@ -92,7 +105,7 @@ public class BitbucketAuthenticationMockTest {
     @Test
     public void testBasicBase64() {
         final String credential = "YWRtaW46cGFzc3dvcmQ=";
-        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,"basic@" + credential));
+        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,basicAt + credential));
         final BitbucketAuthentication bitbucketAuthentication = new BitbucketAuthentication(creds);
         httpRequest = bitbucketAuthentication.filter(httpRequest);
         assertThat(httpRequest.getFirstHeaderOrNull(authorization)).isEqualTo(basic + credential);
@@ -105,6 +118,18 @@ public class BitbucketAuthenticationMockTest {
         final BitbucketAuthentication bitbucketAuthentication = new BitbucketAuthentication(creds);
         httpRequest = bitbucketAuthentication.filter(httpRequest);
         assertThat(httpRequest.getFirstHeaderOrNull(authorization)).isEqualTo("Bearer " + credential);
+    }
+
+    @Test
+    public void testBearerEmpty() {
+        final String credential = "";
+        final Supplier<Credentials> creds = Suppliers.ofInstance(new Credentials(admin,"bearer@" + credential));
+        final BitbucketAuthentication bitbucketAuthentication = new BitbucketAuthentication(creds);
+        try {
+            httpRequest = bitbucketAuthentication.filter(httpRequest);
+        } catch (IllegalArgumentException exception) {
+            assertThat(httpRequest.getFirstHeaderOrNull(authorization)).isEqualTo(null);
+        }
     }
 
     @Test
