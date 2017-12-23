@@ -22,3 +22,8 @@ test-output
 *.ipr
 *.iws
 /.nb-gradle/
+
+# vim generated files #
+#######################
+Session.vim
+*.swp
