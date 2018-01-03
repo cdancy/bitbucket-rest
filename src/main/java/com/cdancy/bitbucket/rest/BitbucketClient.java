@@ -37,6 +37,9 @@ public final class BitbucketClient {
     private static final List<String> CREDENTIALS_PROPERTIES = Collections
             .unmodifiableList(Arrays
                     .asList("bitbucket.rest.credentials", "bitbucketRestCredentials", "BITBUCKET_REST_CREDENTIALS"));
+    private static final List<String> TOKEN_PROPERTIES = Collections
+            .unmodifiableList(Arrays
+                    .asList("bitbucket.rest.token", "bitbucketRestToken", "BITBUCKET_REST_TOKEN"));
 
     private final BitbucketApi bitbucketApi;
 
@@ -116,58 +119,27 @@ public final class BitbucketClient {
         }
 
         /**
-         * Find Bitbucket credentials from system/environment. These can be defined in
-         * the following ways:
+         * Find Bitbucket credentials from system/environment.
          *
-         *<p>1.) hello:world // Username and Password delimited by colon: assumes 'Basic' auth.
-         *   2.) aGVsbG86d29ybGQ= // Base64 version of Username and Password delimited by colon: assumes 'Basic' auth.
-         *   3.) basic@hello:world // Same as #1 but defines auth to be 'Basic'
-         *   4.) basic@aGVsbG86d29ybGQ= // Same as #2 but defines auth to be 'Basic'
-         *   5.) @aGVsbG86d29ybGQ= // Same as #4 and assumes 'Basic' auth if none specified.
-         *   6.) bearer@some-token // Use Bearer/Token auth.
-         *
-         * @return Credentials.
+         * @return LocalCredentials.
          */
         private LocalCredentials findCredentials() {
-            final String authValue = BitbucketUtils.retrivePropertyValue(CREDENTIALS_PROPERTIES);
 
-            // if NO auth found assumed anonymous access
+            // 1.) Check for "Basic" auth credentials.
+            String authValue = BitbucketUtils.retrivePropertyValue(CREDENTIALS_PROPERTIES);
             if (authValue != null) {
-
-                String value;
-                final int index = authValue.indexOf('@');
-                AuthTypes authTypes;
-                if (index != -1) {
-
-                    // Addresses #5 above
-                    if (index == 0) {
-                        value = authValue.substring(1).trim();
-                        authTypes = AuthTypes.BASIC;
-                        if (value.length() == 0) {
-                            throw new RuntimeException(authTypes + " authentication was inferred but no credentials found: "
-                                    + "credentials=" + authValue);
-                        }
-
-                    // Addresses #3, #4, and #6 above
-                    } else {
-                        final String possibleAuth = authValue.substring(0, index);
-                        value = authValue.substring(index + 1, authValue.length());
-                        authTypes = AuthTypes.from(possibleAuth);
-                        if (authTypes == null) {
-                            throw new RuntimeException("Unknown authentication type was defined: "
-                                    + "intialValue=" + authValue
-                                    + ", inferredType=" + possibleAuth);
-                        }
-                    }
-                } else {
-                    // Addresses #1 and #2 above
-                    value = authValue;
-                    authTypes = AuthTypes.BASIC;
-                }
-
-                return new LocalCredentials(value, authTypes);
+                return new LocalCredentials(authValue, AuthTypes.BASIC);
             } else {
-                return new LocalCredentials("", null);
+
+                // 2.) Check for "Bearer" auth token.
+                authValue = BitbucketUtils.retrivePropertyValue(TOKEN_PROPERTIES);
+                if (authValue != null) {
+                    return new LocalCredentials(authValue, AuthTypes.BEARER);
+                } else {
+
+                    // 3.) If no credentials found then assume anonymous access.
+                    return new LocalCredentials("", null);
+                }
             }
         }
 
@@ -188,6 +160,7 @@ public final class BitbucketClient {
          * @return instance of BitbucketClient
          */
         public BitbucketClient build() {
+
             // 1.) Use passed-in endpoint or attempt to find one.
             final String foundEndpoint = (endPoint != null) ? endPoint : findEndpoint();
 
@@ -196,6 +169,9 @@ public final class BitbucketClient {
             final LocalCredentials creds = credentials != null ? credentials : findCredentials();
             if (creds.type != null) {
                 authCredentials.identity(creds.type.toString());
+                
+                // 2.5) If using "Basic" auth then value MUST be base64 encode. If
+                //      it's not then do so for the client.
                 if (creds.type == AuthTypes.BASIC && creds.value.contains(":")) {
                     final String encodedCreds = base64().encode(creds.value.getBytes());
                     authCredentials.credential(encodedCreds);

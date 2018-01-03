@@ -9,18 +9,9 @@
 
 java client, based on jclouds, to interact with Bitbucket's REST API. 
 
-## Setup and How to use
 
-Client's can be built like so:
-
-      BitbucketClient client = BitbucketClient.builder()
-      .endPoint("http://127.0.0.1:7990") // Optional. Defaults to http://127.0.0.1:7990
-      .credentials("admin:password") // Optional.
-      .build();
-
-      Version version = client.api().systemApi().version();
-      
-Being built on top of jclouds means things are broken up into [Apis](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/features). 
+## On jclouds, apis and endpoints
+Being built on top of `jclouds` means things are broken up into [Apis](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/features). 
 `Apis` are just Interfaces that are analagous to a resource provided by the server-side program (e.g. /api/branches, /api/pullrequest, /api/commits, etc..). 
 The methods within these Interfaces are analagous to an endpoint provided by these resources (e.g. GET /api/branches/my-branch, GET /api/pullrequest/123, DELETE /api/commits/456, etc..). 
 The user only needs to be concerned with which `Api` they need and then calling its various methods. These methods, much like any java library, return domain objects 
@@ -36,12 +27,12 @@ New Api's or endpoints are generally added as needed and/or requested. If there 
 
 Can be sourced from jcenter like so:
 
-	<dependency>
-	  <groupId>com.cdancy</groupId>
-	  <artifactId>bitbucket-rest</artifactId>
-	  <version>X.Y.Z</version>
-	  <classifier>sources|tests|javadoc|all</classifier> (Optional)
-	</dependency>
+    <dependency>
+      <groupId>com.cdancy</groupId>
+      <artifactId>bitbucket-rest</artifactId>
+      <version>X.Y.Z</version>
+      <classifier>sources|tests|javadoc|all</classifier> (Optional)
+    </dependency>
 	
 ## Documentation
 
@@ -66,13 +57,47 @@ Setting the `credentials` can be done with any of the following (searched in ord
 - `bitbucketRestCredentials`
 - `BITBUCKET_REST_CREDENTIALS`
 
-## Credentials
+Setting the `token` can be done with any of the following (searched in order):
 
-bitbucket-rest credentials can take 1 of 3 forms:
+- `bitbucket.rest.token`
+- `bitbucketRestToken`
+- `BITBUCKET_REST_TOKEN`
 
-- Colon delimited username and password: __admin:password__, or __basic@admin:password__
-- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__, or __basic@YWRtaW46cGFzc3dvcmQ=__
-- Personal access token: __bearer@9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
+## Authentication
+
+Authentication/Credentials for `bitbucket-rest` can take 1 of 3 forms:
+
+- Colon delimited username and password: __admin:password__
+- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__
+- Personal access token: __9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
+
+## Examples on building a client
+
+When using `Basic` (e.g. username and password) authentication:
+
+    BitbucketClient client = BitbucketClient.builder()
+    .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
+    .credentials("admin:password") // Optional and can be sourced from system/env.
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+When using `Bearer` (e.g. token) authentication:
+
+    BitbucketClient client = BitbucketClient.builder()
+    .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
+    .token("123456789abcdef") // Optional and can be sourced from system/env.
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+When using anonymous authentication or sourcing from system/environment:
+
+    BitbucketClient client = BitbucketClient.builder()
+    .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
+    .build();
+
+    Version version = client.api().systemApi().version();
 
 ## Understanding Error objects
 
@@ -106,11 +131,11 @@ that you can use in your own code.
 
 Running mock tests can be done like so:
 
-	./gradlew mockTest
+    ./gradlew mockTest
 	
 Running integration tests can be done like so (requires Bitbucket instance):
 
-	./gradlew integTest
+    ./gradlew integTest
 	
 # Additional Resources
 
@@ -118,4 +143,3 @@ Running integration tests can be done like so (requires Bitbucket instance):
 * [Bitbucket REST API](https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html)
 * [Bitbucket Auth API](https://developer.atlassian.com/bitbucket/server/docs/latest/how-tos/example-basic-authentication.html)
 * [Apache jclouds](https://jclouds.apache.org/start/)
-
