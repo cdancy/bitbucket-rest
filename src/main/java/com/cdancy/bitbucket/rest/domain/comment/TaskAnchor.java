@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import java.util.Map;
 import org.jclouds.javax.annotation.Nullable;
@@ -63,7 +63,7 @@ public abstract class TaskAnchor {
             final PermittedOperations permittedOperations, 
             final String type) {
         
-        return new AutoValue_TaskAnchor(Utils.nullToEmpty(properties), 
+        return new AutoValue_TaskAnchor(BitbucketUtils.nullToEmpty(properties), 
                 id, 
                 version, 
                 text, 

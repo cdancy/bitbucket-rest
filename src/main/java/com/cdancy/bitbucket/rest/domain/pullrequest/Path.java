@@ -22,7 +22,7 @@ import java.util.List;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -50,7 +50,7 @@ public abstract class Path {
             final String extension, 
             final String _toString) {
         
-        return new AutoValue_Path(Utils.nullToEmpty(components), 
+        return new AutoValue_Path(BitbucketUtils.nullToEmpty(components), 
                 parent, 
                 name, 
                 extension, 

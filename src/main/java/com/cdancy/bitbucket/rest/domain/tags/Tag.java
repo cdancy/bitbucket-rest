@@ -24,7 +24,7 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -61,7 +61,7 @@ public abstract class Tag implements ErrorsHolder {
             final String hash, 
             final List<Error> errors) {
         
-        return new AutoValue_Tag(Utils.nullToEmpty(errors), 
+        return new AutoValue_Tag(BitbucketUtils.nullToEmpty(errors), 
                 id, 
                 displayId, 
                 type, 

@@ -19,7 +19,7 @@ package com.cdancy.bitbucket.rest.domain.repository;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -42,7 +42,7 @@ public abstract class Hook implements ErrorsHolder {
             final boolean configured, 
             @Nullable final List<Error> errors) {
         
-        return new AutoValue_Hook(Utils.nullToEmpty(errors), 
+        return new AutoValue_Hook(BitbucketUtils.nullToEmpty(errors), 
                 details, 
                 enabled, 
                 configured);

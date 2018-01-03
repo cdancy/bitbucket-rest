@@ -21,7 +21,7 @@ import com.cdancy.bitbucket.rest.domain.branch.Matcher;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -59,7 +59,7 @@ public abstract class Condition implements ErrorsHolder {
             final Long requiredApprovals,
             @Nullable final List<Error> errors) {
         
-        return new AutoValue_Condition(Utils.nullToEmpty(errors), 
+        return new AutoValue_Condition(BitbucketUtils.nullToEmpty(errors), 
                 id, 
                 scope, 
                 sourceRefMatcher, 

@@ -27,7 +27,7 @@ import java.util.Collection;
 /**
  * Collection of static methods to be used globally.
  */
-public class Utils {
+public class BitbucketUtils {
 
     /**
      * Convert passed Iterable into an ImmutableList.
@@ -79,7 +79,7 @@ public class Utils {
         return value != null ? value : System.getenv(key);
     }
     
-    private Utils() {
+    private BitbucketUtils() {
         throw new UnsupportedOperationException("Purposefully not implemented");
     }
 }

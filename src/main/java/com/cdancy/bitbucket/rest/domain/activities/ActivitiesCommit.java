@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.activities;
 
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -35,6 +35,6 @@ public abstract class ActivitiesCommit {
 
     @SerializedNames({"commits", "total"})
     public static ActivitiesCommit create(@Nullable final List<Commit> commits, final long total) {
-        return new AutoValue_ActivitiesCommit(Utils.nullToEmpty(commits), total);
+        return new AutoValue_ActivitiesCommit(BitbucketUtils.nullToEmpty(commits), total);
     }
 }

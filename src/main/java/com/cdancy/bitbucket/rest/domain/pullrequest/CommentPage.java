@@ -26,7 +26,7 @@ import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -47,7 +47,7 @@ public abstract class CommentPage implements Page<Comments>, ErrorsHolder {
                 size, 
                 nextPageStart, 
                 isLastPage,
-                Utils.nullToEmpty(values), 
-                Utils.nullToEmpty(errors));
+                BitbucketUtils.nullToEmpty(values), 
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

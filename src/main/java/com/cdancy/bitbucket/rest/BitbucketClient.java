@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest;
 
 import com.cdancy.bitbucket.rest.utils.AuthTypes;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.Arrays;
@@ -58,7 +58,7 @@ public final class BitbucketClient {
      * @return found endpoint or default.
      */
     private String initEndPoint() {
-        final String possibleValue = Utils.retrivePropertyValue(ENDPOINT_PROPERTIES);
+        final String possibleValue = BitbucketUtils.retrivePropertyValue(ENDPOINT_PROPERTIES);
         return possibleValue != null ? possibleValue : "http://127.0.0.1:7990";
     }
 
@@ -76,7 +76,7 @@ public final class BitbucketClient {
      * @return Supplier with found Credentials.
      */
     private Supplier<Credentials> initCredentials() {
-        final String authValue = Utils.retrivePropertyValue(CREDENTIALS_PROPERTIES);
+        final String authValue = BitbucketUtils.retrivePropertyValue(CREDENTIALS_PROPERTIES);
         
         // if NO auth found assumed anonymous access
         if (authValue != null) {

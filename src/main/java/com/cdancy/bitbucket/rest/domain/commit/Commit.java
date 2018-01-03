@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 
@@ -59,12 +59,12 @@ public abstract class Commit implements ErrorsHolder {
             final List<Parents> parents, 
             final List<Error> errors) {
         
-        return new AutoValue_Commit(Utils.nullToEmpty(errors), 
+        return new AutoValue_Commit(BitbucketUtils.nullToEmpty(errors), 
                 id, 
                 displayId, 
                 author, 
                 authorTimestamp, 
                 message, 
-                Utils.nullToEmpty(parents));
+                BitbucketUtils.nullToEmpty(parents));
     }
 }

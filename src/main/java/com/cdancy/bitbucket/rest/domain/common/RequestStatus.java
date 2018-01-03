@@ -22,7 +22,7 @@ import java.util.List;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 /**
@@ -41,6 +41,6 @@ public abstract class RequestStatus implements Value<Boolean>, ErrorsHolder {
             final List<Error> errors) {
         
         return new AutoValue_RequestStatus(value, 
-                Utils.nullToEmpty(errors));
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

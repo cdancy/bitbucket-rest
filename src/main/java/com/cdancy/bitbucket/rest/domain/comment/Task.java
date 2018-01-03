@@ -24,7 +24,7 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import java.util.List;
 
@@ -64,7 +64,7 @@ public abstract class Task implements ErrorsHolder {
             final PermittedOperations permittedOperations, 
             final List<Error> errors) {
         
-        return new AutoValue_Task(Utils.nullToEmpty(errors), 
+        return new AutoValue_Task(BitbucketUtils.nullToEmpty(errors), 
                 anchor, 
                 author, 
                 createdDate, 

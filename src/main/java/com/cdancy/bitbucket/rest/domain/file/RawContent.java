@@ -25,7 +25,7 @@ import org.jclouds.json.SerializedNames;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Value;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -36,6 +36,6 @@ public abstract class RawContent implements Value<String>, ErrorsHolder {
             final List<Error> errors) {
         
         return new AutoValue_RawContent(value, 
-                Utils.nullToEmpty(errors));
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

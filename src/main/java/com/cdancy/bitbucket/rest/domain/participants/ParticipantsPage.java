@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.domain.participants;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -45,7 +45,7 @@ public abstract class ParticipantsPage implements Page<Participants>, ErrorsHold
                 size, 
                 nextPageStart, 
                 isLastPage,
-                Utils.nullToEmpty(values), 
-                Utils.nullToEmpty(errors));
+                BitbucketUtils.nullToEmpty(values), 
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

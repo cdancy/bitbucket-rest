@@ -26,7 +26,7 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Links;
 import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -62,7 +62,7 @@ public abstract class Project implements ErrorsHolder, LinksHolder {
             final Links links, 
             final List<Error> errors) {
         
-        return new AutoValue_Project(Utils.nullToEmpty(errors), 
+        return new AutoValue_Project(BitbucketUtils.nullToEmpty(errors), 
                 links, 
                 key, 
                 id, 
