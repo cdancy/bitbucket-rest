@@ -43,11 +43,11 @@ public class BitbucketAuthentication implements HttpRequestFilter {
     @Override
     public HttpRequest filter(final HttpRequest request) throws HttpException {
         final Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
-        if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {            
+        if (currentCreds.identity.equalsIgnoreCase("NONE")) {
+            return request.toBuilder().build();
+        } else {
             final String authHeader = currentCreds.identity + " " + currentCreds.credential;
             return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, authHeader).build();
-        } else {
-            return request.toBuilder().build();
         }
     }
 }

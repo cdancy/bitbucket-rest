@@ -179,7 +179,7 @@ public final class BitbucketClient {
                     authCredentials.credential(creds.value);
                 }
             } else {
-                authCredentials.identity(null).credential("");
+                authCredentials.identity(AuthTypes.NONE.toString()).credential("");
             }
 
             return new BitbucketClient(foundEndpoint, Suppliers.ofInstance(authCredentials.build()));

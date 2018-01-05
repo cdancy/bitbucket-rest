@@ -23,7 +23,8 @@ package com.cdancy.bitbucket.rest.utils;
 public enum AuthTypes {
 
     BASIC ("Basic"),
-    BEARER ("Bearer");
+    BEARER ("Bearer"),
+    NONE ("NONE");
 
     private final String type;
     

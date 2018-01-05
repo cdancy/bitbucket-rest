@@ -27,6 +27,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.cdancy.bitbucket.rest.utils.AuthTypes;
 import com.google.common.base.Throwables;
 import java.io.File;
 import java.net.URL;
@@ -54,38 +55,30 @@ public class TestUtilities {
      * Get the default User from the passed credential String. Once user
      * is found we will cache for later usage.
      * 
+     * @param identity the String form of the AuthTypes being used.
      * @param credential the credential String.
      * @param api Bitbucket api object.
-     * @return User.
+     * @return User or null if user can't be inferred.
      */
-    public static synchronized User getDefaultUser(final String credential, final BitbucketApi api) {
-        assertThat(credential).isNotNull();
-        assertThat(api).isNotNull();
-
+    public static synchronized User getDefaultUser(final String identity, final String credential, final BitbucketApi api) {
         if (defaultUser == null) {
-            String username;
-            if (credential.startsWith("bearer@")) {
-                return User.create("someone", "someone@domain.com", 0, "Some One", true, "someslug", "handsome");
-            } else if (credential.startsWith("basic@")) {
-                username = credential.split("@",2)[1];
-                if (username.contains(":")) {
-                    username = username.split(":")[0];
+            assertThat(identity).isNotNull();
+            assertThat(credential).isNotNull();
+            assertThat(api).isNotNull();
+
+            if (identity.equalsIgnoreCase(AuthTypes.BASIC.toString())) {
+                String username = new String(base64().decode(credential)).split(":")[0];
+                final UserPage userPage = api.adminApi().listUsers(username, null, null);
+                assertThat(userPage).isNotNull();
+                assertThat(userPage.size() > 0).isTrue();
+                for (final User user : userPage.values()) {
+                    if (username.equals(user.slug())) {
+                        defaultUser = user;
+                        break;
+                    }
                 }
-            } else if (credential.contains(":")) {
-                username = credential.split(":")[0];
-            } else {
-                username = new String(base64().decode(credential)).split(":")[0];
+                assertThat(defaultUser).isNotNull();
             }
-            final UserPage userPage = api.adminApi().listUsers(username, null, null);
-            assertThat(userPage).isNotNull();
-            assertThat(userPage.size() > 0).isTrue();
-            for (final User user : userPage.values()) {
-                if (username.equals(user.slug())) {
-                    defaultUser = user;
-                    break;
-                }
-            }
-            assertThat(defaultUser).isNotNull();
         }
 
         return defaultUser;

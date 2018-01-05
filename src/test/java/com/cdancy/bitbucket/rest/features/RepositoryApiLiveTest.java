@@ -59,7 +59,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
-        this.user = TestUtilities.getDefaultUser(this.credential, this.api);
+        this.user = TestUtilities.getDefaultUser(this.identity, this.credential, this.api);
     }
 
     @Test 
