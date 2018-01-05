@@ -67,7 +67,7 @@ public class TestUtilities {
             assertThat(api).isNotNull();
 
             if (identity.equalsIgnoreCase(AuthTypes.BASIC.toString())) {
-                String username = new String(base64().decode(credential)).split(":")[0];
+                final String username = new String(base64().decode(credential)).split(":")[0];
                 final UserPage userPage = api.adminApi().listUsers(username, null, null);
                 assertThat(userPage).isNotNull();
                 assertThat(userPage.size() > 0).isTrue();
