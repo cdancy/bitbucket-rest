@@ -17,13 +17,19 @@ The methods within these Interfaces are analagous to an endpoint provided by the
 The user only needs to be concerned with which `Api` they need and then calling its various methods. These methods, much like any java library, return domain objects 
 (e.g. POJO's) modeled after the json returned by `bitbucket`. 
 
-Interacting with the remote service becomes transparent and allows developers to focus on getting things done rather than the internals of the API itself, or how to build a client, or how to parse the json. 
+Interacting with the remote service becomes transparent and allows developers to focus on getting
+things done rather than the internals of the API itself, or how to build a client, or how to parse the json. 
 
 ## On new features
 
-New Api's or endpoints are generally added as needed and/or requested. If there is something you want to see just open an ISSUE and ask or send in a PullRequest. However, putting together a PullRequest for a new feature is generally the faster route to go as it's much easier to review a PullRequest than to create one ourselves. There is no problem doing so of course but if you need something done now than a PullRequest is your best bet otherwise you may have to patiently wait for one of our contributors to take up the work.
+New Api's or endpoints are generally added as needed and/or requested. If there is something you want
+to see just open an ISSUE and ask or send in a PullRequest. However, putting together a PullRequest
+for a new feature is generally the faster route to go as it's much easier to review a PullRequest
+than to create one ourselves. There is no problem doing so of course but if you need something done
+now than a PullRequest is your best bet otherwise you may have to patiently wait for one of our
+contributors to take up the work.
 
-## Latest release
+## Latest Release
 
 Can be sourced from jcenter like so:
 
@@ -40,10 +46,11 @@ javadocs can be found via [github pages here](http://cdancy.github.io/bitbucket-
 
 ## Property based setup
 
-Client's do NOT need supply the endPoint or credentials as part of instantiating the BitbucketClient object. 
-Instead one can supply them through system properties, environment variables, or a combination 
-of the 2. System properties will be searched first and if not found we will attempt to 
-query the environment.
+Client's do NOT need to supply the endPoint or authentication as part of instantiating the
+_BitbucketClient_ object. Instead one can supply them through system properties, environment
+variables, or a combination of the 2. _System Properties_ will be searched first and if not
+found we will attempt to query the _Environment Variables_. If neither turns up anything
+than anonymous access is assumed.
 
 Setting the `endpoint` can be done with any of the following (searched in order):
 
@@ -71,7 +78,7 @@ Authentication/Credentials for `bitbucket-rest` can take 1 of 3 forms:
 - Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__
 - Personal access token: __9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
 
-## Examples on building a client
+## Examples on how to build a client
 
 When using `Basic` (e.g. username and password) authentication:
 
@@ -91,7 +98,7 @@ When using `Bearer` (e.g. token) authentication:
 
     Version version = client.api().systemApi().version();
 
-When using anonymous authentication or sourcing from system/environment:
+When using anonymous authentication or sourcing from system/environment (as described above):
 
     BitbucketClient client = BitbucketClient.builder()
     .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
@@ -120,7 +127,7 @@ An example on how one might proceed:
 ## Examples
 
 The [mock](https://github.com/cdancy/bitbucket-rest/tree/master/src/test/java/com/cdancy/bitbucket/rest/features) and [live](https://github.com/cdancy/bitbucket-rest/tree/master/src/test/java/com/cdancy/bitbucket/rest/features) tests provide many examples
-that you can use in your own code.
+that you can use in your own code. If there are any questions feel free to open an issue and ask.
 
 ## Components
 
