@@ -17,36 +17,31 @@
 
 package com.cdancy.bitbucket.rest.filters;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.jclouds.domain.Credentials;
+import com.cdancy.bitbucket.rest.auth.AuthenticationType;
+
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
-import org.jclouds.location.Provider;
-
-import com.google.common.base.Supplier;
 import com.google.common.net.HttpHeaders;
 
 @Singleton
 public class BitbucketAuthentication implements HttpRequestFilter {
-    private final Supplier<Credentials> creds;
+    private final com.cdancy.bitbucket.rest.BitbucketAuthentication creds;
 
     @Inject
-    BitbucketAuthentication(@Provider final Supplier<Credentials> creds) {
+    BitbucketAuthentication(final com.cdancy.bitbucket.rest.BitbucketAuthentication creds) {
         this.creds = creds;
     }
 
     @Override
     public HttpRequest filter(final HttpRequest request) throws HttpException {
-        final Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
-        if (currentCreds.identity.equalsIgnoreCase("NONE")) {
-            return request.toBuilder().build();
+        if (creds.authType() == AuthenticationType.Anonymous) {
+            return request;
         } else {
-            final String authHeader = currentCreds.identity + " " + currentCreds.credential;
+            final String authHeader = creds.authType() + " " + creds.authValue();
             return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, authHeader).build();
         }
     }
