@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.activities;
 
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
-import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;

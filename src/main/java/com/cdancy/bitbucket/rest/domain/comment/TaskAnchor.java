@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.comment;
 
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
-import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import java.util.Map;
 import org.jclouds.javax.annotation.Nullable;

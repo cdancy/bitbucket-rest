@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest.domain.common;
 
-import com.cdancy.bitbucket.rest.utils.BitbucketUtils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 

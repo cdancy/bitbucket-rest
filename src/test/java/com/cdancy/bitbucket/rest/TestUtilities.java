@@ -20,6 +20,8 @@ package com.cdancy.bitbucket.rest;
 import static com.google.common.io.BaseEncoding.base64;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cdancy.bitbucket.rest.auth.AuthenticationType;
+
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.project.Project;
@@ -27,7 +29,6 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
-import com.cdancy.bitbucket.rest.utils.AuthTypes;
 import com.google.common.base.Throwables;
 import java.io.File;
 import java.net.URL;
@@ -36,6 +37,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -44,8 +46,15 @@ import org.jclouds.util.Strings2;
 /**
  * Static methods for generating test data.
  */
-public class TestUtilities {
-    
+public class TestUtilities extends BitbucketUtils {
+
+    public static final List<String> TEST_CREDENTIALS_PROPERTIES = Collections
+            .unmodifiableList(Arrays
+                    .asList("test.bitbucket.rest.credentials", "testBitbucketRestCredentials", "TEST_BITBUCKET_REST_CREDENTIALS"));
+    public static final List<String> TEST_TOKEN_PROPERTIES = Collections
+            .unmodifiableList(Arrays
+                    .asList("test.bitbucket.rest.token", "testBitbucketRestToken", "TEST_BITBUCKET_REST_TOKEN"));
+
     private static final String GIT_COMMAND = "git";
     private static final char[] CHARS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
@@ -55,19 +64,17 @@ public class TestUtilities {
      * Get the default User from the passed credential String. Once user
      * is found we will cache for later usage.
      * 
-     * @param identity the String form of the AuthTypes being used.
-     * @param credential the credential String.
      * @param api Bitbucket api object.
+     * @param auth the BitbucketAuthentication instance.
      * @return User or null if user can't be inferred.
      */
-    public static synchronized User getDefaultUser(final String identity, final String credential, final BitbucketApi api) {
+    public static synchronized User getDefaultUser(final BitbucketAuthentication auth, final BitbucketApi api) {
         if (defaultUser == null) {
-            assertThat(identity).isNotNull();
-            assertThat(credential).isNotNull();
+            assertThat(auth).isNotNull();
             assertThat(api).isNotNull();
 
-            if (identity.equalsIgnoreCase(AuthTypes.BASIC.toString())) {
-                final String username = new String(base64().decode(credential)).split(":")[0];
+            if (auth.authType() == AuthenticationType.Basic) {
+                final String username = new String(base64().decode(auth.authValue())).split(":")[0];
                 final UserPage userPage = api.adminApi().listUsers(username, null, null);
                 assertThat(userPage).isNotNull();
                 assertThat(userPage.size() > 0).isTrue();
@@ -131,7 +138,7 @@ public class TestUtilities {
      * @return GeneratedTestContents to use.
      */
     public static synchronized GeneratedTestContents initGeneratedTestContents(final String endpoint, 
-                                                                                final String credential, 
+                                                                                final BitbucketAuthentication credential, 
                                                                                 final BitbucketApi api) {
         assertThat(endpoint).isNotNull();
         assertThat(credential).isNotNull();
@@ -173,11 +180,7 @@ public class TestUtilities {
         assertThat(generatedFileDir.mkdirs()).isTrue();
         
         try {
-            String foundCredential = credential;
-            if (!foundCredential.contains(":")) {
-                foundCredential = new String(base64().decode(foundCredential));
-            }
-            
+            final String foundCredential = getDefaultUser(credential, api).slug();
             final URL endpointURL = new URL(endpoint);
             final int index = endpointURL.toString().indexOf(endpointURL.getHost());
             final String preCredentialPart = endpointURL.toString().substring(0, index);
@@ -308,5 +311,34 @@ public class TestUtilities {
      */
     public static String randomString() {
         return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
+    /**
+     * Find credentials (Basic, Bearer, or Anonymous) from system/environment.
+     *
+     * @return BitbucketCredentials
+     */
+    public static BitbucketAuthentication inferTestCredentials() {
+
+        // 1.) Check for "Basic" auth credentials.
+        final BitbucketAuthentication.Builder inferAuth = BitbucketAuthentication.builder();
+        String authValue = retrivePropertyValue(TEST_CREDENTIALS_PROPERTIES);
+        if (authValue != null) {
+            inferAuth.credentials(authValue);
+        } else {
+
+            // 2.) Check for "Bearer" auth token.
+            authValue = retrivePropertyValue(TEST_TOKEN_PROPERTIES);
+            if (authValue != null) {
+                inferAuth.token(authValue);
+            }
+        }
+
+        // 3.) If neither #1 or #2 find anything "Anonymous" access is assumed.
+        return inferAuth.build();
+    }
+
+    private TestUtilities() {
+        throw new UnsupportedOperationException("Purposefully not implemented");
     }
 }
