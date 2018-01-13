@@ -78,7 +78,7 @@ Authentication/Credentials for `bitbucket-rest` can take 1 of 3 forms:
 - Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__
 - Personal access token: __9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
 
-## Examples on how to build a client
+## Examples on how to build a _BitbucketClient_
 
 When using `Basic` (e.g. username and password) authentication:
 
@@ -98,7 +98,7 @@ When using `Bearer` (e.g. token) authentication:
 
     Version version = client.api().systemApi().version();
 
-When using anonymous authentication or sourcing from system/environment (as described above):
+When using `Anonymous` authentication or sourcing from system/environment (as described above):
 
     BitbucketClient client = BitbucketClient.builder()
     .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
@@ -143,6 +143,8 @@ Running mock tests can be done like so:
 Running integration tests can be done like so (requires Bitbucket instance):
 
     ./gradlew integTest
+
+Various [properties](https://github.com/cdancy/bitbucket-rest/tree/master/gradle.properties) exist for you to configure how the `integTest` task can be run should the defaults not suffice.
 	
 # Additional Resources
 
