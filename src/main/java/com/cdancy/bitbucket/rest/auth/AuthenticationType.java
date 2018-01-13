@@ -15,43 +15,21 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.utils;
+package com.cdancy.bitbucket.rest.auth;
 
 /**
  * Supported Authentication Types for Bitbucket.
  */
-public enum AuthTypes {
+public enum AuthenticationType {
 
-    BASIC ("Basic"),
-    BEARER ("Bearer"),
-    NONE ("NONE");
+    Basic("Basic"),
+    Bearer("Bearer"),
+    Anonymous("");
 
     private final String type;
-    
-    private AuthTypes(final String type) {
-        this.type = type;
-    }
 
-    /**
-     * Infer an AuthTypes enum from the passed String.
-     * 
-     * @param possibleType inferred AuthTypes.
-     * @return AuthTypes or null if not found.
-     */
-    public static AuthTypes from(final String possibleType) {
-        AuthTypes authType = null;
-        if (possibleType != null) {
-            final String localType = possibleType.trim();
-            if (localType.length() > 0) {
-                for (final AuthTypes availableType : AuthTypes.values()) {
-                    if (localType.equalsIgnoreCase(availableType.toString())) {
-                        authType = availableType;
-                        break;
-                    }
-                }
-            }
-        }
-        return authType;
+    private AuthenticationType(final String type) {
+        this.type = type;
     }
 
     @Override
