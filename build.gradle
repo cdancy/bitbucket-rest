@@ -112,10 +112,24 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
-    } 
-    systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketEndpoint}",
-                        "test.bitbucket.credential" : "${testBitbucketCredential}",
-                        "test.bitbucket.project" : "${testBitbucketProject}",
-                        "test.bitbucket.basedir" : "${buildDir}/integ-projects"]
+    }
+    def authentication = [:]
+    def possibleAuth = project.findProperty('testBitbucketRestCredentials')
+    if (possibleAuth) {
+        authentication['test.bitbucket.rest.credentials'] = possibleAuth
+    } else {
+        possibleAuth = project.findProperty('testBitbucketRestToken')
+        if (possibleAuth) {
+            authentication['test.bitbucket.rest.token'] = possibleAuth
+        } else {
+            logger.quiet 'No authentication parameters found. Assuming anonymous...'
+        }
+    }
+
+    // property 'test.bitbucket.endpoint' needs to be
+    // hard-coded in for jclouds test framework
+    systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketRestEndpoint}",
+                        "test.bitbucket.project" : "${testBitbucketRestProject}",
+                        "test.bitbucket.basedir" : "${buildDir}/integ-projects"] << authentication
 }
 

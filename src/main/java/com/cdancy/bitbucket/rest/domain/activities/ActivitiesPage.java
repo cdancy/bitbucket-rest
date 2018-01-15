@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.domain.activities;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -35,6 +35,6 @@ public abstract class ActivitiesPage implements Page<Activities>, ErrorsHolder {
             final int size, final int nextPageStart, final boolean isLastPage,
             @Nullable final List<Activities> values, @Nullable final List<Error> errors) {
         return new AutoValue_ActivitiesPage(start, limit, size, nextPageStart, isLastPage,
-            Utils.nullToEmpty(values), Utils.nullToEmpty(errors));
+            BitbucketUtils.nullToEmpty(values), BitbucketUtils.nullToEmpty(errors));
     }
 }

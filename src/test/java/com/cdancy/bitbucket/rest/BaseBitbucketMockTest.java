@@ -32,10 +32,13 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 
+import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Functions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonParser;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -54,8 +57,22 @@ public class BaseBitbucketMockTest {
         provider = "bitbucket";
     }
 
+    /**
+     * Create API from passed URL.
+     * 
+     * @param url endpoint of instance.
+     * @return instance of BitbucketApi.
+     */
     public BitbucketApi api(final URL url) {
-        return ContextBuilder.newBuilder(provider).endpoint(url.toString()).overrides(setupProperties())
+        final BitbucketAuthentication creds = BitbucketAuthentication
+                .builder()
+                .credentials("hello:world")
+                .build();
+        final BitbucketAuthenticationModule credsModule = new BitbucketAuthenticationModule(creds);
+        return ContextBuilder.newBuilder(provider)
+                .endpoint(url.toString())
+                .overrides(setupProperties())
+                .modules(Lists.newArrayList(credsModule))
                 .buildApi(BitbucketApi.class);
     }
 

@@ -44,10 +44,12 @@ public class AdminApiLiveTest extends BaseBitbucketApiLiveTest {
     
     @Test
     public void testListUsers() {
-        final User user = TestUtilities.getDefaultUser(this.credential, this.api);
-        final UserPage userPage = api().listUsers(user.slug(), null, null);
-        assertThat(userPage).isNotNull();
-        assertThat(userPage.size() > 0).isTrue();
+        final User user = TestUtilities.getDefaultUser(this.bitbucketAuthentication, this.api);
+        if (user != null) {
+            final UserPage userPage = api().listUsers(user.slug(), null, null);
+            assertThat(userPage).isNotNull();
+            assertThat(userPage.size() > 0).isTrue();
+        }
     }
     
     @Test

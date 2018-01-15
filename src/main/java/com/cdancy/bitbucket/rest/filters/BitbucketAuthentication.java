@@ -17,61 +17,32 @@
 
 package com.cdancy.bitbucket.rest.filters;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.io.BaseEncoding.base64;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.jclouds.domain.Credentials;
+import com.cdancy.bitbucket.rest.auth.AuthenticationType;
+
 import org.jclouds.http.HttpException;
 import org.jclouds.http.HttpRequest;
 import org.jclouds.http.HttpRequestFilter;
-import org.jclouds.location.Provider;
-
-import com.google.common.base.Supplier;
 import com.google.common.net.HttpHeaders;
 
 @Singleton
 public class BitbucketAuthentication implements HttpRequestFilter {
-    private final Supplier<Credentials> creds;
-
-    public static final String BASE64_REGEX = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$";
+    private final com.cdancy.bitbucket.rest.BitbucketAuthentication creds;
 
     @Inject
-    BitbucketAuthentication(@Provider final Supplier<Credentials> creds) {
+    BitbucketAuthentication(final com.cdancy.bitbucket.rest.BitbucketAuthentication creds) {
         this.creds = creds;
     }
 
     @Override
     public HttpRequest filter(final HttpRequest request) throws HttpException {
-        final Credentials currentCreds = checkNotNull(creds.get(), "credential supplier returned null");
-        if (currentCreds.credential != null && currentCreds.credential.trim().length() > 0) {
-            /*
-            * client can pass in credential string in 1 of 2 ways:
-            *
-            * 1.) As colon delimited username and password: admin:password
-            *
-            * 2.) As base64 encoded value of colon delimited username and
-            * password: YWRtaW46cGFzc3dvcmQ=
-            *
-            */
-            String foundCredential = currentCreds.credential;
-            if (foundCredential.contains(":")) {
-                foundCredential = base64().encode(foundCredential.getBytes());
-            }
-
-            if (isBase64Encoded(foundCredential)) {
-                return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, "Basic " + foundCredential).build();
-            } else {
-                throw new IllegalArgumentException("Credential is not in base64 format: credential=" + foundCredential);
-            }
+        if (creds.authType() == AuthenticationType.Anonymous) {
+            return request;
         } else {
-            return request.toBuilder().build();
+            final String authHeader = creds.authType() + " " + creds.authValue();
+            return request.toBuilder().addHeader(HttpHeaders.AUTHORIZATION, authHeader).build();
         }
-    }
-
-    private boolean isBase64Encoded(final String possiblyEncodedString) {
-        return possiblyEncodedString.matches(BASE64_REGEX);
     }
 }

@@ -15,26 +15,28 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.activities;
+package com.cdancy.bitbucket.rest.config;
 
-import com.cdancy.bitbucket.rest.domain.commit.Commit;
-import com.cdancy.bitbucket.rest.BitbucketUtils;
-import com.google.auto.value.AutoValue;
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
+import com.cdancy.bitbucket.rest.BitbucketAuthentication;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
-import java.util.List;
+/**
+ * Provider for BitbucketAuthentication objects. The BitbucketAuthentication
+ * should be created ahead of time with this module simply handing it out
+ * to downstream objects for injection.
+ */
+public class BitbucketAuthenticationProvider implements Provider<BitbucketAuthentication> {
 
-@AutoValue
-public abstract class ActivitiesCommit {
+    private final BitbucketAuthentication creds;
 
-    @Nullable
-    public abstract List<Commit> commits();
+    @Inject
+    public BitbucketAuthenticationProvider(final BitbucketAuthentication creds) {
+        this.creds = creds;
+    }
 
-    public abstract long total();
-
-    @SerializedNames({"commits", "total"})
-    public static ActivitiesCommit create(@Nullable final List<Commit> commits, final long total) {
-        return new AutoValue_ActivitiesCommit(BitbucketUtils.nullToEmpty(commits), total);
+    @Override
+    public BitbucketAuthentication get() {
+        return creds;
     }
 }

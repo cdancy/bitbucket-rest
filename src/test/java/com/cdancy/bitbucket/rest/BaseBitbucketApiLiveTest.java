@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest;
 
+import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 import java.util.Properties;
 
 import org.jclouds.Constants;
@@ -30,14 +31,17 @@ import com.google.inject.Module;
 public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     protected final String defaultBitbucketGroup = "stash-users";
+    protected final BitbucketAuthentication bitbucketAuthentication;
 
     public BaseBitbucketApiLiveTest() {
         provider = "bitbucket";
+        this.bitbucketAuthentication = TestUtilities.inferTestCredentials();
     }
 
     @Override
     protected Iterable<Module> setupModules() {
-        return ImmutableSet.<Module> of(getLoggingModule());
+        final BitbucketAuthenticationModule credsModule = new BitbucketAuthenticationModule(this.bitbucketAuthentication);
+        return ImmutableSet.<Module> of(getLoggingModule(), credsModule);
     }
 
     @Override

@@ -27,7 +27,7 @@ import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Links;
 import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.domain.project.Project;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -75,7 +75,7 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
             final Links links, 
             final List<Error> errors) {
         
-        return new AutoValue_Repository(Utils.nullToEmpty(errors), 
+        return new AutoValue_Repository(BitbucketUtils.nullToEmpty(errors), 
                 links, 
                 slug, 
                 id, 

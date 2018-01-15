@@ -23,19 +23,44 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.BitbucketClient;
-import com.cdancy.bitbucket.rest.domain.system.Version;
+import com.cdancy.bitbucket.rest.TestUtilities;
+import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 
 @Test(groups = "live", testName = "BitbucketClientLiveTest")
 public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateClient() {
-        final BitbucketClient client = BitbucketClient.builder()
-                .credentials(System.getProperty("test.bitbucket.credential"))
-                .endPoint(System.getProperty("test.bitbucket.endpoint"))
-                .build();
+        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication);
+        final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.errors()).isEmpty();
+    }
 
-        final Version version = client.api().systemApi().version();
-        assertThat(version).isNotNull();
+    @Test
+    public void testCreateClientWithBuilder() {
+        final BitbucketClient.Builder builder = BitbucketClient.builder();
+        switch (bitbucketAuthentication.authType()) {
+            case Anonymous: break;
+            case Basic:
+                builder.credentials(bitbucketAuthentication.authValue());
+                break;
+            case Bearer:
+                builder.token(bitbucketAuthentication.authValue());
+                break;
+            default: break;
+        }
+        final BitbucketClient client = builder.endPoint(this.endpoint).build();
+        final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.errors()).isEmpty();
+    }
+
+    @Test
+    public void testCreateClientWithWrongCredentials() {
+        final BitbucketClient client = new BitbucketClient(this.endpoint, TestUtilities.randomStringLettersOnly());
+        final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
+        assertThat(userPage).isNotNull();
+        assertThat(userPage.errors()).isNotEmpty();
     }
 }

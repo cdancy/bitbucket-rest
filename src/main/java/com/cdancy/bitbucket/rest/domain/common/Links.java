@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -37,6 +37,6 @@ public abstract class Links {
 
     @SerializedNames({ "clone", "self" })
     public static Links create(final List<Map<String, String>> clone, final List<Map<String, String>> self) {
-        return new AutoValue_Links(Utils.nullToEmpty(clone), Utils.nullToEmpty(self));
+        return new AutoValue_Links(BitbucketUtils.nullToEmpty(clone), BitbucketUtils.nullToEmpty(self));
     }
 }

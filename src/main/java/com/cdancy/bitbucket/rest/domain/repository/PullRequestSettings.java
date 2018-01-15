@@ -19,7 +19,7 @@ package com.cdancy.bitbucket.rest.domain.repository;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -54,7 +54,7 @@ public abstract class PullRequestSettings implements ErrorsHolder {
             final Long requiredSuccessfulBuilds, 
             @Nullable final List<Error> errors) {
         
-        return new AutoValue_PullRequestSettings(Utils.nullToEmpty(errors), 
+        return new AutoValue_PullRequestSettings(BitbucketUtils.nullToEmpty(errors), 
                 mergeConfig, 
                 requiredAllApprovers,
                 requiredAllTasksComplete, 

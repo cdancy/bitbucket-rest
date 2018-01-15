@@ -15,21 +15,26 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.utils;
+package com.cdancy.bitbucket.rest.config;
 
-import java.util.List;
-import java.util.Map;
+import com.cdancy.bitbucket.rest.BitbucketAuthentication;
+import com.google.inject.AbstractModule;
+import java.util.Objects;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+/**
+ * Configure the provider for BitbucketAuthentication.
+ */
+public class BitbucketAuthenticationModule extends AbstractModule {
 
-public class Utils {
+    private final BitbucketAuthentication creds;
 
-    public static <T> List<T> nullToEmpty(final Iterable<? extends T> input) {
-        return (List<T>) (input == null ? ImmutableList.<T> of() : ImmutableList.copyOf(input));
+    public BitbucketAuthenticationModule(final BitbucketAuthentication creds) {
+        Objects.requireNonNull(creds);
+        this.creds = creds;
     }
 
-    public static <K, V> Map<K, V> nullToEmpty(final Map<? extends K, ? extends V> input) {
-        return (Map<K, V>) (input == null ? ImmutableMap.<K, V> of() : ImmutableMap.copyOf(input));
+    @Override
+    protected void configure() {
+        bind(BitbucketAuthentication.class).toProvider(new BitbucketAuthenticationProvider(creds));
     }
 }

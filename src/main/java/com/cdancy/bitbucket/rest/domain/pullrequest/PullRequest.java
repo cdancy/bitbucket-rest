@@ -26,7 +26,7 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Links;
 import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -98,7 +98,7 @@ public abstract class PullRequest implements ErrorsHolder, LinksHolder {
             final Links links,
             final List<Error> errors) {
         
-        return new AutoValue_PullRequest(Utils.nullToEmpty(errors), 
+        return new AutoValue_PullRequest(BitbucketUtils.nullToEmpty(errors), 
                 links, 
                 id, 
                 version, 
@@ -113,8 +113,8 @@ public abstract class PullRequest implements ErrorsHolder, LinksHolder {
                 toRef, 
                 locked, 
                 author, 
-                Utils.nullToEmpty(reviewers), 
-                Utils.nullToEmpty(participants), 
+                BitbucketUtils.nullToEmpty(reviewers), 
+                BitbucketUtils.nullToEmpty(participants), 
                 properties);
     }
 }

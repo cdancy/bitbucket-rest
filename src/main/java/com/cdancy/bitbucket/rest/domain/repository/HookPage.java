@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.domain.repository;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -45,7 +45,7 @@ public abstract class HookPage implements Page<Hook>, ErrorsHolder {
                 size, 
                 nextPageStart, 
                 isLastPage,
-                Utils.nullToEmpty(values), 
-                Utils.nullToEmpty(errors));
+                BitbucketUtils.nullToEmpty(values), 
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

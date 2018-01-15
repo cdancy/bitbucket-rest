@@ -9,39 +9,36 @@
 
 java client, based on jclouds, to interact with Bitbucket's REST API. 
 
-## Setup and How to use
 
-Client's can be built like so:
-
-      BitbucketClient client = BitbucketClient.builder()
-      .endPoint("http://127.0.0.1:7990") // Optional. Defaults to http://127.0.0.1:7990
-      .credentials("admin:password") // Optional.
-      .build();
-
-      Version version = client.api().systemApi().version();
-      
-Being built on top of jclouds means things are broken up into [Apis](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/features). 
+## On jclouds, apis and endpoints
+Being built on top of `jclouds` means things are broken up into [Apis](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/features). 
 `Apis` are just Interfaces that are analagous to a resource provided by the server-side program (e.g. /api/branches, /api/pullrequest, /api/commits, etc..). 
 The methods within these Interfaces are analagous to an endpoint provided by these resources (e.g. GET /api/branches/my-branch, GET /api/pullrequest/123, DELETE /api/commits/456, etc..). 
 The user only needs to be concerned with which `Api` they need and then calling its various methods. These methods, much like any java library, return domain objects 
 (e.g. POJO's) modeled after the json returned by `bitbucket`. 
 
-Interacting with the remote service becomes transparent and allows developers to focus on getting things done rather than the internals of the API itself, or how to build a client, or how to parse the json. 
+Interacting with the remote service becomes transparent and allows developers to focus on getting
+things done rather than the internals of the API itself, or how to build a client, or how to parse the json. 
 
 ## On new features
 
-New Api's or endpoints are generally added as needed and/or requested. If there is something you want to see just open an ISSUE and ask or send in a PullRequest. However, putting together a PullRequest for a new feature is generally the faster route to go as it's much easier to review a PullRequest than to create one ourselves. There is no problem doing so of course but if you need something done now than a PullRequest is your best bet otherwise you may have to patiently wait for one of our contributors to take up the work.
+New Api's or endpoints are generally added as needed and/or requested. If there is something you want
+to see just open an ISSUE and ask or send in a PullRequest. However, putting together a PullRequest
+for a new feature is generally the faster route to go as it's much easier to review a PullRequest
+than to create one ourselves. There is no problem doing so of course but if you need something done
+now than a PullRequest is your best bet otherwise you may have to patiently wait for one of our
+contributors to take up the work.
 
-## Latest release
+## Latest Release
 
 Can be sourced from jcenter like so:
 
-	<dependency>
-	  <groupId>com.cdancy</groupId>
-	  <artifactId>bitbucket-rest</artifactId>
-	  <version>X.Y.Z</version>
-	  <classifier>sources|tests|javadoc|all</classifier> (Optional)
-	</dependency>
+    <dependency>
+      <groupId>com.cdancy</groupId>
+      <artifactId>bitbucket-rest</artifactId>
+      <version>X.Y.Z</version>
+      <classifier>sources|tests|javadoc|all</classifier> (Optional)
+    </dependency>
 	
 ## Documentation
 
@@ -49,10 +46,11 @@ javadocs can be found via [github pages here](http://cdancy.github.io/bitbucket-
 
 ## Property based setup
 
-Client's do NOT need supply the endPoint or credentials as part of instantiating the BitbucketClient object. 
-Instead one can supply them through system properties, environment variables, or a combination 
-of the 2. System properties will be searched first and if not found we will attempt to 
-query the environment.
+Client's do NOT need to supply the endPoint or authentication as part of instantiating the
+_BitbucketClient_ object. Instead one can supply them through system properties, environment
+variables, or a combination of the 2. _System Properties_ will be searched first and if not
+found we will attempt to query the _Environment Variables_. If neither turns up anything
+than anonymous access is assumed.
 
 Setting the `endpoint` can be done with any of the following (searched in order):
 
@@ -66,12 +64,47 @@ Setting the `credentials` can be done with any of the following (searched in ord
 - `bitbucketRestCredentials`
 - `BITBUCKET_REST_CREDENTIALS`
 
-## Credentials
+Setting the `token` can be done with any of the following (searched in order):
 
-bitbucket-rest credentials can take 1 of 2 forms:
+- `bitbucket.rest.token`
+- `bitbucketRestToken`
+- `BITBUCKET_REST_TOKEN`
 
-- Colon delimited username and password: __admin:password__ 
-- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__ 
+## Authentication
+
+Authentication/Credentials for `bitbucket-rest` can take 1 of 3 forms:
+
+- Colon delimited username and password: __admin:password__
+- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__
+- Personal access token: __9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
+
+## Examples on how to build a _BitbucketClient_
+
+When using `Basic` (e.g. username and password) authentication:
+
+    BitbucketClient client = BitbucketClient.builder()
+    .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
+    .credentials("admin:password") // Optional and can be sourced from system/env.
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+When using `Bearer` (e.g. token) authentication:
+
+    BitbucketClient client = BitbucketClient.builder()
+    .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
+    .token("123456789abcdef") // Optional and can be sourced from system/env.
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+When using `Anonymous` authentication or sourcing from system/environment (as described above):
+
+    BitbucketClient client = BitbucketClient.builder()
+    .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
+    .build();
+
+    Version version = client.api().systemApi().version();
 
 ## Understanding Error objects
 
@@ -94,7 +127,7 @@ An example on how one might proceed:
 ## Examples
 
 The [mock](https://github.com/cdancy/bitbucket-rest/tree/master/src/test/java/com/cdancy/bitbucket/rest/features) and [live](https://github.com/cdancy/bitbucket-rest/tree/master/src/test/java/com/cdancy/bitbucket/rest/features) tests provide many examples
-that you can use in your own code.
+that you can use in your own code. If there are any questions feel free to open an issue and ask.
 
 ## Components
 
@@ -105,11 +138,13 @@ that you can use in your own code.
 
 Running mock tests can be done like so:
 
-	./gradlew mockTest
+    ./gradlew mockTest
 	
 Running integration tests can be done like so (requires Bitbucket instance):
 
-	./gradlew integTest
+    ./gradlew integTest
+
+Various [properties](https://github.com/cdancy/bitbucket-rest/tree/master/gradle.properties) exist for you to configure how the `integTest` task can be run should the defaults not suffice.
 	
 # Additional Resources
 
@@ -117,4 +152,3 @@ Running integration tests can be done like so (requires Bitbucket instance):
 * [Bitbucket REST API](https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html)
 * [Bitbucket Auth API](https://developer.atlassian.com/bitbucket/server/docs/latest/how-tos/example-basic-authentication.html)
 * [Apache jclouds](https://jclouds.apache.org/start/)
-

@@ -39,7 +39,7 @@ public class BitbucketApiMetadataTest extends BaseApiMetadataTest {
         super(new BitbucketApiMetadata(), new HashSet<TypeToken<? extends View>>());
     }
 
-    public void testEtcdApiRegistered() {
+    public void testBitbucketApiRegistered() {
         final ApiMetadata api = Apis.withId("bitbucket");
 
         assertThat(api).isNotNull();

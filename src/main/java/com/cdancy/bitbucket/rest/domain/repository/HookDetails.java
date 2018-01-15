@@ -24,16 +24,11 @@ import org.jclouds.json.SerializedNames;
 @AutoValue
 public abstract class HookDetails {
 
-    public enum HookDetailsType {
-        PRE_RECEIVE,
-        POST_RECEIVE
-    }
-
     public abstract String key();
 
     public abstract String name();
 
-    public abstract HookDetailsType type();
+    public abstract String type();
 
     public abstract String description();
 
@@ -46,7 +41,7 @@ public abstract class HookDetails {
             "description", "version", "configFormKey" })
     public static HookDetails create(final String key, 
             final String name, 
-            final HookDetailsType type, 
+            final String type, 
             final String description, 
             final String version,
             final String configFormKey) {

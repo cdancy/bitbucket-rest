@@ -58,9 +58,12 @@ public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
             id("bitbucket").name("Bitbucket API")
                     .identityName("Optional Username")
                     .credentialName("Optional Password")
-                    .defaultIdentity("").defaultCredential("")
+                    .defaultIdentity("")
+                    .defaultCredential("")
                     .documentation(URI.create("https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html"))
-                    .version(API_VERSION).buildVersion(BUILD_VERSION).defaultEndpoint("http://127.0.0.1:7990")
+                    .version(API_VERSION)
+                    .buildVersion(BUILD_VERSION)
+                    .defaultEndpoint("http://127.0.0.1:7990")
                     .defaultProperties(BitbucketApiMetadata.defaultProperties())
                     .defaultModules(ImmutableSet.<Class<? extends Module>> of(BitbucketHttpApiModule.class));
         }

@@ -21,7 +21,7 @@ import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
@@ -38,7 +38,7 @@ public abstract class UserPage implements Page<User>, ErrorsHolder {
             @Nullable final List<Error> errors) {
         return new AutoValue_UserPage(start, limit, 
                 size, nextPageStart, 
-                isLastPage, Utils.nullToEmpty(values), 
-                Utils.nullToEmpty(errors));
+                isLastPage, BitbucketUtils.nullToEmpty(values), 
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

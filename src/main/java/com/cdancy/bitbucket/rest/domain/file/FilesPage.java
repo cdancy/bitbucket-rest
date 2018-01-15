@@ -25,7 +25,7 @@ import org.jclouds.json.SerializedNames;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -35,6 +35,6 @@ public abstract class FilesPage implements Page<String>, ErrorsHolder {
     public static FilesPage create(final int start, final int limit, final int size, final int nextPageStart, 
             final boolean isLastPage, @Nullable final List<String> lines, @Nullable final List<Error> errors) {
         return new AutoValue_FilesPage(start, limit, size, nextPageStart, isLastPage,
-                Utils.nullToEmpty(lines), Utils.nullToEmpty(errors));
+                BitbucketUtils.nullToEmpty(lines), BitbucketUtils.nullToEmpty(errors));
     }
 }

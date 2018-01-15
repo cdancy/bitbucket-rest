@@ -25,7 +25,7 @@ import org.jclouds.json.SerializedNames;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Page;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -50,8 +50,8 @@ public abstract class LinePage implements Page<Line>, ErrorsHolder {
                 size, 
                 nextPageStart, 
                 isLastPage,
-                Utils.nullToEmpty(lines), 
-                Utils.nullToEmpty(errors), 
-                Utils.nullToEmpty(blame));
+                BitbucketUtils.nullToEmpty(lines), 
+                BitbucketUtils.nullToEmpty(errors), 
+                BitbucketUtils.nullToEmpty(blame));
     }
 }

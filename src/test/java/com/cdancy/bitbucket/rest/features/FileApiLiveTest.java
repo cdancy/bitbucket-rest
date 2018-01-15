@@ -49,7 +49,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @BeforeClass
     public void init() {
-        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.credential, this.api);
+        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
         

@@ -25,7 +25,7 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import com.google.gson.JsonElement;
 
@@ -69,7 +69,7 @@ public abstract class Branch implements ErrorsHolder {
             final Map<String, JsonElement> metadata, 
             final List<Error> errors) {
         
-        return new AutoValue_Branch(Utils.nullToEmpty(errors), id, displayId, type, 
-                latestCommit, latestChangeset, isDefault, Utils.nullToEmpty(metadata));
+        return new AutoValue_Branch(BitbucketUtils.nullToEmpty(errors), id, displayId, type, 
+                latestCommit, latestChangeset, isDefault, BitbucketUtils.nullToEmpty(metadata));
     }
 }

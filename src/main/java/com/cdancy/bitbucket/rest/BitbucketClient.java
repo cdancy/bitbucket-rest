@@ -17,111 +17,96 @@
 
 package com.cdancy.bitbucket.rest;
 
+import com.cdancy.bitbucket.rest.auth.AuthenticationType;
+import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
+import com.google.common.collect.Lists;
+import java.util.Objects;
 import org.jclouds.ContextBuilder;
 import org.jclouds.javax.annotation.Nullable;
 
 public final class BitbucketClient {
 
-    private static final String[] ENDPOINT_PROPERTIES = { "bitbucket.rest.endpoint", "bitbucketRestEndpoint", "BITBUCKET_REST_ENDPOINT" };
-    private static final String[] CREDENTIALS_PROPERTIES = { "bitbucket.rest.credentials", "bitbucketRestCredentials", "BITBUCKET_REST_CREDENTIALS" };
     private final String endPoint;
-    private final String credentials;
+    private final BitbucketAuthentication credentials;
     private final BitbucketApi bitbucketApi;
 
     /**
-     * Create an BitbucketClient. We will query system properties and environment
-     * variables for the endPoint and credentials.
+     * Create a BitbucketClient inferring endpoint and authentication from
+     * environment and system properties.
      */
     public BitbucketClient() {
-        this.endPoint = initEndPoint();
-        this.credentials = initCredentials();
-        this.bitbucketApi = createApi(this.endPoint(), this.credentials());
+        this.endPoint = BitbucketUtils.inferEndpoint();
+        this.credentials = BitbucketUtils.inferCredentials();
+        this.bitbucketApi = createApi(this.endPoint(), credentials);
     }
 
     /**
-     * Create an BitbucketClient.
+     * Create a BitbucketClient inferring authentication from
+     * environment and system properties.
      *
-     * @param endPoint url of Bitbucket instance
+     * @param endPoint URL of Bitbucket instance
      */
+    @Deprecated //@Nullable annotation will be removed in 2.x releases
     public BitbucketClient(@Nullable final String endPoint) {
-        this.endPoint = endPoint != null ? endPoint : initEndPoint();
-        this.credentials = initCredentials();
-        this.bitbucketApi = createApi(this.endPoint(), this.credentials());
+        this.endPoint = endPoint != null
+                ? endPoint
+                : BitbucketUtils.inferEndpoint();
+        this.credentials = BitbucketUtils.inferCredentials();
+        this.bitbucketApi = createApi(this.endPoint(), credentials);
     }
 
     /**
-     * Create an BitbucketClient.
+     * Create an BitbucketClient using the passed in endpoint and Basic credential String.
      *
-     * @param endPoint url of Bitbucket instance
-     * @param credentials the optional credentials for the etcd instance
+     * @param endPoint URL of Bitbucket instance
+     * @param basicCredentials the optional credentials for the Bitbucket instance
      */
-    public BitbucketClient(@Nullable final String endPoint, @Nullable final String credentials) {
-        this.endPoint = endPoint != null ? endPoint : initEndPoint();
-        this.credentials = credentials != null ? credentials : initCredentials();
-        this.bitbucketApi = createApi(this.endPoint(), this.credentials());
+    @Deprecated //Constructor will be deleted in favor of 'String, BitbucketCredentials' version in 2.x releases
+    public BitbucketClient(@Nullable final String endPoint, @Nullable final String basicCredentials) {
+        this.endPoint = endPoint != null
+                ? endPoint
+                : BitbucketUtils.inferEndpoint();
+        this.credentials = basicCredentials != null
+                ? BitbucketAuthentication.builder().credentials(basicCredentials).build()
+                : BitbucketUtils.inferCredentials();
+        this.bitbucketApi = createApi(this.endPoint(), credentials);
     }
 
     /**
-     * Initialize endPoint.
+     * Create an BitbucketClient using the passed in endpoint and BitbucketCredentials instance.
      *
-     * @return found endpoint or null
+     * @param endPoint URL of Bitbucket instance
+     * @param credentials Credentials used to connect to Bitbucket instance.
      */
-    private String initEndPoint() {
-        final String possibleValue = retrivePropertyValue(ENDPOINT_PROPERTIES);
-        return possibleValue != null ? possibleValue : "http://127.0.0.1:7990";
+    public BitbucketClient(final String endPoint, final BitbucketAuthentication credentials) {
+        this.endPoint = endPoint;
+        this.credentials = credentials;
+        this.bitbucketApi = createApi(endPoint, Objects.requireNonNull(credentials));
     }
 
-    /**
-     * Initialize credentials.
-     *
-     * @return found credentials or empty String
-     */
-    private String initCredentials() {
-        final String possibleValue = retrivePropertyValue(CREDENTIALS_PROPERTIES);
-        return possibleValue != null ? possibleValue : "";
-    }
-
-    public BitbucketApi createApi(final String endPoint, final String credentials) {
+    private BitbucketApi createApi(final String endPoint, final BitbucketAuthentication authentication) {
         return ContextBuilder
                 .newBuilder(new BitbucketApiMetadata.Builder().build())
                 .endpoint(endPoint)
-                .credentials("N/A", credentials)
+                .modules(Lists.newArrayList(new BitbucketAuthenticationModule(authentication)))
                 .buildApi(BitbucketApi.class);
     }
 
-    /**
-     * Retrieve property value from list of keys.
-     *
-     * @param keys list of keys to search
-     * @return the first value found from list of keys
-     */
-    private String retrivePropertyValue(final String... keys) {
-        for (final String possibleKey : keys) {
-            final String value = retrivePropertyValue(possibleKey);
-            if (value != null) {
-                return value;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Retrieve property value from key.
-     *
-     * @param key the key to search for
-     * @return the value of key or null if not found
-     */
-    private String retrivePropertyValue(final String key) {
-        final String value = System.getProperty(key);
-        return value != null ? value : System.getenv(key);
-    }
-
     public String endPoint() {
-        return endPoint;
+        return this.endPoint;
     }
 
+    @Deprecated
     public String credentials() {
-        return credentials;
+        return authValue();
+    }
+
+    public String authValue() {
+        return credentials.authValue();
+    }
+
+    public AuthenticationType authType() {
+        return credentials.authType();
     }
 
     public BitbucketApi api() {
@@ -133,22 +118,62 @@ public final class BitbucketClient {
     }
 
     public static class Builder {
-        
-        private String endPoint;
-        private String credentials;
 
+        private String endPoint;
+        private BitbucketAuthentication.Builder authBuilder;
+
+        /**
+         * Define the base endpoint to connect to.
+         * 
+         * @param endPoint Bitbucket base endpoint.
+         * @return this Builder.
+         */
         public Builder endPoint(final String endPoint) {
             this.endPoint = endPoint;
             return this;
         }
 
-        public Builder credentials(final String credentials) {
-            this.credentials = credentials;
+        /**
+         * Optional credentials to use for authentication. Must take the form of
+         * `username:password` or its base64 encoded version.
+         * 
+         * @param optionallyBase64EncodedCredentials authentication credentials.
+         * @return this Builder.
+         */
+        public Builder credentials(final String optionallyBase64EncodedCredentials) {
+            authBuilder = BitbucketAuthentication.builder()
+                    .credentials(optionallyBase64EncodedCredentials);
             return this;
         }
 
-        public BitbucketClient build() {
-            return new BitbucketClient(endPoint, credentials);
+        /**
+         * Optional token to use for authentication. 
+         * 
+         * @param token authentication token.
+         * @return this Builder.
+         */
+        public Builder token(final String token) {
+            authBuilder = BitbucketAuthentication.builder()
+                    .token(token);
+            return this;
         }
+
+        /**
+         * Build an instance of BitbucketClient.
+         * 
+         * @return BitbucketClient
+         */
+        public BitbucketClient build() {
+
+            // 1.) Use passed-in endpoint or attempt to infer one from system/environment.
+            final String foundEndpoint = (endPoint != null) ? endPoint : BitbucketUtils.inferEndpoint();
+
+            // 2.) Use passed-in credentials or attempt to infer them from system/environment.
+            final BitbucketAuthentication authentication = authBuilder != null
+                    ? authBuilder.build()
+                    : BitbucketUtils.inferCredentials();
+
+            return new BitbucketClient(foundEndpoint, authentication);
+        } 
     }
 }

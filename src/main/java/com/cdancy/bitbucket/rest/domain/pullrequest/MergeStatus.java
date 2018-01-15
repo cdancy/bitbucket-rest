@@ -24,7 +24,7 @@ import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -45,9 +45,9 @@ public abstract class MergeStatus implements ErrorsHolder {
             final List<Veto> vetoes, 
             final List<Error> errors) {
         
-        return new AutoValue_MergeStatus(Utils.nullToEmpty(errors), 
+        return new AutoValue_MergeStatus(BitbucketUtils.nullToEmpty(errors), 
                 canMerge, 
                 conflicted, 
-                Utils.nullToEmpty(vetoes));
+                BitbucketUtils.nullToEmpty(vetoes));
     }
 }

@@ -28,7 +28,7 @@ import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.common.Links;
 import com.cdancy.bitbucket.rest.domain.common.LinksHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
-import com.cdancy.bitbucket.rest.utils.Utils;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import com.google.gson.JsonElement;
 
@@ -85,17 +85,17 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
                                   final PermittedOperations permittedOperations,
                                   final List<Error> errors) {
         
-        return new AutoValue_Comments(Utils.nullToEmpty(errors), 
+        return new AutoValue_Comments(BitbucketUtils.nullToEmpty(errors), 
                 links, 
-                Utils.nullToEmpty(properties),
+                BitbucketUtils.nullToEmpty(properties),
                 id, 
                 version, 
                 text, 
                 author, 
                 createdDate, 
                 updatedDate, 
-                Utils.nullToEmpty(comments), 
-                Utils.nullToEmpty(tasks), 
+                BitbucketUtils.nullToEmpty(comments), 
+                BitbucketUtils.nullToEmpty(tasks), 
                 anchor, 
                 link, 
                 permittedOperations);

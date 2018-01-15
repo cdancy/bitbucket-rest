@@ -15,26 +15,25 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.activities;
+package com.cdancy.bitbucket.rest.auth;
 
-import com.cdancy.bitbucket.rest.domain.commit.Commit;
-import com.cdancy.bitbucket.rest.BitbucketUtils;
-import com.google.auto.value.AutoValue;
-import org.jclouds.javax.annotation.Nullable;
-import org.jclouds.json.SerializedNames;
+/**
+ * Supported Authentication Types for Bitbucket.
+ */
+public enum AuthenticationType {
 
-import java.util.List;
+    Basic("Basic"),
+    Bearer("Bearer"),
+    Anonymous("");
 
-@AutoValue
-public abstract class ActivitiesCommit {
+    private final String type;
 
-    @Nullable
-    public abstract List<Commit> commits();
+    private AuthenticationType(final String type) {
+        this.type = type;
+    }
 
-    public abstract long total();
-
-    @SerializedNames({"commits", "total"})
-    public static ActivitiesCommit create(@Nullable final List<Commit> commits, final long total) {
-        return new AutoValue_ActivitiesCommit(BitbucketUtils.nullToEmpty(commits), total);
+    @Override
+    public String toString() {
+        return type;
     }
 }
