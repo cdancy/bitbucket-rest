@@ -1,4 +1,5 @@
 ### Version 1.0.6 (TBA)
+* ADDED: Token (a.k.a Bearer) authentication support - [PR 122](https://github.com/cdancy/bitbucket-rest/pull/122)
 
 ### Version 1.0.5 (12/8/2017)
 
