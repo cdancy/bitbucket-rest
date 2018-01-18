@@ -37,7 +37,13 @@ public class BitbucketConstants {
                     .asList("bitbucket.rest.token", "bitbucketRestToken", "BITBUCKET_REST_TOKEN"));
 
     public static final String DEFAULT_ENDPOINT = "http://127.0.0.1:7990";
-    
+
+    public static final String JCLOUDS_PROPERTY_ID = "jclouds.";
+    public static final String BITBUCKET_REST_PROPERTY_ID = "bitbucket.rest." + JCLOUDS_PROPERTY_ID;
+
+    public static final String JCLOUDS_VARIABLE_ID = "JCLOUDS_";
+    public static final String BITBUCKET_REST_VARIABLE_ID = "BITBUCKET_REST_" + JCLOUDS_VARIABLE_ID;
+
     protected BitbucketConstants() {
         throw new UnsupportedOperationException("Purposefully not implemented");
     }
