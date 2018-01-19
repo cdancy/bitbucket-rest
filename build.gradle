@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
     }
 }
 
@@ -108,7 +108,7 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
         }
     }
     useTestNG() 
-    include '**/BitbucketClientLiveTest.class'
+    include '**/**ClientLiveTest.class'
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
