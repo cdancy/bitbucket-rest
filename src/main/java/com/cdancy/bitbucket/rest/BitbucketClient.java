@@ -86,7 +86,7 @@ public final class BitbucketClient {
                 ? authentication
                 : BitbucketUtils.inferAuthentication();
         this.overrides = mergeOverrides(overrides);
-        this.bitbucketApi = createApi(this.endPoint, Objects.requireNonNull(this.credentials), this.overrides);
+        this.bitbucketApi = createApi(this.endPoint, this.credentials, this.overrides);
     }
 
     private BitbucketApi createApi(final String endPoint, final BitbucketAuthentication authentication, final Properties overrides) {
