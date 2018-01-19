@@ -9,7 +9,6 @@
 
 java client, based on jclouds, to interact with Bitbucket's REST API. 
 
-
 ## On jclouds, apis and endpoints
 Being built on top of `jclouds` means things are broken up into [Apis](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/features). 
 `Apis` are just Interfaces that are analagous to a resource provided by the server-side program (e.g. /api/branches, /api/pullrequest, /api/commits, etc..). 
@@ -44,47 +43,13 @@ Can be sourced from jcenter like so:
 
 javadocs can be found via [github pages here](http://cdancy.github.io/bitbucket-rest/docs/javadoc/)
 
-## Property based setup
-
-Client's do NOT need to supply the endPoint or authentication as part of instantiating the
-_BitbucketClient_ object. Instead one can supply them through system properties, environment
-variables, or a combination of the 2. _System Properties_ will be searched first and if not
-found we will attempt to query the _Environment Variables_. If neither turns up anything
-than anonymous access is assumed.
-
-Setting the `endpoint` can be done with any of the following (searched in order):
-
-- `bitbucket.rest.endpoint`
-- `bitbucketRestEndpoint`
-- `BITBUCKET_REST_ENDPOINT`
-
-Setting the `credentials` can be done with any of the following (searched in order):
-
-- `bitbucket.rest.credentials`
-- `bitbucketRestCredentials`
-- `BITBUCKET_REST_CREDENTIALS`
-
-Setting the `token` can be done with any of the following (searched in order):
-
-- `bitbucket.rest.token`
-- `bitbucketRestToken`
-- `BITBUCKET_REST_TOKEN`
-
-## Authentication
-
-Authentication/Credentials for `bitbucket-rest` can take 1 of 3 forms:
-
-- Colon delimited username and password: __admin:password__
-- Base64 encoded username and password: __YWRtaW46cGFzc3dvcmQ=__
-- Personal access token: __9DfK3AF9Jeke1O0dkKX5kDswps43FEDlf5Frkspma21M__
-
 ## Examples on how to build a _BitbucketClient_
 
 When using `Basic` (e.g. username and password) authentication:
 
     BitbucketClient client = BitbucketClient.builder()
     .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
-    .credentials("admin:password") // Optional and can be sourced from system/env.
+    .credentials("admin:password") // Optional and can be sourced from system/env and can be Base64 encoded.
     .build();
 
     Version version = client.api().systemApi().version();
@@ -105,6 +70,76 @@ When using `Anonymous` authentication or sourcing from system/environment (as de
     .build();
 
     Version version = client.api().systemApi().version();
+
+## On `System Property` and `Environment Variable` setup
+
+Client's do NOT need to supply the endPoint or authentication as part of instantiating the
+_BitbucketClient_ object. Instead one can supply them through `System Properties`, `Environment
+Variables`, or a combination of the 2. `System Properties` will be searched first and if not
+found we will attempt to query the `Environment Variables`. If neither turns up anything
+than anonymous access is assumed.
+
+Setting the `endpoint` can be done like so (searched in order):
+
+    `System.setProperty("bitbucket.rest.endpoint", "http://my-bitbucket-instance:12345")`
+    `export BITBUCKET_REST_ENDPOINT=http://my-bitbucket-instance:12345`
+
+Setting the `credentials`, which represents `Basic` authentication and is optionally Base64 encoded, can be done like so (searched in order):
+
+    `System.setProperty("bitbucket.rest.credentials", "username:password")`
+    `export BITBUCKET_REST_CREDENTIALS=username:password`
+
+Setting the `token`, which represents `Bearer` authentication, can be done like so (searched in order):
+
+    `System.setProperty("bitbucket.rest.token", "abcdefg1234567")`
+    `export BITBUCKET_REST_TOKEN=abcdefg1234567`
+
+## On Overrides
+
+Because we are built on top of jclouds we can take advantage of overriding various internal _HTTP_ properties by
+passing in a `Properties` object or, and in following with the spirit of this library, configuring them
+through `System Properties` of `Environment Variables`. The properties a given client can configure can be
+found [HERE](https://github.com/jclouds/jclouds/blob/master/core/src/main/java/org/jclouds/Constants.java).
+
+When configuring through a `Properties` object you must pass in the keys exactly as they are named within jclouds:
+
+    Properties props = new Properties();
+    props.setProperty("jclouds.so-timeout", "60000");
+    props.setProperty("jclouds.connection-timeout", "120000");
+
+    BitbucketClient client = BitbucketClient.builder()
+    .overrides(props)
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+When configuring through `System Properties` you must prepend the jclouds name with `bitbucket.rest.`:
+
+    System.setProperty("bitbucket.rest.jclouds.so-timeout", "60000");
+    System.setProperty("bitbucket.rest.jclouds.connection-timeout", "120000");
+
+    BitbucketClient client = BitbucketClient.builder()
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+When configuring through `Environment Variables` you must CAPITALIZE all characters,
+replace any `.` with `_`, and prepend the jclouds name with `BITBUCKET_REST_`:
+
+    export BITBUCKET_REST_JCLOUDS_SO-TIMEOUT=60000
+    export BITBUCKET_REST_JCLOUDS_CONNECTION-TIMEOUT=120000
+
+    BitbucketClient client = BitbucketClient.builder()
+    .build();
+
+    Version version = client.api().systemApi().version();
+
+It should be noted that when using this feature a merge happens behind the scenes between all
+possible ways one can pass in _overrides_. Meaning if you pass in a `Properties` object, and
+there are `System Properties` and `Environment Variables` set, then all 3 will be merged into
+a single `Properties` object which in turn will be passed along to _jclouds_. When it comes to 
+precedence passed in `Properties` take precedence over `System Properties` which in turn 
+take precedence over `Environment Variables`.
 
 ## Understanding Error objects
 

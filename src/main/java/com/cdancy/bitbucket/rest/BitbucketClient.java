@@ -21,6 +21,7 @@ import com.cdancy.bitbucket.rest.auth.AuthenticationType;
 import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 import com.google.common.collect.Lists;
 import java.util.Objects;
+import java.util.Properties;
 import org.jclouds.ContextBuilder;
 import org.jclouds.javax.annotation.Nullable;
 
@@ -29,15 +30,14 @@ public final class BitbucketClient {
     private final String endPoint;
     private final BitbucketAuthentication credentials;
     private final BitbucketApi bitbucketApi;
+    private final Properties overrides;
 
     /**
      * Create a BitbucketClient inferring endpoint and authentication from
      * environment and system properties.
      */
     public BitbucketClient() {
-        this.endPoint = BitbucketUtils.inferEndpoint();
-        this.credentials = BitbucketUtils.inferCredentials();
-        this.bitbucketApi = createApi(this.endPoint(), credentials);
+        this(null, null, null);
     }
 
     /**
@@ -46,13 +46,8 @@ public final class BitbucketClient {
      *
      * @param endPoint URL of Bitbucket instance
      */
-    @Deprecated //@Nullable annotation will be removed in 2.x releases
     public BitbucketClient(@Nullable final String endPoint) {
-        this.endPoint = endPoint != null
-                ? endPoint
-                : BitbucketUtils.inferEndpoint();
-        this.credentials = BitbucketUtils.inferCredentials();
-        this.bitbucketApi = createApi(this.endPoint(), credentials);
+        this(endPoint, null, null);
     }
 
     /**
@@ -63,33 +58,59 @@ public final class BitbucketClient {
      */
     @Deprecated //Constructor will be deleted in favor of 'String, BitbucketCredentials' version in 2.x releases
     public BitbucketClient(@Nullable final String endPoint, @Nullable final String basicCredentials) {
-        this.endPoint = endPoint != null
-                ? endPoint
-                : BitbucketUtils.inferEndpoint();
-        this.credentials = basicCredentials != null
-                ? BitbucketAuthentication.builder().credentials(basicCredentials).build()
-                : BitbucketUtils.inferCredentials();
-        this.bitbucketApi = createApi(this.endPoint(), credentials);
+        this(endPoint,
+                basicCredentials != null
+                        ? BitbucketAuthentication.builder().credentials(basicCredentials).build()
+                        : null,
+                null);
     }
 
     /**
-     * Create an BitbucketClient using the passed in endpoint and BitbucketCredentials instance.
+     * Create an BitbucketClient. If any of the passed in variables are null we
+     * will query System Properties and Environment Variables, in order, to 
+     * search for values that may be set in a devops/CI fashion. The only
+     * difference is the `overrides` which gets merged, but takes precedence,
+     * with those System Properties and Environment Variables found.
      *
-     * @param endPoint URL of Bitbucket instance
-     * @param credentials Credentials used to connect to Bitbucket instance.
+     * @param endPoint URL of Bitbucket instance.
+     * @param authentication authentication used to connect to Bitbucket instance.
+     * @param overrides jclouds Properties to override defaults when creating a new BitbucketApi.
      */
-    public BitbucketClient(final String endPoint, final BitbucketAuthentication credentials) {
-        this.endPoint = endPoint;
-        this.credentials = credentials;
-        this.bitbucketApi = createApi(endPoint, Objects.requireNonNull(credentials));
+    public BitbucketClient(@Nullable final String endPoint,
+            @Nullable final BitbucketAuthentication authentication,
+            @Nullable final Properties overrides) {
+        this.endPoint = endPoint != null
+                ? endPoint
+                : BitbucketUtils.inferEndpoint();
+        this.credentials = authentication != null
+                ? authentication
+                : BitbucketUtils.inferAuthentication();
+        this.overrides = mergeOverrides(overrides);
+        this.bitbucketApi = createApi(this.endPoint, Objects.requireNonNull(this.credentials), this.overrides);
     }
 
-    private BitbucketApi createApi(final String endPoint, final BitbucketAuthentication authentication) {
+    private BitbucketApi createApi(final String endPoint, final BitbucketAuthentication authentication, final Properties overrides) {
         return ContextBuilder
                 .newBuilder(new BitbucketApiMetadata.Builder().build())
                 .endpoint(endPoint)
                 .modules(Lists.newArrayList(new BitbucketAuthenticationModule(authentication)))
+                .overrides(overrides)
                 .buildApi(BitbucketApi.class);
+    }
+
+    /**
+     * Query System Properties and Environment Variables for overrides and merge
+     * the potentially passed in overrides with those.
+     * 
+     * @param possibleOverrides Optional passed in overrides.
+     * @return Properties object.
+     */
+    private Properties mergeOverrides(final Properties possibleOverrides) {
+        final Properties inferOverrides = BitbucketUtils.inferOverrides();
+        if (possibleOverrides != null) {
+            inferOverrides.putAll(possibleOverrides);
+        }
+        return inferOverrides;
     }
 
     public String endPoint() {
@@ -98,19 +119,23 @@ public final class BitbucketClient {
 
     @Deprecated
     public String credentials() {
-        return authValue();
+        return this.authValue();
+    }
+
+    public Properties overrides() {
+        return this.overrides;
     }
 
     public String authValue() {
-        return credentials.authValue();
+        return this.credentials.authValue();
     }
 
     public AuthenticationType authType() {
-        return credentials.authType();
+        return this.credentials.authType();
     }
 
     public BitbucketApi api() {
-        return bitbucketApi;
+        return this.bitbucketApi;
     }
     
     public static Builder builder() {
@@ -121,6 +146,7 @@ public final class BitbucketClient {
 
         private String endPoint;
         private BitbucketAuthentication.Builder authBuilder;
+        private Properties overrides;
 
         /**
          * Define the base endpoint to connect to.
@@ -148,7 +174,7 @@ public final class BitbucketClient {
 
         /**
          * Optional token to use for authentication. 
-         * 
+         *
          * @param token authentication token.
          * @return this Builder.
          */
@@ -159,21 +185,32 @@ public final class BitbucketClient {
         }
 
         /**
+         * Optional jclouds Properties to override. What can be overridden can
+         * be found here:
+         * 
+         * <p>https://github.com/jclouds/jclouds/blob/master/core/src/main/java/org/jclouds/Constants.java
+         *
+         * @param overrides optional jclouds Properties to override.
+         * @return this Builder.
+         */
+        public Builder overrides(final Properties overrides) {
+            this.overrides = overrides;
+            return this;
+        }
+
+        /**
          * Build an instance of BitbucketClient.
          * 
          * @return BitbucketClient
          */
         public BitbucketClient build() {
 
-            // 1.) Use passed-in endpoint or attempt to infer one from system/environment.
-            final String foundEndpoint = (endPoint != null) ? endPoint : BitbucketUtils.inferEndpoint();
-
-            // 2.) Use passed-in credentials or attempt to infer them from system/environment.
+            // 1.) If user passed in some auth use/build that.
             final BitbucketAuthentication authentication = authBuilder != null
                     ? authBuilder.build()
-                    : BitbucketUtils.inferCredentials();
+                    : null;
 
-            return new BitbucketClient(foundEndpoint, authentication);
+            return new BitbucketClient(endPoint, authentication, overrides);
         } 
     }
 }
