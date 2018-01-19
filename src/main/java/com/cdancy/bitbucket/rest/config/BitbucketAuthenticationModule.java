@@ -26,15 +26,14 @@ import java.util.Objects;
  */
 public class BitbucketAuthenticationModule extends AbstractModule {
 
-    private final BitbucketAuthentication creds;
+    private final BitbucketAuthentication authentication;
 
-    public BitbucketAuthenticationModule(final BitbucketAuthentication creds) {
-        Objects.requireNonNull(creds);
-        this.creds = creds;
+    public BitbucketAuthenticationModule(final BitbucketAuthentication authentication) {
+        this.authentication = Objects.requireNonNull(authentication);
     }
 
     @Override
     protected void configure() {
-        bind(BitbucketAuthentication.class).toProvider(new BitbucketAuthenticationProvider(creds));
+        bind(BitbucketAuthentication.class).toProvider(new BitbucketAuthenticationProvider(authentication));
     }
 }
