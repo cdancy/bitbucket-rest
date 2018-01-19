@@ -20,7 +20,6 @@ package com.cdancy.bitbucket.rest;
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
 import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 import com.google.common.collect.Lists;
-import java.util.Objects;
 import java.util.Properties;
 import org.jclouds.ContextBuilder;
 import org.jclouds.javax.annotation.Nullable;
@@ -38,31 +37,6 @@ public final class BitbucketClient {
      */
     public BitbucketClient() {
         this(null, null, null);
-    }
-
-    /**
-     * Create a BitbucketClient inferring authentication from
-     * environment and system properties.
-     *
-     * @param endPoint URL of Bitbucket instance
-     */
-    public BitbucketClient(@Nullable final String endPoint) {
-        this(endPoint, null, null);
-    }
-
-    /**
-     * Create an BitbucketClient using the passed in endpoint and Basic credential String.
-     *
-     * @param endPoint URL of Bitbucket instance
-     * @param basicCredentials the optional credentials for the Bitbucket instance
-     */
-    @Deprecated //Constructor will be deleted in favor of 'String, BitbucketCredentials' version in 2.x releases
-    public BitbucketClient(@Nullable final String endPoint, @Nullable final String basicCredentials) {
-        this(endPoint,
-                basicCredentials != null
-                        ? BitbucketAuthentication.builder().credentials(basicCredentials).build()
-                        : null,
-                null);
     }
 
     /**
