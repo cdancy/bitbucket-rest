@@ -39,13 +39,13 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface ProjectApi {

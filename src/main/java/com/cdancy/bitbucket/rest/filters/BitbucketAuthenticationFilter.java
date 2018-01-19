@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.filters;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import com.cdancy.bitbucket.rest.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
 
 import org.jclouds.http.HttpException;
@@ -28,11 +29,11 @@ import org.jclouds.http.HttpRequestFilter;
 import com.google.common.net.HttpHeaders;
 
 @Singleton
-public class BitbucketAuthentication implements HttpRequestFilter {
-    private final com.cdancy.bitbucket.rest.BitbucketAuthentication creds;
+public class BitbucketAuthenticationFilter implements HttpRequestFilter {
+    private final BitbucketAuthentication creds;
 
     @Inject
-    BitbucketAuthentication(final com.cdancy.bitbucket.rest.BitbucketAuthentication creds) {
+    BitbucketAuthenticationFilter(final BitbucketAuthentication creds) {
         this.creds = creds;
     }
 

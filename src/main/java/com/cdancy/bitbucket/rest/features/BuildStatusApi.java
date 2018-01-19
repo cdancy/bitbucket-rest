@@ -22,7 +22,7 @@ import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.build.Summary;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateBuildStatus;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.javax.annotation.Nullable;
@@ -43,7 +43,7 @@ import org.jclouds.rest.annotations.ResponseParser;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/build-status/{jclouds.api-version}")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface BuildStatusApi {

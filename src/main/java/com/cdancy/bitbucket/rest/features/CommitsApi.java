@@ -22,7 +22,7 @@ import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 
@@ -38,7 +38,7 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.javax.annotation.Nullable;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface CommitsApi {

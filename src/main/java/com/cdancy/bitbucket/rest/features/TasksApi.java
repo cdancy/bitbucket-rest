@@ -21,7 +21,7 @@ import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateTask;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.BinderParam;
@@ -42,7 +42,7 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/api/1.0/tasks")
 public interface TasksApi {
 

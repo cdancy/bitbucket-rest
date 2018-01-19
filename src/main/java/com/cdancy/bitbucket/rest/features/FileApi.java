@@ -22,7 +22,7 @@ import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.parsers.RawContentParser;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.Fallback;
@@ -39,7 +39,7 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 public interface FileApi {
 
     @Named("file:raw-content")

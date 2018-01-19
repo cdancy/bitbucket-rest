@@ -26,7 +26,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchRestriction;
 import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateBranch;
 import com.cdancy.bitbucket.rest.options.CreateBranchModelConfiguration;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
@@ -53,7 +53,7 @@ import java.util.List;
 import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface BranchApi {

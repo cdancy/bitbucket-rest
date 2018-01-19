@@ -28,10 +28,10 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.RequestFilters;
 
 import com.cdancy.bitbucket.rest.domain.system.Version;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/api/{jclouds.api-version}")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface SystemApi {

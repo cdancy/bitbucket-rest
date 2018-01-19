@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateTag;
 import org.jclouds.Fallbacks;
 import org.jclouds.rest.annotations.BinderParam;
@@ -39,7 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface TagApi {

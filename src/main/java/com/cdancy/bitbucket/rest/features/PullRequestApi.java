@@ -54,13 +54,13 @@ import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ParticipantsOnErro
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.ParticipantsPageOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestOnError;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.PullRequestPageOnError;
-import com.cdancy.bitbucket.rest.filters.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
-@RequestFilters(BitbucketAuthentication.class)
+@RequestFilters(BitbucketAuthenticationFilter.class)
 @Path("/rest/api/{jclouds.api-version}/projects")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface PullRequestApi {
