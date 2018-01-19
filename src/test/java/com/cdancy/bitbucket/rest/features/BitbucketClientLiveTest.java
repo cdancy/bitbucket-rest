@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import javax.annotation.Nullable;
+import org.jclouds.javax.annotation.Nullable;
 
 @Test(groups = "live", testName = "BitbucketClientLiveTest", singleThreaded = true)
 @SuppressWarnings("PMD.TooManyStaticImports")
