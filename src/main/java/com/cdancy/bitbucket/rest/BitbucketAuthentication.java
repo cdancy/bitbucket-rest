@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest;
 import static com.google.common.io.BaseEncoding.base64;
 
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
+import java.util.Objects;
 
 import org.jclouds.domain.Credentials;
 import org.jclouds.javax.annotation.Nullable;
@@ -69,8 +70,8 @@ public class BitbucketAuthentication extends Credentials {
          * @return this Builder.
          */
         public Builder credentials(final String basicCredentials) {
+            this.authValue = Objects.requireNonNull(basicCredentials);
             this.authType = AuthenticationType.Basic;
-            this.authValue = basicCredentials;
             return this;
         }
 
@@ -81,8 +82,8 @@ public class BitbucketAuthentication extends Credentials {
          * @return this Builder.
          */
         public Builder token(final String tokenCredentials) {
+            this.authValue = Objects.requireNonNull(tokenCredentials);
             this.authType = AuthenticationType.Bearer;
-            this.authValue = tokenCredentials;
             return this;
         }
 
