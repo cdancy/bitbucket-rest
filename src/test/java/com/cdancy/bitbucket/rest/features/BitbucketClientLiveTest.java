@@ -28,6 +28,7 @@ import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_SYSTEM_PROPERTY
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.BitbucketClient;
 import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
@@ -77,7 +78,11 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateClientWithWrongCredentials() {
-        final BitbucketClient client = new BitbucketClient(this.endpoint, TestUtilities.randomStringLettersOnly());
+        final BitbucketAuthentication auth = BitbucketAuthentication
+                .builder()
+                .credentials(TestUtilities.randomStringLettersOnly())
+                .build();
+        final BitbucketClient client = new BitbucketClient(this.endpoint, auth, null);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
         assertThat(userPage.errors()).isNotEmpty();
