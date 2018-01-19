@@ -19,12 +19,15 @@ package com.cdancy.bitbucket.rest;
 
 import static com.cdancy.bitbucket.rest.BitbucketConstants.BITBUCKET_REST_PROPERTY_ID;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.BITBUCKET_REST_VARIABLE_ID;
-import static com.cdancy.bitbucket.rest.BitbucketConstants.CREDENTIALS_PROPERTIES;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.CREDENTIALS_ENVIRONMENT_VARIABLE;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.CREDENTIALS_SYSTEM_PROPERTY;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.DEFAULT_ENDPOINT;
-import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_PROPERTIES;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_ENVIRONMENT_VARIABLE;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_SYSTEM_PROPERTY;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.JCLOUDS_PROPERTY_ID;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.JCLOUDS_VARIABLE_ID;
-import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_PROPERTIES;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_ENVIRONMENT_VARIABLE;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_SYSTEM_PROPERTY;
 import com.google.common.base.Throwables;
 
 import java.util.List;
@@ -39,6 +42,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Properties;
+import javax.annotation.Nullable;
 
 /**
  * Collection of static methods to be used globally.
@@ -70,45 +74,48 @@ public class BitbucketUtils {
     }
 
     /**
-     * Retrieve property value from list of keys.
-     *
-     * @param keys list of keys to search.
-     * @return the first value found from list of keys.
+     * If the passed systemProperty is non-null we will attempt to query
+     * the `System Properties` for a value and return it. If no value
+     * was found, and environmentVariable is non-null, we will attempt to
+     * query the `Environment Variables` for a value and return it. If
+     * both are either null or can't be found than null will be returned.
+     * 
+     * @param systemProperty possibly existent System Property.
+     * @param environmentVariable possibly existent Environment Variable.
+     * @return found external value or null.
      */
-    public static String retrivePropertyValue(final Collection<String> keys) {
-        if (keys == null) {
-            return null;
-        }
-        for (final String possibleKey : keys) {
-            final String value = retrivePropertyValue(possibleKey);
+    public static String retriveExternalValue(@Nullable final String systemProperty,
+            @Nullable final String environmentVariable) {
+
+        // 1.) Search for System Property
+        if (systemProperty != null) {
+            final String value = System.getProperty(systemProperty);
             if (value != null) {
-                return value.trim();
+                return value;
             }
         }
+
+        if (environmentVariable != null) {
+            final String value = System.getenv(environmentVariable);
+            if (value != null) {
+                return value;
+            }
+        }
+
         return null;
     }
 
     /**
-     * Retrieve property value from key.
+     * Find endpoint searching first within `System Properties` and
+     * then within `Environment Variables` returning whichever has a
+     * value first.
      *
-     * @param key the key to search for.
-     * @return the value of key or null if not found.
-     */
-    public static String retrivePropertyValue(final String key) {
-        if (key == null) {
-            return null;
-        }
-        final String value = System.getProperty(key);
-        return value != null ? value : System.getenv(key);
-    }
-
-    /**
-     * Find endpoint from system/environment.
-     *
-     * @return String
+     * @return endpoint or null if it can't be found.
      */
     public static String inferEndpoint() {
-        final String possibleValue = BitbucketUtils.retrivePropertyValue(ENDPOINT_PROPERTIES);
+        final String possibleValue = BitbucketUtils
+                .retriveExternalValue(ENDPOINT_SYSTEM_PROPERTY,
+                        ENDPOINT_ENVIRONMENT_VARIABLE);
         return possibleValue != null ? possibleValue : DEFAULT_ENDPOINT;
     }
 
@@ -117,17 +124,21 @@ public class BitbucketUtils {
      *
      * @return BitbucketCredentials
      */
-    public static BitbucketAuthentication inferCredentials() {
+    public static BitbucketAuthentication inferAuthentication() {
 
         // 1.) Check for "Basic" auth credentials.
         final BitbucketAuthentication.Builder inferAuth = BitbucketAuthentication.builder();
-        String authValue = BitbucketUtils.retrivePropertyValue(CREDENTIALS_PROPERTIES);
+        String authValue = BitbucketUtils
+                .retriveExternalValue(CREDENTIALS_SYSTEM_PROPERTY,
+                        CREDENTIALS_ENVIRONMENT_VARIABLE);
         if (authValue != null) {
             inferAuth.credentials(authValue);
         } else {
 
             // 2.) Check for "Bearer" auth token.
-            authValue = BitbucketUtils.retrivePropertyValue(TOKEN_PROPERTIES);
+            authValue = BitbucketUtils
+                    .retriveExternalValue(TOKEN_SYSTEM_PROPERTY,
+                            TOKEN_ENVIRONMENT_VARIABLE);
             if (authValue != null) {
                 inferAuth.token(authValue);
             }

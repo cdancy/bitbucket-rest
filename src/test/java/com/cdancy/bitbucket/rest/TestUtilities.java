@@ -37,7 +37,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -48,12 +47,11 @@ import org.jclouds.util.Strings2;
  */
 public class TestUtilities extends BitbucketUtils {
 
-    public static final List<String> TEST_CREDENTIALS_PROPERTIES = Collections
-            .unmodifiableList(Arrays
-                    .asList("test.bitbucket.rest.credentials", "testBitbucketRestCredentials", "TEST_BITBUCKET_REST_CREDENTIALS"));
-    public static final List<String> TEST_TOKEN_PROPERTIES = Collections
-            .unmodifiableList(Arrays
-                    .asList("test.bitbucket.rest.token", "testBitbucketRestToken", "TEST_BITBUCKET_REST_TOKEN"));
+    public static final String TEST_CREDENTIALS_SYSTEM_PROPERTY = "test.bitbucket.rest.credentials";
+    public static final String TEST_CREDENTIALS_ENVIRONMENT_VARIABLE = TEST_CREDENTIALS_SYSTEM_PROPERTY.replaceAll("\\.", "_").toUpperCase();
+
+    public static final String TEST_TOKEN_SYSTEM_PROPERTY = "test.bitbucket.rest.token";
+    public static final String TEST_TOKEN_ENVIRONMENT_VARIABLE = TEST_TOKEN_SYSTEM_PROPERTY.replaceAll("\\.", "_").toUpperCase();
 
     private static final String GIT_COMMAND = "git";
     private static final char[] CHARS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -318,17 +316,21 @@ public class TestUtilities extends BitbucketUtils {
      *
      * @return BitbucketCredentials
      */
-    public static BitbucketAuthentication inferTestCredentials() {
+    public static BitbucketAuthentication inferTestAuthentication() {
 
         // 1.) Check for "Basic" auth credentials.
         final BitbucketAuthentication.Builder inferAuth = BitbucketAuthentication.builder();
-        String authValue = retrivePropertyValue(TEST_CREDENTIALS_PROPERTIES);
+        String authValue = BitbucketUtils
+                .retriveExternalValue(TEST_CREDENTIALS_SYSTEM_PROPERTY,
+                        TEST_CREDENTIALS_ENVIRONMENT_VARIABLE);
         if (authValue != null) {
             inferAuth.credentials(authValue);
         } else {
 
             // 2.) Check for "Bearer" auth token.
-            authValue = retrivePropertyValue(TEST_TOKEN_PROPERTIES);
+            authValue = BitbucketUtils
+                    .retriveExternalValue(TEST_TOKEN_SYSTEM_PROPERTY,
+                            TEST_TOKEN_ENVIRONMENT_VARIABLE);
             if (authValue != null) {
                 inferAuth.token(authValue);
             }

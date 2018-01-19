@@ -17,10 +17,13 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_PROPERTIES;
-import static com.cdancy.bitbucket.rest.BitbucketConstants.CREDENTIALS_PROPERTIES;
-import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_PROPERTIES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.CREDENTIALS_ENVIRONMENT_VARIABLE;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.CREDENTIALS_SYSTEM_PROPERTY;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_ENVIRONMENT_VARIABLE;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_SYSTEM_PROPERTY;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_ENVIRONMENT_VARIABLE;
+import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_SYSTEM_PROPERTY;
 
 import org.testng.annotations.Test;
 
@@ -83,7 +86,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateClientWithEndpointFromSystemProperties() {
         clearSystemProperties();
 
-        System.setProperty(ENDPOINT_PROPERTIES.get(0), this.endpoint);
+        System.setProperty(ENDPOINT_SYSTEM_PROPERTY, this.endpoint);
         final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
         assertThat(client.endPoint()).isEqualTo(this.endpoint);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
@@ -96,7 +99,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateClientWithWrongEndpointFromSystemProperties() {
         clearSystemProperties();
 
-        System.setProperty(ENDPOINT_PROPERTIES.get(0), DUMMY_ENDPOINT);
+        System.setProperty(ENDPOINT_SYSTEM_PROPERTY, DUMMY_ENDPOINT);
         final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
         assertThat(client.endPoint()).isEqualTo(DUMMY_ENDPOINT);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
@@ -112,9 +115,9 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         final AuthenticationType currentAuthType = this.bitbucketAuthentication.authType();
         final String correctAuth = this.bitbucketAuthentication.authValue();
         if (currentAuthType == AuthenticationType.Basic) {
-            System.setProperty(CREDENTIALS_PROPERTIES.get(0), correctAuth);
+            System.setProperty(CREDENTIALS_SYSTEM_PROPERTY, correctAuth);
         } else if (currentAuthType == AuthenticationType.Bearer) {
-            System.setProperty(TOKEN_PROPERTIES.get(0), correctAuth);
+            System.setProperty(TOKEN_SYSTEM_PROPERTY, correctAuth);
         }
 
         final BitbucketClient client = new BitbucketClient(this.endpoint, null, null);
@@ -133,9 +136,9 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         final AuthenticationType currentAuthType = this.bitbucketAuthentication.authType();
         final String wrongAuth = TestUtilities.randomStringLettersOnly();
         if (currentAuthType == AuthenticationType.Basic) {
-            System.setProperty(CREDENTIALS_PROPERTIES.get(0), wrongAuth);
+            System.setProperty(CREDENTIALS_SYSTEM_PROPERTY, wrongAuth);
         } else if (currentAuthType == AuthenticationType.Bearer) {
-            System.setProperty(TOKEN_PROPERTIES.get(0), wrongAuth);
+            System.setProperty(TOKEN_SYSTEM_PROPERTY, wrongAuth);
         }
 
         final BitbucketClient client = new BitbucketClient(this.endpoint, null, null);
@@ -151,7 +154,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateClientWithEndpointFromEnvironmentVariables() {
         clearEnvironmentVariables(null);
         final Map<String, String> envVars = Maps.newHashMap();
-        envVars.put(ENDPOINT_PROPERTIES.get(2), this.endpoint);
+        envVars.put(ENDPOINT_ENVIRONMENT_VARIABLE, this.endpoint);
         TestUtilities.addEnvironmentVariables(envVars);
 
         final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
@@ -166,7 +169,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateClientWithWrongEndpointFromEnvironmentVariables() {
         clearEnvironmentVariables(null);
         final Map<String, String> envVars = Maps.newHashMap();
-        envVars.put(ENDPOINT_PROPERTIES.get(2), DUMMY_ENDPOINT);
+        envVars.put(ENDPOINT_ENVIRONMENT_VARIABLE, DUMMY_ENDPOINT);
         TestUtilities.addEnvironmentVariables(envVars);
 
         final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
@@ -186,10 +189,10 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         final String correctAuthType;
         switch (currentAuthType) {
             case Basic:
-                correctAuthType = CREDENTIALS_PROPERTIES.get(2);
+                correctAuthType = CREDENTIALS_ENVIRONMENT_VARIABLE;
                 break;
             case Bearer:
-                correctAuthType = TOKEN_PROPERTIES.get(2);
+                correctAuthType = TOKEN_ENVIRONMENT_VARIABLE;
                 break;
             default:
                 correctAuthType = null;
@@ -218,10 +221,10 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         final String correctAuthType;
         switch (currentAuthType) {
             case Basic:
-                correctAuthType = CREDENTIALS_PROPERTIES.get(2);
+                correctAuthType = CREDENTIALS_ENVIRONMENT_VARIABLE;
                 break;
             case Bearer:
-                correctAuthType = TOKEN_PROPERTIES.get(2);
+                correctAuthType = TOKEN_ENVIRONMENT_VARIABLE;
                 break;
             default:
                 correctAuthType = null;
@@ -280,15 +283,15 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     private void clearSystemProperties() {
-        System.clearProperty(ENDPOINT_PROPERTIES.get(0));
-        System.clearProperty(CREDENTIALS_PROPERTIES.get(0));
-        System.clearProperty(TOKEN_PROPERTIES.get(0));
+        System.clearProperty(ENDPOINT_SYSTEM_PROPERTY);
+        System.clearProperty(CREDENTIALS_SYSTEM_PROPERTY);
+        System.clearProperty(TOKEN_SYSTEM_PROPERTY);
     }
 
     private void clearEnvironmentVariables(@Nullable final Collection optionalKeysToClear) {
-        final List<String> envVars = Lists.newArrayList(ENDPOINT_PROPERTIES);
-        envVars.addAll(CREDENTIALS_PROPERTIES);
-        envVars.addAll(TOKEN_PROPERTIES);
+        final List<String> envVars = Lists.newArrayList(ENDPOINT_SYSTEM_PROPERTY);
+        envVars.add(CREDENTIALS_SYSTEM_PROPERTY);
+        envVars.add(TOKEN_SYSTEM_PROPERTY);
         if (optionalKeysToClear != null) {
             envVars.addAll(optionalKeysToClear);
         }

@@ -35,7 +35,7 @@ public class BaseBitbucketApiLiveTest extends BaseApiLiveTest<BitbucketApi> {
 
     public BaseBitbucketApiLiveTest() {
         provider = "bitbucket";
-        this.bitbucketAuthentication = TestUtilities.inferTestCredentials();
+        this.bitbucketAuthentication = TestUtilities.inferTestAuthentication();
     }
 
     @Override
