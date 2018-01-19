@@ -63,7 +63,7 @@ When using `Bearer` (e.g. token) authentication:
 
     Version version = client.api().systemApi().version();
 
-When using `Anonymous` authentication or sourcing from system/environment (as described above):
+When using `Anonymous` authentication or sourcing from system/environment (as described below):
 
     BitbucketClient client = BitbucketClient.builder()
     .endPoint("http://127.0.0.1:7990") // Optional and can be sourced from system/env. Falls back to http://127.0.0.1:7990
