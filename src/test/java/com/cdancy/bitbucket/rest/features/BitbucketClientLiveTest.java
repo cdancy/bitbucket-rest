@@ -41,6 +41,7 @@ import java.util.Properties;
 import javax.annotation.Nullable;
 
 @Test(groups = "live", testName = "BitbucketClientLiveTest", singleThreaded = true)
+@SuppressWarnings("PMD.TooManyStaticImports")
 public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
 
     private static final String DUMMY_ENDPOINT = "http://some-non-existent-host:12345";
