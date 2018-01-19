@@ -4,6 +4,7 @@
 * ADDED: Expose `jclouds` `overrides` option to client via builder, sys-props, or env-vars - [PR 123](https://github.com/cdancy/bitbucket-rest/pull/123)
 * ADDED: Bump `jclouds` to `2.0.3` - [PR 124](https://github.com/cdancy/bitbucket-rest/pull/124)
 * ADDED: Bump `shadow` plugin to `2.0.2` - [PR 125](https://github.com/cdancy/bitbucket-rest/pull/125)
+* ADDED: Bump `auto-value` to `1.5.3` - [PR 126](https://github.com/cdancy/bitbucket-rest/pull/126)
 
 ### Version 1.0.5 (12/8/2017)
 
