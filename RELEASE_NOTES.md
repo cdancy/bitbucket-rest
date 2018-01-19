@@ -2,6 +2,7 @@
 * ADDED: Token (a.k.a Bearer) authentication support - [PR 122](https://github.com/cdancy/bitbucket-rest/pull/122)
 * ADDED: Bump gradle to `4.4.1` - [Commit b8620](https://github.com/cdancy/bitbucket-rest/commit/99c0cab7a60175348997c547fda666e920fca09e)
 * ADDED: Expose jclouds `overrides` option to client via builder, sys-props, or env-vars - [PR 123](https://github.com/cdancy/bitbucket-rest/pull/123)
+* ADDED: Bump jclouds to `2.0.3` - [PR 124](https://github.com/cdancy/bitbucket-rest/pull/124)
 
 ### Version 1.0.5 (12/8/2017)
 
