@@ -28,6 +28,7 @@ import static com.cdancy.bitbucket.rest.BitbucketConstants.JCLOUDS_PROPERTY_ID;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.JCLOUDS_VARIABLE_ID;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_ENVIRONMENT_VARIABLE;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_SYSTEM_PROPERTY;
+
 import com.google.common.base.Throwables;
 
 import java.util.List;
@@ -42,7 +43,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Properties;
-import javax.annotation.Nullable;
+import org.jclouds.javax.annotation.Nullable;
 
 /**
  * Collection of static methods to be used globally.

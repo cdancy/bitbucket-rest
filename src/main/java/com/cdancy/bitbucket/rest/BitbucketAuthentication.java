@@ -20,9 +20,9 @@ package com.cdancy.bitbucket.rest;
 import static com.google.common.io.BaseEncoding.base64;
 
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
-import javax.annotation.Nullable;
 
 import org.jclouds.domain.Credentials;
+import org.jclouds.javax.annotation.Nullable;
 
 /**
  * Credentials instance for Bitbucket authentication. 
