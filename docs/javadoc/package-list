@@ -1,5 +1,6 @@
 com.cdancy.bitbucket.rest
 com.cdancy.bitbucket.rest.annotations
+com.cdancy.bitbucket.rest.auth
 com.cdancy.bitbucket.rest.config
 com.cdancy.bitbucket.rest.domain.activities
 com.cdancy.bitbucket.rest.domain.admin
@@ -24,4 +25,3 @@ com.cdancy.bitbucket.rest.filters
 com.cdancy.bitbucket.rest.handlers
 com.cdancy.bitbucket.rest.options
 com.cdancy.bitbucket.rest.parsers
-com.cdancy.bitbucket.rest.utils
