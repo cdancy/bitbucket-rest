@@ -211,7 +211,7 @@ public interface RepositoryApi {
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
     @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
     @PUT
-    HookSettings modifyHook(@PathParam("project") String project,
+    HookSettings updateHookSettings(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey,
                     @BinderParam(BindHookSettingsToPayload.class) HookSettings hookSettings);

@@ -32,7 +32,7 @@ public class BindHookSettingsToPayload implements Binder {
     @Override
     public <R extends HttpRequest> R bindToRequest(final R request, final Object hookSettings) {
         checkArgument(hookSettings instanceof HookSettings, "binder is only valid for HookSettings");
-        final HookSettings passedHookSettings = (HookSettings)hookSettings;
+        final HookSettings passedHookSettings = HookSettings.class.cast(hookSettings);
         final String payload = passedHookSettings.settings().toString();
         return (R) request.toBuilder().payload(payload).build();
     }
