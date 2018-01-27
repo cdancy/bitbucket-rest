@@ -18,9 +18,11 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.binders.BindHookSettingsToPayload;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
+import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -32,6 +34,8 @@ import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.cdancy.bitbucket.rest.parsers.DeleteRepositoryParser;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
+import java.util.List;
+import java.util.Map;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -200,6 +204,17 @@ public interface RepositoryApi {
     Hook getHook(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey);
+
+    @Named("repository:modify-hook")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.0.1/bitbucket-rest.html#idm45993794444512"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
+    @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
+    @PUT
+    HookSettings modifyHook(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @PathParam("hookKey") String hookKey,
+                    @BinderParam(BindHookSettingsToPayload.class) HookSettings hookSettings);
 
     @Named("repository:enable-hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})

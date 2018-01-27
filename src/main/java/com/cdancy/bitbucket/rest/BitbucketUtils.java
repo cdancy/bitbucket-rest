@@ -37,10 +37,13 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
 import org.jclouds.javax.annotation.Nullable;
@@ -50,6 +53,28 @@ import org.jclouds.javax.annotation.Nullable;
  */
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class BitbucketUtils {
+
+    public static void main(String [] args) {
+        Map fish = new HashMap();
+        fish.put("bears", "monkey");
+        JsonElement elem = BitbucketUtils.nullToJsonElement(fish);
+        System.out.println(elem);
+        
+        Map bear = null;
+        elem = BitbucketUtils.nullToJsonElement(bear);
+        System.out.println(elem);
+        
+        elem = BitbucketUtils.nullToJsonElement(elem);
+        System.out.println(elem);
+        
+        elem = null;
+        elem = BitbucketUtils.nullToJsonElement(elem);
+        System.out.println(elem);
+        
+    }
+
+    // global gson parser object
+    public static final Gson GSON_PARSER = new Gson();
 
     /**
      * Convert passed Iterable into an ImmutableList.
@@ -72,6 +97,26 @@ public class BitbucketUtils {
      */
     public static <K, V> Map<K, V> nullToEmpty(final Map<? extends K, ? extends V> input) {
         return (Map<K, V>) (input == null ? ImmutableMap.<K, V> of() : ImmutableMap.copyOf(input));
+    }
+
+    /**
+     * Convert passed Map into a JsonElement.
+     * 
+     * @param input the Map to convert.
+     * @return JsonElement or empty JsonElement if `input` is null.
+     */
+    public static JsonElement nullToJsonElement(final Map<?, ?> input) {
+        return GSON_PARSER.toJsonTree(input != null ? input : ImmutableMap.of());
+    }
+
+    /**
+     * Convert passed Map into a JsonElement.
+     * 
+     * @param input the Map to convert.
+     * @return JsonElement or empty JsonElement if `input` is null.
+     */
+    public static JsonElement nullToJsonElement(final JsonElement input) {
+        return input != null ? input : GSON_PARSER.toJsonTree(ImmutableMap.of());
     }
 
     /**
