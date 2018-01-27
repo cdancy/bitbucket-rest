@@ -205,7 +205,7 @@ public interface RepositoryApi {
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey);
 
-    @Named("repository:modify-hook")
+    @Named("repository:update-hook-settings")
     @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.0.1/bitbucket-rest.html#idm45993794444512"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
@@ -215,6 +215,16 @@ public interface RepositoryApi {
                     @PathParam("repo") String repo,
                     @PathParam("hookKey") String hookKey,
                     @BinderParam(BindHookSettingsToPayload.class) HookSettings hookSettings);
+    
+    @Named("repository:update-hook-settings")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.0.1/bitbucket-rest.html#idm45993794444512"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
+    @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
+    @GET
+    HookSettings getHookSettings(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @PathParam("hookKey") String hookKey);
 
     @Named("repository:enable-hook")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
