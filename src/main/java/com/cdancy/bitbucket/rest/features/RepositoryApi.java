@@ -34,8 +34,6 @@ import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.cdancy.bitbucket.rest.parsers.DeleteRepositoryParser;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
-import java.util.List;
-import java.util.Map;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;

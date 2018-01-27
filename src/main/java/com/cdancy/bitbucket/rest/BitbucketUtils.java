@@ -43,7 +43,6 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
 import org.jclouds.javax.annotation.Nullable;
@@ -53,25 +52,6 @@ import org.jclouds.javax.annotation.Nullable;
  */
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class BitbucketUtils {
-
-    public static void main(String [] args) {
-        Map fish = new HashMap();
-        fish.put("bears", "monkey");
-        JsonElement elem = BitbucketUtils.nullToJsonElement(fish);
-        System.out.println(elem);
-        
-        Map bear = null;
-        elem = BitbucketUtils.nullToJsonElement(bear);
-        System.out.println(elem);
-        
-        elem = BitbucketUtils.nullToJsonElement(elem);
-        System.out.println(elem);
-        
-        elem = null;
-        elem = BitbucketUtils.nullToJsonElement(elem);
-        System.out.println(elem);
-        
-    }
 
     // global gson parser object
     public static final Gson GSON_PARSER = new Gson();
