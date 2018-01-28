@@ -85,7 +85,7 @@ public class BitbucketUtils {
      * @param input the Map to convert.
      * @return JsonElement or empty JsonElement if `input` is null.
      */
-    public static JsonElement nullToJsonElement(final Map<?, ?> input) {
+    public static JsonElement nullToJsonElement(final Map input) {
         return GSON_PARSER.toJsonTree(input != null ? input : ImmutableMap.of());
     }
 
@@ -97,6 +97,16 @@ public class BitbucketUtils {
      */
     public static JsonElement nullToJsonElement(final JsonElement input) {
         return input != null ? input : GSON_PARSER.toJsonTree(ImmutableMap.of());
+    }
+
+    /**
+     * Convert passed String into a JsonElement.
+     * 
+     * @param input the String to convert.
+     * @return JsonElement or empty JsonElement if `input` is null.
+     */
+    public static JsonElement nullToJsonElement(final String input) {
+        return GSON_PARSER.toJsonTree(input != null ? input : ImmutableMap.of());
     }
 
     /**

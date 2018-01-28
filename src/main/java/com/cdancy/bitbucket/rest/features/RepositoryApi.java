@@ -32,6 +32,7 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.cdancy.bitbucket.rest.parsers.DeleteRepositoryParser;
+import com.cdancy.bitbucket.rest.parsers.HookSettingsParser;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
 import org.jclouds.javax.annotation.Nullable;
@@ -219,6 +220,7 @@ public interface RepositoryApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
     @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
+    @ResponseParser(HookSettingsParser.class)
     @GET
     HookSettings getHookSettings(@PathParam("project") String project,
                     @PathParam("repo") String repo,

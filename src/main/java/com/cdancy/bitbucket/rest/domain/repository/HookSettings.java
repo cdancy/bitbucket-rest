@@ -56,7 +56,7 @@ public abstract class HookSettings implements ErrorsHolder {
      * @param settings Map representing HookSettings.
      * @return HookSettings
      */
-    public static HookSettings from(final Map<String, ?> settings) {
+    public static HookSettings from(final Map settings) {
         return new AutoValue_HookSettings(ImmutableList.of(),
                 BitbucketUtils.nullToJsonElement(settings));
     }
