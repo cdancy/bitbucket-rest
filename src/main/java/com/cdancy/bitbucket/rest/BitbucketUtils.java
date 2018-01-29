@@ -86,7 +86,7 @@ public class BitbucketUtils {
      * @return JsonElement or empty JsonElement if `input` is null.
      */
     public static JsonElement nullToJsonElement(final Map input) {
-        return GSON_PARSER.toJsonTree(input != null ? input : ImmutableMap.of());
+        return GSON_PARSER.toJsonTree(nullToEmpty(input));
     }
 
     /**
