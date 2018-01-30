@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.fallbacks;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.propagate;
 
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
@@ -62,7 +63,6 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.jclouds.Fallback;
 
 import java.util.Iterator;
@@ -72,8 +72,6 @@ import com.google.gson.JsonSyntaxException;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class BitbucketFallbacks {
-
-    private static final JsonParser PARSER = new JsonParser();
 
     public static final class FalseOnError implements Fallback<Object> {
         @Override
@@ -584,7 +582,7 @@ public final class BitbucketFallbacks {
 
         try {
 
-            final JsonElement element = PARSER.parse(output);
+            final JsonElement element = BitbucketUtils.JSON_PARSER.parse(output);
             final JsonObject object = element.getAsJsonObject();
             final JsonArray errorsArray = object.get("errors").getAsJsonArray();
 

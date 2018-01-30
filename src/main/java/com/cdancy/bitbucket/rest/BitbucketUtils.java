@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,6 +56,7 @@ public class BitbucketUtils {
 
     // global gson parser object
     public static final Gson GSON_PARSER = new Gson();
+    public static final JsonParser JSON_PARSER = new JsonParser();
 
     /**
      * Convert passed Iterable into an ImmutableList.
@@ -106,7 +108,7 @@ public class BitbucketUtils {
      * @return JsonElement or empty JsonElement if `input` is null.
      */
     public static JsonElement nullToJsonElement(final String input) {
-        return GSON_PARSER.toJsonTree(input != null ? input : ImmutableMap.of());
+        return JSON_PARSER.parse(input != null ? input : "{}");
     }
 
     /**

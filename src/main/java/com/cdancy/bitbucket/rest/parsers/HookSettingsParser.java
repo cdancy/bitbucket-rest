@@ -29,7 +29,7 @@ import org.jclouds.util.Strings2;
 
 @Singleton
 public class HookSettingsParser implements Function<HttpResponse, HookSettings> {
-    
+
     @Override
     public HookSettings apply(final HttpResponse input) {
         final int statusCode = input.getStatusCode();
@@ -46,7 +46,7 @@ public class HookSettingsParser implements Function<HttpResponse, HookSettings> 
                     throw new RuntimeException(input.getStatusLine());
             }
             final JsonElement settings = BitbucketUtils.nullToJsonElement(payload);
-            return HookSettings.from(settings);
+            return HookSettings.of(settings);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }

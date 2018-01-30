@@ -209,6 +209,7 @@ public interface RepositoryApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
     @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
+    @ResponseParser(HookSettingsParser.class)
     @PUT
     HookSettings updateHookSettings(@PathParam("project") String project,
                     @PathParam("repo") String repo,
