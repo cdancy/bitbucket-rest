@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
@@ -30,9 +32,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@Test(groups = "live", testName = "HookApiMockTest", singleThreaded = true)
+@Test(groups = "live", testName = "HookApiLiveTest", singleThreaded = true)
 public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private GeneratedTestContents generatedTestContents;
