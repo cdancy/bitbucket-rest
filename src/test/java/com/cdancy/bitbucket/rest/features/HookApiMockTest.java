@@ -68,10 +68,10 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hooks.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
-            final HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
+            final HookPage hookPage = api.list(projectKey, repoKey, 0, 100);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.values()).isNotEmpty();
             assertThat(hookPage.errors()).isEmpty();
@@ -90,10 +90,10 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
-            final HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
+            final HookPage hookPage = api.list(projectKey, repoKey, 0, 100);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.values()).isEmpty();
             assertThat(hookPage.errors()).isNotEmpty();
@@ -112,11 +112,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
+            final Hook hookPage = api.get(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
@@ -134,11 +134,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource(hookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
+            final Hook hookPage = api.get(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
@@ -156,11 +156,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
+            final Hook hookPage = api.enable(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
@@ -178,11 +178,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource(hookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
+            final Hook hookPage = api.enable(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
@@ -200,11 +200,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
+            final Hook hookPage = api.disable(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isEmpty();
@@ -222,11 +222,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource(hookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
+            final Hook hookPage = api.disable(projectKey, repoKey, hookKey);
             assertThat(hookPage).isNotNull();
             assertThat(hookPage.enabled()).isFalse();
             assertThat(hookPage.errors()).isNotEmpty();
@@ -244,11 +244,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/hook-settings.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final HookSettings hookSettings = api.getHookSettings(projectKey, repoKey, hookKey);
+            final HookSettings hookSettings = api.settings(projectKey, repoKey, hookKey);
             assertThat(hookSettings).isNotNull();
             assertThat(hookSettings.errors()).isEmpty();
             final String possibleValue = hookSettings
@@ -271,11 +271,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final HookSettings hookSettings = api.getHookSettings(projectKey, repoKey, hookKey);
+            final HookSettings hookSettings = api.settings(projectKey, repoKey, hookKey);
             assertThat(hookSettings).isNotNull();
             assertThat(hookSettings.settings().getAsJsonObject().entrySet()).isEmpty();
             assertThat(hookSettings.errors()).isEmpty();
@@ -293,11 +293,11 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource(hookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final String hookKey = qwertyKeyword;
-            final HookSettings hookSettings = api.getHookSettings(projectKey, repoKey, hookKey);
+            final HookSettings hookSettings = api.settings(projectKey, repoKey, hookKey);
             assertThat(hookSettings).isNotNull();
             assertThat(hookSettings.errors()).isNotEmpty();
 
@@ -314,7 +314,7 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/hook-settings.json")).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final LinkedTreeMap settings = new LinkedTreeMap();
@@ -322,7 +322,7 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
             final HookSettings updateHook = HookSettings.of(settings);
             
             final String hookKey = qwertyKeyword;
-            final HookSettings hookSettings = api.updateHookSettings(projectKey, repoKey, hookKey, updateHook);
+            final HookSettings hookSettings = api.update(projectKey, repoKey, hookKey, updateHook);
             assertThat(hookSettings).isNotNull();
             assertThat(hookSettings.settings().getAsJsonObject().entrySet()).isNotEmpty();
             assertThat(hookSettings.errors()).isEmpty();
@@ -346,7 +346,7 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
+        final HookApi api = baseApi.hookApi();
         try {
 
             final LinkedTreeMap settings = new LinkedTreeMap();
@@ -354,7 +354,7 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
             final HookSettings updateHook = HookSettings.of(settings);
 
             final String hookKey = TestUtilities.randomStringLettersOnly();
-            final HookSettings hookSettings = api.updateHookSettings(projectKey,
+            final HookSettings hookSettings = api.update(projectKey,
                     repoKey,
                     hookKey,
                     updateHook);

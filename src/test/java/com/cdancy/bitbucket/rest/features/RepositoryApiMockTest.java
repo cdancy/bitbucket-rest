@@ -20,8 +20,6 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
-import com.cdancy.bitbucket.rest.domain.repository.Hook;
-import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
 import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -62,12 +60,9 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     private final String groupsPath = permissionsPath + "groups";
     private final String settingsPath = "/settings/";
     private final String pullRequestsPath = settingsPath + "pull-requests";
-    private final String hooksPath = settingsPath + "hooks";
     private final String reposPath = "/repos/";
     private final String reposEndpoint = "/repos";
-    private final String enabledEndpoint = "/enabled";
 
-    private final String qwertyKeyword = "qwerty";
     private final String limitKeyword = "limit";
     private final String startKeyword = "start";
     private final String nameKeyword = "name";
@@ -622,182 +617,6 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testListHook() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hooks.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.values()).isNotEmpty();
-            assertThat(hookPage.errors()).isEmpty();
-
-            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
-            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath, queryParams);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testListHookOnError() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-not-exist.json")).setResponseCode(404));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final HookPage hookPage = api.listHooks(projectKey, repoKey, 0, 100);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.values()).isEmpty();
-            assertThat(hookPage.errors()).isNotEmpty();
-
-            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
-            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath, queryParams);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testGetHook() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isFalse();
-            assertThat(hookPage.errors()).isEmpty();
-
-            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testGetHookOnError() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.getHook(projectKey, repoKey, hookKey);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isFalse();
-            assertThat(hookPage.errors()).isNotEmpty();
-
-            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testEnableHook() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isFalse();
-            assertThat(hookPage.errors()).isEmpty();
-
-            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testEnableHookOnError() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.enableHook(projectKey, repoKey, hookKey);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isFalse();
-            assertThat(hookPage.errors()).isNotEmpty();
-
-            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testDisableHook() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isFalse();
-            assertThat(hookPage.errors()).isEmpty();
-
-            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
-        } finally {
-            baseApi.close();
-            server.shutdown();
-        }
-    }
-
-    public void testDisableHookOnError() throws Exception {
-        final MockWebServer server = mockWebServer();
-
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-hook-error.json")).setResponseCode(404));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final RepositoryApi api = baseApi.repositoryApi();
-        try {
-
-            final String hookKey = qwertyKeyword;
-            final Hook hookPage = api.disableHook(projectKey, repoKey, hookKey);
-            assertThat(hookPage).isNotNull();
-            assertThat(hookPage.enabled()).isFalse();
-            assertThat(hookPage.errors()).isNotEmpty();
-
-            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsPath + projectKey + reposPath + repoKey + hooksPath + "/" + hookKey + enabledEndpoint);
         } finally {
             baseApi.close();
             server.shutdown();

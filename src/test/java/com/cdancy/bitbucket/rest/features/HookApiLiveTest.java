@@ -52,7 +52,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test 
     public void testGetRepository() {
-        final Repository repository = api().get(projectKey, repoKey);
+        final Repository repository = api.repositoryApi().get(projectKey, repoKey);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isTrue();
         assertThat(repoKey.equalsIgnoreCase(repository.name())).isTrue();
@@ -60,7 +60,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testListRepositories() {
-        final RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
+        final RepositoryPage repositoryPage = api.repositoryApi().list(projectKey, 0, 100);
 
         assertThat(repositoryPage).isNotNull();
         assertThat(repositoryPage.errors()).isEmpty();
@@ -79,7 +79,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testListHooks() {
-        final HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
+        final HookPage hookPage = api().list(projectKey, repoKey, 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isEmpty();
         assertThat(hookPage.size()).isGreaterThan(0);
@@ -94,7 +94,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test()
     public void testListHookOnError() {
-        final HookPage hookPage = api().listHooks(projectKey, TestUtilities.randomString(), 0, 100);
+        final HookPage hookPage = api().list(projectKey, TestUtilities.randomString(), 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isNotEmpty();
         assertThat(hookPage.values()).isEmpty();
@@ -102,7 +102,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testListHooks"})
     public void testGetHook() {
-        final Hook hook = api().getHook(projectKey, repoKey, foundHook.details().key());
+        final Hook hook = api().get(projectKey, repoKey, foundHook.details().key());
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isEmpty();
         assertThat(hook.details().key().equals(foundHook.details().key())).isTrue();
@@ -111,7 +111,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {"testGetHook"})
     public void testGetAndUpdateHookSettings() throws Exception {
-        final HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
+        final HookPage hookPage = api().list(projectKey, repoKey, 0, 100);
         assertThat(hookPage).isNotNull();
         assertThat(hookPage.errors()).isEmpty();
         assertThat(hookPage.size()).isGreaterThan(0);
@@ -119,11 +119,11 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
         // iterate over each found HookSettings and attempt to update, if we have any
         // data, with the same data and ensure all works as expected.
         for (final Hook hook : hookPage.values()) {
-            final HookSettings hooks = api().getHookSettings(projectKey, repoKey, hook.details().key());
+            final HookSettings hooks = api().settings(projectKey, repoKey, hook.details().key());
             // cheap way to check if body is NOT equal to "{}" which is an empty json map
             if (!hooks.settings().getAsJsonObject().entrySet().isEmpty()) {
                 assertThat(hooks.errors()).isEmpty();
-                final HookSettings hookUpdate = api().updateHookSettings(projectKey, repoKey, hook.details().key(), hooks);
+                final HookSettings hookUpdate = api().update(projectKey, repoKey, hook.details().key(), hooks);
                 assertThat(hookUpdate.errors()).isEmpty();
             }
         }
@@ -131,7 +131,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testGetHookSettingsOnNonExistentHookKey() {
-        final HookSettings hookSettings = api().getHookSettings(projectKey, 
+        final HookSettings hookSettings = api().settings(projectKey, 
                 repoKey, 
                 TestUtilities.randomStringLettersOnly());
         assertThat(hookSettings).isNotNull();
@@ -145,7 +145,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
         final LinkedTreeMap settings = new LinkedTreeMap();
         settings.put(key, randomValue);
         final HookSettings updateHook = HookSettings.of(settings);
-        final HookSettings hookSettings = api().updateHookSettings(projectKey,
+        final HookSettings hookSettings = api().update(projectKey,
                 repoKey,
                 foundHook.details().key(),
                 updateHook);
@@ -161,7 +161,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
         final String randomValueAgain = TestUtilities.randomString();
         settings.put(key, randomValueAgain);
         final HookSettings hookSettingsAgain = HookSettings.of(settings);
-        final HookSettings hookSettingsUpdated = api().updateHookSettings(projectKey,
+        final HookSettings hookSettingsUpdated = api().update(projectKey,
                 repoKey,
                 foundHook.details().key(),
                 hookSettingsAgain);
@@ -175,7 +175,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testGetHookOnError() {
-        final Hook hook = api().getHook(projectKey, 
+        final Hook hook = api().get(projectKey, 
                 repoKey, 
                 TestUtilities.randomStringLettersOnly() 
                         + ":" 
@@ -190,7 +190,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
         TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
-    private RepositoryApi api() {
-        return api.repositoryApi();
+    private HookApi api() {
+        return api.hookApi();
     }
 }

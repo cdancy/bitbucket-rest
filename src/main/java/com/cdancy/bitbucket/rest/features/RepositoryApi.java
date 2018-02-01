@@ -18,11 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
-import com.cdancy.bitbucket.rest.binders.BindHookSettingsToPayload;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
-import com.cdancy.bitbucket.rest.domain.repository.Hook;
-import com.cdancy.bitbucket.rest.domain.repository.HookPage;
-import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -32,7 +28,6 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.cdancy.bitbucket.rest.parsers.DeleteRepositoryParser;
-import com.cdancy.bitbucket.rest.parsers.HookSettingsParser;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import com.google.inject.name.Named;
 import org.jclouds.javax.annotation.Nullable;
@@ -182,68 +177,4 @@ public interface RepositoryApi {
                                          @PathParam("repo") String repo,
                                          @Nullable @QueryParam("start") Integer start,
                                          @Nullable @QueryParam("limit") Integer limit);
-
-    @Named("repository:list-hooks")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794419936"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/hooks")
-    @Fallback(BitbucketFallbacks.HookPageOnError.class)
-    @GET
-    HookPage listHooks(@PathParam("project") String project,
-                       @PathParam("repo") String repo,
-                       @Nullable @QueryParam("start") Integer start,
-                       @Nullable @QueryParam("limit") Integer limit);
-
-    @Named("repository:get-hook")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}")
-    @Fallback(BitbucketFallbacks.HookOnError.class)
-    @GET
-    Hook getHook(@PathParam("project") String project,
-                    @PathParam("repo") String repo,
-                    @PathParam("hookKey") String hookKey);
-
-    @Named("repository:update-hook-settings")
-    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.0.1/bitbucket-rest.html#idm45993794444512"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
-    @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
-    @ResponseParser(HookSettingsParser.class)
-    @PUT
-    HookSettings updateHookSettings(@PathParam("project") String project,
-                    @PathParam("repo") String repo,
-                    @PathParam("hookKey") String hookKey,
-                    @BinderParam(BindHookSettingsToPayload.class) HookSettings hookSettings);
-    
-    @Named("repository:update-hook-settings")
-    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.0.1/bitbucket-rest.html#idm45993794444512"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/settings")
-    @Fallback(BitbucketFallbacks.HookSettingsOnError.class)
-    @ResponseParser(HookSettingsParser.class)
-    @GET
-    HookSettings getHookSettings(@PathParam("project") String project,
-                    @PathParam("repo") String repo,
-                    @PathParam("hookKey") String hookKey);
-
-    @Named("repository:enable-hook")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/enabled")
-    @Fallback(BitbucketFallbacks.HookOnError.class)
-    @PUT
-    Hook enableHook(@PathParam("project") String project,
-                    @PathParam("repo") String repo,
-                    @PathParam("hookKey") String hookKey);
-
-    @Named("repository:disable-hook")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.1/bitbucket-rest.html#idm45993794409760"})
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/hooks/{hookKey}/enabled")
-    @Fallback(BitbucketFallbacks.HookOnError.class)
-    @DELETE
-    Hook disableHook(@PathParam("project") String project,
-                     @PathParam("repo") String repo,
-                     @PathParam("hookKey") String hookKey);
 }
