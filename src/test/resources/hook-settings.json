@@ -1,0 +1,7 @@
+{
+    "string-value": "this is an arbitrary string",
+    "integer-value": 1,
+    "long-value": 2147483648,
+    "boolean-value": true,
+    "double-value": 1.1
+}

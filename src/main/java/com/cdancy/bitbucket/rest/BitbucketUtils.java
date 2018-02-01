@@ -37,6 +37,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,6 +53,10 @@ import org.jclouds.javax.annotation.Nullable;
  */
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class BitbucketUtils {
+
+    // global gson parser object
+    public static final Gson GSON_PARSER = new Gson();
+    public static final JsonParser JSON_PARSER = new JsonParser();
 
     /**
      * Convert passed Iterable into an ImmutableList.
@@ -72,6 +79,36 @@ public class BitbucketUtils {
      */
     public static <K, V> Map<K, V> nullToEmpty(final Map<? extends K, ? extends V> input) {
         return (Map<K, V>) (input == null ? ImmutableMap.<K, V> of() : ImmutableMap.copyOf(input));
+    }
+
+    /**
+     * Convert passed Map into a JsonElement.
+     * 
+     * @param input the Map to convert.
+     * @return JsonElement or empty JsonElement if `input` is null.
+     */
+    public static JsonElement nullToJsonElement(final Map input) {
+        return GSON_PARSER.toJsonTree(nullToEmpty(input));
+    }
+
+    /**
+     * Convert passed Map into a JsonElement.
+     * 
+     * @param input the Map to convert.
+     * @return JsonElement or empty JsonElement if `input` is null.
+     */
+    public static JsonElement nullToJsonElement(final JsonElement input) {
+        return input != null ? input : GSON_PARSER.toJsonTree(ImmutableMap.of());
+    }
+
+    /**
+     * Convert passed String into a JsonElement.
+     * 
+     * @param input the String to convert.
+     * @return JsonElement or empty JsonElement if `input` is null.
+     */
+    public static JsonElement nullToJsonElement(final String input) {
+        return JSON_PARSER.parse(input != null ? input : "{}");
     }
 
     /**

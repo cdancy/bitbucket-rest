@@ -22,8 +22,6 @@ import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
-import com.cdancy.bitbucket.rest.domain.repository.Hook;
-import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
 import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -51,7 +49,6 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private String projectKey;
     private String repoKey;
-    private String hookKey;
     private User user;
 
     @BeforeClass
@@ -194,92 +191,6 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue(); // Currently Bitbucket returns the same response if delete is success or not
         assertThat(success.errors()).isEmpty();
-    }
-
-    @Test(dependsOnMethods = {testGetRepoKeyword})
-    public void testListHooks() {
-        final HookPage hookPage = api().listHooks(projectKey, repoKey, 0, 100);
-        assertThat(hookPage).isNotNull();
-        assertThat(hookPage.errors()).isEmpty();
-        assertThat(hookPage.size()).isGreaterThan(0);
-        for (final Hook hook : hookPage.values()) {
-            if (hook.details().configFormKey() == null) {
-                assertThat(hook.details().key()).isNotNull();
-                hookKey = hook.details().key();
-                break;
-            }
-        }
-    }
-
-    @Test()
-    public void testListHookOnError() {
-        final HookPage hookPage = api().listHooks(projectKey, TestUtilities.randomString(), 0, 100);
-        assertThat(hookPage).isNotNull();
-        assertThat(hookPage.errors()).isNotEmpty();
-        assertThat(hookPage.values()).isEmpty();
-    }
-
-    @Test(dependsOnMethods = {"testListHooks"})
-    public void testGetHook() {
-        final Hook hook = api().getHook(projectKey, repoKey, hookKey);
-        assertThat(hook).isNotNull();
-        assertThat(hook.errors()).isEmpty();
-        assertThat(hook.details().key().equals(hookKey)).isTrue();
-        assertThat(hook.enabled()).isFalse();
-    }
-
-    @Test(dependsOnMethods = {testGetRepoKeyword})
-    public void testGetHookOnError() {
-        final Hook hook = api().getHook(projectKey, 
-                repoKey, 
-                TestUtilities.randomStringLettersOnly() 
-                        + ":" 
-                        + TestUtilities.randomStringLettersOnly());
-        assertThat(hook).isNotNull();
-        assertThat(hook.errors()).isNotEmpty();
-        assertThat(hook.enabled()).isFalse();
-    }
-
-    @Test(dependsOnMethods = {"testGetHook"})
-    public void testEnableHook() {
-        final Hook hook = api().enableHook(projectKey, repoKey, hookKey);
-        assertThat(hook).isNotNull();
-        assertThat(hook.errors()).isEmpty();
-        assertThat(hook.details().key().equals(hookKey)).isTrue();
-        assertThat(hook.enabled()).isTrue();
-    }
-
-    @Test(dependsOnMethods = {testGetRepoKeyword})
-    public void testEnableHookOnError() {
-        final Hook hook = api().enableHook(projectKey, 
-                repoKey, 
-                TestUtilities.randomStringLettersOnly() 
-                        + ":" 
-                        + TestUtilities.randomStringLettersOnly());
-        assertThat(hook).isNotNull();
-        assertThat(hook.errors()).isNotEmpty();
-        assertThat(hook.enabled()).isFalse();
-    }
-
-    @Test(dependsOnMethods = {"testEnableHook"})
-    public void testDisableHook() {
-        final Hook hook = api().disableHook(projectKey, repoKey, hookKey);
-        assertThat(hook).isNotNull();
-        assertThat(hook.errors()).isEmpty();
-        assertThat(hook.details().key().equals(hookKey)).isTrue();
-        assertThat(hook.enabled()).isFalse();
-    }
-
-    @Test(dependsOnMethods = {testGetRepoKeyword})
-    public void testDisableHookOnError() {
-        final Hook hook = api().disableHook(projectKey, 
-                repoKey, 
-                TestUtilities.randomStringLettersOnly() 
-                        + ":" 
-                        + TestUtilities.randomStringLettersOnly());
-        assertThat(hook).isNotNull();
-        assertThat(hook.errors()).isNotEmpty();
-        assertThat(hook.enabled()).isFalse();
     }
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
