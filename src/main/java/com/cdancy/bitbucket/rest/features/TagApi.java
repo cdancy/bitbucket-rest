@@ -18,11 +18,13 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateTag;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
@@ -30,6 +32,7 @@ import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,6 +42,7 @@ import javax.ws.rs.QueryParam;
 
 import javax.ws.rs.core.MediaType;
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
@@ -78,4 +82,15 @@ public interface TagApi {
                     @Nullable @QueryParam("orderBy") String orderBy,
                     @Nullable @QueryParam("start") Integer start,
                     @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("tag:delete")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.4.0/bitbucket-git-rest.html#idm139355817865616"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/tags/{tag}")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @DELETE
+    RequestStatus delete(@PathParam("project") String project,
+                         @PathParam("repo") String repo,
+                         @PathParam("tag") String tag);
 }
