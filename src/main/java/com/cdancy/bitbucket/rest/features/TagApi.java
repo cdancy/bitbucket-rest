@@ -19,10 +19,10 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
+import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateTag;
-import org.jclouds.Fallbacks;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
@@ -35,8 +35,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import javax.ws.rs.core.MediaType;
+import org.jclouds.javax.annotation.Nullable;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
@@ -58,9 +60,22 @@ public interface TagApi {
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278800832"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/tags/{tag}")
-    @Fallback(Fallbacks.NullOnNotFoundOr404.class)
+    @Fallback(BitbucketFallbacks.TagOnError.class)
     @GET
     Tag get(@PathParam("project") String project,
             @PathParam("repo") String repo,
             @PathParam("tag") String tag);
+
+    @Named("tag:list")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.7.0/bitbucket-rest.html#idm45568367769888"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/tags")
+    @Fallback(BitbucketFallbacks.TagPageOnError.class)
+    @GET
+    TagPage list(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @Nullable @QueryParam("filterText") String filterText,
+                    @Nullable @QueryParam("orderBy") String orderBy,
+                    @Nullable @QueryParam("start") Integer start,
+                    @Nullable @QueryParam("limit") Integer limit);
 }

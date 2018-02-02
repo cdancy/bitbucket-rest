@@ -23,9 +23,12 @@ import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
+import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.cdancy.bitbucket.rest.options.CreateTag;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import java.util.Map;
 import org.testng.annotations.Test;
 
 /**
@@ -33,6 +36,13 @@ import org.testng.annotations.Test;
  */
 @Test(groups = "unit", testName = "TagApiMockTest")
 public class TagApiMockTest extends BaseBitbucketMockTest {
+
+    private final String getMethod = "GET";
+    private final String restApiPath = "/rest/api/";
+    private final String reposPath = "/repos/";
+    private final String projectsPath = "/projects/";
+    private final String limitKeyword = "limit";
+    private final String startKeyword = "start";
 
     private final String projectKey = "PRJ";
     private final String repoKey = "myrepo";
@@ -53,8 +63,8 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             assertThat(tag.errors().isEmpty()).isTrue();
             assertThat(tag.id().endsWith(tagName)).isTrue();
             assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
-            assertSent(server, "POST", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/tags");
+            assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + "/tags");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -77,8 +87,8 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             
             final String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
             assertThat(commitHash.equalsIgnoreCase(tag.latestCommit())).isTrue();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + "/tags/" + tagName);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -95,9 +105,54 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             final String tagName = "non-existent-tag";
 
             final Tag tag = api.get(projectKey, repoKey, tagName);
-            assertThat(tag).isNull();
-            assertSent(server, "GET", "/rest/api/" + BitbucketApiMetadata.API_VERSION
-                    + "/projects/" + projectKey + "/repos/" + repoKey + "/tags/" + tagName);
+            assertThat(tag).isNotNull();
+            assertThat(tag.errors()).isNotEmpty();
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + "/tags/" + tagName);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListTags() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/tag-page.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final TagApi api = baseApi.tagApi();
+        try {
+            final TagPage tagPage = api.list(projectKey, repoKey, null, null, 0, 10);
+            assertThat(tagPage).isNotNull();
+            assertThat(tagPage.errors()).isEmpty();
+            assertThat(tagPage.values()).isNotEmpty();
+            assertThat(tagPage.limit()).isEqualTo(10);
+
+            assertThat(tagPage.values().get(0).type()).isEqualTo("TAG");
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 10, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + "/tags", queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListTagsOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-page-error.json")).setResponseCode(404));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final TagApi api = baseApi.tagApi();
+        try {
+            final TagPage tagPage = api.list(projectKey, repoKey, null, null, 0, 10);
+            assertThat(tagPage).isNotNull();
+            assertThat(tagPage.errors()).isNotEmpty();
+            assertThat(tagPage.limit()).isEqualTo(-1);
+
+            final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 10, startKeyword, 0);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + "/tags", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
