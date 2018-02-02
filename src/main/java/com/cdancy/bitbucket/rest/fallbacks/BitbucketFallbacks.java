@@ -59,6 +59,7 @@ import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
+import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -373,6 +374,16 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class TagPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createTagPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class MergeStatusOnError implements Fallback<Object> {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
@@ -564,6 +575,10 @@ public final class BitbucketFallbacks {
 
     public static PullRequestPage createPullRequestPageFromErrors(final List<Error> errors) {
         return PullRequestPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static TagPage createTagPageFromErrors(final List<Error> errors) {
+        return TagPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static MergeStatus createMergeStatusFromErrors(final List<Error> errors) {

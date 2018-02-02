@@ -1,11 +1,16 @@
 {
     "size": 1,
-    "limit": 25,
+    "limit": 10,
     "isLastPage": true,
-    "start": 0,
-    "lines": [
+    "values": [
         {
-            "text": "BEARS"
+            "id": "release-2.0.0",
+            "displayId": "refs/tags/release-2.0.0",
+            "type": "TAG",
+            "latestCommit": "8d351a10fb428c0c1239530256e21cf24f136e73",
+            "latestChangeset": "8d351a10fb428c0c1239530256e21cf24f136e73",
+            "hash": "8d51122def5632836d1cb1026e879069e10a1e13"
         }
-    ]
+    ],
+    "start": 0
 }
