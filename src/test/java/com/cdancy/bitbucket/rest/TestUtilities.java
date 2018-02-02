@@ -226,6 +226,10 @@ public class TestUtilities extends BitbucketUtils {
             System.out.println("git-add-2: " + addGit.trim());
             commitGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "commit", "-m", "added"), gitDirectory.toPath());
             System.out.println("git-commit-2: " + commitGit.trim());
+            final String tagGit = TestUtilities
+                    .executionToString(Arrays
+                            .asList(GIT_COMMAND, "tag", "-a", "v0.0." + (i + 1), "-m", "\"generated version\""), gitDirectory.toPath());
+            System.out.println("git-tag-commit: " + tagGit.trim());
         }
         
         // 3.) push changes to remote repository
@@ -253,7 +257,7 @@ public class TestUtilities extends BitbucketUtils {
         System.out.println("git-branch-commit: " + commitGit.trim());
         
         // 6.) push branch
-        final List<String> args = Arrays.asList(GIT_COMMAND, "push", "-u", gitRepoURL, generatedBranchName);
+        final List<String> args = Arrays.asList(GIT_COMMAND, "push", "--tags", "-u", gitRepoURL, generatedBranchName);
         final String pushBranchGit = TestUtilities.executionToString(args, gitDirectory.toPath());
         System.out.println("git-branch-push: " + pushBranchGit);
     }
