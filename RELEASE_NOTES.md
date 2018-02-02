@@ -1,4 +1,5 @@
 ### Version 2.1.0 (TBA)
+* ADDED: `TagApi` gained endpoint `list` - [PR 132](https://github.com/cdancy/bitbucket-rest/pull/132)
 * ADDED: `HookApi` gained endpoints `update` and `settings` - [Commit 68cac5](https://github.com/cdancy/bitbucket-rest/commit/68cac5eda1ed81c01515420d62fb08a0582cf550)
 * BREAKING: all "hook" related endpoints were moved out of the `RepositoryApi` class and were given their own dedicated `HookApi` class. - [Commit 68cac5](https://github.com/cdancy/bitbucket-rest/commit/68cac5eda1ed81c01515420d62fb08a0582cf550)
 
