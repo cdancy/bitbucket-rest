@@ -25,6 +25,7 @@ import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
+import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.cdancy.bitbucket.rest.options.CreateTag;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -74,7 +75,23 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testGetTagNonExistent() {
         final Tag tag = api().get(projectKey, repoKey, tagName + "9999");
-        assertThat(tag).isNull();
+        assertThat(tag).isNotNull();
+        assertThat(tag.errors()).isNotEmpty();
+    }
+
+    @Test
+    public void testListTags() {
+        final TagPage tagPage = api().list(projectKey, repoKey, null, null, 0, 10);
+        assertThat(tagPage).isNotNull();
+        assertThat(tagPage.errors()).isEmpty();
+        assertThat(tagPage.values()).isNotEmpty();
+    }
+
+    @Test
+    public void testListTagsNonExistentRepo() {
+        final TagPage tagPage = api().list(projectKey, TestUtilities.randomString(), null, null, 0, 10);
+        assertThat(tagPage).isNotNull();
+        assertThat(tagPage.errors()).isNotEmpty();
     }
     
     @AfterClass
