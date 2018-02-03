@@ -1,6 +1,7 @@
 com.cdancy.bitbucket.rest
 com.cdancy.bitbucket.rest.annotations
 com.cdancy.bitbucket.rest.auth
+com.cdancy.bitbucket.rest.binders
 com.cdancy.bitbucket.rest.config
 com.cdancy.bitbucket.rest.domain.activities
 com.cdancy.bitbucket.rest.domain.admin
