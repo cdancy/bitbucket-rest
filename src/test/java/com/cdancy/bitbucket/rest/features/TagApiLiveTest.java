@@ -23,6 +23,7 @@ import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
@@ -79,12 +80,28 @@ public class TagApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(tag.errors()).isNotEmpty();
     }
 
-    @Test
+    @Test (dependsOnMethods = "testGetTag")
     public void testListTags() {
         final TagPage tagPage = api().list(projectKey, repoKey, null, null, 0, 10);
         assertThat(tagPage).isNotNull();
         assertThat(tagPage.errors()).isEmpty();
         assertThat(tagPage.values()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testGetTag")
+    public void testDeleteTag() {
+        final RequestStatus status = api().delete(projectKey, repoKey, tagName);
+        assertThat(status).isNotNull();
+        assertThat(status.errors()).isEmpty();
+        assertThat(status.value()).isTrue();
+    }
+
+    @Test
+    public void testDeleteTagNonExistent() {
+        final RequestStatus status = api().delete(projectKey, repoKey, TestUtilities.randomString());
+        assertThat(status).isNotNull();
+        assertThat(status.errors()).isNotEmpty();
+        assertThat(status.value()).isFalse();
     }
 
     @Test
