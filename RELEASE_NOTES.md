@@ -1,3 +1,5 @@
+### Version 2.1.1 (TBA)
+
 ### Version 2.1.0 (2/2/2018)
 * ADDED: `TagApi` gained endpoint `delete` - [PR 135](https://github.com/cdancy/bitbucket-rest/pull/135)
 * ADDED: `TagApi` gained endpoint `list` - [PR 132](https://github.com/cdancy/bitbucket-rest/pull/132)
