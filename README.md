@@ -143,7 +143,7 @@ take precedence over `Environment Variables`.
 
 ## Understanding Error objects
 
-When something pops server-side `bitbucket` will hand us back a list of [Error](https://github.com/cdancy/bitbucket-rest/blob/master/src/main/java/com/cdancy/bitbucket/rest/error/Error.java) objects. Instead of failing and/or throwing an exception at runtime we attach this List of `Error` objects 
+When something pops server-side `bitbucket` will hand us back a list of [Error](https://github.com/cdancy/bitbucket-rest/blob/master/src/main/java/com/cdancy/bitbucket/rest/domain/common/Error.java) objects. Instead of failing and/or throwing an exception at runtime we attach this List of `Error` objects 
 to most [domain](https://github.com/cdancy/bitbucket-rest/tree/master/src/main/java/com/cdancy/bitbucket/rest/domain) objects. Thus, it is up to the user to check the handed back domain object to see if the attached List is empty, and if not, iterate over the `Error` objects to see if it's something 
 truly warranting an exception. List of `Error` objects itself will always be non-null but in most cases empty (unless something has failed).
 
