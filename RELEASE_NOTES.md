@@ -1,4 +1,6 @@
-### Version 2.1.1 (TBA)
+### Version 2.1.2 (TBA)
+
+### Version 2.1.1 (3/15/2018)
 * ADDED: Bump gradle to `4.5` - [Commit abd64d](https://github.com/cdancy/bitbucket-rest/commit/abd64deedf09adb03e5873a6a5429a1b150e2c08)
 * REFACTOR: Changed `AutoValue` to be a `compileOnly` dependency as it is not required at runtime - [Commit 27820](https://github.com/cdancy/bitbucket-rest/commit/2782085842cdf4b7c1464f69fc102a7aaf9747d1)
 
