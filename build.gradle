@@ -108,7 +108,7 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
         }
     }
     useTestNG() 
-    include '**/**LiveTest.class'
+    include '**/BitbucketClientLiveTest.class'
     testLogging {
         showStandardStreams = true
         events 'started', 'passed', 'failed'
