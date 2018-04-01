@@ -60,6 +60,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
     private final String testKeyword = "test";
     private final String localRestPath = "/rest/branch-utils/";
     private final String localBranchesPath = "/branches";
+    private final String localInfoPath = localBranchesPath + "/info";
     private final String localProjectsPath = "/projects/";
     private final String branchPermissionsPath = "/rest/branch-permissions/2.0";
     private final String branchModelPath = "/branchmodel/configuration";
@@ -67,6 +68,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
     private final String localGetMethod = "GET";
     private final String localDeleteMethod = "DELETE";
     private final String localLimit = "limit";
+    private final String commitId = "123456789HelloWorld";
     
     public void testCreateBranch() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -422,6 +424,39 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
             assertThat(success.errors()).isNotEmpty();
             assertSent(server, localDeleteMethod, localRestPath + BitbucketApiMetadata.API_VERSION
                     + localProjectsPath + projectKey + localReposPath + repoKey + branchModelPath);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetBranchInfo() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list.json")).setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchPage branchPage = baseApi.branchApi().info(projectKey, repoKey, commitId);
+            assertThat(branchPage).isNotNull();
+            assertThat(branchPage.errors().isEmpty()).isTrue();
+            assertThat(branchPage.size() > 0).isTrue();
+            assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + localInfoPath + "/" + commitId);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetBranchInfoOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            
+            final BranchPage branchPage = baseApi.branchApi().info(projectKey, repoKey, commitId);
+            assertThat(branchPage).isNotNull();
+            assertThat(branchPage.errors()).isNotEmpty();
+            assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + localInfoPath + "/" + commitId);
         } finally {
             server.shutdown();
         }
