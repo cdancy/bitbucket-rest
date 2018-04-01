@@ -1,4 +1,9 @@
-### Version 2.1.2 (TBA)
+### Version 2.1.3 (TBA)
+
+### Version 2.1.2 (3/31/2018)
+* ADDED: Bump gradle to `4.6` - [PR 139](https://github.com/cdancy/bitbucket-rest/pull/139)
+* ADDED: Bump jclouds to `2.1.0` - [PR 138](https://github.com/cdancy/bitbucket-rest/pull/138)
+* ADDED: `BranchApi` gained endpoint `info` - [PR 137](https://github.com/cdancy/bitbucket-rest/pull/137)
 
 ### Version 2.1.1 (3/15/2018)
 * ADDED: Bump gradle to `4.5` - [Commit abd64d](https://github.com/cdancy/bitbucket-rest/commit/abd64deedf09adb03e5873a6a5429a1b150e2c08)
