@@ -125,6 +125,16 @@ public interface BranchApi {
     BranchModel model(@PathParam("project") String project,
                       @PathParam("repo") String repo);
 
+    @Named("branch:info")
+    @Documentation({"https://docs.atlassian.com/DAC/rest/stash/2.12.1/stash-branch-utils-rest.html#idp83520"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/branch-utils/{jclouds.api-version}/projects/{project}/repos/{repo}/branches/info/{commitId}")
+    @Fallback(BitbucketFallbacks.BranchPageOnError.class)
+    @GET
+    BranchPage info(@PathParam("project") String project,
+                      @PathParam("repo") String repo,
+                      @PathParam("commitId") String commitId);
+
     @Named("branch:get-model-configuration")
     @Documentation({"https://jira.atlassian.com/browse/BSERV-5411"})
     @Consumes(MediaType.APPLICATION_JSON)

@@ -89,7 +89,15 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(branch.values().size() > 0).isTrue();
     }
 
-    @Test (dependsOnMethods = "testListBranches")
+    @Test (dependsOnMethods = "testCreateBranch")
+    public void testGetBranchInfo() {
+        final BranchPage branch = api().info(projectKey, repoKey, commitHash);
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isTrue();
+        assertThat(branch.values().size() > 0).isTrue();
+    }
+
+    @Test (dependsOnMethods = "testGetBranchInfo")
     public void testGetBranchModel() {
         final BranchModel branchModel = api().model(projectKey, repoKey);
         assertThat(branchModel).isNotNull();
@@ -211,6 +219,14 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(configuration.errors()).isNotEmpty();
     }
 
+    @Test (dependsOnMethods = "testCreateBranch")
+    public void testGetBranchInfoOnError() {
+        final BranchPage branch = api().info(projectKey, repoKey, TestUtilities.randomString());
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isFalse();
+        assertThat(branch.values().isEmpty()).isTrue();
+    }
+
     private void checkDefaultBranchConfiguration() {
         assertThat(branchModelConfiguration).isNotNull();
         assertThat(branchModelConfiguration.errors().isEmpty()).isTrue();
@@ -240,7 +256,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
     @AfterClass
     public void fin() {
         try {
-            
+
             final RequestStatus updateStatus = api().updateDefault(projectKey, repoKey, defaultBranchId);
             assertThat(updateStatus).isNotNull();
             assertThat(updateStatus.value()).isTrue();
@@ -257,7 +273,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
                 checkDefaultBranchConfiguration();
             }
         } finally {
-            TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);            
+            TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);         
         }
     }
 
