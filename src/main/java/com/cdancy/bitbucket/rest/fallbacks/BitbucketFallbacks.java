@@ -599,40 +599,21 @@ public final class BitbucketFallbacks {
 
             final JsonElement element = BitbucketUtils.JSON_PARSER.parse(output);
             final JsonObject object = element.getAsJsonObject();
-            final JsonArray errorsArray = object.get("errors").getAsJsonArray();
 
-            final Iterator<JsonElement> it = errorsArray.iterator();
-            while (it.hasNext()) {
-
-                final JsonObject obj = it.next().getAsJsonObject();
-                final JsonElement context = obj.get("context");
-                final JsonElement message = obj.get("message");
-                final JsonElement exceptionName = obj.get("exceptionName");
-                final JsonElement conflicted = obj.get("conflicted");
-
-                final List<Veto> vetos = Lists.newArrayList();
-                final JsonElement possibleVetoesArray = obj.get("vetoes");
-                if (possibleVetoesArray != null && !possibleVetoesArray.isJsonNull()) {
-
-                    final JsonArray vetoesArray = possibleVetoesArray.getAsJsonArray();
-                    final Iterator<JsonElement> vetoIterator = vetoesArray.iterator();
-                    while (vetoIterator.hasNext()) {
-                        final JsonObject vetoObj = vetoIterator.next().getAsJsonObject();
-                        final JsonElement summary = vetoObj.get("summaryMessage");
-                        final JsonElement detailed = vetoObj.get("detailedMessage");
-                        final Veto veto = Veto.create(!summary.isJsonNull() ? summary.getAsString() : null,
-                                !detailed.isJsonNull() ? detailed.getAsString() : null);
-                        vetos.add(veto);
-                    }
+            // in most cases Bitbucket will hand us back a list of `Error` objects
+            // but in other cases we will simply be handed back the singular
+            // `Error` object (i.e. not as a list).
+            if (object.has("errors")) {
+                final JsonArray errorsArray = object.get("errors").getAsJsonArray();
+                final Iterator<JsonElement> it = errorsArray.iterator();
+                while (it.hasNext()) {
+                    final JsonObject obj = it.next().getAsJsonObject();
+                    errors.add(getErrorFromJsonObject(obj));
                 }
-
-                final Error error = Error.create(!context.isJsonNull() ? context.getAsString() : null,
-                        !message.isJsonNull() ? message.getAsString() : null,
-                        !exceptionName.isJsonNull() ? exceptionName.getAsString() : null,
-                        conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, //NOPMD
-                        vetos);
-
-                errors.add(error);
+            } else if (object.has("context")) {
+                errors.add(getErrorFromJsonObject(object));
+            } else {
+                throw new RuntimeException(output);
             }
         } catch (final Exception e) {
             final Error error = Error.create(output,
@@ -644,5 +625,40 @@ public final class BitbucketFallbacks {
         }
 
         return errors;
+    }
+
+    /**
+     * Parse a single Error object from a given JsonObject.
+     * 
+     * @param obj the JsonObject to parse an Error from.
+     * @return Error object derived from parsing the passed JsonObject.
+     */
+    public static Error getErrorFromJsonObject(final JsonObject obj) {
+        final JsonElement context = obj.get("context");
+        final JsonElement message = obj.get("message");
+        final JsonElement exceptionName = obj.get("exceptionName");
+        final JsonElement conflicted = obj.get("conflicted");
+
+        final List<Veto> vetos = Lists.newArrayList();
+        final JsonElement possibleVetoesArray = obj.get("vetoes");
+        if (possibleVetoesArray != null && !possibleVetoesArray.isJsonNull()) {
+
+            final JsonArray vetoesArray = possibleVetoesArray.getAsJsonArray();
+            final Iterator<JsonElement> vetoIterator = vetoesArray.iterator();
+            while (vetoIterator.hasNext()) {
+                final JsonObject vetoObj = vetoIterator.next().getAsJsonObject();
+                final JsonElement summary = vetoObj.get("summaryMessage");
+                final JsonElement detailed = vetoObj.get("detailedMessage");
+                final Veto veto = Veto.create(!summary.isJsonNull() ? summary.getAsString() : null,
+                        !detailed.isJsonNull() ? detailed.getAsString() : null);
+                vetos.add(veto);
+            }
+        }
+
+        return Error.create(!context.isJsonNull() ? context.getAsString() : null,
+                !message.isJsonNull() ? message.getAsString() : null,
+                !exceptionName.isJsonNull() ? exceptionName.getAsString() : null,
+                conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, //NOPMD
+                vetos);
     }
 }

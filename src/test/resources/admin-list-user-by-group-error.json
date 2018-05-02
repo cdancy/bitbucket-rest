@@ -1,9 +1,5 @@
-{
-  "errors": [
-    {
-      "context": null,
-      "exceptionName": null,
-      "message": "The context parameter is required."
-    }
-  ]
+{  
+   "context":null,
+   "message":"You are not permitted to access this resource",
+   "exceptionName":"com.atlassian.bitbucket.AuthorisationException"
 }
