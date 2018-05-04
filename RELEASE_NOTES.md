@@ -1,3 +1,5 @@
+### Version 2.1.4 (TBA)
+
 ### Version 2.1.3 (5/4/2018)
 * ADDED: Bump gradle to `4.7` - [Commit 1313c](https://github.com/cdancy/bitbucket-rest/commit/1313cecfef24ac4e45ebf50c9f75cd43bb76dad8)
 * BUG: Fix to account for Bitbucket not handing back a list of `error` objects. - [PR 141](https://github.com/cdancy/bitbucket-rest/pull/141)
