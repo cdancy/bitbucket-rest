@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.domain.build;
 
 import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
+import org.jclouds.javax.annotation.Nullable;
 
 @AutoValue
 public abstract class Status {
@@ -31,10 +32,12 @@ public abstract class Status {
 
     public abstract long dateAdded();
 
+    @Nullable
     public abstract String description();
 
     public abstract String key();
 
+    @Nullable
     public abstract String name();
 
     public abstract StatusState state();
@@ -42,10 +45,10 @@ public abstract class Status {
     public abstract String url();
 
     @SerializedNames({"dateAdded", "description", "key", "name", "state", "url"})
-    public static Status create(final long dateAdded, 
-            final String description, 
-            final String key, 
-            final String name, 
+    public static Status create(final long dateAdded,
+            @Nullable final String description,
+            final String key,
+            @Nullable final String name,
             final StatusState state,
             final String url) {
         return new AutoValue_Status(dateAdded, description, key, name, state, url);
