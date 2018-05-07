@@ -46,9 +46,9 @@ public abstract class Status {
 
     @SerializedNames({"dateAdded", "description", "key", "name", "state", "url"})
     public static Status create(final long dateAdded,
-            @Nullable final String description,
+            final String description,
             final String key,
-            @Nullable final String name,
+            final String name,
             final StatusState state,
             final String url) {
         return new AutoValue_Status(dateAdded, description, key, name, state, url);
