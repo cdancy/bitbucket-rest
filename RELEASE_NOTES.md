@@ -1,4 +1,5 @@
-### Version 2.1.4 (TBA)
+### Version 2.1.4 (5/7/2018)
+* BUG: Fix nullable description in `Status` domain object. - [PR 143](https://github.com/cdancy/bitbucket-rest/pull/143)
 
 ### Version 2.1.3 (5/4/2018)
 * ADDED: Bump gradle to `4.7` - [Commit 1313c](https://github.com/cdancy/bitbucket-rest/commit/1313cecfef24ac4e45ebf50c9f75cd43bb76dad8)
