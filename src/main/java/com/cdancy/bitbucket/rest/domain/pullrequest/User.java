@@ -20,7 +20,9 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
+
 import com.google.auto.value.AutoValue;
+
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -69,7 +71,6 @@ public abstract class User implements ErrorsHolder {
     User() {
     }
 
-    @SerializedNames({ "name", "emailAddress", "id", "displayName", "active", "slug", "type" })
     public static User create(final String name, final String emailAddress, final int id, final String displayName,
                               final boolean active, final String slug, final String type) {
 
@@ -77,13 +78,18 @@ public abstract class User implements ErrorsHolder {
             null, null, null, null, null);
     }
 
-    @SerializedNames({ "errors", "name", "emailAddress", "id", "displayName", "active", "slug", "type", "directoryName",
-            "deletable", "lastAuthenticationTimestamp", "mutableDetails", "mutableGroups" })
-    public static User create(final List<Error> errors, final String name, final String emailAddress, final int id,
-                              final String displayName, final boolean active, final String slug, final String type,
-                              final String directoryName, final boolean deletable,
-                              final long lastAuthenticationTimestamp, final boolean mutableDetails,
-                              final boolean mutableGroups) {
+    @SerializedNames({ "errors", "name", "emailAddress",
+            "id", "displayName", "active",
+            "slug", "type", "directoryName",
+            "deletable", "lastAuthenticationTimestamp",
+            "mutableDetails", "mutableGroups" })
+    public static User create(final List<Error> errors, final String name,
+            final String emailAddress, final int id,
+            final String displayName,final boolean active,
+            final String slug, final String type,
+            final String directoryName, final boolean deletable,
+            final long lastAuthenticationTimestamp, final boolean mutableDetails,
+            final boolean mutableGroups) {
 
         return new AutoValue_User(BitbucketUtils.nullToEmpty(errors), name, emailAddress, id, displayName,
             active, slug, type, directoryName, deletable, lastAuthenticationTimestamp, mutableDetails, mutableGroups);
