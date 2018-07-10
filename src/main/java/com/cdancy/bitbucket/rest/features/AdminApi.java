@@ -19,16 +19,22 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
+import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
+import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.annotations.ResponseParser;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -46,10 +52,10 @@ public interface AdminApi {
     @Fallback(BitbucketFallbacks.UserPageOnError.class)
     @GET
     UserPage listUsersByGroup(@QueryParam("context") String context,
-                             @Nullable @QueryParam("filter") String filter,
-                             @Nullable @QueryParam("start") Integer start,
-                             @Nullable @QueryParam("limit") Integer limit);
-    
+                              @Nullable @QueryParam("filter") String filter,
+                              @Nullable @QueryParam("start") Integer start,
+                              @Nullable @QueryParam("limit") Integer limit);
+
     @Named("admin:list-users")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45588158982432"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -57,6 +63,28 @@ public interface AdminApi {
     @Fallback(BitbucketFallbacks.UserPageOnError.class)
     @GET
     UserPage listUsers(@Nullable @QueryParam("filter") String filter,
-                        @Nullable @QueryParam("start") Integer start,
-                        @Nullable @QueryParam("limit") Integer limit);
+                       @Nullable @QueryParam("start") Integer start,
+                       @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("admin:create-user")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm46358291368432"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/users")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @POST
+    RequestStatus createUser(@QueryParam("name") String name,
+                             @QueryParam("password") String password,
+                             @QueryParam("displayName") String displayName,
+                             @QueryParam("emailAddress") String emailAddress,
+                             @Nullable @QueryParam("addToDefaultGroup") Boolean addToDefaultGroup,
+                             @Nullable @QueryParam("notify") String notify);
+
+    @Named("admin:delete-user")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm46358291356736"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/users")
+    @Fallback(BitbucketFallbacks.UserOnError.class)
+    @DELETE
+    User deleteUser(@QueryParam("name") String name);
 }

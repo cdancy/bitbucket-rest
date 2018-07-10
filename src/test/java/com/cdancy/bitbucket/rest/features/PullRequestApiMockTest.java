@@ -54,13 +54,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Test(groups = "unit", testName = "PullRequestApiMockTest")
 public class PullRequestApiMockTest extends BaseBitbucketMockTest {
- 
+
+    private static final String BOB_EMAIL_ADDRESS = "bob@acme.ic";
+    private static final String USER_TYPE = "asd";
+    private static final String PARTICIPANTS_PATH = "/participants/";
+
     private final String projectKey = "PRJ";
     private final String repoKey = "my-repo";
     private final String restApiPath = "/rest/api/";
     private final String getMethod = "GET";
     private final String postMethod = "POST";
-    
+
     private final String limitKeyword = "limit";
     private final String versionKeyword = "version";
     private final String startKeyword = "start";
@@ -70,7 +74,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     private final String specificPullRequestMergePath = specificPullRequestPath + "/merge";
     private final String bobKeyword = "bob";
     private final String reposPath = "/repos/";
-    
+
     public void testCreatePullRequest() throws Exception {
         final MockWebServer server = mockWebServer();
 
@@ -284,7 +288,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testMergePullRequestNeedsRetry() throws Exception {
         final MockWebServer server = mockWebServer();
 
@@ -292,16 +296,16 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final PullRequestApi api = baseApi.pullRequestApi();
         try {
-            
+
             final AtomicInteger retries = new AtomicInteger(5);
-            
+
             PullRequest pr = api.merge(projectKey, repoKey, 101, 1);
             while (retries.get() > 0 && pr.errors().size() > 0 && pr.errors().get(0).message().contains("Please retry the merge")) {
-                
+
                 System.out.println("Bitbucket is under load. Waiting for some time period and then retrying");
                 Thread.sleep(500);
                 retries.decrementAndGet();
-                
+
                 if (retries.get() == 0) {
                     server.enqueue(new MockResponse() //NOPMD
                             .setBody(payloadFromResource("/pull-request-merge.json"))
@@ -313,7 +317,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
                 }
 
                 pr = api.merge(projectKey, repoKey, 101, 1);
-            } 
+            }
 
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
@@ -559,7 +563,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         try {
 
             final Long pullRequestId = 839L;
-            final User user = User.create(bobKeyword, "bob@acme.ic", 123, bobKeyword, true, bobKeyword, "asd");
+            final User user = User.create(bobKeyword, BOB_EMAIL_ADDRESS, 123, bobKeyword, true, bobKeyword, USER_TYPE);
             final CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
                     false, Participants.Status.UNAPPROVED);
             final Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
@@ -583,7 +587,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         try {
 
             final Long pullRequestId = 839L;
-            final User user = User.create(bobKeyword, "bob@acme.ic", 123, bobKeyword, true, bobKeyword, "asd");
+            final User user = User.create(bobKeyword, BOB_EMAIL_ADDRESS, 123, bobKeyword, true, bobKeyword, USER_TYPE);
             final CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
                     false, Participants.Status.UNAPPROVED);
             final Participants success = api.assignParticipant(projectKey, repoKey, pullRequestId, participants);
@@ -614,7 +618,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(success.errors()).isEmpty();
             assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
-                    + pullRequestId + "/participants/" + userSlug);
+                    + pullRequestId + PARTICIPANTS_PATH + userSlug);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -637,7 +641,53 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(success.errors()).isNotEmpty();
             assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
-                    + pullRequestId + "/participants/" + userSlug);
+                    + pullRequestId + PARTICIPANTS_PATH + userSlug);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testAddPullRequestParticipants() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/participants.json")).setResponseCode(201));
+
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final Long pullRequestId = 839L;
+            final User user = User.create(bobKeyword, BOB_EMAIL_ADDRESS, 123, bobKeyword, true, bobKeyword, USER_TYPE);
+            final CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+                    false, Participants.Status.APPROVED);
+            final Participants resultParticipants = api.addParticipant(projectKey, repoKey, pullRequestId, bobKeyword, participants);
+            assertThat(resultParticipants).isNotNull();
+            assertThat(resultParticipants.errors()).isEmpty();
+            assertSent(server, "PUT", restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
+                    + pullRequestId + PARTICIPANTS_PATH + bobKeyword);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testAddPullRequestParticipantsOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setResponseCode(401));
+
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final Long pullRequestId = 839L;
+            final User user = User.create(bobKeyword, BOB_EMAIL_ADDRESS, 123, bobKeyword, true, bobKeyword, USER_TYPE);
+            final CreateParticipants participants = CreateParticipants.create(user, null, Participants.Role.REVIEWER,
+                    false, Participants.Status.APPROVED);
+            final Participants resultParticipants = api.addParticipant(projectKey, repoKey, pullRequestId, bobKeyword, participants);
+            assertThat(resultParticipants).isNotNull();
+            assertThat(resultParticipants.errors()).isNotEmpty();
+            assertSent(server, "PUT", restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
+                    + pullRequestId + PARTICIPANTS_PATH + bobKeyword);
         } finally {
             baseApi.close();
             server.shutdown();

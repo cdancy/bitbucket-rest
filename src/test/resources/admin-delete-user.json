@@ -1,0 +1,14 @@
+{
+  "name": "user",
+  "emailAddress": "email",
+  "id": 101,
+  "displayName": "display",
+  "active": true,
+  "slug": "user",
+  "type": "NORMAL",
+  "directoryName": "Bitbucket Internal Directory",
+  "deletable": true,
+  "lastAuthenticationTimestamp": 1368145580548,
+  "mutableDetails": true,
+  "mutableGroups": true
+}

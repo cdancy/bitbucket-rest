@@ -25,6 +25,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -217,4 +218,16 @@ public interface PullRequestApi {
                                @PathParam("repo") String repo,
                                @PathParam("pullRequestId") long pullRequestId,
                                @PathParam("userSlug") String userSlug);
+
+    @Named("pull-request:add-participant")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm46358292595040"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/participants/{userSlug}")
+    @Fallback(ParticipantsOnError.class)
+    @PUT
+    Participants addParticipant(@PathParam("project") String project,
+                                 @PathParam("repo") String repo,
+                                 @PathParam("pullRequestId") long pullRequestId,
+                                 @PathParam("userSlug") String userSlug,
+                                 @BinderParam(BindToJsonPayload.class) CreateParticipants participants);
 }

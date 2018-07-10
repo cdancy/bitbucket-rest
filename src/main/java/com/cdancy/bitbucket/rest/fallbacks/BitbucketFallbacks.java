@@ -51,6 +51,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
@@ -129,6 +130,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class UserOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createUserFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -478,6 +489,10 @@ public final class BitbucketFallbacks {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
+    public static User createUserFromErrors(final List<Error> errors) {
+        return User.create(errors, null, null, -1, null, false, null, null, null, false, -1, false, false);
+    }
+
     public static Condition createConditionFromErrors(final List<Error> errors) {
         return Condition.create(null, null, null, null, null, null, errors);
     }
@@ -629,7 +644,7 @@ public final class BitbucketFallbacks {
 
     /**
      * Parse a single Error object from a given JsonObject.
-     * 
+     *
      * @param obj the JsonObject to parse an Error from.
      * @return Error object derived from parsing the passed JsonObject.
      */
