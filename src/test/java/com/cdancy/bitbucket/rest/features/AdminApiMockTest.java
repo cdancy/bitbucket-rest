@@ -39,6 +39,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
     private static final String USERS_POSTFIX = "/admin/users";
     private static final String USER_TEXT = "user";
     private static final String NOTIFY_TEXT = "notify";
+    private static final String DELETE_METHOD = "DELETE";
 
     private final String limitKeyword = "limit";
     private final String startKeyword = "start";
@@ -181,7 +182,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertThat(user.errors()).isEmpty();
 
             final Map<String, ?> queryParams = ImmutableMap.of("name", USER_TEXT);
-            assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION + USERS_POSTFIX, queryParams);
+            assertSent(server, DELETE_METHOD, restApiPath + BitbucketApiMetadata.API_VERSION + USERS_POSTFIX, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -201,7 +202,7 @@ public class AdminApiMockTest extends BaseBitbucketMockTest {
             assertThat(user.errors()).isNotEmpty();
 
             final Map<String, ?> queryParams = ImmutableMap.of("name", USER_TEXT);
-            assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION + USERS_POSTFIX, queryParams);
+            assertSent(server, DELETE_METHOD, restApiPath + BitbucketApiMetadata.API_VERSION + USERS_POSTFIX, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
