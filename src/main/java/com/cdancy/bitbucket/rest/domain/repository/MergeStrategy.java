@@ -25,10 +25,12 @@ import org.jclouds.json.SerializedNames;
 public abstract class MergeStrategy {
 
     public enum MergeStrategyId {
-        
-        NO_FF("no-ff"),
+
         FF("ff"),
         FF_ONLY("ff-only"),
+        NO_FF("no-ff"),
+        REBASE_NO_FF("rebase-no-ff"),
+        REBASE_FF_ONLY("rebase-ff-only"),
         SQUASH("squash"),
         SQUASH_FF_ONLY("squash-ff-only");
 
@@ -78,17 +80,17 @@ public abstract class MergeStrategy {
     public abstract String name();
 
     @SerializedNames({ "description", "enabled", "flag", "id", "name"})
-    public static MergeStrategy create(final String description, 
-            final Boolean enabled, 
-            final String flag, 
-            final MergeStrategyId id, 
+    public static MergeStrategy create(final String description,
+            final Boolean enabled,
+            final String flag,
+            final MergeStrategyId id,
             final String name) {
-        
+
         return new AutoValue_MergeStrategy(
-                description, 
-                enabled, 
-                flag, 
-                id, 
+                description,
+                enabled,
+                flag,
+                id,
                 name);
     }
 }
