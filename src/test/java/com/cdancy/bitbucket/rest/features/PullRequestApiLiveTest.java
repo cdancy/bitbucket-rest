@@ -66,7 +66,6 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     private String repo;
     private String branchToMerge;
     private Participants participants;
-    private User foundUser;
     private int prId = -1;
     private int version = -1;
 
@@ -198,19 +197,13 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testAssignDefaultParticipantsOnError")
     public void testAssignParticipants() {
-        final UserPage userPage = api.adminApi().listUsersByGroup(defaultBitbucketGroup, null, null, null);
-        assertThat(userPage).isNotNull();
-        assertThat(userPage.size() > 0).isTrue();
+        final User testUser = getTestUser();
+        final RequestStatus userPermissionsStatus = api.repositoryApi().createPermissionsByUser(project, repo, "REPO_READ", testUser.slug());
+        assertThat(userPermissionsStatus).isNotNull();
+        assertThat(userPermissionsStatus.value()).isNotNull();
+        assertThat(userPermissionsStatus.errors()).isEmpty();
 
-        for (final User possibleUser : userPage.values()) {
-            if (!possibleUser.name().equalsIgnoreCase(participants.user().name())) {
-                foundUser = possibleUser;
-                break;
-            }
-        }
-        assertThat(foundUser).isNotNull();
-
-        final CreateParticipants createParticipants = CreateParticipants.create(foundUser,
+        final CreateParticipants createParticipants = CreateParticipants.create(testUser,
                 participants.lastReviewedCommit(), Participants.Role.REVIEWER, participants.approved(), participants.status());
         final Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
         assertThat(localParticipants).isNotNull();
@@ -219,7 +212,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testAssignParticipants")
     public void testDeleteParticipant() {
-        final RequestStatus success = api().deleteParticipant(project, repo, prId, foundUser.slug());
+        final RequestStatus success = api().deleteParticipant(project, repo, prId, getTestUser().slug());
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();
