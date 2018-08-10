@@ -162,6 +162,13 @@ public class TestUtilities extends BitbucketUtils {
             assertThat(project.errors().isEmpty()).isTrue();
         }
 
+        // create test repo that remains empty
+        final String emptyRepoKey = randomStringLettersOnly();
+        final CreateRepository createEmptyRepository = CreateRepository.create(emptyRepoKey, true);
+        final Repository emptyRepository = api.repositoryApi().create(projectKey, createEmptyRepository);
+        assertThat(emptyRepository).isNotNull();
+        assertThat(emptyRepository.errors().isEmpty()).isTrue();
+
         // create test repo
         final String repoKey = randomStringLettersOnly();
         final CreateRepository createRepository = CreateRepository.create(repoKey, true);
@@ -196,7 +203,7 @@ public class TestUtilities extends BitbucketUtils {
             throw Throwables.propagate(e);
         }
 
-        return new GeneratedTestContents(project, repository, projectPreviouslyExists);
+        return new GeneratedTestContents(project, repository, emptyRepository, projectPreviouslyExists);
     }
 
     /**
@@ -275,6 +282,13 @@ public class TestUtilities extends BitbucketUtils {
 
         final Project project = generatedTestContents.project;
         final Repository repository = generatedTestContents.repository;
+        final Repository emptyRepository = generatedTestContents.emptyRepository;
+
+        // delete the empty repository
+        final RequestStatus emptyRepoSuccess = api.repositoryApi().delete(project.key(), emptyRepository.name());
+        assertThat(emptyRepoSuccess).isNotNull();
+        assertThat(emptyRepoSuccess.value()).isTrue();
+        assertThat(emptyRepoSuccess.errors()).isEmpty();
 
         // delete repository
         final RequestStatus success = api.repositoryApi().delete(project.key(), repository.name());

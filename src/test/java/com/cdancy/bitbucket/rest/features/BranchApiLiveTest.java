@@ -51,6 +51,7 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private String projectKey;
     private String repoKey;
+    private String emptyRepoKey;
     private String defaultBranchId;
     private String commitHash;
 
@@ -63,12 +64,21 @@ public class BranchApiLiveTest extends BaseBitbucketApiLiveTest {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
         this.projectKey = generatedTestContents.project.key();
         this.repoKey = generatedTestContents.repository.name();
+        this.emptyRepoKey = generatedTestContents.emptyRepository.name();
 
         final Branch branch = api().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
         assertThat(branch.errors().isEmpty()).isTrue();
         defaultBranchId = branch.id();
         commitHash = branch.latestCommit();
+    }
+
+    @Test
+    public void testCreateBranchInEmptyRepository() {
+        final CreateBranch createBranch = CreateBranch.create(branchName, commitHash, null);
+        final Branch branch = api().create(projectKey, emptyRepoKey, createBranch);
+        assertThat(branch).isNotNull();
+        assertThat(branch.errors().isEmpty()).isFalse();
     }
 
     @Test

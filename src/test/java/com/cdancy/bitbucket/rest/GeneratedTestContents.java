@@ -27,6 +27,7 @@ public class GeneratedTestContents {
     
     public final Project project;
     public final Repository repository;
+    public final Repository emptyRepository;
     
     public final boolean projectPreviouslyExists;
 
@@ -39,10 +40,12 @@ public class GeneratedTestContents {
      */
     public GeneratedTestContents(final Project project, 
             final Repository repository, 
+            final Repository emptyRepository,
             final boolean projectPreviouslyExists) {
         
         this.project = project;
         this.repository = repository;
+        this.emptyRepository = emptyRepository;
         this.projectPreviouslyExists = projectPreviouslyExists;
     }
 }

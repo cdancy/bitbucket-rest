@@ -19,6 +19,9 @@ package com.cdancy.bitbucket.rest.fallbacks;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.propagate;
+import static com.google.common.base.Predicates.equalTo;
+
+import static org.jclouds.http.HttpUtils.returnValueOnCodeOrNull;
 
 import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
@@ -89,7 +92,14 @@ public final class BitbucketFallbacks {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
-                return createBranchFromErrors(getErrors(throwable.getMessage()));
+
+                // if the repo is empty, and thus has no default branch, a 204 is returned with 'null' as the content
+                final Boolean obj = returnValueOnCodeOrNull(throwable, true, equalTo(204));
+                if (obj != null) {
+                    return Branch.create(null, null, null, null, null, false, null, null);
+                } else {
+                    return createBranchFromErrors(getErrors(throwable.getMessage()));
+                }
             }
             throw propagate(throwable);
         }
