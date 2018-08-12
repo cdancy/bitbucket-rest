@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest;
 
+import java.util.List;
+
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 
@@ -28,6 +30,9 @@ public class GeneratedTestContents {
     public final Project project;
     public final Repository repository;
     public final Repository emptyRepository;
+
+    // Holds the list of branches, excluding master.
+    public final List<String> branches;
     
     public final boolean projectPreviouslyExists;
 
@@ -41,11 +46,13 @@ public class GeneratedTestContents {
     public GeneratedTestContents(final Project project, 
             final Repository repository, 
             final Repository emptyRepository,
-            final boolean projectPreviouslyExists) {
+            final boolean projectPreviouslyExists,
+            final List<String> branches) {
         
         this.project = project;
         this.repository = repository;
         this.emptyRepository = emptyRepository;
         this.projectPreviouslyExists = projectPreviouslyExists;
+        this.branches = branches;
     }
 }

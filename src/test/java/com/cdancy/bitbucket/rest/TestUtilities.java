@@ -36,6 +36,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -128,7 +129,7 @@ public class TestUtilities extends BitbucketUtils {
     }
 
     /**
-     * Initialize live test contents.
+     * Initialize live test contents with master and one branch.
      *
      * @param endpoint Bitbucket endpoint.
      * @param credential Bitbucket credential string.
@@ -136,11 +137,31 @@ public class TestUtilities extends BitbucketUtils {
      * @return GeneratedTestContents to use.
      */
     public static synchronized GeneratedTestContents initGeneratedTestContents(final String endpoint,
-                                                                                final BitbucketAuthentication credential,
-                                                                                final BitbucketApi api) {
+                                                                               final BitbucketAuthentication credential,
+                                                                               final BitbucketApi api) {
+        return initGeneratedTestContents(endpoint, credential, api, 1);
+    }
+
+    /**
+     * Initialize live test contents with a master branch, and zero or more branches to create in addition to master.
+     *
+     * @param endpoint Bitbucket endpoint.
+     * @param credential Bitbucket credential string.
+     * @param api Bitbucket api object.
+     * @param numberOfBranchesToCreate The number of branches to create, excluding master. Defaults to 0 (no additional branch, just master).
+     * @return GeneratedTestContents to use.
+     */
+    public static synchronized GeneratedTestContents initGeneratedTestContents(final String endpoint,
+                                                                               final BitbucketAuthentication credential,
+                                                                               final BitbucketApi api,
+                                                                               int numberOfBranchesToCreate) {
         assertThat(endpoint).isNotNull();
         assertThat(credential).isNotNull();
         assertThat(api).isNotNull();
+
+        if (numberOfBranchesToCreate <= 0) {
+            numberOfBranchesToCreate = 0;
+        }
 
         // get possibly existing projectKey that user passed in
         String projectKey = System.getProperty("test.bitbucket.project");
@@ -184,6 +205,8 @@ public class TestUtilities extends BitbucketUtils {
         final File generatedFileDir = new File(testDir.toFile(), randomName);
         assertThat(generatedFileDir.mkdirs()).isTrue();
 
+        List<String> branches;
+
         try {
             final String foundCredential = getDefaultUser(credential, api).slug();
             final URL endpointURL = new URL(endpoint);
@@ -197,23 +220,28 @@ public class TestUtilities extends BitbucketUtils {
                     + projectKey.toLowerCase() + "/"
                     + repoKey.toLowerCase() + ".git";
 
-            generateGitContentsAndPush(generatedFileDir, generatedEndpoint);
+            branches = generateGitContentsAndPush(generatedFileDir, generatedEndpoint, numberOfBranchesToCreate);
 
         } catch (final Exception e) {
             throw Throwables.propagate(e);
         }
 
-        return new GeneratedTestContents(project, repository, emptyRepository, projectPreviouslyExists);
+        return new GeneratedTestContents(project, repository, emptyRepository, projectPreviouslyExists, branches);
     }
 
     /**
-     * Initialize git repository and add some randomly generated files.
+     * Initialize git repository and add some randomly generated files on master and on a branch.
      *
      * @param gitDirectory directory to initialize and create files within.
      * @param gitRepoURL git repository URL with embedded credentials.
+     * @param numberOfBranchesToCreate The number of branches to create, excluding master.
+     * @return The name of the branch that was created.
      * @throws Exception if git repository could not be created or files added.
      */
-    public static void generateGitContentsAndPush(final File gitDirectory, final String gitRepoURL) throws Exception {
+    public static synchronized List<String> generateGitContentsAndPush(
+            final File gitDirectory,
+            final String gitRepoURL,
+            final int numberOfBranchesToCreate) throws Exception {
 
         // 1.) initialize git repository
         final String initGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "init"), gitDirectory.toPath());
@@ -247,7 +275,19 @@ public class TestUtilities extends BitbucketUtils {
                 "master"), gitDirectory.toPath());
         System.out.println("git-push: " + pushGit);
 
-        // 4.) create branch
+        final List<String> branches = new ArrayList<>();
+        for (int count = 0; count < numberOfBranchesToCreate; count++) {
+            branches.add(createPopulateAndPushBranch(gitDirectory, gitRepoURL));
+        }
+        return branches;
+    }
+
+    /**
+     * Create, populate and push a branch.
+     * @return The name of the branch.
+     */
+    private static synchronized String createPopulateAndPushBranch(final File gitDirectory, final String gitRepoURL) throws Exception {
+        // 1.) create branch
         final String generatedBranchName = randomString();
         final String branchGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND,
                 "checkout", "-b",
@@ -255,18 +295,18 @@ public class TestUtilities extends BitbucketUtils {
                 gitDirectory.toPath());
         System.out.println("git-branch: " + branchGit.trim());
 
-
-        // 5.) generate random file for new branch
+        // 2.) generate random file for new branch
         final Path genFile = initGeneratedFile(gitDirectory.toPath());
         final String addGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "add", genFile.toFile().getPath()), gitDirectory.toPath());
         System.out.println("git-branch-add: " + addGit.trim());
         final String commitGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "commit", "-m", "added"), gitDirectory.toPath());
         System.out.println("git-branch-commit: " + commitGit.trim());
 
-        // 6.) push branch
+        // 3.) push branch
         final List<String> args = Arrays.asList(GIT_COMMAND, "push", "--tags", "-u", gitRepoURL, generatedBranchName);
         final String pushBranchGit = TestUtilities.executionToString(args, gitDirectory.toPath());
         System.out.println("git-branch-push: " + pushBranchGit);
+        return generatedBranchName;
     }
 
     /**
