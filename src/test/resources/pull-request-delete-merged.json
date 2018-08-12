@@ -1,0 +1,10 @@
+{
+    "errors": [
+        {
+            "context": null,
+            "message": "This pull request has already been merged and cannot be deleted.",
+            "exceptionName":
+            "com.atlassian.bitbucket.pull.IllegalPullRequestStateException"
+        }
+    ]
+}
