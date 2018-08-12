@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import com.cdancy.bitbucket.rest.options.DeletePullRequest;
 import com.google.common.collect.Lists;
 import org.jclouds.ContextBuilder;
 import org.testng.annotations.Test;
@@ -56,6 +57,7 @@ import java.io.IOException;
 @Test(groups = "live", testName = "PullRequestApiLiveTest", singleThreaded = true)
 public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
+    private static final int NUMBER_OF_GENERATED_BRANCHES = 2;
     private static final String TEST_USER_NAME = "TestUserName2";
     private static final String TEST_USER_PASSWORD = "TestUserPassword2";
 
@@ -65,46 +67,63 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     private String project;
     private String repo;
     private String branchToMerge;
+    private String branchForPrDelete;
     private Participants participants;
+
+    // These are for the branch to merge
     private int prId = -1;
     private int version = -1;
 
+    // This is the pull-request to be deleted
+    private PullRequest prForDelete;
+
     @BeforeClass
     public void init() {
-        generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
+        generatedTestContents = TestUtilities.initGeneratedTestContents(
+            this.endpoint,
+            this.bitbucketAuthentication,
+            this.api,
+            NUMBER_OF_GENERATED_BRANCHES);
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
 
         final BranchPage branchPage = api.branchApi().list(project, repo, null, null, null, null, null, null);
         assertThat(branchPage).isNotNull();
         assertThat(branchPage.errors().isEmpty()).isTrue();
-        assertThat(branchPage.values().size()).isEqualTo(2);
+        assertThat(branchPage.values().size()).isEqualTo(NUMBER_OF_GENERATED_BRANCHES + 1); // the constant 1 accounts for the master branch
 
         for (final Branch branch : branchPage.values()) {
-            if (!branch.id().endsWith("master")) {
+            if (branch.id().endsWith(generatedTestContents.branches.get(0))) {
                 this.branchToMerge = branch.id();
-                break;
+            } else if (branch.id().endsWith(generatedTestContents.branches.get(1))) {
+                this.branchForPrDelete = branch.id();
             }
         }
 
         assertThat(branchToMerge).isNotNull();
+        assertThat(branchForPrDelete).isNotNull();
 
         addTestUser();
         testUserApi = apiForTestUser();
     }
 
-    @Test
-    public void createPullRequest() {
+    private PullRequest createPullRequest(final String branchName) {
         final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(project);
         final MinimalRepository repository = MinimalRepository.create(repo, null, proj);
-        final Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
+        final Reference fromRef = Reference.create(branchName, repository, branchName);
         final Reference toRef = Reference.create(null, repository);
         final CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         final PullRequest pr = api().create(project, repo, cpr);
         assertThat(pr).isNotNull();
         assertThat(project.equals(pr.fromRef().repository().project().key())).isTrue();
         assertThat(repo.equals(pr.fromRef().repository().name())).isTrue();
+        return pr;
+    }
+
+    @Test
+    public void createPullRequest() {
+        final PullRequest pr = createPullRequest(branchToMerge);
         prId = pr.id();
         version = pr.version();
     }
@@ -274,6 +293,44 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(localParticipants).isNotNull();
         assertThat(localParticipants.errors()).isEmpty();
         assertThat(localParticipants.status()).isEqualByComparingTo(Participants.Status.APPROVED);
+    }
+
+    @Test (dependsOnMethods = "testMergePullRequest")
+    public void testDeleteMergedPullRequest() {
+        final PullRequest pr = api().get(project, repo, prId);
+        final DeletePullRequest deletePullRequest = DeletePullRequest.create(pr.version());
+        final RequestStatus success = api().delete(project, repo, pr.id(), deletePullRequest);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test
+    public void testDeleteBadVersionOfPullRequest() {
+        this.prForDelete = createPullRequest(branchForPrDelete);
+        final DeletePullRequest deletePullRequest = DeletePullRequest.create(9999);
+        final RequestStatus success = api().delete(project, repo, prForDelete.id(), deletePullRequest);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteBadVersionOfPullRequest")
+    public void testDeleteNonExistentPullRequest() {
+        final DeletePullRequest deletePullRequest = DeletePullRequest.create(prForDelete.version());
+        final RequestStatus success = api().delete(project, repo, 9999, deletePullRequest);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteNonExistentPullRequest")
+    public void testDeletePullRequest() {
+        final DeletePullRequest deletePullRequest = DeletePullRequest.create(prForDelete.version());
+        final RequestStatus success = api().delete(project, repo, prForDelete.id(), deletePullRequest);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
     }
 
     @AfterClass
