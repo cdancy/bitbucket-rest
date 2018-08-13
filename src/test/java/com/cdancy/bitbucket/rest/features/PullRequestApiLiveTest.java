@@ -33,7 +33,6 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
-import com.cdancy.bitbucket.rest.options.DeletePullRequest;
 import com.google.common.collect.Lists;
 import org.jclouds.ContextBuilder;
 import org.testng.annotations.Test;
@@ -287,8 +286,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testMergePullRequest")
     public void testDeleteMergedPullRequest() {
         final PullRequest pr = api().get(project, repo, prId);
-        final DeletePullRequest deletePullRequest = DeletePullRequest.create(pr.version());
-        final RequestStatus success = api().delete(project, repo, pr.id(), deletePullRequest);
+        final RequestStatus success = api().delete(project, repo, pr.id(), pr.version());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -301,8 +299,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         terminateGitContents();
         setupGit();
         createPullRequest();
-        final DeletePullRequest deletePullRequest = DeletePullRequest.create(9999);
-        final RequestStatus success = api().delete(project, repo, prId, deletePullRequest);
+        final RequestStatus success = api().delete(project, repo, prId, 9999);
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -310,8 +307,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testDeleteBadVersionOfPullRequest")
     public void testDeleteNonExistentPullRequest() {
-        final DeletePullRequest deletePullRequest = DeletePullRequest.create(version);
-        final RequestStatus success = api().delete(project, repo, 9999, deletePullRequest);
+        final RequestStatus success = api().delete(project, repo, 9999, version);
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -319,8 +315,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testDeleteNonExistentPullRequest")
     public void testDeletePullRequest() {
-        final DeletePullRequest deletePullRequest = DeletePullRequest.create(version);
-        final RequestStatus success = api().delete(project, repo, prId, deletePullRequest);
+        final RequestStatus success = api().delete(project, repo, prId, version);
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();

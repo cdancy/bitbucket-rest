@@ -44,7 +44,6 @@ import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
-import com.cdancy.bitbucket.rest.options.DeletePullRequest;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -705,8 +704,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         try {
             final Long pullRequestId = 839L;
             final Long prVersion = 1L;
-            final DeletePullRequest dpr = DeletePullRequest.create(prVersion);
-            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, dpr);
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, prVersion);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
@@ -728,8 +726,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         try {
             final Long pullRequestId = 839L;
             final Long badPrVersion = 1L;
-            final DeletePullRequest dpr = DeletePullRequest.create(badPrVersion);
-            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, dpr);
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, badPrVersion);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
@@ -751,8 +748,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         try {
             final Long pullRequestId = 999L;
             final Long prVersion = 1L;
-            final DeletePullRequest dpr = DeletePullRequest.create(prVersion);
-            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, dpr);
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, prVersion);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
@@ -775,8 +771,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         try {
             final Long pullRequestId = 999L;
             final Long prVersion = 1L;
-            final DeletePullRequest dpr = DeletePullRequest.create(prVersion);
-            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, dpr);
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, prVersion);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
