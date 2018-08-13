@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import com.cdancy.bitbucket.rest.options.DeletePullRequest;
 import com.google.common.collect.Lists;
 import org.jclouds.ContextBuilder;
 import org.testng.annotations.Test;
@@ -274,6 +275,16 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(localParticipants).isNotNull();
         assertThat(localParticipants.errors()).isEmpty();
         assertThat(localParticipants.status()).isEqualByComparingTo(Participants.Status.APPROVED);
+    }
+
+    @Test (dependsOnMethods = "testMergePullRequest")
+    public void testDeleteMergedPullRequest() {
+        final PullRequest pr = api().get(project, repo, prId);
+        final DeletePullRequest deletePullRequest = DeletePullRequest.create(pr.version());
+        final RequestStatus success = api().delete(project, repo, pr.id(), deletePullRequest);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
     }
 
     @AfterClass
