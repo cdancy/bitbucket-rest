@@ -42,6 +42,7 @@ dependencies {
     testCompile ('com.squareup.okhttp:mockwebserver:2.7.5') 
     testCompile ('ch.qos.logback:logback-core:1.2.3') 
     testCompile ('ch.qos.logback:logback-classic:1.2.3')
+    testCompile ('commons-io:commons-io:2.6')
 }
 
 ext.compatibilityVersion = '1.8'

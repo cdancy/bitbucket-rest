@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import org.apache.commons.io.FileUtils;
 import org.jclouds.util.Strings2;
 
 /**
@@ -57,6 +58,7 @@ public class TestUtilities extends BitbucketUtils {
     private static final char[] CHARS = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 
     private static User defaultUser;
+    private static File gitDirectory;
 
     /**
      * Get the default User from the passed credential String. Once user
@@ -181,8 +183,8 @@ public class TestUtilities extends BitbucketUtils {
         assertThat(testDir.toFile().isDirectory()).isTrue();
 
         final String randomName = randomString();
-        final File generatedFileDir = new File(testDir.toFile(), randomName);
-        assertThat(generatedFileDir.mkdirs()).isTrue();
+        gitDirectory = new File(testDir.toFile(), randomName);
+        assertThat(gitDirectory.mkdirs()).isTrue();
 
         try {
             final String foundCredential = getDefaultUser(credential, api).slug();
@@ -197,7 +199,7 @@ public class TestUtilities extends BitbucketUtils {
                     + projectKey.toLowerCase() + "/"
                     + repoKey.toLowerCase() + ".git";
 
-            generateGitContentsAndPush(generatedFileDir, generatedEndpoint);
+            generateGitContentsAndPush(generatedEndpoint);
 
         } catch (final Exception e) {
             throw Throwables.propagate(e);
@@ -209,11 +211,10 @@ public class TestUtilities extends BitbucketUtils {
     /**
      * Initialize git repository and add some randomly generated files.
      *
-     * @param gitDirectory directory to initialize and create files within.
      * @param gitRepoURL git repository URL with embedded credentials.
      * @throws Exception if git repository could not be created or files added.
      */
-    public static void generateGitContentsAndPush(final File gitDirectory, final String gitRepoURL) throws Exception {
+    public static void generateGitContentsAndPush(final String gitRepoURL) throws Exception {
 
         // 1.) initialize git repository
         final String initGit = TestUtilities.executionToString(Arrays.asList(GIT_COMMAND, "init"), gitDirectory.toPath());
@@ -303,6 +304,9 @@ public class TestUtilities extends BitbucketUtils {
             assertThat(deleteStatus.value()).isTrue();
             assertThat(deleteStatus.errors()).isEmpty();
         }
+
+        // delete the local git directory
+        assertThat(FileUtils.deleteQuietly(gitDirectory)).isTrue();
     }
 
     /**
