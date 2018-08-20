@@ -1,4 +1,6 @@
-### Version 2.1.6 (TBA)
+### Version 2.2.1 (TBA)
+
+### Version 2.2.0 (8/20/2018)
 * ADDED: `PullRequestApi` gained endpoint `delete`. - [PR 155](https://github.com/cdancy/bitbucket-rest/pull/155)
 * REFACTOR: `BitbucketClient` now implements `Closeable` to better work with jdk8+ try-with-resources.
 * ADDED: Bump `jclouds` to `2.1.1`.
