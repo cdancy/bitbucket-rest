@@ -20,11 +20,14 @@ package com.cdancy.bitbucket.rest;
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
 import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 import com.google.common.collect.Lists;
+
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Properties;
 import org.jclouds.ContextBuilder;
 import org.jclouds.javax.annotation.Nullable;
 
-public final class BitbucketClient {
+public final class BitbucketClient implements Closeable {
 
     private final String endPoint;
     private final BitbucketAuthentication credentials;
@@ -114,6 +117,13 @@ public final class BitbucketClient {
     
     public static Builder builder() {
         return new Builder();
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (this.api() != null) {
+            this.api().close();
+        }
     }
 
     public static class Builder {
