@@ -1,4 +1,5 @@
 ### Version 2.1.6 (TBA)
+* ADDED: `PullRequestApi` gained endpoint `delete`. - [PR 155](https://github.com/cdancy/bitbucket-rest/pull/155
 
 ### Version 2.1.5 (7/10/2018)
 * ADDED: `AdminApi` gained endpoint `createUser`. - [PR 145](https://github.com/cdancy/bitbucket-rest/pull/145)
