@@ -1,5 +1,10 @@
 ### Version 2.1.6 (TBA)
 * ADDED: `PullRequestApi` gained endpoint `delete`. - [PR 155](https://github.com/cdancy/bitbucket-rest/pull/155)
+* REFACTOR: `BitbucketClient` now implements `Closeable` to better work with jdk8+ try-with-resources.
+* ADDED: Bump `jclouds` to `2.1.1`.
+* ADDED: Bump `AutoValue` to `1.6.2`
+* ADDED: Bump `gradle-bintray-plugin` to `1.8.4`
+* ADDED: Bump `gradle` to `4.9`
 
 ### Version 2.1.5 (7/10/2018)
 * ADDED: `AdminApi` gained endpoint `createUser`. - [PR 145](https://github.com/cdancy/bitbucket-rest/pull/145)
