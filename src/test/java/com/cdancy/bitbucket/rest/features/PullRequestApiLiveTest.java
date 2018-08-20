@@ -69,8 +69,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
     private int prId = -1;
     private int version = -1;
 
-    @BeforeClass
-    public void init() {
+    private void setupGit() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
@@ -88,13 +87,16 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         }
 
         assertThat(branchToMerge).isNotNull();
+    }
 
+    @BeforeClass
+    public void init() {
+        setupGit();
         addTestUser();
         testUserApi = apiForTestUser();
     }
 
-    @Test
-    public void createPullRequest() {
+    private void createPullRequest() {
         final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(project);
         final MinimalRepository repository = MinimalRepository.create(repo, null, proj);
@@ -109,7 +111,12 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         version = pr.version();
     }
 
-    @Test (dependsOnMethods = "createPullRequest")
+    @Test
+    public void testCreatePullRequest() {
+        createPullRequest();
+    }
+
+    @Test (dependsOnMethods = "testCreatePullRequest")
     public void testGetPullRequest() {
         final PullRequest pr = api().get(project, repo, prId);
         assertThat(pr).isNotNull();
@@ -276,11 +283,54 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(localParticipants.status()).isEqualByComparingTo(Participants.Status.APPROVED);
     }
 
+    @Test (dependsOnMethods = "testMergePullRequest")
+    public void testDeleteMergedPullRequest() {
+        final PullRequest pr = api().get(project, repo, prId);
+        final RequestStatus success = api().delete(project, repo, pr.id(), pr.version());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteMergedPullRequest")
+    public void testDeleteBadVersionOfPullRequest() {
+        // Since the PR has been merged by another test, we now need a new PR.
+        // To get a new PR, we need to create new branch in git, push it and open a new PR with it.
+        terminateGitContents();
+        setupGit();
+        createPullRequest();
+        final RequestStatus success = api().delete(project, repo, prId, 9999);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteBadVersionOfPullRequest")
+    public void testDeleteNonExistentPullRequest() {
+        final RequestStatus success = api().delete(project, repo, 9999, version);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteNonExistentPullRequest")
+    public void testDeletePullRequest() {
+        final RequestStatus success = api().delete(project, repo, prId, version);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+    }
+
+
     @AfterClass
     public void fin() throws IOException {
-        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
+        terminateGitContents();
         testUserApi.close();
         deleteTestUser();
+    }
+
+    private void terminateGitContents() {
+        TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private PullRequestApi api() {

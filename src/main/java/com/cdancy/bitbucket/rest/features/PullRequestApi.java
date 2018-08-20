@@ -40,6 +40,8 @@ import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
+import org.jclouds.rest.annotations.Payload;
+import org.jclouds.rest.annotations.PayloadParam;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
@@ -102,6 +104,19 @@ public interface PullRequestApi {
     PullRequest create(@PathParam("project") String project,
                        @PathParam("repo") String repo,
                        @BinderParam(BindToJsonPayload.class) CreatePullRequest createPullRequest);
+
+    @Named("pull-request:delete")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.13.0/bitbucket-rest.html?utm_source=%2Fstatic%2Frest%2Fbitbucket-server%2Flatest%2Fbitbucket-rest.html&utm_medium=301#idm46209337261168"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @Payload("%7B \"version\": \"{version}\" %7D")
+    @DELETE
+    RequestStatus delete(@PathParam("project") String project,
+                         @PathParam("repo") String repo,
+                         @PathParam("pullRequestId") long pullRequestId,
+                         @PayloadParam("version") long version);
 
     @Named("pull-request:merge")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278164320"})

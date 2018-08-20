@@ -64,6 +64,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     private final String restApiPath = "/rest/api/";
     private final String getMethod = "GET";
     private final String postMethod = "POST";
+    private final String deleteMethod = "DELETE";
 
     private final String limitKeyword = "limit";
     private final String versionKeyword = "version";
@@ -693,4 +694,94 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+
+    public void testDeleteMergedPullRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-delete-merged.json")).setResponseCode(409));
+
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final Long pullRequestId = 839L;
+            final Long prVersion = 1L;
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, prVersion);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
+                    + pullRequestId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteBadVersionOfPullRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-delete-invalid-version.json")).setResponseCode(409));
+
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final Long pullRequestId = 839L;
+            final Long badPrVersion = 1L;
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, badPrVersion);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
+                    + pullRequestId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeleteNonExistentPullRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-delete-non-existent.json")).setResponseCode(404));
+
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final Long pullRequestId = 999L;
+            final Long prVersion = 1L;
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, prVersion);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isFalse();
+            assertThat(success.errors()).isNotEmpty();
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
+                    + pullRequestId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testDeletePullRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+        //server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-delete.json")).setResponseCode(204));
+        server.enqueue(new MockResponse().setResponseCode(204));
+
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final Long pullRequestId = 999L;
+            final Long prVersion = 1L;
+            final RequestStatus success = api.delete(projectKey, repoKey, pullRequestId, prVersion);
+            assertThat(success).isNotNull();
+            assertThat(success.value()).isTrue();
+            assertThat(success.errors()).isEmpty();
+            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + projectsPath + projectKey + reposPath + repoKey + pullRequestsPath
+                    + pullRequestId);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
 }
