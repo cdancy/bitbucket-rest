@@ -25,6 +25,7 @@ import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_SYSTEM_PROPE
 import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_ENVIRONMENT_VARIABLE;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_SYSTEM_PROPERTY;
 
+import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
@@ -51,7 +52,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateClient() {
-        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, null, null);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
         assertThat(userPage.errors()).isEmpty();
@@ -82,7 +83,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
                 .builder()
                 .credentials(TestUtilities.randomStringLettersOnly())
                 .build();
-        final BitbucketClient client = new BitbucketClient(this.endpoint, auth, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, auth, null, null);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
         assertThat(userPage.errors()).isNotEmpty();
@@ -93,7 +94,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         clearSystemProperties();
 
         System.setProperty(ENDPOINT_SYSTEM_PROPERTY, this.endpoint);
-        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null, null);
         assertThat(client.endPoint()).isEqualTo(this.endpoint);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
@@ -106,7 +107,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         clearSystemProperties();
 
         System.setProperty(ENDPOINT_SYSTEM_PROPERTY, DUMMY_ENDPOINT);
-        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null, null);
         assertThat(client.endPoint()).isEqualTo(DUMMY_ENDPOINT);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
@@ -126,7 +127,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
             System.setProperty(TOKEN_SYSTEM_PROPERTY, correctAuth);
         }
 
-        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null, null);
         assertThat(client.authType()).isEqualTo(currentAuthType);
         assertThat(client.authValue()).isEqualTo(correctAuth);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
@@ -147,7 +148,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
             System.setProperty(TOKEN_SYSTEM_PROPERTY, wrongAuth);
         }
 
-        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null, null);
         assertThat(client.authType()).isEqualTo(currentAuthType);
         assertThat(client.authValue()).isEqualTo(wrongAuth);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
@@ -163,7 +164,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         envVars.put(ENDPOINT_ENVIRONMENT_VARIABLE, this.endpoint);
         TestUtilities.addEnvironmentVariables(envVars);
 
-        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null, null);
         assertThat(client.endPoint()).isEqualTo(this.endpoint);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
@@ -178,7 +179,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         envVars.put(ENDPOINT_ENVIRONMENT_VARIABLE, DUMMY_ENDPOINT);
         TestUtilities.addEnvironmentVariables(envVars);
 
-        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(null, this.bitbucketAuthentication, null, null);
         assertThat(client.endPoint()).isEqualTo(DUMMY_ENDPOINT);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
@@ -209,7 +210,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         envVars.put(correctAuthType, correctAuth);
         TestUtilities.addEnvironmentVariables(envVars);
 
-        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null, null);
         assertThat(client.authType()).isEqualTo(currentAuthType);
         assertThat(client.authValue()).isEqualTo(correctAuth);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
@@ -241,7 +242,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         envVars.put(correctAuthType, wrongAuth);
         TestUtilities.addEnvironmentVariables(envVars);
 
-        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, null, null, null);
         assertThat(client.authType()).isEqualTo(currentAuthType);
         assertThat(client.authValue()).isEqualTo(wrongAuth);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
@@ -254,7 +255,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateClientWithOverridesAndFail() {
         final Properties properties = new Properties();
         properties.put("jclouds.so-timeout", -1);
-        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, properties);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, properties, null);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
         assertThat(userPage.errors()).isNotEmpty();
@@ -265,7 +266,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
     public void testCreateClientWithOverridesFromSystemPropertiesAndFail() {
         System.clearProperty(SYSTEM_JCLOUDS_TIMEOUT);
         System.setProperty(SYSTEM_JCLOUDS_TIMEOUT, "-1");
-        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, null, null);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
         assertThat(userPage.errors()).isNotEmpty();
@@ -279,7 +280,7 @@ public class BitbucketClientLiveTest extends BaseBitbucketApiLiveTest {
         envVars.put(ENVIRONMENT_JCLOUDS_TIMEOUT, "-1");
         TestUtilities.addEnvironmentVariables(envVars);
 
-        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, null);
+        final BitbucketClient client = new BitbucketClient(this.endpoint, this.bitbucketAuthentication, null, null);
         final UserPage userPage = client.api().adminApi().listUsers(null, 1, 1);
         assertThat(userPage).isNotNull();
         assertThat(userPage.errors()).isNotEmpty();
