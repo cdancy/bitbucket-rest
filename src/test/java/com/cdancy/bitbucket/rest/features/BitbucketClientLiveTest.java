@@ -25,7 +25,6 @@ import static com.cdancy.bitbucket.rest.BitbucketConstants.ENDPOINT_SYSTEM_PROPE
 import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_ENVIRONMENT_VARIABLE;
 import static com.cdancy.bitbucket.rest.BitbucketConstants.TOKEN_SYSTEM_PROPERTY;
 
-import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
