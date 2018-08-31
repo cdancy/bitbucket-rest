@@ -1,4 +1,4 @@
-### Version 2.2.1 (TBA)
+### Version 2.2.1 (8/31/2018)
 * ADDED: `BitbucketClient` exposes `modules` method on builder and constructor. - [PR 157](https://github.com/cdancy/bitbucket-rest/pull/157)
 
 ### Version 2.2.0 (8/20/2018)
