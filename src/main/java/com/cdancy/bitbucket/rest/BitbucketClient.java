@@ -20,9 +20,12 @@ package com.cdancy.bitbucket.rest;
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
 import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 import com.google.common.collect.Lists;
+import com.google.inject.Module;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import org.jclouds.ContextBuilder;
 import org.jclouds.javax.annotation.Nullable;
@@ -39,12 +42,12 @@ public final class BitbucketClient implements Closeable {
      * environment and system properties.
      */
     public BitbucketClient() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     /**
      * Create an BitbucketClient. If any of the passed in variables are null we
-     * will query System Properties and Environment Variables, in order, to 
+     * will query System Properties and Environment Variables, in order, to
      * search for values that may be set in a devops/CI fashion. The only
      * difference is the `overrides` which gets merged, but takes precedence,
      * with those System Properties and Environment Variables found.
@@ -52,10 +55,12 @@ public final class BitbucketClient implements Closeable {
      * @param endPoint URL of Bitbucket instance.
      * @param authentication authentication used to connect to Bitbucket instance.
      * @param overrides jclouds Properties to override defaults when creating a new BitbucketApi.
+     * @param modules a list of modules to be passed to the Contextbuilder, e.g. for logging.
      */
     public BitbucketClient(@Nullable final String endPoint,
             @Nullable final BitbucketAuthentication authentication,
-            @Nullable final Properties overrides) {
+            @Nullable final Properties overrides,
+            @Nullable final List<Module> modules) {
         this.endPoint = endPoint != null
                 ? endPoint
                 : BitbucketUtils.inferEndpoint();
@@ -63,14 +68,21 @@ public final class BitbucketClient implements Closeable {
                 ? authentication
                 : BitbucketUtils.inferAuthentication();
         this.overrides = mergeOverrides(overrides);
-        this.bitbucketApi = createApi(this.endPoint, this.credentials, this.overrides);
+        this.bitbucketApi = createApi(this.endPoint, this.credentials, this.overrides, modules);
     }
 
-    private BitbucketApi createApi(final String endPoint, final BitbucketAuthentication authentication, final Properties overrides) {
+    private BitbucketApi createApi(final String endPoint,
+                                   final BitbucketAuthentication authentication,
+                                   final Properties overrides,
+                                   final List<Module> modules) {
+        final List<Module> allModules = Lists.newArrayList(new BitbucketAuthenticationModule(authentication));
+        if (modules != null) {
+            allModules.addAll(modules);
+        }
         return ContextBuilder
                 .newBuilder(new BitbucketApiMetadata.Builder().build())
                 .endpoint(endPoint)
-                .modules(Lists.newArrayList(new BitbucketAuthenticationModule(authentication)))
+                .modules(allModules)
                 .overrides(overrides)
                 .buildApi(BitbucketApi.class);
     }
@@ -78,7 +90,7 @@ public final class BitbucketClient implements Closeable {
     /**
      * Query System Properties and Environment Variables for overrides and merge
      * the potentially passed in overrides with those.
-     * 
+     *
      * @param possibleOverrides Optional passed in overrides.
      * @return Properties object.
      */
@@ -114,7 +126,7 @@ public final class BitbucketClient implements Closeable {
     public BitbucketApi api() {
         return this.bitbucketApi;
     }
-    
+
     public static Builder builder() {
         return new Builder();
     }
@@ -131,10 +143,11 @@ public final class BitbucketClient implements Closeable {
         private String endPoint;
         private BitbucketAuthentication.Builder authBuilder;
         private Properties overrides;
+        private List<Module> modules = Lists.newArrayList();
 
         /**
          * Define the base endpoint to connect to.
-         * 
+         *
          * @param endPoint Bitbucket base endpoint.
          * @return this Builder.
          */
@@ -146,7 +159,7 @@ public final class BitbucketClient implements Closeable {
         /**
          * Optional credentials to use for authentication. Must take the form of
          * `username:password` or its base64 encoded version.
-         * 
+         *
          * @param optionallyBase64EncodedCredentials authentication credentials.
          * @return this Builder.
          */
@@ -157,7 +170,7 @@ public final class BitbucketClient implements Closeable {
         }
 
         /**
-         * Optional token to use for authentication. 
+         * Optional token to use for authentication.
          *
          * @param token authentication token.
          * @return this Builder.
@@ -171,7 +184,7 @@ public final class BitbucketClient implements Closeable {
         /**
          * Optional jclouds Properties to override. What can be overridden can
          * be found here:
-         * 
+         *
          * <p>https://github.com/jclouds/jclouds/blob/master/core/src/main/java/org/jclouds/Constants.java
          *
          * @param overrides optional jclouds Properties to override.
@@ -183,8 +196,20 @@ public final class BitbucketClient implements Closeable {
         }
 
         /**
+         * Optional List of Module to add. Modules can be added, for logging
+         * for example.
+         *
+         * @param modules optional List of Module to add.
+         * @return this Builder.
+         */
+        public Builder modules(final Module... modules) {
+            this.modules.addAll(Arrays.asList(modules));
+            return this;
+        }
+
+        /**
          * Build an instance of BitbucketClient.
-         * 
+         *
          * @return BitbucketClient
          */
         public BitbucketClient build() {
@@ -194,7 +219,7 @@ public final class BitbucketClient implements Closeable {
                     ? authBuilder.build()
                     : null;
 
-            return new BitbucketClient(endPoint, authentication, overrides);
-        } 
+            return new BitbucketClient(endPoint, authentication, overrides, modules);
+        }
     }
 }
