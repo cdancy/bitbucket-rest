@@ -1,4 +1,5 @@
 ### Version 2.2.1 (TBA)
+* ADDED: `BitbucketClient` exposes `modules` method on builder and constructor. - [PR 157](https://github.com/cdancy/bitbucket-rest/pull/157)
 
 ### Version 2.2.0 (8/20/2018)
 * ADDED: `PullRequestApi` gained endpoint `delete`. - [PR 155](https://github.com/cdancy/bitbucket-rest/pull/155)
