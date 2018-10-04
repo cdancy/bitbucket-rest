@@ -1,0 +1,14 @@
+{
+  "isLastPage": true,
+  "limit": 25,
+  "size": 1,
+  "start": 0,
+  "values": [
+    {
+      "group": {
+        "name": "test12345"
+      },
+      "permission": "PROJECT_WRITE"
+    }
+  ]
+}
