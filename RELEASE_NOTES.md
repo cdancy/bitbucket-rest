@@ -1,4 +1,14 @@
-### Version 2.2.2 (TBA)
+### Version 2.3.1 (TBA)
+
+### Version 2.3.0 (10/8/2018)
+* ADDED: `ProjectApi` gained endpoint `createPermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `deletePermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `listPermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `createPermissionsByGroup`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `deletePermissionsByGroup`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `listPermissionsByGroup`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: Bump `shadow` plugin to `2.0.4`.
+* ADDED: Bump `gradle` plugin to `4.10.2`.
 
 ### Version 2.2.1 (8/31/2018)
 * ADDED: `BitbucketClient` exposes `modules` method on builder and constructor. - [PR 157](https://github.com/cdancy/bitbucket-rest/pull/157)
