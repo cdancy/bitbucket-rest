@@ -24,12 +24,14 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.domain.project.ProjectPermissionsPage;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -83,4 +85,66 @@ public interface ProjectApi {
                      @Nullable @QueryParam("permission") String permission,
                      @Nullable @QueryParam("start") Integer start,
                      @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("project:create-permissions-by-user")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/permissions/users")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @PUT
+    RequestStatus createPermissionsByUser(@PathParam("project") String project,
+                                          @QueryParam("permission") String permission,
+                                          @QueryParam("name") String name);
+
+    @Named("project:delete-permissions-by-user")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/permissions/users")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @DELETE
+    RequestStatus deletePermissionsByUser(@PathParam("project") String project,
+                                          @QueryParam("name") String name);
+
+    @Named("project:list-permissions-by-user")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/permissions/users")
+    @Fallback(BitbucketFallbacks.ProjectPermissionsPageOnError.class)
+    @GET
+    ProjectPermissionsPage listPermissionsByUser(@PathParam("project") String project,
+                                                 @Nullable @QueryParam("start") Integer start,
+                                                 @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("project:create-permissions-by-group")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/permissions/groups")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @PUT
+    RequestStatus createPermissionsByGroup(@PathParam("project") String project,
+                                           @QueryParam("permission") String permission,
+                                           @QueryParam("name") String name);
+
+    @Named("project:delete-permissions-by-group")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/permissions/groups")
+    @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
+    @ResponseParser(RequestStatusParser.class)
+    @DELETE
+    RequestStatus deletePermissionsByGroup(@PathParam("project") String project,
+                                           @QueryParam("name") String name);
+
+    @Named("project:list-permissions-by-group")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/permissions/groups")
+    @Fallback(BitbucketFallbacks.ProjectPermissionsPageOnError.class)
+    @GET
+    ProjectPermissionsPage listPermissionsByGroup(@PathParam("project") String project,
+                                                  @Nullable @QueryParam("start") Integer start,
+                                                  @Nullable @QueryParam("limit") Integer limit);
 }

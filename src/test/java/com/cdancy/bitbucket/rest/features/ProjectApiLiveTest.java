@@ -21,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import com.cdancy.bitbucket.rest.domain.project.ProjectPermissionsPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
@@ -38,9 +40,17 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private GeneratedTestContents generatedTestContents;
 
+    private final String testGetProjectKeyword = "testGetProject";
+    private final String projectWriteKeyword = "PROJECT_WRITE";
+
+    private String projectKey;
+    private User user;
+
     @BeforeClass
     public void init() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
+        this.projectKey = generatedTestContents.project.key();
+        this.user = TestUtilities.getDefaultUser(this.bitbucketAuthentication, this.api);
     }
 
     @Test
@@ -98,7 +108,83 @@ public class ProjectApiLiveTest extends BaseBitbucketApiLiveTest {
             System.out.println("Project previously existed and so assuming we don't have credentials to create Projects");
         }
     }
-    
+
+    @Test(dependsOnMethods = testGetProjectKeyword)
+    public void testCreatePermissionByUser() {
+        final RequestStatus success = api().createPermissionsByUser(projectKey, projectWriteKeyword, user.slug());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = "testCreatePermissionByUser")
+    public void testListPermissionByUser() {
+        final ProjectPermissionsPage projectPermissionsPage = api().listPermissionsByUser(projectKey, 0, 100);
+        assertThat(projectPermissionsPage.values()).isNotEmpty();
+    }
+
+    @Test(dependsOnMethods = "testListPermissionByUser")
+    public void testDeletePermissionByUser() {
+        final RequestStatus success = api().deletePermissionsByUser(projectKey, user.slug());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = testGetProjectKeyword)
+    public void testCreatePermissionByGroup() {
+        final RequestStatus success = api().createPermissionsByGroup(projectKey, projectWriteKeyword, defaultBitbucketGroup);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = "testCreatePermissionByGroup")
+    public void testListPermissionByGroup() {
+        final ProjectPermissionsPage projectPermissionsPage = api().listPermissionsByGroup(projectKey, 0, 100);
+        assertThat(projectPermissionsPage.values()).isNotEmpty();
+    }
+
+    @Test(dependsOnMethods = "testListPermissionByGroup")
+    public void testDeletePermissionByGroup() {
+        final RequestStatus success = api().deletePermissionsByGroup(projectKey, defaultBitbucketGroup);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = testGetProjectKeyword)
+    public void testCreatePermissionByGroupNonExistent() {
+        final RequestStatus success = api().createPermissionsByGroup(projectKey, projectWriteKeyword, TestUtilities.randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test(dependsOnMethods = testGetProjectKeyword)
+    public void testDeletePermissionByGroupNonExistent() {
+        final RequestStatus success = api().deletePermissionsByGroup(projectKey, TestUtilities.randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue(); // Currently Bitbucket returns the same response if delete is success or not
+        assertThat(success.errors()).isEmpty();
+    }
+
+    @Test(dependsOnMethods = testGetProjectKeyword)
+    public void testCreatePermissionByUserNonExistent() {
+        final RequestStatus success = api().createPermissionsByUser(projectKey, projectWriteKeyword, TestUtilities.randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test(dependsOnMethods = testGetProjectKeyword)
+    public void testDeletePermissionByUserNonExistent() {
+        final RequestStatus success = api().deletePermissionsByUser(projectKey, TestUtilities.randomString());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
     @AfterClass
     public void fin() {
         TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
