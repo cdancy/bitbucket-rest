@@ -17,48 +17,81 @@
 
 package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import org.jclouds.json.SerializedNames;
+import com.cdancy.bitbucket.rest.BitbucketUtils;
+import com.cdancy.bitbucket.rest.domain.common.Error;
+import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 
 import com.google.auto.value.AutoValue;
+
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
+
+import java.util.Collections;
+import java.util.List;
 
 @AutoValue
-public abstract class User {
+public abstract class User implements ErrorsHolder {
 
+    @Nullable
     public abstract String name();
 
     @Nullable
     public abstract String emailAddress();
 
-    public abstract int id();
+    @Nullable
+    public abstract Integer id();
 
+    @Nullable
     public abstract String displayName();
 
-    public abstract boolean active();
+    @Nullable
+    public abstract Boolean active();
 
+    @Nullable
     public abstract String slug();
 
+    @Nullable
     public abstract String type();
+
+    @Nullable
+    public abstract String directoryName();
+
+    @Nullable
+    public abstract Boolean deletable();
+
+    @Nullable
+    public abstract Long lastAuthenticationTimestamp();
+
+    @Nullable
+    public abstract Boolean mutableDetails();
+
+    @Nullable
+    public abstract Boolean mutableGroups();
 
     User() {
     }
 
-    @SerializedNames({ "name", "emailAddress", "id", 
-            "displayName", "active", "slug", "type" })
-    public static User create(final String name, 
-            final String emailAddress, 
-            final int id,
-            final String displayName, 
-            final boolean active, 
-            final String slug, 
-            final String type) {
-        
-        return new AutoValue_User(name, 
-                emailAddress, 
-                id, 
-                displayName, 
-                active, 
-                slug, 
-                type);
+    public static User create(final String name, final String emailAddress, final int id, final String displayName,
+                              final boolean active, final String slug, final String type) {
+
+        return new AutoValue_User(Collections.emptyList(), name, emailAddress, id, displayName, active, slug, type,
+            null, null, null, null, null);
+    }
+
+    @SerializedNames({ "errors", "name", "emailAddress",
+            "id", "displayName", "active",
+            "slug", "type", "directoryName",
+            "deletable", "lastAuthenticationTimestamp",
+            "mutableDetails", "mutableGroups" })
+    public static User create(final List<Error> errors, final String name,
+            final String emailAddress, final int id,
+            final String displayName,final boolean active,
+            final String slug, final String type,
+            final String directoryName, final boolean deletable,
+            final long lastAuthenticationTimestamp, final boolean mutableDetails,
+            final boolean mutableGroups) {
+
+        return new AutoValue_User(BitbucketUtils.nullToEmpty(errors), name, emailAddress, id, displayName,
+            active, slug, type, directoryName, deletable, lastAuthenticationTimestamp, mutableDetails, mutableGroups);
     }
 }

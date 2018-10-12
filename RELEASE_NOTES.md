@@ -1,4 +1,33 @@
-### Version 2.1.4 (TBA)
+### Version 2.3.1 (TBA)
+
+### Version 2.3.0 (10/8/2018)
+* ADDED: `ProjectApi` gained endpoint `createPermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `deletePermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `listPermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `createPermissionsByGroup`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `deletePermissionsByGroup`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: `ProjectApi` gained endpoint `listPermissionsByGroup`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
+* ADDED: Bump `shadow` plugin to `2.0.4`.
+* ADDED: Bump `gradle` plugin to `4.10.2`.
+
+### Version 2.2.1 (8/31/2018)
+* ADDED: `BitbucketClient` exposes `modules` method on builder and constructor. - [PR 157](https://github.com/cdancy/bitbucket-rest/pull/157)
+
+### Version 2.2.0 (8/20/2018)
+* ADDED: `PullRequestApi` gained endpoint `delete`. - [PR 155](https://github.com/cdancy/bitbucket-rest/pull/155)
+* REFACTOR: `BitbucketClient` now implements `Closeable` to better work with jdk8+ try-with-resources.
+* ADDED: Bump `jclouds` to `2.1.1`.
+* ADDED: Bump `AutoValue` to `1.6.2`
+* ADDED: Bump `gradle-bintray-plugin` to `1.8.4`
+* ADDED: Bump `gradle` to `4.9`
+
+### Version 2.1.5 (7/10/2018)
+* ADDED: `AdminApi` gained endpoint `createUser`. - [PR 145](https://github.com/cdancy/bitbucket-rest/pull/145)
+* ADDED: `AdminApi` gained endpoint `deleteUser`. - [PR 145](https://github.com/cdancy/bitbucket-rest/pull/145)
+* ADDED: `PullRequestApi` gained endpoint `addParticipant`. - [PR 145](https://github.com/cdancy/bitbucket-rest/pull/145)
+
+### Version 2.1.4 (5/7/2018)
+* BUG: Fix nullable description in `Status` domain object. - [PR 143](https://github.com/cdancy/bitbucket-rest/pull/143)
 
 ### Version 2.1.3 (5/4/2018)
 * ADDED: Bump gradle to `4.7` - [Commit 1313c](https://github.com/cdancy/bitbucket-rest/commit/1313cecfef24ac4e45ebf50c9f75cd43bb76dad8)

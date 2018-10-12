@@ -15,42 +15,35 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.build;
+package com.cdancy.bitbucket.rest.domain.project;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
+import com.cdancy.bitbucket.rest.domain.repository.Group;
 import com.google.auto.value.AutoValue;
-import org.jclouds.json.SerializedNames;
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Status {
+public abstract class ProjectPermissions {
 
-    public enum StatusState {
-        SUCCESSFUL,
-        FAILED,
-        INPROGRESS
+    public enum PermissionsType {
+        PROJECT_ADMIN,
+        PROJECT_WRITE,
+        PROJECT_READ
     }
 
-    public abstract long dateAdded();
+    @Nullable
+    public abstract User user();
 
     @Nullable
-    public abstract String description();
+    public abstract Group group();
 
-    public abstract String key();
+    public abstract PermissionsType permission();
 
-    @Nullable
-    public abstract String name();
-
-    public abstract StatusState state();
-
-    public abstract String url();
-
-    @SerializedNames({"dateAdded", "description", "key", "name", "state", "url"})
-    public static Status create(final long dateAdded,
-            final String description,
-            final String key,
-            final String name,
-            final StatusState state,
-            final String url) {
-        return new AutoValue_Status(dateAdded, description, key, name, state, url);
+    @SerializedNames({"user", "group", "permission"})
+    public static ProjectPermissions create(final User user,
+                                            final Group group,
+                                            final PermissionsType type) {
+        return new AutoValue_ProjectPermissions(user, group, type);
     }
 }

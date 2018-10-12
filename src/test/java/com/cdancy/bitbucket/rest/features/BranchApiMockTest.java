@@ -69,13 +69,13 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
     private final String localDeleteMethod = "DELETE";
     private final String localLimit = "limit";
     private final String commitId = "123456789HelloWorld";
-    
+
     public void testCreateBranch() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final String branchName = "dev-branch";
             final String commitHash = "8d351a10fb428c0c1239530256e21cf24f136e73";
 
@@ -97,7 +97,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchPage branch = baseApi.branchApi().list(projectKey, repoKey, null, null, null, null, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
@@ -150,10 +150,9 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchModel branchModel = baseApi.branchApi().model(projectKey, repoKey);
             assertThat(branchModel).isNotNull();
-            System.out.println(branchModel.errors());
             assertThat(branchModel.errors().isEmpty()).isTrue();
             assertThat(branchModel.types().size() > 0).isTrue();
             assertSent(server, localGetMethod, localRestPath + BitbucketApiMetadata.API_VERSION
@@ -168,7 +167,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchModel branchModel = baseApi.branchApi().model(projectKey, repoKey);
             assertThat(branchModel).isNotNull();
             assertThat(branchModel.errors()).isNotEmpty();
@@ -184,7 +183,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final RequestStatus success = baseApi.branchApi().delete(projectKey, repoKey, "refs/heads/some-branch-name");
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
@@ -201,11 +200,28 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-default.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final Branch branch = baseApi.branchApi().getDefault(projectKey, repoKey);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
             assertThat(branch.id()).isNotNull();
+            assertSent(server, localGetMethod, restBasePath + BitbucketApiMetadata.API_VERSION
+                    + localProjectsPath + projectKey + localReposPath + repoKey + localBranchesPath + "/default");
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetDefaultBranchEmpty() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody("null").setResponseCode(204));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+
+            final Branch branch = baseApi.branchApi().getDefault(projectKey, repoKey);
+            assertThat(branch).isNotNull();
+            assertThat(branch.errors().isEmpty()).isTrue();
+            assertThat(branch.id()).isNull();
             assertSent(server, localGetMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + localProjectsPath + projectKey + localReposPath + repoKey + localBranchesPath + "/default");
         } finally {
@@ -218,7 +234,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final RequestStatus success = baseApi.branchApi().updateDefault(projectKey, repoKey, "refs/heads/my-new-default-branch");
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
@@ -235,7 +251,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-permission-list.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchRestrictionPage branch = baseApi.branchApi().listBranchRestriction(projectKey, repoKey, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().isEmpty()).isTrue();
@@ -256,7 +272,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-permission-list-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchRestrictionPage branch = baseApi.branchApi().listBranchRestriction(projectKey, repoKey, null, 1);
             assertThat(branch).isNotNull();
             assertThat(branch.errors().size() > 0).isTrue();
@@ -300,7 +316,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final Long idToDelete = 839L;
             final RequestStatus success = baseApi.branchApi().deleteBranchRestriction(projectKey, repoKey, idToDelete);
             assertThat(success).isNotNull();
@@ -318,7 +334,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchModelConfiguration configuration = baseApi.branchApi().getModelConfiguration(projectKey, repoKey);
             assertThat(configuration).isNotNull();
             assertThat(configuration.errors().isEmpty()).isTrue();
@@ -337,7 +353,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchModelConfiguration configuration = baseApi.branchApi().getModelConfiguration(projectKey, repoKey);
             assertThat(configuration).isNotNull();
             assertThat(configuration.errors()).isNotEmpty();
@@ -355,7 +371,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchConfiguration branchConfiguration = BranchConfiguration.create(testKeyword, false);
             final List<Type> types = Lists.newArrayList(Type.create(Type.TypeId.BUGFIX, testKeyword, testKeyword, true));
 
@@ -377,7 +393,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-model-configuration-error.json")).setResponseCode(400));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchConfiguration branchConfiguration = BranchConfiguration.create(testKeyword, false);
             final List<Type> types = Lists.newArrayList(Type.create(Type.TypeId.BUGFIX, testKeyword, testKeyword, true));
 
@@ -434,7 +450,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchPage branchPage = baseApi.branchApi().info(projectKey, repoKey, commitId);
             assertThat(branchPage).isNotNull();
             assertThat(branchPage.errors().isEmpty()).isTrue();
@@ -451,7 +467,7 @@ public class BranchApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/branch-list-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final BranchPage branchPage = baseApi.branchApi().info(projectKey, repoKey, commitId);
             assertThat(branchPage).isNotNull();
             assertThat(branchPage.errors()).isNotEmpty();

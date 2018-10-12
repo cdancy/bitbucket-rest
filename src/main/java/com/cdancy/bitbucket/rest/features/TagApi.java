@@ -46,14 +46,14 @@ import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
-@Path("/rest/api/{jclouds.api-version}/projects")
+@Path("/rest")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface TagApi {
 
     @Named("tag:create")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278801952"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/tags")
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/tags")
     @Fallback(BitbucketFallbacks.TagOnError.class)
     @POST
     Tag create(@PathParam("project") String project,
@@ -63,7 +63,7 @@ public interface TagApi {
     @Named("tag:get")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278800832"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/tags/{tag}")
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/tags/{tag}")
     @Fallback(BitbucketFallbacks.TagOnError.class)
     @GET
     Tag get(@PathParam("project") String project,
@@ -73,7 +73,7 @@ public interface TagApi {
     @Named("tag:list")
     @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.7.0/bitbucket-rest.html#idm45568367769888"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/tags")
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/tags")
     @Fallback(BitbucketFallbacks.TagPageOnError.class)
     @GET
     TagPage list(@PathParam("project") String project,
@@ -86,7 +86,7 @@ public interface TagApi {
     @Named("tag:delete")
     @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.4.0/bitbucket-git-rest.html#idm139355817865616"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/tags/{tag}")
+    @Path("/git/{jclouds.api-version}/projects/{project}/repos/{repo}/tags/{tag}")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE

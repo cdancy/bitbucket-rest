@@ -41,6 +41,7 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
     private final String getMethod = "GET";
     private final String deleteMethod = "DELETE";
     private final String restApiPath = "/rest/api/";
+    private final String restGitPath = "/rest/git/";
     private final String reposPath = "/repos/";
     private final String tagsPath = "/tags/";
     private final String projectsPath = "/projects/";
@@ -176,7 +177,7 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             assertThat(tag.errors().isEmpty()).isTrue();
             assertThat(tag.value()).isTrue();
             
-            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+            assertSent(server, deleteMethod, restGitPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + reposPath + repoKey + tagsPath + tagName);
         } finally {
             baseApi.close();
@@ -197,7 +198,7 @@ public class TagApiMockTest extends BaseBitbucketMockTest {
             assertThat(tag).isNotNull();
             assertThat(tag.errors()).isNotEmpty();
             assertThat(tag.value()).isFalse();
-            assertSent(server, deleteMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+            assertSent(server, deleteMethod, restGitPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + reposPath + repoKey + tagsPath + tagName);
         } finally {
             baseApi.close();

@@ -19,6 +19,9 @@ package com.cdancy.bitbucket.rest.fallbacks;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.propagate;
+import static com.google.common.base.Predicates.equalTo;
+
+import static org.jclouds.http.HttpUtils.returnValueOnCodeOrNull;
 
 import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
@@ -46,11 +49,13 @@ import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
+import com.cdancy.bitbucket.rest.domain.project.ProjectPermissionsPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.domain.repository.Hook;
 import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
@@ -88,7 +93,14 @@ public final class BitbucketFallbacks {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
-                return createBranchFromErrors(getErrors(throwable.getMessage()));
+
+                // if the repo is empty, and thus has no default branch, a 204 is returned with 'null' as the content
+                final Boolean obj = returnValueOnCodeOrNull(throwable, true, equalTo(204));
+                if (obj != null) {
+                    return Branch.create(null, null, null, null, null, false, null, null);
+                } else {
+                    return createBranchFromErrors(getErrors(throwable.getMessage()));
+                }
             }
             throw propagate(throwable);
         }
@@ -129,6 +141,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class UserOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createUserFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -299,6 +321,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createProjectFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class ProjectPermissionsPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createProjectPermissionsPageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -478,6 +510,10 @@ public final class BitbucketFallbacks {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
+    public static User createUserFromErrors(final List<Error> errors) {
+        return User.create(errors, null, null, -1, null, false, null, null, null, false, -1, false, false);
+    }
+
     public static Condition createConditionFromErrors(final List<Error> errors) {
         return Condition.create(null, null, null, null, null, null, errors);
     }
@@ -544,6 +580,10 @@ public final class BitbucketFallbacks {
 
     public static Project createProjectFromErrors(final List<Error> errors) {
         return Project.create(null, -1, null, null, false, null, null, errors);
+    }
+
+    public static ProjectPermissionsPage createProjectPermissionsPageFromErrors(final List<Error> errors) {
+        return ProjectPermissionsPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static PullRequestSettings createPullRequestSettingsFromErrors(final List<Error> errors) {
@@ -629,7 +669,7 @@ public final class BitbucketFallbacks {
 
     /**
      * Parse a single Error object from a given JsonObject.
-     * 
+     *
      * @param obj the JsonObject to parse an Error from.
      * @return Error object derived from parsing the passed JsonObject.
      */

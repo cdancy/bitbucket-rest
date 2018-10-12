@@ -1,0 +1,203 @@
+{
+   "errors" : [
+      {
+         "pullRequest" : {
+            "fromRef" : {
+               "id" : "refs/heads/feature/sprp",
+               "latestCommit" : "84a94be52f08793cba15bf4f5e3f41b69d793664",
+               "repository" : {
+                  "origin" : {
+                     "scmId" : "git",
+                     "state" : "AVAILABLE",
+                     "id" : 1,
+                     "slug" : "repoSlug",
+                     "forkable" : true,
+                     "statusMessage" : "Available",
+                     "project" : {
+                        "public" : true,
+                        "links" : {
+                           "self" : [
+                              {
+                                 "href" : "http://localhost:7990/projects/PROJECT_KEY"
+                              }
+                           ]
+                        },
+                        "type" : "NORMAL",
+                        "key" : "PROJECT_KEY",
+                        "name" : "projectName",
+                        "description" : "Some random project",
+                        "id" : 1
+                     },
+                     "public" : false,
+                     "name" : "repoSlug",
+                     "links" : {
+                        "self" : [
+                           {
+                              "href" : "http://localhost:7990/projects/PROJECT_KEY/repos/repoSlug/browse"
+                           }
+                        ],
+                        "clone" : [
+                           {
+                              "href" : "ssh://git@localhost:7999/projectKey/repoSlug.git",
+                              "name" : "ssh"
+                           },
+                           {
+                              "name" : "http",
+                              "href" : "http://theuser@localhost:7990/scm/projectKey/repoSlug.git"
+                           }
+                        ]
+                     }
+                  },
+                  "id" : 12,
+                  "state" : "AVAILABLE",
+                  "slug" : "repoSlug",
+                  "scmId" : "git",
+                  "name" : "repoSlug",
+                  "links" : {
+                     "clone" : [
+                        {
+                           "href" : "ssh://git@localhost:7999/~theuser/repoSlug.git",
+                           "name" : "ssh"
+                        },
+                        {
+                           "href" : "http://theuser@localhost:7990/scm/~theuser/repoSlug.git",
+                           "name" : "http"
+                        }
+                     ],
+                     "self" : [
+                        {
+                           "href" : "http://localhost:7990/users/theuser/repos/repoSlug/browse"
+                        }
+                     ]
+                  },
+                  "project" : {
+                     "owner" : {
+                        "links" : {
+                           "self" : [
+                              {
+                                 "href" : "http://localhost:7990/users/theuser"
+                              }
+                           ]
+                        },
+                        "name" : "theuser",
+                        "emailAddress" : "theuser@domain.com",
+                        "displayName" : "theuser",
+                        "active" : true,
+                        "type" : "NORMAL",
+                        "slug" : "theuser",
+                        "id" : 1
+                     },
+                     "type" : "PERSONAL",
+                     "name" : "theuser",
+                     "key" : "~MARTIN",
+                     "links" : {
+                        "self" : [
+                           {
+                              "href" : "http://localhost:7990/users/theuser"
+                           }
+                        ]
+                     },
+                     "id" : 22
+                  },
+                  "public" : true,
+                  "statusMessage" : "Available",
+                  "forkable" : true
+               },
+               "displayId" : "feature/sprp"
+            },
+            "author" : {
+               "user" : {
+                  "links" : {
+                     "self" : [
+                        {
+                           "href" : "http://localhost:7990/users/theuser"
+                        }
+                     ]
+                  },
+                  "name" : "theuser",
+                  "emailAddress" : "theuser@domain.com",
+                  "displayName" : "theuser",
+                  "slug" : "theuser",
+                  "id" : 1,
+                  "active" : true,
+                  "type" : "NORMAL"
+               },
+               "status" : "UNAPPROVED",
+               "role" : "AUTHOR",
+               "approved" : false
+            },
+            "participants" : [],
+            "version" : 2,
+            "open" : false,
+            "updatedDate" : 1529154354933,
+            "closedDate" : 1529154354933,
+            "links" : {
+               "self" : [
+                  {
+                     "href" : "http://localhost:7990/projects/PROJECT_KEY/repos/repoSlug/pull-requests/2"
+                  }
+               ]
+            },
+            "id" : 2,
+            "state" : "MERGED",
+            "locked" : false,
+            "reviewers" : [],
+            "closed" : true,
+            "createdDate" : 1529153142781,
+            "title" : "Support SPRP",
+            "toRef" : {
+               "displayId" : "master",
+               "latestCommit" : "3f051ef8b7d756cc1bb473506c79ad07af69f89c",
+               "id" : "refs/heads/master",
+               "repository" : {
+                  "forkable" : true,
+                  "statusMessage" : "Available",
+                  "name" : "repoSlug",
+                  "links" : {
+                     "self" : [
+                        {
+                           "href" : "http://localhost:7990/projects/PROJECT_KEY/repos/repoSlug/browse"
+                        }
+                     ],
+                     "clone" : [
+                        {
+                           "href" : "ssh://git@localhost:7999/projectKey/repoSlug.git",
+                           "name" : "ssh"
+                        },
+                        {
+                           "name" : "http",
+                           "href" : "http://theuser@localhost:7990/scm/projectKey/repoSlug.git"
+                        }
+                     ]
+                  },
+                  "project" : {
+                     "name" : "projectName",
+                     "type" : "NORMAL",
+                     "key" : "PROJECT_KEY",
+                     "links" : {
+                        "self" : [
+                           {
+                              "href" : "http://localhost:7990/projects/PROJECT_KEY"
+                           }
+                        ]
+                     },
+                     "public" : true,
+                     "id" : 1,
+                     "description" : "Some random project"
+                  },
+                  "public" : false,
+                  "id" : 1,
+                  "state" : "AVAILABLE",
+                  "slug" : "repoSlug",
+                  "scmId" : "git"
+               }
+            }
+         },
+         "expectedVersion" : 9123,
+         "message" : "You are attempting to modify a pull request based on out-of-date information.",
+         "exceptionName" : "com.atlassian.bitbucket.pull.PullRequestOutOfDateException",
+         "context" : null,
+         "currentVersion" : 2
+      }
+   ]
+}

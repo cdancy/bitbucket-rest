@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
@@ -32,9 +33,13 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
 
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import com.google.common.collect.Lists;
+import org.jclouds.ContextBuilder;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
+import com.cdancy.bitbucket.rest.BitbucketAuthentication;
+import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
@@ -46,42 +51,52 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
+import java.io.IOException;
+
 @Test(groups = "live", testName = "PullRequestApiLiveTest", singleThreaded = true)
 public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
 
+    private static final String TEST_USER_NAME = "TestUserName2";
+    private static final String TEST_USER_PASSWORD = "TestUserPassword2";
+
     private GeneratedTestContents generatedTestContents;
+    private BitbucketApi testUserApi;
 
     private String project;
     private String repo;
     private String branchToMerge;
     private Participants participants;
-    private User foundUser;
     private int prId = -1;
     private int version = -1;
 
-    @BeforeClass
-    public void init() {
+    private void setupGit() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
-        
+
         final BranchPage branchPage = api.branchApi().list(project, repo, null, null, null, null, null, null);
         assertThat(branchPage).isNotNull();
         assertThat(branchPage.errors().isEmpty()).isTrue();
         assertThat(branchPage.values().size()).isEqualTo(2);
-        
+
         for (final Branch branch : branchPage.values()) {
             if (!branch.id().endsWith("master")) {
                 this.branchToMerge = branch.id();
                 break;
             }
         }
-        
+
         assertThat(branchToMerge).isNotNull();
     }
-    
-    @Test
-    public void createPullRequest() {
+
+    @BeforeClass
+    public void init() {
+        setupGit();
+        addTestUser();
+        testUserApi = apiForTestUser();
+    }
+
+    private void createPullRequest() {
         final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(project);
         final MinimalRepository repository = MinimalRepository.create(repo, null, proj);
@@ -96,7 +111,12 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         version = pr.version();
     }
 
-    @Test (dependsOnMethods = "createPullRequest")
+    @Test
+    public void testCreatePullRequest() {
+        createPullRequest();
+    }
+
+    @Test (dependsOnMethods = "testCreatePullRequest")
     public void testGetPullRequest() {
         final PullRequest pr = api().get(project, repo, prId);
         assertThat(pr).isNotNull();
@@ -106,7 +126,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(version == pr.version()).isTrue();
     }
 
-    @Test (dependsOnMethods = "createPullRequest")
+    @Test (dependsOnMethods = "testGetPullRequest")
     public void testListPullRequest() {
         final PullRequestPage pr = api().list(project, repo, null, null, null, null, null, null, null, 10);
         assertThat(pr).isNotNull();
@@ -131,7 +151,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(pr.totalCount() > 0).isTrue();
     }
 
-    @Test (dependsOnMethods = "testGetPullRequestCommits")
+    @Test (dependsOnMethods = {"testGetPullRequestCommits", "testAddExistingParticipant"})
     public void testDeclinePullRequest() {
         final PullRequest pr = api().decline(project, repo, prId, version);
         assertThat(pr).isNotNull();
@@ -181,37 +201,31 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(localParticipants).isNotNull();
         assertThat(localParticipants.errors()).isNotEmpty();
     }
-    
+
     @Test (dependsOnMethods = "testAssignDefaultParticipantsOnError")
     public void testAssignParticipants() {
-        final UserPage userPage = api.adminApi().listUsersByGroup(defaultBitbucketGroup, null, null, null);
-        assertThat(userPage).isNotNull();
-        assertThat(userPage.size() > 0).isTrue();
-        
-        for (final User possibleUser : userPage.values()) {
-            if (!possibleUser.name().equalsIgnoreCase(participants.user().name())) {
-                foundUser = possibleUser;
-                break;
-            }
-        }
-        assertThat(foundUser).isNotNull();
-        
-        final CreateParticipants createParticipants = CreateParticipants.create(foundUser,
+        final User testUser = getTestUser();
+        final RequestStatus userPermissionsStatus = api.repositoryApi().createPermissionsByUser(project, repo, "REPO_READ", testUser.slug());
+        assertThat(userPermissionsStatus).isNotNull();
+        assertThat(userPermissionsStatus.value()).isNotNull();
+        assertThat(userPermissionsStatus.errors()).isEmpty();
+
+        final CreateParticipants createParticipants = CreateParticipants.create(testUser,
                 participants.lastReviewedCommit(), Participants.Role.REVIEWER, participants.approved(), participants.status());
         final Participants localParticipants = api().assignParticipant(project, repo, prId, createParticipants);
         assertThat(localParticipants).isNotNull();
         assertThat(localParticipants.errors()).isEmpty();
     }
-    
+
     @Test (dependsOnMethods = "testAssignParticipants")
     public void testDeleteParticipant() {
-        final RequestStatus success = api().deleteParticipant(project, repo, prId, foundUser.slug());
+        final RequestStatus success = api().deleteParticipant(project, repo, prId, getTestUser().slug());
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();
     }
-    
-    @Test 
+
+    @Test (dependsOnMethods = "testDeleteParticipant")
     public void testDeleteParticipantNonExistent() {
         final RequestStatus success = api().deleteParticipant(project, repo, prId, TestUtilities.randomString());
         assertThat(success).isNotNull();
@@ -219,7 +233,7 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(success.errors()).isNotEmpty();
     }
 
-    @Test (dependsOnMethods = "testGetPullRequest")
+    @Test (dependsOnMethods = "testDeleteParticipantNonExistent")
     public void testGetListActivities() {
         final ActivitiesPage ac = api().listActivities(project, repo, prId, 100, 0);
         assertThat(ac).isNotNull();
@@ -232,13 +246,121 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(pr).isNotNull();
         assertThat(pr.errors().isEmpty()).isFalse();
     }
-    
+
+    @Test (dependsOnMethods = "testGetListActivities")
+    public void testAddNonExistentParticipant() {
+        final User testUser = getTestUser();
+
+        final CreateParticipants createParticipants = CreateParticipants.create(testUser,
+                participants.lastReviewedCommit(),
+                Participants.Role.REVIEWER,
+                false,
+                Participants.Status.NEEDS_WORK);
+
+        final Participants localParticipants =
+                testUserApi.pullRequestApi().addParticipant(project, repo, prId, testUser.slug(), createParticipants);
+
+        assertThat(localParticipants).isNotNull();
+        assertThat(localParticipants.errors()).isEmpty();
+        assertThat(localParticipants.status()).isEqualByComparingTo(Participants.Status.NEEDS_WORK);
+    }
+
+    @Test (dependsOnMethods = "testAddNonExistentParticipant")
+    public void testAddExistingParticipant() {
+        final User testUser = getTestUser();
+
+        final CreateParticipants createParticipants = CreateParticipants.create(testUser,
+                participants.lastReviewedCommit(),
+                Participants.Role.REVIEWER,
+                true,
+                Participants.Status.APPROVED);
+
+        final Participants localParticipants =
+                testUserApi.pullRequestApi().addParticipant(project, repo, prId, testUser.slug(), createParticipants);
+
+        assertThat(localParticipants).isNotNull();
+        assertThat(localParticipants.errors()).isEmpty();
+        assertThat(localParticipants.status()).isEqualByComparingTo(Participants.Status.APPROVED);
+    }
+
+    @Test (dependsOnMethods = "testMergePullRequest")
+    public void testDeleteMergedPullRequest() {
+        final PullRequest pr = api().get(project, repo, prId);
+        final RequestStatus success = api().delete(project, repo, pr.id(), pr.version());
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteMergedPullRequest")
+    public void testDeleteBadVersionOfPullRequest() {
+        // Since the PR has been merged by another test, we now need a new PR.
+        // To get a new PR, we need to create new branch in git, push it and open a new PR with it.
+        terminateGitContents();
+        setupGit();
+        createPullRequest();
+        final RequestStatus success = api().delete(project, repo, prId, 9999);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteBadVersionOfPullRequest")
+    public void testDeleteNonExistentPullRequest() {
+        final RequestStatus success = api().delete(project, repo, 9999, version);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isFalse();
+        assertThat(success.errors()).isNotEmpty();
+    }
+
+    @Test (dependsOnMethods = "testDeleteNonExistentPullRequest")
+    public void testDeletePullRequest() {
+        final RequestStatus success = api().delete(project, repo, prId, version);
+        assertThat(success).isNotNull();
+        assertThat(success.value()).isTrue();
+        assertThat(success.errors()).isEmpty();
+    }
+
+
     @AfterClass
-    public void fin() {
+    public void fin() throws IOException {
+        terminateGitContents();
+        testUserApi.close();
+        deleteTestUser();
+    }
+
+    private void terminateGitContents() {
         TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
 
     private PullRequestApi api() {
         return api.pullRequestApi();
+    }
+
+    private BitbucketApi apiForTestUser() {
+        final BitbucketAuthentication creds = BitbucketAuthentication
+                .builder()
+                .credentials(TEST_USER_NAME + ":" + TEST_USER_PASSWORD)
+                .build();
+        final BitbucketAuthenticationModule credsModule = new BitbucketAuthenticationModule(creds);
+        return ContextBuilder.newBuilder(provider)
+            .endpoint(endpoint)
+            .overrides(setupProperties())
+            .modules(Lists.newArrayList(credsModule))
+            .buildApi(BitbucketApi.class);
+    }
+
+    private User getTestUser() {
+        final UserPage userPage = api.adminApi().listUsers(TEST_USER_NAME, null, null);
+        assertThat(userPage.values().isEmpty()).isFalse();
+        return userPage.values().get(0);
+    }
+
+    private void addTestUser() {
+        api.adminApi().createUser(TEST_USER_NAME, TEST_USER_PASSWORD, TEST_USER_NAME, "test@test.test", true, null);
+    }
+
+    private void deleteTestUser() {
+        api.adminApi().deleteUser(TEST_USER_NAME);
     }
 }
