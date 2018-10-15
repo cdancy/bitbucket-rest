@@ -63,6 +63,8 @@ import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
+import com.cdancy.bitbucket.rest.domain.repository.WebHook;
+import com.cdancy.bitbucket.rest.domain.repository.WebHookPage;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.google.common.collect.Lists;
@@ -474,6 +476,26 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class WebHookPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createWebHookPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class WebHookOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createWebHookFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static RequestStatus createRequestStatusFromErrors(final List<Error> errors) {
         return RequestStatus.create(false, errors);
     }
@@ -624,6 +646,15 @@ public final class BitbucketFallbacks {
     public static MergeStatus createMergeStatusFromErrors(final List<Error> errors) {
         return MergeStatus.create(false, false, null, errors);
     }
+
+    public static WebHookPage createWebHookPageFromErrors(final List<Error> errors) {
+        return WebHookPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static WebHook createWebHookFromErrors(final List<Error> errors) {
+        return WebHook.create(null, null, -1, -1, null , null, null, false, errors);
+    }
+
 
     /**
      * Parse list of Error's from output.
