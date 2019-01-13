@@ -30,7 +30,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import org.testng.annotations.Test;
@@ -90,7 +90,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             final MinimalRepository repository2 = MinimalRepository.create(repoKey, null, proj2);
 
             final String commitId = "930228bb501e07c2653771858320873d94518e33";
-            final Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, "feature-ABC-123", commitId);
+            final Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, null, null, "feature-ABC-123", commitId);
             final Reference toRef = Reference.create("refs/heads/master", repository2);
             final CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", fromRef, toRef, null, null);
             final PullRequest pr = api.create(repository2.project().key(), repository2.slug(), cpr);

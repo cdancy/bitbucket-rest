@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.domain.pullrequest;
 
 import java.util.List;
 
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
