@@ -20,10 +20,13 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.sync.Enabled;
+import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,12 +41,11 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
     public void testEnabled() throws Exception {
         final MockWebServer server = mockWebServer();
-
         server.enqueue(new MockResponse().setBody(payloadFromResource("/sync-enabled.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final SyncApi api = baseApi.syncApi();
-        try {
-            final Enabled status = api.enable(projectKey, repoKey, true);
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncStatus status = baseApi.syncApi().enable(projectKey, repoKey, true);
             assertThat(status.available()).isTrue();
             assertThat(status.enabled()).isTrue();
             assertThat(status.divergedRefs()).isNotEmpty();
@@ -52,19 +54,17 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testDisabled() throws Exception {
         final MockWebServer server = mockWebServer();
-
         server.enqueue(new MockResponse().setResponseCode(204));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final SyncApi api = baseApi.syncApi();
-        try {
-            final Enabled status = api.enable(projectKey, repoKey, true);
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncStatus status = baseApi.syncApi().enable(projectKey, repoKey, true);
             assertThat(status.available()).isTrue();
             assertThat(status.enabled()).isFalse();
             assertThat(status.divergedRefs()).isEmpty();
@@ -72,19 +72,17 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
         } finally {
-            baseApi.close();
             server.shutdown();
         }
     }
 
     public void testEnabledOnError() throws Exception {
         final MockWebServer server = mockWebServer();
-
         server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
-        final SyncApi api = baseApi.syncApi();
-        try {
-            final Enabled status = api.enable(projectKey, repoKey, true);
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncStatus status = baseApi.syncApi().enable(projectKey, repoKey, true);
             assertThat(status.available()).isFalse();
             assertThat(status.enabled()).isFalse();
             assertThat(status.divergedRefs()).isEmpty();
@@ -92,7 +90,63 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
             assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
         } finally {
-            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testStatus() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/sync-enabled.json")).setResponseCode(200));
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncStatus status = baseApi.syncApi().status(projectKey, repoKey, null);
+            assertThat(status.available()).isTrue();
+            assertThat(status.enabled()).isTrue();
+            assertThat(status.divergedRefs()).isNotEmpty();
+            assertThat(status.divergedRefs().get(0).state()).isEqualTo("DIVERGED");
+            assertThat(status.errors()).isEmpty();
+
+            assertSent(server, "GET", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testStatusAt() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/sync-enabled.json")).setResponseCode(200));
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncStatus status = baseApi.syncApi().status(projectKey, repoKey, "somereference");
+            assertThat(status.available()).isTrue();
+            assertThat(status.enabled()).isTrue();
+            assertThat(status.divergedRefs()).isNotEmpty();
+            assertThat(status.divergedRefs().get(0).state()).isEqualTo("DIVERGED");
+            assertThat(status.errors()).isEmpty();
+
+            final Map<String, ?> queryParams = ImmutableMap.of("at", "somereference");
+            assertSent(server, "GET", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath, queryParams);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testStatusOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncStatus status = baseApi.syncApi().status(projectKey, repoKey, null);
+            assertThat(status.available()).isFalse();
+            assertThat(status.enabled()).isFalse();
+            assertThat(status.divergedRefs()).isEmpty();
+            assertThat(status.errors()).isNotEmpty();
+
+            assertSent(server, "GET", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
+        } finally {
             server.shutdown();
         }
     }
