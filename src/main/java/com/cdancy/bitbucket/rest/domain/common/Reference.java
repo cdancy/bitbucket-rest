@@ -17,14 +17,17 @@
 
 package com.cdancy.bitbucket.rest.domain.common;
 
+import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.List;
+
 @AutoValue
-public abstract class Reference {
+public abstract class Reference implements ErrorsHolder {
 
     // default to 'refs/heads/master' if null
     @Nullable
@@ -63,22 +66,41 @@ public abstract class Reference {
             final MinimalRepository repository, 
             final String displayId) {
         
-        return create(id, repository, null, null, displayId, null);
+        return create(id, repository, null, null, displayId, null, null);
     }
 
-    @SerializedNames({"id", "repository", "state", "tag", "displayId", "latestCommit"})
+    @Deprecated
     public static Reference create(final String id,
-            final MinimalRepository repository,
-            final String state,
-            final Boolean tag,
-            final String displayId,
-            final String latestCommit) {
+                                   final MinimalRepository repository,
+                                   final String state,
+                                   final Boolean tag,
+                                   final String displayId,
+                                   final String latestCommit) {
+
+        return create(id,
+            repository,
+            state,
+            tag,
+            displayId,
+            latestCommit,
+            null);
+    }
+
+    @SerializedNames({ "id", "repository", "state", "tag", "displayId", "latestCommit", "errors" })
+    public static Reference create(final String id,
+                                   final MinimalRepository repository,
+                                   final String state,
+                                   final Boolean tag,
+                                   final String displayId,
+                                   final String latestCommit,
+                                   final List<Error> errors) {
         
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master",
-                repository,
-                state,
-                tag,
-                displayId,
-                latestCommit);
+        return new AutoValue_Reference(BitbucketUtils.nullToEmpty(errors),
+            id != null ? id : "refs/heads/master",
+            repository,
+            state,
+            tag,
+            displayId,
+            latestCommit);
     }
 }

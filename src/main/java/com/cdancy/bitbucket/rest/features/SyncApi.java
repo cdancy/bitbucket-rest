@@ -18,14 +18,18 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
+import com.cdancy.bitbucket.rest.options.SyncOptions;
 import org.jclouds.javax.annotation.Nullable;
+import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.Payload;
 import org.jclouds.rest.annotations.PayloadParam;
 import org.jclouds.rest.annotations.RequestFilters;
+import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -63,4 +67,14 @@ public interface SyncApi {
     SyncStatus status(@PathParam("project") String project,
                       @PathParam("repo") String repo,
                       @Nullable @QueryParam("at") String at);
+
+    @Named("sync:synchronize")
+    @Documentation({"https://docs.atlassian.com/DAC/rest/stash/3.7.2/stash-repository-ref-sync-rest.html"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/synchronize")
+    @Fallback(BitbucketFallbacks.ReferenceOnError.class)
+    @POST
+    Reference synchronize(@PathParam("project") String project,
+                          @PathParam("repo") String repo,
+                          @BinderParam(BindToJsonPayload.class) SyncOptions syncOptions);
 }
