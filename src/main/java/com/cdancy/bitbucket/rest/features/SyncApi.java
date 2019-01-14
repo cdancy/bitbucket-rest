@@ -18,9 +18,10 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
-import com.cdancy.bitbucket.rest.domain.sync.Enabled;
+import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.Payload;
 import org.jclouds.rest.annotations.PayloadParam;
@@ -28,10 +29,12 @@ import org.jclouds.rest.annotations.RequestFilters;
 
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,9 +48,19 @@ public interface SyncApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}")
     @Payload("%7B \"enabled\": \"{enabled}\" %7D")
-    @Fallback(BitbucketFallbacks.EnabledOnError.class)
+    @Fallback(BitbucketFallbacks.SyncStatusOnError.class)
     @POST
-    Enabled enable(@PathParam("project") String project,
-                   @PathParam("repo") String repo,
-                   @PayloadParam("enabled") boolean enabled);
+    SyncStatus enable(@PathParam("project") String project,
+                      @PathParam("repo") String repo,
+                      @PayloadParam("enabled") boolean enabled);
+
+    @Named("sync:status")
+    @Documentation({"https://docs.atlassian.com/DAC/rest/stash/3.7.2/stash-repository-ref-sync-rest.html"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}")
+    @Fallback(BitbucketFallbacks.SyncStatusOnError.class)
+    @GET
+    SyncStatus status(@PathParam("project") String project,
+                      @PathParam("repo") String repo,
+                      @Nullable @QueryParam("at") String at);
 }

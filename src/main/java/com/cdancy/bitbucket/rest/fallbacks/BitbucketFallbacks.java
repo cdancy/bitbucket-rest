@@ -63,7 +63,7 @@ import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.cdancy.bitbucket.rest.domain.sync.Enabled;
+import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.google.common.collect.Lists;
@@ -367,7 +367,7 @@ public final class BitbucketFallbacks {
         }
     }
 
-    public static final class EnabledOnError implements Fallback<Object> {
+    public static final class SyncStatusOnError implements Fallback<Object> {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
@@ -375,9 +375,9 @@ public final class BitbucketFallbacks {
                 final boolean isAvailable = (is204 != null) ? true : false;
                 final List<Error> errors = getErrors(throwable.getMessage());
                 if (errors.size() > 0 && errors.get(0).context().startsWith("Error parsing input: null")) {
-                    return createEnabledFromErrors(isAvailable, null);
+                    return createSyncStatusFromErrors(isAvailable, null);
                 } else {
-                    return createEnabledFromErrors(isAvailable, errors);
+                    return createSyncStatusFromErrors(isAvailable, errors);
                 }
             }
             throw propagate(throwable);
@@ -619,8 +619,8 @@ public final class BitbucketFallbacks {
                 null, null, errors);
     }
 
-    public static Enabled createEnabledFromErrors(final boolean isAvailable, final List<Error> errors) {
-        return Enabled.create(isAvailable, false, null, null, null, null, errors);
+    public static SyncStatus createSyncStatusFromErrors(final boolean isAvailable, final List<Error> errors) {
+        return SyncStatus.create(isAvailable, false, null, null, null, null, errors);
     }
 
     public static ActivitiesPage createActivitiesPageFromErrors(final List<Error> errors) {

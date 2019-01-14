@@ -29,7 +29,7 @@ import java.util.List;
 
 @SuppressWarnings("PMD")
 @AutoValue
-public abstract class Enabled implements ErrorsHolder {
+public abstract class SyncStatus implements ErrorsHolder {
 
     @Nullable
     public abstract Boolean available();
@@ -46,20 +46,20 @@ public abstract class Enabled implements ErrorsHolder {
 
     public abstract List<Reference> orphanedRefs();
 
-    Enabled() {
+    SyncStatus() {
     }
 
     @SerializedNames({ "available", "enabled", "lastSync",
             "aheadRefs", "divergedRefs", "orphanedRefs", "errors" })
-    public static Enabled create(final Boolean available,
-                                 final Boolean enabled,
-                                 final Long lastSync,
-                                 final List<Reference> aheadRefs,
-                                 final List<Reference> divergedRefs,
-                                 final List<Reference> orphanedRefs,
-                                 final List<Error> errors) {
+    public static SyncStatus create(final Boolean available,
+                                    final Boolean enabled,
+                                    final Long lastSync,
+                                    final List<Reference> aheadRefs,
+                                    final List<Reference> divergedRefs,
+                                    final List<Reference> orphanedRefs,
+                                    final List<Error> errors) {
         
-        return new AutoValue_Enabled(BitbucketUtils.nullToEmpty(errors),
+        return new AutoValue_SyncStatus(BitbucketUtils.nullToEmpty(errors),
                 available != null ? available : true,
                 enabled != null ? enabled : false,
                 lastSync != null ? lastSync : 0,
