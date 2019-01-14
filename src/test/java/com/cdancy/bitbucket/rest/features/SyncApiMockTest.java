@@ -20,7 +20,9 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
+import com.cdancy.bitbucket.rest.options.SyncOptions;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -34,10 +36,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SyncApiMockTest extends BaseBitbucketMockTest {
 
     private final String restApiPath = "/rest/sync/";
-
     private final String projectKey = "PRJ";
     private final String repoKey = "my-repo";
     private final String syncPath = "/projects/" + projectKey + "/repos/" + repoKey;
+    private final String refsHeadsMaster = "refs/heads/master";
 
     public void testEnabled() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -52,7 +54,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
             assertThat(status.divergedRefs().get(0).state()).isEqualTo("DIVERGED");
             assertThat(status.errors()).isEmpty();
 
-            assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
         } finally {
             server.shutdown();
         }
@@ -70,7 +72,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
             assertThat(status.divergedRefs()).isEmpty();
             assertThat(status.errors()).isEmpty();
 
-            assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
         } finally {
             server.shutdown();
         }
@@ -88,7 +90,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
             assertThat(status.divergedRefs()).isEmpty();
             assertThat(status.errors()).isNotEmpty();
 
-            assertSent(server, "POST", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
         } finally {
             server.shutdown();
         }
@@ -146,6 +148,60 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
             assertThat(status.errors()).isNotEmpty();
 
             assertSent(server, "GET", restApiPath + BitbucketApiMetadata.API_VERSION + syncPath);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testSynchronize() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/synchronize.json")).setResponseCode(200));
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncOptions options = SyncOptions.create(refsHeadsMaster, SyncOptions.ACTION.MERGE, "hello world");
+            final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
+            assertThat(ref.id()).isEqualTo(refsHeadsMaster);
+            assertThat(ref.state()).isEqualTo("AHEAD");
+            assertThat(ref.errors()).isEmpty();
+
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + syncPath + "/synchronize");
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testSynchronizeInSync() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/synchronize.json")).setResponseCode(204));
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncOptions options = SyncOptions.create(refsHeadsMaster, SyncOptions.ACTION.MERGE, "merge message");
+            final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
+            assertThat(ref.id()).isEqualTo(refsHeadsMaster);
+            assertThat(ref.state()).isEqualTo("SYNCED");
+            assertThat(ref.errors()).isEmpty();
+
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + syncPath + "/synchronize");
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testSynchronizeOnError() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+
+            final SyncOptions options = SyncOptions.create(refsHeadsMaster, SyncOptions.ACTION.MERGE, "hello world");
+            final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
+            assertThat(ref.id()).isEqualTo(refsHeadsMaster);
+            assertThat(ref.state()).isNull();
+            assertThat(ref.errors()).isNotEmpty();
+
+            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION + syncPath + "/synchronize");
         } finally {
             server.shutdown();
         }

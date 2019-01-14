@@ -49,6 +49,8 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
  */
 public class BaseBitbucketMockTest {
 
+    protected final String postMethod = "POST";
+
     protected final String restBasePath = "/rest/api/";
     protected final String provider;
     private final JsonParser parser = new JsonParser();
