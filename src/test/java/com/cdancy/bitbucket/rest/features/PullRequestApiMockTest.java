@@ -477,6 +477,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             final Task task = comments.tasks().get(0);
             assertThat(task.anchor().type()).isEqualTo("COMMENT");
             assertThat(task.state()).isEqualTo("OPEN");
+            assertThat(task.anchor().properties().keySet().contains("likedBy"));
+            assertThat(task.anchor().properties().keySet().contains("repositoryId"));
 
             final Map<String, ?> queryParams = ImmutableMap.of(startKeyword, "0", limitKeyword, 5);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
