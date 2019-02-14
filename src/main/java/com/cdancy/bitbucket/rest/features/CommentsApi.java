@@ -98,6 +98,10 @@ public interface CommentsApi {
                                 @PathParam("repo") String repo,
                                 @PathParam("pullRequestId") int pullRequestId,
                                 @QueryParam("path") String pathToFile,
+                                @Nullable @QueryParam("anchorState") String anchorState,
+                                @Nullable @QueryParam("diffType") String diffType,
+                                @Nullable @QueryParam("fromHash") String fromHash,
+                                @Nullable @QueryParam("toHash") String toHash,
                                 @Nullable @QueryParam("start") Integer start,
                                 @Nullable @QueryParam("limit") Integer limit);
 
