@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
@@ -38,7 +39,10 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
     private final String repoKey = "myrepo";
     private final String filePath = "some/random/path/MyFile.txt";
     private final String restApiPath = "/rest/api/";
+    private final String branch = "myBranch";
+    private final String content = "file contents";
     private final String getMethod = "GET";
+    private final String putMethod = "PUT";
             
     public void testGetContent() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -142,6 +146,36 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
                     + "/projects/PRJ/repos/myrepo/browse/" + filePath);
         } finally {
             baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testUpdateContent() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/commit.json")).setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+            final Commit commit = baseApi.fileApi().updateContent(projectKey, repoKey, filePath, branch, content, null, null, null);
+            assertThat(commit).isNotNull();
+            assertThat(commit.errors().isEmpty()).isTrue();
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testUpdateContentBadRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+            final Commit commit = baseApi.fileApi().updateContent(projectKey, repoKey, filePath, branch, content, null, null, null);
+            assertThat(commit).isNotNull();
+            assertThat(commit.errors().isEmpty()).isFalse();
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+        } finally {
             server.shutdown();
         }
     }

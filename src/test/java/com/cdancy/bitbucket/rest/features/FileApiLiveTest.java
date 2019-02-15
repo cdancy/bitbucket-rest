@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
+import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
+import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.cdancy.bitbucket.rest.domain.file.Line;
@@ -29,11 +31,12 @@ import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
 import com.google.common.collect.Lists;
-import java.util.List;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import org.testng.annotations.BeforeClass;
+import java.util.List;
+import java.util.UUID;
 
 @Test(groups = "live", testName = "FileApiLiveTest", singleThreaded = true)
 public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -46,6 +49,10 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     private String commitHashTwo;
     private String filePath;
     private RawContent content;
+
+    private final String branch = "refs/heads/master";
+    private final String readmeFilePath = "README.md";
+    private final String message = "Create README.md";
 
     @BeforeClass
     public void init() {
@@ -154,6 +161,68 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
             }
         }
         assertThat(allFiles.size() > 0).isEqualTo(true);
+    }
+
+    @Test
+    public void updateContentCreateFile() {
+        final String fileContent = UUID.randomUUID().toString();
+        final Commit commit = api.fileApi().updateContent(projectKey, repoKey, readmeFilePath, branch, fileContent, message, null, null);
+
+        assertThat(commit).isNotNull();
+        assertThat(commit.errors().isEmpty()).isTrue();
+        assertThat(commit.message()).isEqualTo(message);
+        assertThat(commit.id()).isNotEmpty();
+
+        RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
+        assertThat(newFile).isNotNull();
+        assertThat(newFile.value()).isEqualTo(fileContent);
+    }
+
+    @Test
+    public void updateContentCreateFileOnNewBranch() {
+        final String fileContent = UUID.randomUUID().toString();
+        final String newBranchName = UUID.randomUUID().toString();
+        final String newFilePath = UUID.randomUUID().toString();
+        final Commit commit = api.fileApi().updateContent(projectKey, repoKey, newFilePath, newBranchName, fileContent, message, null, branch);
+
+        assertThat(commit).isNotNull();
+        assertThat(commit.errors().isEmpty()).isTrue();
+        assertThat(commit.message()).isEqualTo(message);
+        assertThat(commit.id()).isNotEmpty();
+
+        RawContent newFile = api().raw(projectKey, repoKey, newFilePath, commit.id());
+        assertThat(newFile).isNotNull();
+        assertThat(newFile.value()).isEqualTo(fileContent);
+
+        BranchPage branches = api.branchApi().list(projectKey, repoKey, null, null, newBranchName, null, null, null);
+        assertThat(branches).isNotNull();
+        assertThat(branches.values().size()).isEqualTo(1);
+        assertThat(branches.errors().isEmpty()).isTrue();
+    }
+
+    @Test (dependsOnMethods = "updateContentCreateFile")
+    public void updateContentCreateGivenFileAlreadyExists() {
+        final String fileContent = UUID.randomUUID().toString();
+        final Commit commit = api.fileApi().updateContent(projectKey, repoKey, readmeFilePath, branch, fileContent, message, null, null);
+
+        assertThat(commit).isNotNull();
+        assertThat(commit.errors().isEmpty()).isFalse();
+    }
+
+    @Test (dependsOnMethods = "updateContentCreateFile")
+    public void updateContent() {
+        final String fileContent = UUID.randomUUID().toString();
+        final CommitPage commits = api.commitsApi().list(projectKey, repoKey, null, null, null, null, null, null, branch, 1, null);
+        final String sourceCommitId = commits.values().get(0).id();
+        final Commit commit = api.fileApi().updateContent(projectKey, repoKey, readmeFilePath, branch, fileContent, null, sourceCommitId, null);
+
+        assertThat(commit).isNotNull();
+        assertThat(commit.errors().isEmpty()).isTrue();
+        assertThat(commit.id()).isNotEmpty();
+
+        RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
+        assertThat(newFile).isNotNull();
+        assertThat(newFile.value()).isEqualTo(fileContent);
     }
     
     @Test 
