@@ -1,4 +1,5 @@
-### Version 2.4.2 (TBA)
+### Version 2.4.2 (2/16/19)
+* ADDED: `FileApi` gained endpoint `updateContent`. - [PR 174](https://github.com/cdancy/bitbucket-rest/pull/174)
 
 ### Version 2.4.1 (2/16/19)
 * ADDED: `CommentsApi` gained overloaded endpoint method for `fileComments` to take advantage of additional parameters. Previous version has been marked as deprecated. - [PR 171](https://github.com/cdancy/bitbucket-rest/pull/171)
