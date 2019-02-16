@@ -1,0 +1,15 @@
+{
+    "available": true,
+    "enabled": true,
+    "lastSync": 1331038800000,
+    "aheadRefs": [],
+    "divergedRefs": [
+        {
+            "id": "refs/heads/master",
+            "displayId": "master",
+            "state": "DIVERGED",
+            "tag": false
+        }
+    ],
+    "orphanedRefs": []
+}

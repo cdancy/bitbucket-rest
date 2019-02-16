@@ -19,7 +19,7 @@ package com.cdancy.bitbucket.rest.options;
 
 import com.cdancy.bitbucket.rest.domain.common.Links;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Person;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;

@@ -34,7 +34,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.options.CreateComment;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.google.common.collect.Lists;

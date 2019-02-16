@@ -33,6 +33,8 @@ import com.google.inject.name.Named;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
+import org.jclouds.rest.annotations.Payload;
+import org.jclouds.rest.annotations.PayloadParam;
 import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 import javax.ws.rs.Consumes;
@@ -70,6 +72,18 @@ public interface RepositoryApi {
     @GET
     Repository get(@PathParam("project") String project,
                    @PathParam("repo") String repo);
+
+    @Named("repository:fork")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277587248"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}")
+    @Payload("%7B \"name\": \"{newRepo}\", \"project\": %7B \"key\": \"{newProject}\" %7D %7D")
+    @Fallback(BitbucketFallbacks.RepositoryOnError.class)
+    @POST
+    Repository fork(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @PayloadParam("newProject") String newProject,
+                    @PayloadParam("newRepo") String newRepo);
 
     @Named("repository:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277567792"})
