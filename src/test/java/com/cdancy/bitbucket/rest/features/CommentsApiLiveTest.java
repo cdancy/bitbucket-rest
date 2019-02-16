@@ -34,7 +34,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.CommentPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.Reference;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.options.CreateComment;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.google.common.collect.Lists;
@@ -153,7 +153,8 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         final List<Comments> allComments = Lists.newArrayList();
         Integer start = null;
         while (true) {
-            final CommentPage comm = api().fileComments(project, repo, prId, this.filePath, start, 100);
+            final CommentPage comm = api().fileComments(project, repo, prId, this.filePath, null, null, null, null,
+                    start, 100);
             assertThat(comm.errors().isEmpty()).isTrue();
             allComments.addAll(comm.values());
             start = comm.nextPageStart();

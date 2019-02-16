@@ -17,6 +17,8 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static com.cdancy.bitbucket.rest.TestUtilities.randomStringLettersOnly;
+
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
@@ -68,6 +70,23 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
+    public void testForkRepository() {
+        final String forkedRepoName = randomStringLettersOnly();
+        final Repository repository = api().fork(projectKey, repoKey, projectKey, forkedRepoName);
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors()).isEmpty();
+        assertThat(forkedRepoName.equalsIgnoreCase(repository.name())).isTrue();
+        generatedTestContents.addRepoForDeletion(projectKey, forkedRepoName);
+    }
+
+    @Test
+    public void testForkRepositoryNonExistent() {
+        final Repository repository = api().fork(projectKey, randomStringLettersOnly(), projectKey, randomStringLettersOnly());
+        assertThat(repository).isNotNull();
+        assertThat(repository.errors()).isNotEmpty();
+    }
+
+    @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testListRepositories() {
         final RepositoryPage repositoryPage = api().list(projectKey, 0, 100);
 
@@ -88,7 +107,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testDeleteRepositoryNonExistent() {
-        final String random = TestUtilities.randomStringLettersOnly();
+        final String random = randomStringLettersOnly();
         final RequestStatus success = api().delete(projectKey, random);
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
@@ -97,7 +116,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testGetRepositoryNonExistent() {
-        final Repository repository = api().get(projectKey, TestUtilities.randomStringLettersOnly());
+        final Repository repository = api().get(projectKey, randomStringLettersOnly());
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
     }

@@ -88,6 +88,20 @@ public interface CommentsApi {
                  @PathParam("pullRequestId") int pullRequestId,
                  @PathParam("commentId") int commentId);
 
+    @Deprecated
+    @Named("comments:file-comments-deprecated")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
+    @Fallback(CommentPageOnError.class)
+    @GET
+    CommentPage fileComments(@PathParam("project") String project,
+                                @PathParam("repo") String repo,
+                                @PathParam("pullRequestId") int pullRequestId,
+                                @QueryParam("path") String pathToFile,
+                                @Nullable @QueryParam("start") Integer start,
+                                @Nullable @QueryParam("limit") Integer limit);
+    
     @Named("comments:file-comments")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -98,6 +112,10 @@ public interface CommentsApi {
                                 @PathParam("repo") String repo,
                                 @PathParam("pullRequestId") int pullRequestId,
                                 @QueryParam("path") String pathToFile,
+                                @Nullable @QueryParam("anchorState") String anchorState,
+                                @Nullable @QueryParam("diffType") String diffType,
+                                @Nullable @QueryParam("fromHash") String fromHash,
+                                @Nullable @QueryParam("toHash") String toHash,
                                 @Nullable @QueryParam("start") Integer start,
                                 @Nullable @QueryParam("limit") Integer limit);
 

@@ -1,5 +1,14 @@
-### Version 2.4.0 (TBA)
+### Version 2.4.2 (TBA)
+
+### Version 2.4.1 (2/16/19)
+* ADDED: `CommentsApi` gained overloaded endpoint method for `fileComments` to take advantage of additional parameters. Previous version has been marked as deprecated. - [PR 171](https://github.com/cdancy/bitbucket-rest/pull/171)
+
+### Version 2.4.0 (2/16/2019)
 * BUG: If a task contains both a comment and a like then parsing would fail. - [PR 168](https://github.com/cdancy/bitbucket-rest/pull/168)
+* ADDED: `SyncApi`. - [PR 166](https://github.com/cdancy/bitbucket-rest/pull/166)
+* ADDED: `SyncApi` gained endpoint `enable`. - [PR 166](https://github.com/cdancy/bitbucket-rest/pull/166)
+* ADDED: `SyncApi` gained endpoint `status`. - [PR 166](https://github.com/cdancy/bitbucket-rest/pull/166)
+* ADDED: `SyncApi` gained endpoint `syncrhonize`. - [PR 166](https://github.com/cdancy/bitbucket-rest/pull/166)
 
 ### Version 2.3.0 (10/8/2018)
 * ADDED: `ProjectApi` gained endpoint `createPermissionsByUser`. - [PR 160](https://github.com/cdancy/bitbucket-rest/pull/160)
