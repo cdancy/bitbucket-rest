@@ -1,3 +1,5 @@
+### Version 2.4.3 (TBA)
+
 ### Version 2.4.2 (2/16/19)
 * ADDED: `FileApi` gained endpoint `updateContent`. - [PR 174](https://github.com/cdancy/bitbucket-rest/pull/174)
 
