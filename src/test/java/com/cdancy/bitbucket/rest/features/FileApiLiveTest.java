@@ -57,8 +57,8 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     @BeforeClass
     public void init() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
-        this.projectKey = generatedTestContents.project.key();
-        this.repoKey = generatedTestContents.repository.name();
+        this.projectKey = "test";
+        this.repoKey = "yvbvgbmzdz";
         
         final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 10, null);
         assertThat(commitPage).isNotNull();
@@ -102,9 +102,9 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(allLines.size() > 0).isEqualTo(true);
         final StringBuilder possibleContent = new StringBuilder();
         for (final Line possibleLine : allLines) {
-            possibleContent.append(possibleLine.text());
+            possibleContent.append(possibleLine.text().trim());
         }
-        assertThat(possibleContent.toString()).isEqualTo(this.content.value().trim());
+        assertThat(possibleContent.toString().trim()).isEqualTo(this.content.value().trim());
     }
     
     @Test (dependsOnMethods = "getContent")
@@ -173,7 +173,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(commit.message()).isEqualTo(message);
         assertThat(commit.id()).isNotEmpty();
 
-        RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
+        final RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
         assertThat(newFile).isNotNull();
         assertThat(newFile.value()).isEqualTo(fileContent);
     }
@@ -190,11 +190,11 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(commit.message()).isEqualTo(message);
         assertThat(commit.id()).isNotEmpty();
 
-        RawContent newFile = api().raw(projectKey, repoKey, newFilePath, commit.id());
+        final RawContent newFile = api().raw(projectKey, repoKey, newFilePath, commit.id());
         assertThat(newFile).isNotNull();
         assertThat(newFile.value()).isEqualTo(fileContent);
 
-        BranchPage branches = api.branchApi().list(projectKey, repoKey, null, null, newBranchName, null, null, null);
+        final BranchPage branches = api.branchApi().list(projectKey, repoKey, null, null, newBranchName, null, null, null);
         assertThat(branches).isNotNull();
         assertThat(branches.values().size()).isEqualTo(1);
         assertThat(branches.errors().isEmpty()).isTrue();
@@ -220,7 +220,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(commit.errors().isEmpty()).isTrue();
         assertThat(commit.id()).isNotEmpty();
 
-        RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
+        final RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
         assertThat(newFile).isNotNull();
         assertThat(newFile.value()).isEqualTo(fileContent);
     }

@@ -43,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.ResponseParser;
 
 @RequestFilters(BitbucketAuthenticationFilter.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface FileApi {
 
     @Named("file:raw-content")

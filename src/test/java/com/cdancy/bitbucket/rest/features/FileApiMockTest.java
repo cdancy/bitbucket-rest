@@ -43,6 +43,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
     private final String content = "file contents";
     private final String getMethod = "GET";
     private final String putMethod = "PUT";
+    private final String browsePath = "/projects/PRJ/repos/myrepo/browse/";
             
     public void testGetContent() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -100,7 +101,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             assertThat(linePage.values().isEmpty()).isFalse();
             assertThat(linePage.values().get(0).text()).isEqualTo("BEARS");
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+                    + browsePath + filePath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -124,7 +125,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             
             final Map<String, ?> queryParams = ImmutableMap.of("blame", "true");
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/myrepo/browse/" + filePath, queryParams);
+                    + browsePath + filePath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -143,7 +144,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             assertThat(linePage).isNotNull();
             assertThat(linePage.errors().isEmpty()).isFalse();
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+                    + browsePath + filePath);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -159,7 +160,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             assertThat(commit).isNotNull();
             assertThat(commit.errors().isEmpty()).isTrue();
             assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+                    + browsePath + filePath);
         } finally {
             server.shutdown();
         }
@@ -174,7 +175,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
             assertThat(commit).isNotNull();
             assertThat(commit.errors().isEmpty()).isFalse();
             assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + "/projects/PRJ/repos/myrepo/browse/" + filePath);
+                    + browsePath + filePath);
         } finally {
             server.shutdown();
         }
