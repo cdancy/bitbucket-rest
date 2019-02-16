@@ -40,7 +40,7 @@ public abstract class RequestStatus implements Value<Boolean>, ErrorsHolder {
     public static RequestStatus create(@Nullable final Boolean value, 
             final List<Error> errors) {
         
-        return new AutoValue_RequestStatus(value, 
+        return new AutoValue_RequestStatus(value,
                 BitbucketUtils.nullToEmpty(errors));
     }
 }

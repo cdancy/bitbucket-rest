@@ -375,7 +375,9 @@ public final class BitbucketFallbacks {
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
                 final boolean isAvailable = (is204 != null) ? true : false;
                 final List<Error> errors = getErrors(throwable.getMessage());
-                if (errors.size() > 0 && errors.get(0).context().startsWith("Error parsing input: null")) {
+                if (errors.size() > 0
+                        && errors.get(0).context() != null
+                        && errors.get(0).context().startsWith("Error parsing input: null")) {
                     return createSyncStatusFromErrors(isAvailable, null);
                 } else {
                     return createSyncStatusFromErrors(isAvailable, errors);
@@ -392,7 +394,10 @@ public final class BitbucketFallbacks {
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
                 final String syncedStatus = (is204 != null) ? "SYNCED" : null;
                 final List<Error> errors = getErrors(throwable.getMessage());
-                if (errors.size() > 0 && errors.get(0).context().startsWith("Error parsing input: null")) {
+                if (errors.size() > 0
+                        && errors.get(0).context() != null
+                        && errors.get(0).context().startsWith("Error parsing input: null")) {
+
                     return createReferenceFromErrors(syncedStatus, null);
                 } else {
                     return createReferenceFromErrors(syncedStatus, errors);
@@ -591,7 +596,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Repository createRepositoryFromErrors(final List<Error> errors) {
-        return Repository.create(null, -1, null, null, null, null, false, null, false, null, errors);
+        return Repository.create(null, -1, null, null, null, null, false, null, null, false, null, errors);
     }
 
     public static RepositoryPage createRepositoryPageFromErrors(final List<Error> errors) {

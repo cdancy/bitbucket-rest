@@ -39,22 +39,20 @@ public abstract class SyncOptions {
     SyncOptions() {
     }
 
-    public static SyncOptions create(final String refId,
-                                     final String action,
-                                     final String message) {
-        return create(refId, ACTION.valueOf(action), Context.create(message));
+    public static SyncOptions merge(@Nullable final String refId) {
+        return create(refId, ACTION.MERGE, null);
     }
 
-    public static SyncOptions create(final String refId,
-                                     final ACTION action,
-                                     final String message) {
-        return create(refId, action, Context.create(message));
+    public static SyncOptions discard(@Nullable final String refId) {
+        return create(refId, ACTION.DISCARD, null);
     }
 
     @SerializedNames({ "refId", "action", "context" })
-    public static SyncOptions create(final String refId,
-                                     final ACTION action,
-                                     final Context context) {
-        return new AutoValue_SyncOptions(refId, action, context);
+    public static SyncOptions create(@Nullable final String refId,
+                                     @Nullable final ACTION action,
+                                     @Nullable final Context context) {
+        return new AutoValue_SyncOptions(refId != null ? refId : "refs/heads/master",
+                action != null ? action : ACTION.MERGE,
+                context);
     }
 }

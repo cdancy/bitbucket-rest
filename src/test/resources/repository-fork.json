@@ -1,0 +1,81 @@
+{
+  "slug": "hello-world",
+  "id": 2,
+  "name": "hello world",
+  "scmId": "git",
+  "state": "AVAILABLE",
+  "statusMessage": "Available",
+  "forkable": true,
+  "origin": {
+    "slug": "my-repo",
+    "id": 1,
+    "name": "My repo",
+    "scmId": "git",
+    "state": "AVAILABLE",
+    "statusMessage": "Available",
+    "forkable": true,
+    "project": {
+      "key": "PRJ",
+      "id": 1,
+      "name": "My Cool Project",
+      "description": "The description for my cool project.",
+      "public": true,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "http://link/to/project"
+          }
+        ]
+      }
+    },
+    "public": true,
+    "links": {
+      "clone": [
+        {
+          "href": "ssh://git@<baseURL>/PRJ/my-repo.git",
+          "name": "ssh"
+        },
+        {
+          "href": "https://<baseURL>/scm/PRJ/my-repo.git",
+          "name": "http"
+        }
+      ],
+      "self": [
+        {
+          "href": "http://link/to/repository"
+        }
+      ]
+    }
+  },
+  "project": {
+    "key": "~JDOE",
+    "id": 2,
+    "name": "John Doe",
+    "type": "PERSONAL",
+    "links": {
+      "self": [
+        {
+          "href": "http://link/to/project"
+        }
+      ]
+    }
+  },
+  "links": {
+    "clone": [
+      {
+        "href": "https://<baseURL>/scm/JDOE/my-repo.git",
+        "name": "http"
+      },
+      {
+        "href": "ssh://git@<baseURL>/JDOE/my-repo.git",
+        "name": "ssh"
+      }
+    ],
+    "self": [
+      {
+        "href": "http://link/to/repository"
+      }
+    ]
+  }
+}

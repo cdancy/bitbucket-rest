@@ -159,7 +159,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
 
-            final SyncOptions options = SyncOptions.create(refsHeadsMaster, SyncOptions.ACTION.MERGE, "hello world");
+            final SyncOptions options = SyncOptions.merge(refsHeadsMaster);
             final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
             assertThat(ref.id()).isEqualTo(refsHeadsMaster);
             assertThat(ref.state()).isEqualTo("AHEAD");
@@ -177,7 +177,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
 
-            final SyncOptions options = SyncOptions.create(refsHeadsMaster, SyncOptions.ACTION.MERGE, "merge message");
+            final SyncOptions options = SyncOptions.merge(refsHeadsMaster);
             final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
             assertThat(ref.id()).isEqualTo(refsHeadsMaster);
             assertThat(ref.state()).isEqualTo("SYNCED");
@@ -195,7 +195,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
 
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
 
-            final SyncOptions options = SyncOptions.create(refsHeadsMaster, SyncOptions.ACTION.MERGE, "hello world");
+            final SyncOptions options = SyncOptions.merge(refsHeadsMaster);
             final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
             assertThat(ref.id()).isEqualTo(refsHeadsMaster);
             assertThat(ref.state()).isNull();
