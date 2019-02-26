@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
-import com.cdancy.bitbucket.rest.domain.common.Reference;
+import com.cdancy.bitbucket.rest.domain.sync.SyncState;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.options.SyncOptions;
 import com.google.common.collect.ImmutableMap;
@@ -160,7 +160,7 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
 
             final SyncOptions options = SyncOptions.merge(refsHeadsMaster);
-            final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
+            final SyncState ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
             assertThat(ref.id()).isEqualTo(refsHeadsMaster);
             assertThat(ref.state()).isEqualTo("AHEAD");
             assertThat(ref.errors()).isEmpty();
@@ -178,8 +178,8 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
 
             final SyncOptions options = SyncOptions.merge(refsHeadsMaster);
-            final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
-            assertThat(ref.id()).isEqualTo(refsHeadsMaster);
+            final SyncState ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
+            assertThat(ref.id()).isNull();
             assertThat(ref.state()).isEqualTo("SYNCED");
             assertThat(ref.errors()).isEmpty();
 
@@ -196,8 +196,8 @@ public class SyncApiMockTest extends BaseBitbucketMockTest {
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
 
             final SyncOptions options = SyncOptions.merge(refsHeadsMaster);
-            final Reference ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
-            assertThat(ref.id()).isEqualTo(refsHeadsMaster);
+            final SyncState ref = baseApi.syncApi().synchronize(projectKey, repoKey, options);
+            assertThat(ref.id()).isNull();
             assertThat(ref.state()).isNull();
             assertThat(ref.errors()).isNotEmpty();
 

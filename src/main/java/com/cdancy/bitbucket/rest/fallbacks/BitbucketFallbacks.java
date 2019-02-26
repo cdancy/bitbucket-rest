@@ -37,7 +37,6 @@ import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
-import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.common.Veto;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
@@ -64,6 +63,7 @@ import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
+import com.cdancy.bitbucket.rest.domain.sync.SyncState;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
@@ -80,16 +80,6 @@ import com.google.gson.JsonSyntaxException;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class BitbucketFallbacks {
-
-    public static final class FalseOnError implements Fallback<Object> {
-        @Override
-        public Object createOrPropagate(final Throwable throwable) throws Exception {
-            if (checkNotNull(throwable, "throwable") != null) {
-                return Boolean.FALSE;
-            }
-            throw propagate(throwable);
-        }
-    }
 
     public static final class BranchOnError implements Fallback<Object> {
         @Override
@@ -387,20 +377,15 @@ public final class BitbucketFallbacks {
         }
     }
 
-    public static final class ReferenceOnError implements Fallback<Object> {
+    public static final class SyncStateOnError implements Fallback<Object> {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
-                final String syncedStatus = (is204 != null) ? "SYNCED" : null;
-                final List<Error> errors = getErrors(throwable.getMessage());
-                if (errors.size() > 0
-                        && errors.get(0).context() != null
-                        && errors.get(0).context().startsWith("Error parsing input: null")) {
-
-                    return createReferenceFromErrors(syncedStatus, null);
+                if (is204 != null && is204.booleanValue()) {
+                    return SyncState.create(null, null, "SYNCED", null, null);
                 } else {
-                    return createReferenceFromErrors(syncedStatus, errors);
+                    return createSyncStateFromErrors(getErrors(throwable.getMessage()));
                 }
             }
             throw propagate(throwable);
@@ -642,8 +627,8 @@ public final class BitbucketFallbacks {
                 null, null, errors);
     }
 
-    public static Reference createReferenceFromErrors(final String syncedStatus, final List<Error> errors) {
-        return Reference.create(null, null, syncedStatus, null, null, null, errors);
+    public static SyncState createSyncStateFromErrors(final List<Error> errors) {
+        return SyncState.create(null, null, null, null, errors);
     }
 
     public static SyncStatus createSyncStatusFromErrors(final boolean isAvailable, final List<Error> errors) {

@@ -22,8 +22,8 @@ import static com.cdancy.bitbucket.rest.TestUtilities.randomStringLettersOnly;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
-import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
+import com.cdancy.bitbucket.rest.domain.sync.SyncState;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.options.SyncOptions;
 import org.testng.annotations.AfterClass;
@@ -76,7 +76,7 @@ public class SyncApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test (dependsOnMethods = "testEnableSync")
     public void testSynchronzie() {
-        final Reference status = api().synchronize(newProjectKey, newRepoKey, SyncOptions.discard(null));
+        final SyncState status = api().synchronize(newProjectKey, newRepoKey, SyncOptions.discard(null));
         assertThat(status).isNotNull();
         assertThat(status.errors()).isNotEmpty();
 
@@ -112,7 +112,7 @@ public class SyncApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testSynchronizeOnError() {
-        final Reference status = api().synchronize(newProjectKey, randomStringLettersOnly(), SyncOptions.merge(null));
+        final SyncState status = api().synchronize(newProjectKey, randomStringLettersOnly(), SyncOptions.merge(null));
         assertThat(status).isNotNull();
         assertThat(status.errors()).isNotEmpty();
     }

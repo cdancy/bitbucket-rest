@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
-import com.cdancy.bitbucket.rest.domain.common.Reference;
+import com.cdancy.bitbucket.rest.domain.sync.SyncState;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
@@ -72,9 +72,9 @@ public interface SyncApi {
     @Documentation({"https://docs.atlassian.com/DAC/rest/stash/3.7.2/stash-repository-ref-sync-rest.html"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{project}/repos/{repo}/synchronize")
-    @Fallback(BitbucketFallbacks.ReferenceOnError.class)
+    @Fallback(BitbucketFallbacks.SyncStateOnError.class)
     @POST
-    Reference synchronize(@PathParam("project") String project,
+    SyncState synchronize(@PathParam("project") String project,
                           @PathParam("repo") String repo,
                           @BinderParam(BindToJsonPayload.class) SyncOptions syncOptions);
 }

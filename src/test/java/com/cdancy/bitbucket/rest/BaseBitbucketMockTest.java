@@ -144,6 +144,7 @@ public class BaseBitbucketMockTest {
             final String expectedPath, 
             final Map<String, ?> queryParams) throws InterruptedException {
 
+
         final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
         assertThat(request.getHeader(HttpHeaders.ACCEPT)).isEqualTo(APPLICATION_JSON);
