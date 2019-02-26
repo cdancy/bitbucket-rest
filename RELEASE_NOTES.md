@@ -1,3 +1,5 @@
+### Version 2.4.4 (TBA)
+
 ### Version 2.4.3 (2/25/19)
 * BUG: **BREAKING CHANGE** `SyncApi.synchronize` now returns `SyncState` object instead of `Reference`.
 
