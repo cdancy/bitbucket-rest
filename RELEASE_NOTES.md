@@ -1,4 +1,5 @@
-### Version 2.4.3 (TBA)
+### Version 2.4.3 (2/25/19)
+* BUG: **BREAKING CHANGE** `SyncApi.synchronize` now returns `SyncState` object instead of `Reference`.
 
 ### Version 2.4.2 (2/16/19)
 * ADDED: `FileApi` gained endpoint `updateContent`. - [PR 174](https://github.com/cdancy/bitbucket-rest/pull/174)
