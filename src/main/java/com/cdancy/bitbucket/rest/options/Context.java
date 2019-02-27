@@ -15,32 +15,23 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.common;
+package com.cdancy.bitbucket.rest.options;
 
-import java.util.List;
-
+import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
-import com.cdancy.bitbucket.rest.BitbucketUtils;
-import com.google.auto.value.AutoValue;
-
-/**
- * Generic response to be returned when an endpoint returns 
- * no content (i.e. 204 response code).
- * 
- * <p>When the response code is valid the `value` parameter will 
- * be set to true while a non-valid response has the `value` set to
- * false along with any potential `error` objects returned from Bitbucket.
- */
 @AutoValue
-public abstract class RequestStatus implements Value<Boolean>, ErrorsHolder {
-    
-    @SerializedNames({ "value", "errors" })
-    public static RequestStatus create(@Nullable final Boolean value, 
-            final List<Error> errors) {
-        
-        return new AutoValue_RequestStatus(value,
-                BitbucketUtils.nullToEmpty(errors));
+public abstract class Context {
+
+    @Nullable
+    public abstract String commitMessage();
+
+    Context() {
+    }
+
+    @SerializedNames({ "commitMessage" })
+    public static Context create(final String commitMessage) {
+        return new AutoValue_Context(commitMessage);
     }
 }

@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.pullrequest;
+package com.cdancy.bitbucket.rest.domain.common;
 
+import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
@@ -29,7 +30,14 @@ public abstract class Reference {
     @Nullable
     public abstract String id();
 
+    @Nullable
     public abstract MinimalRepository repository();
+
+    @Nullable
+    public abstract String state();
+
+    @Nullable
+    public abstract Boolean tag();
 
     @Nullable
     public abstract String displayId();
@@ -51,22 +59,26 @@ public abstract class Reference {
     }
 
     @Deprecated
-    public static Reference create(final String id, 
+    public static Reference create(final String id,
             final MinimalRepository repository, 
             final String displayId) {
         
-        return create(id, repository, displayId, null);
+        return create(id, repository, null, null, displayId, null);
     }
 
-    @SerializedNames({"id", "repository", "displayId", "latestCommit"})
-    public static Reference create(final String id, 
-            final MinimalRepository repository, 
-            final String displayId, 
-            final String latestCommit) {
+    @SerializedNames({ "id", "repository", "state", "tag", "displayId", "latestCommit" })
+    public static Reference create(final String id,
+                                   final MinimalRepository repository,
+                                   final String state,
+                                   final Boolean tag,
+                                   final String displayId,
+                                   final String latestCommit) {
         
-        return new AutoValue_Reference(id != null ? id : "refs/heads/master", 
-                repository, 
-                displayId, 
-                latestCommit);
+        return new AutoValue_Reference(id != null ? id : "refs/heads/master",
+            repository,
+            state,
+            tag,
+            displayId,
+            latestCommit);
     }
 }

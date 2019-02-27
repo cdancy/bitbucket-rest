@@ -129,7 +129,8 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-comments.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, hejKeyword, 0, 100);
+            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, hejKeyword, null, null,
+                    null, null, 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isEmpty();
             assertThat(pcr.values()).hasSize(2);
@@ -165,7 +166,8 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, hejKeyword, 0, 100);
+            final CommentPage pcr = baseApi.commentsApi().fileComments("project", "repo", 101, hejKeyword, null, null,
+                    null, null, 0, 100);
             assertThat(pcr).isNotNull();
             assertThat(pcr.errors()).isNotEmpty();
 

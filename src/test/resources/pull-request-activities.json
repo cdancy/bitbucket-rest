@@ -68,7 +68,7 @@
          "action":"COMMENTED",
          "commentAction":"ADDED",
          "comment":{  
-            "properties":{  
+            "properties":{
                "repositoryId":59
             },
             "id":1465,
@@ -98,7 +98,28 @@
             "tasks":[  
                {  
                   "anchor":{  
-                     "properties":{  
+                     "properties":{
+                        "likedBy": {
+                           "total": 1,
+                           "likers": [
+                              {
+                                 "name": "example_user",
+                                 "emailAddress": "user@example.com",
+                                 "id": 1,
+                                 "displayName": "Example User",
+                                 "active": true,
+                                 "slug": "example_user",
+                                 "type": "NORMAL",
+                                 "links": {
+                                    "self": [
+                                       {
+                                          "href": "http://git.public.io/users/example_user"
+                                       }
+                                    ]
+                                 }
+                              }
+                           ]
+                        },
                         "repositoryId":59
                      },
                      "id":1465,

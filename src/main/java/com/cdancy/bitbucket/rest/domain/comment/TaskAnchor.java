@@ -21,13 +21,15 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
 import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.google.auto.value.AutoValue;
 import java.util.Map;
+
+import com.google.gson.JsonElement;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class TaskAnchor {
 
-    public abstract Map<String, String> properties();
+    public abstract Map<String, JsonElement> properties();
 
     public abstract int id();
 
@@ -53,7 +55,7 @@ public abstract class TaskAnchor {
 
     @SerializedNames({ "properties", "id", "version", "text", 
             "author", "createdDate", "updatedDate", "permittedOperations", "type" })
-    public static TaskAnchor create(final Map<String, String> properties, 
+    public static TaskAnchor create(final Map<String, JsonElement> properties,
             final int id, 
             final int version, 
             final String text, 
