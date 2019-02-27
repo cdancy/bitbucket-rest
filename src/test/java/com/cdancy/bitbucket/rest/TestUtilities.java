@@ -205,7 +205,10 @@ public class TestUtilities extends BitbucketUtils {
             throw Throwables.propagate(e);
         }
 
-        return new GeneratedTestContents(project, repository, emptyRepository, projectPreviouslyExists);
+        final GeneratedTestContents gtc = new GeneratedTestContents(project, repository, emptyRepository.name(), projectPreviouslyExists);
+        gtc.addRepoForDeletion(projectKey, emptyRepoKey);
+        gtc.addRepoForDeletion(projectKey, repoKey);
+        return gtc;
     }
 
     /**
@@ -283,19 +286,30 @@ public class TestUtilities extends BitbucketUtils {
 
         final Project project = generatedTestContents.project;
         final Repository repository = generatedTestContents.repository;
-        final Repository emptyRepository = generatedTestContents.emptyRepository;
 
-        // delete the empty repository
-        final RequestStatus emptyRepoSuccess = api.repositoryApi().delete(project.key(), emptyRepository.name());
-        assertThat(emptyRepoSuccess).isNotNull();
-        assertThat(emptyRepoSuccess.value()).isTrue();
-        assertThat(emptyRepoSuccess.errors()).isEmpty();
-
-        // delete repository
+        // delete main repository
         final RequestStatus success = api.repositoryApi().delete(project.key(), repository.name());
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();
+
+        // delete all attached repos
+        for (final String[] mapping : generatedTestContents.projectRepoMapping) {
+
+            final String projectKey = mapping[0];
+            final String repoKey = mapping[1];
+
+            final RequestStatus successInner = api.repositoryApi().delete(projectKey, repoKey);
+            assertThat(successInner).isNotNull();
+            if (!successInner.errors().isEmpty()) {
+                if (!successInner.errors().get(0).context().contains("does not exist")) {
+                    throw new RuntimeException("Failed deleting repo: " + successInner.errors().get(0).context());
+                }
+            } else {
+                assertThat(successInner.value()).isTrue();
+                assertThat(successInner.errors()).isEmpty();
+            }
+        }
 
         // delete project
         if (!generatedTestContents.projectPreviouslyExists) {

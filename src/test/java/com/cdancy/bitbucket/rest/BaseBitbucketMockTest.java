@@ -49,6 +49,8 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
  */
 public class BaseBitbucketMockTest {
 
+    protected final String postMethod = "POST";
+
     protected final String restBasePath = "/rest/api/";
     protected final String provider;
     private final JsonParser parser = new JsonParser();
@@ -141,6 +143,7 @@ public class BaseBitbucketMockTest {
             final String method, 
             final String expectedPath, 
             final Map<String, ?> queryParams) throws InterruptedException {
+
 
         final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);

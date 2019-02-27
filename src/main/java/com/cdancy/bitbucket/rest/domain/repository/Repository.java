@@ -53,6 +53,9 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
     public abstract boolean forkable();
 
     @Nullable
+    public abstract Repository origin();
+
+    @Nullable
     public abstract Project project();
 
     public abstract boolean _public();
@@ -61,8 +64,8 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
     }
 
     @SerializedNames({ "slug", "id", "name", "scmId", 
-            "state", "statusMessage", "forkable", "project", 
-            "public", "links", "errors" })
+            "state", "statusMessage", "forkable", "origin",
+            "project", "public", "links", "errors" })
     public static Repository create(final String slug, 
             final int id, 
             final String name, 
@@ -70,6 +73,7 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
             final String state, 
             final String statusMessage, 
             final boolean forkable,
+            final Repository origin,
             final Project project, 
             final boolean _public, 
             final Links links, 
@@ -83,7 +87,8 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
                 scmId, 
                 state,
                 statusMessage, 
-                forkable, 
+                forkable,
+                origin,
                 project, 
                 _public);
     }

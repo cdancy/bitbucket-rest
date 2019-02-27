@@ -37,6 +37,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -149,6 +150,57 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
                     + projectKey 
                     + reposPath 
                     + nonExistentRepoKey);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testForkRepository() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-fork.json")).setResponseCode(201));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final RepositoryApi api = baseApi.repositoryApi();
+        try {
+
+            final String forkName = "hello-world";
+            final Repository repository = api.fork(projectKey, repoKey, projectKey, forkName);
+            assertThat(repository).isNotNull();
+            assertThat(repository.errors()).isEmpty();
+            assertThat(repository.slug()).isEqualToIgnoringCase(forkName);
+            assertThat(repository.origin()).isNotNull();
+            assertSent(server, postMethod, restApiPath
+                    + BitbucketApiMetadata.API_VERSION
+                    + projectsPath
+                    + projectKey
+                    + reposEndpoint
+                    + "/" + repoKey);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testForkRepositoryWithErrors() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final RepositoryApi api = baseApi.repositoryApi();
+        try {
+
+            final String forkName = "hello-world";
+            final String nonExistentRepo = UUID.randomUUID().toString();
+            final Repository repository = api.fork(projectKey, repoKey, nonExistentRepo, forkName);
+            assertThat(repository).isNotNull();
+            assertThat(repository.errors()).isNotEmpty();
+            assertSent(server, postMethod, restApiPath
+                    + BitbucketApiMetadata.API_VERSION
+                    + projectsPath
+                    + projectKey
+                    + reposEndpoint
+                    + "/" + repoKey);
         } finally {
             baseApi.close();
             server.shutdown();
