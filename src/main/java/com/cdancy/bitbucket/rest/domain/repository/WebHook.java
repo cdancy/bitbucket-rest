@@ -114,7 +114,7 @@ public abstract class WebHook implements ErrorsHolder {
                                  final String name,
                                  final long createdDate,
                                  final long updatedDate,
-                                 final List<EventType> events,
+                                 @Nullable final List<EventType> events,
                                  final WebHookConfiguration configuration,
                                  final String url,
                                  final boolean active,
