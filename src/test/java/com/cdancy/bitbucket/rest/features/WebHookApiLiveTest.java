@@ -41,10 +41,10 @@ public class WebHookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private final List<WebHook.EventType> eventTypes = Lists.newArrayList(WebHook.EventType.PR_COMENT_ADDED);
     private final CreateWebHook createWebHook = CreateWebHook.create(randomStringLettersOnly(),
-        eventTypes,
-        "http://www.google.com",
-        true,
-        null);
+            eventTypes,
+            "http://www.google.com",
+            true,
+            null);
 
     private String projectKey;
     private String repoKey;
@@ -118,10 +118,10 @@ public class WebHookApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testUpdateWebHook() {
         final List<WebHook.EventType> updateEventTypes = Lists.newArrayList(WebHook.EventType.PR_COMENT_DELETED);
         final CreateWebHook updateWebHook = CreateWebHook.create(webHook.name(),
-            updateEventTypes,
-            "http://www.google.com",
-            true,
-            null);
+                updateEventTypes,
+                "http://www.google.com",
+                true,
+                null);
 
         this.webHook = api().update(projectKey, repoKey, webHook.id(), updateWebHook);
         assertThat(webHook).isNotNull();
@@ -131,9 +131,9 @@ public class WebHookApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testUpdateWebHookOnError() {
         final WebHook ref = api().update(projectKey,
-            randomStringLettersOnly(),
-            randomStringLettersOnly(),
-            createWebHook);
+                randomStringLettersOnly(),
+                randomStringLettersOnly(),
+                createWebHook);
         assertThat(ref).isNotNull();
         assertThat(ref.errors()).isNotEmpty();
     }
@@ -149,8 +149,8 @@ public class WebHookApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testDeleteWebHookOnError() {
         final RequestStatus ref = api().delete(projectKey,
-            randomStringLettersOnly(),
-            randomStringLettersOnly());
+                randomStringLettersOnly(),
+                randomStringLettersOnly());
         assertThat(ref).isNotNull();
         assertThat(ref.value()).isFalse();
         assertThat(ref.errors()).isNotEmpty();
