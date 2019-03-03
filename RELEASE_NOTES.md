@@ -1,4 +1,10 @@
-### Version 2.4.4 (TBA)
+### Version 2.5.0 (TBA)
+* ADDED: `WebHookApi`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
+* ADDED: `WebHookApi` gained endpoint `list`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
+* ADDED: `WebHookApi` gained endpoint `get`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
+* ADDED: `WebHookApi` gained endpoint `create`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
+* ADDED: `WebHookApi` gained endpoint `update`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
+* ADDED: `WebHookApi` gained endpoint `delete`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
 
 ### Version 2.4.3 (2/25/19)
 * BUG: **BREAKING CHANGE** `SyncApi.synchronize` now returns `SyncState` object instead of `Reference`.
