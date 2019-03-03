@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    ext.jcloudsVersion = '2.1.1'
+    ext.jcloudsVersion = '2.1.2'
     ext.autoValueVersion = '1.6.2'
 
     compile ("org.apache.jclouds:jclouds-core:${jcloudsVersion}") 
