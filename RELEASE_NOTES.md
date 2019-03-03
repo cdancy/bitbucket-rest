@@ -1,4 +1,5 @@
 ### Version 2.5.0 (TBA)
+* ADDED: Bump `jclouds` to `2.1.2`.
 * ADDED: `WebHookApi`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
 * ADDED: `WebHookApi` gained endpoint `list`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
 * ADDED: `WebHookApi` gained endpoint `get`. - [PR 176](https://github.com/cdancy/bitbucket-rest/pull/176)
