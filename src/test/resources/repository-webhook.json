@@ -1,0 +1,15 @@
+{
+  "id": 10,
+  "name": "Webhook Name",
+  "createdDate": 1513106011000,
+  "updatedDate": 1513106011000,
+  "events": [
+    "repo:refs_changed",
+    "repo:modified"
+  ],
+  "configuration": {
+    "secret": "password"
+  },
+  "url": "http://example.com",
+  "active": true
+}
