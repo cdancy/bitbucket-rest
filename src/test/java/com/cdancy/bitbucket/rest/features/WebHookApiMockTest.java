@@ -76,19 +76,16 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testCreateWebHook() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookJsonFile))
-            .setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookJsonFile)).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
         final List<WebHook.EventType> events = new ArrayList<WebHook.EventType>();
         events.add(EventType.REPO_CHANGED);
         events.add(EventType.REPO_MODIFIED);
-
         try {
             final CreateWebHook createWebHook = CreateWebHook.create(
-                webHookName, events, webHookUrl,true, webHookConfiguration);
+                    webHookName, events, webHookUrl,true, webHookConfiguration);
             final WebHook webHook = api.create(projectKey, repoKey, createWebHook);
-
             assertThat(webHook).isNotNull();
             assertThat(webHook.errors()).isEmpty();
             assertThat(webHook.events().equals(events)).isTrue();
@@ -103,17 +100,14 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testCreateWebHookOnError() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile))
-            .setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
         final List<WebHook.EventType> events = new ArrayList<WebHook.EventType>();
-
         try {
             final CreateWebHook createWebHook = CreateWebHook.create(
-                webHookName, events, webHookUrl,true, webHookConfiguration);
+                    webHookName, events, webHookUrl,true, webHookConfiguration);
             final WebHook webHook = api.create(projectKey, repoKey, createWebHook);
-
             assertThat(webHook).isNotNull();
             assertThat(webHook.errors()).isNotEmpty();
             assertThat(webHook.configuration()).isNull();
@@ -127,8 +121,7 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testGetWebHook() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookJsonFile))
-            .setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookJsonFile)).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
         try {
@@ -146,13 +139,11 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testGetWebHookOnError() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile))
-            .setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
         try {
             final WebHook webHook = api.get(projectKey, repoKey, webHookKey);
-
             assertThat(webHook).isNotNull();
             assertThat(webHook.errors()).isNotEmpty();
             assertThat(webHook.active()).isFalse();
@@ -166,8 +157,7 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testListWebHooks() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookPageJsonFile))
-            .setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookPageJsonFile)).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
 
@@ -176,7 +166,6 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
             assertThat(webHookPage).isNotNull();
             assertThat(webHookPage.values()).isNotEmpty();
             assertThat(webHookPage.errors()).isEmpty();
-
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
             assertSent(server, getMethod, webHooksApiPath, queryParams);
             assertThat(webHookPage.values().size() > 0).isEqualTo(true);
@@ -189,8 +178,7 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testListWebHooksOnError() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile))
-            .setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
 
@@ -199,7 +187,6 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
             assertThat(webHookPage).isNotNull();
             assertThat(webHookPage.values()).isEmpty();
             assertThat(webHookPage.errors()).isNotEmpty();
-
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
             assertSent(server, getMethod, webHooksApiPath, queryParams);
             assertThat(webHookPage.values().size() > 0).isEqualTo(false);
@@ -212,8 +199,7 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testUpdateWebHook() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookJsonFile))
-            .setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookJsonFile)).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
         final List<WebHook.EventType> events = new ArrayList<WebHook.EventType>();
@@ -222,9 +208,8 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
             events.add(EventType.REPO_CHANGED);
             events.add(EventType.REPO_MODIFIED);
             final CreateWebHook createWebHook = CreateWebHook.create(
-                webHookName, events, webHookUrl,true, webHookConfiguration);
+                    webHookName, events, webHookUrl,true, webHookConfiguration);
             final WebHook webHook = api.update(projectKey, repoKey, webHookKey, createWebHook);
-
             assertThat(webHook.events()).isEqualTo(events);
             assertThat(webHook).isNotNull();
             assertThat(webHook.errors()).isEmpty();
@@ -238,18 +223,15 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
     public void testUpdateWebHookOnError() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile))
-            .setResponseCode(404));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(webHookErrorJsonFile)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
-
         final List<WebHook.EventType> events = new ArrayList<WebHook.EventType>();
 
         try {
             final CreateWebHook createWebHook = CreateWebHook.create(
-                webHookName, events, webHookUrl,true, webHookConfiguration);
+                    webHookName, events, webHookUrl,true, webHookConfiguration);
             final WebHook webHook = api.update(projectKey, repoKey, webHookKey, createWebHook);
-
             assertThat(webHook).isNotNull();
             assertThat(webHook.errors()).isNotEmpty();
             assertSent(server, putMethod, webHooksApiPath + "/" + webHookKey);
@@ -266,11 +248,8 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setResponseCode(204));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
-        final List<WebHook.EventType> events = new ArrayList<WebHook.EventType>();
         try {
-
             final RequestStatus ref = api.delete(projectKey, repoKey, webHookKey);
-
             assertThat(ref).isNotNull();
             assertThat(ref.errors()).isEmpty();
             assertSent(server, deleteMethod, webHooksApiPath + "/" + webHookKey);
@@ -287,9 +266,7 @@ public class WebHookApiMockTest extends BaseBitbucketMockTest {
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final WebHookApi api = baseApi.webHookApi();
         try {
-
             final RequestStatus ref = api.delete(projectKey, repoKey, webHookKey);
-
             assertThat(ref).isNotNull();
             assertThat(ref.errors()).isNotEmpty();
             assertSent(server, deleteMethod, webHooksApiPath + "/" + webHookKey);
