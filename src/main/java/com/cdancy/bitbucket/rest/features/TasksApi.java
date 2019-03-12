@@ -23,6 +23,7 @@ import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateTask;
+import com.cdancy.bitbucket.rest.options.CreateTaskUpdate;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -30,13 +31,7 @@ import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 import javax.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.ResponseParser;
@@ -52,6 +47,26 @@ public interface TasksApi {
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @POST
     Task create(@BinderParam(BindToJsonPayload.class) CreateTask createTask);
+
+    /* TODO: Remove this example
+ {
+"anchor": {
+ "id": 329696,
+ "type": "COMMENT"
+},
+"id": 21127,
+"state": "OPEN",
+"pullRequestId": 12,
+"repositoryId": 9594
+}
+  */
+    @Named("tasks:update")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.16.0/bitbucket-rest.html#idm8288367088"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{taskId}")
+    @Fallback(BitbucketFallbacks.TaskOnError.class)
+    @PUT
+    Task update(@BinderParam(BindToJsonPayload.class) CreateTaskUpdate createTaskUpdate);
     
 
     @Named("tasks:get")
