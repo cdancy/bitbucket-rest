@@ -25,6 +25,7 @@ import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.comment.MinimalAnchor;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
@@ -34,6 +35,7 @@ import com.cdancy.bitbucket.rest.domain.common.Reference;
 
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.cdancy.bitbucket.rest.options.CreateTask;
+import com.cdancy.bitbucket.rest.options.CreateTaskUpdate;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -49,7 +51,12 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     private final String taskComment = TestUtilities.randomString();
     private int commentId = -1;
     private int taskId = -1;
-    
+    private int pullRequestId = -1;
+    private int repositoryId = -1;
+
+    private static final String TASK_OPEN = "OPEN";
+    private static final String TASK_RESOLVED = "RESOLVED";
+
     @BeforeClass
     public void init() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
@@ -72,11 +79,13 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         
         final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(projectKey);
-        final MinimalRepository repository = MinimalRepository.create(repoKey, null, proj);
+        final MinimalRepository repository = MinimalRepository.create(42, repoKey, null, proj);
         final Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
         final Reference toRef = Reference.create(null, repository);
         final CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         final PullRequest pr = api.pullRequestApi().create(projectKey, repoKey, cpr);
+        pullRequestId = pr.id();
+        repositoryId = repository.id();
         
         assertThat(pr).isNotNull();
         assertThat(projectKey).isEqualTo(pr.fromRef().repository().project().key());
@@ -120,6 +129,20 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         final Task instance = api().get(99999);
         assertThat(instance).isNotNull();
         assertThat(instance.errors().isEmpty()).isFalse();
+    }
+
+    @Test
+    public void testTaskStatusUpdate() {
+        final MinimalAnchor anchor = MinimalAnchor.create(commentId, "COMMENT");
+        final CreateTaskUpdate createTaskUpdateResolved = CreateTaskUpdate.update(anchor, this.taskId, TASK_OPEN, pullRequestId, repositoryId);
+        final Task instanceResolved = api().update(createTaskUpdateResolved);
+        assertThat(instanceResolved).isNotNull();
+        assertThat(instanceResolved.errors().isEmpty()).isTrue();
+        assertThat(instanceResolved.state()).isEqualTo("OPEN");
+
+        final CreateTaskUpdate createTaskUpdateOpen = CreateTaskUpdate.update(anchor, this.taskId, TASK_RESOLVED, pullRequestId, repositoryId);
+        final Task instanceOpen = api().update(createTaskUpdateOpen);
+        assertThat(instanceOpen.state()).isEqualTo("RESOLVED");
     }
     
     @Test (dependsOnMethods = "testGetTask")
