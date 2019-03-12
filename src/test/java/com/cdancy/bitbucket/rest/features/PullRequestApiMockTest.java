@@ -87,8 +87,8 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
 
             final ProjectKey proj1 = ProjectKey.create(projectKey);
             final ProjectKey proj2 = ProjectKey.create(projectKey);
-            final MinimalRepository repository1 = MinimalRepository.create(repoKey, null, proj1);
-            final MinimalRepository repository2 = MinimalRepository.create(repoKey, null, proj2);
+            final MinimalRepository repository1 = MinimalRepository.create(42, repoKey, null, proj1);
+            final MinimalRepository repository2 = MinimalRepository.create(42, repoKey, null, proj2);
 
             final String commitId = "930228bb501e07c2653771858320873d94518e33";
             final Reference fromRef = Reference.create("refs/heads/feature-ABC-123", repository1, null, null, "feature-ABC-123", commitId);
