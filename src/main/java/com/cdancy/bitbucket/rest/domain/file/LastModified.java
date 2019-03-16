@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @AutoValue
-public abstract class LastModifiedSummary implements ErrorsHolder {
+public abstract class LastModified implements ErrorsHolder {
 
     @Nullable
     public abstract Map<String, Commit> files();
@@ -37,15 +37,15 @@ public abstract class LastModifiedSummary implements ErrorsHolder {
     @Nullable
     public abstract Commit latestCommit();
 
-    LastModifiedSummary() {
+    LastModified() {
     }
 
     @SerializedNames({ "files", "latestCommit", "errors" })
-    public static LastModifiedSummary create(final Map<String, Commit> files,
-                 final Commit latestCommit,
-                 final List<Error> errors) {
-        return new AutoValue_LastModifiedSummary(BitbucketUtils.nullToEmpty(errors),
-            files,
+    public static LastModified create(final Map<String, Commit> files,
+            final Commit latestCommit,
+            final List<Error> errors) {
+        return new AutoValue_LastModified(BitbucketUtils.nullToEmpty(errors),
+            BitbucketUtils.nullToEmpty(files),
             latestCommit);
     }
 

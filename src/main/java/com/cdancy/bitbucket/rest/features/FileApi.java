@@ -20,7 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.file.FilesPage;
-import com.cdancy.bitbucket.rest.domain.file.LastModifiedSummary;
+import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
@@ -112,7 +112,7 @@ public interface FileApi {
     @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/last-modified")
     @Fallback(BitbucketFallbacks.LastModifiedSummaryOnError.class)
     @GET
-    LastModifiedSummary listLastModified(@PathParam("project") String project,
+    LastModified listLastModified(@PathParam("project") String project,
             @PathParam("repo") String repo,
             @QueryParam("at") String commitIdOrRef);
 
@@ -123,8 +123,8 @@ public interface FileApi {
     @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/last-modified/{path}")
     @Fallback(BitbucketFallbacks.LastModifiedSummaryOnError.class)
     @GET
-    LastModifiedSummary listLastModified(@PathParam("project") String project,
-             @PathParam("repo") String repo,
-             @PathParam("path") String path,
-             @QueryParam("at") String commitIdOrRef);
+    LastModified listLastModified(@PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @PathParam("path") String path,
+            @QueryParam("at") String commitIdOrRef);
 }

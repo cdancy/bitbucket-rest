@@ -41,7 +41,7 @@ import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.common.Veto;
 import com.cdancy.bitbucket.rest.domain.defaultreviewers.Condition;
 import com.cdancy.bitbucket.rest.domain.file.FilesPage;
-import com.cdancy.bitbucket.rest.domain.file.LastModifiedSummary;
+import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
@@ -548,8 +548,8 @@ public final class BitbucketFallbacks {
         return FilesPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
-    public static LastModifiedSummary createLastModifiedSummaryFromErrors(final List<Error> errors) {
-        return LastModifiedSummary.create(null, null, errors);
+    public static LastModified createLastModifiedSummaryFromErrors(final List<Error> errors) {
+        return LastModified.create(null, null, errors);
     }
 
     public static Branch createBranchFromErrors(final List<Error> errors) {

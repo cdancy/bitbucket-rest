@@ -26,7 +26,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.file.FilesPage;
-import com.cdancy.bitbucket.rest.domain.file.LastModifiedSummary;
+import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.Line;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
@@ -251,7 +251,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     public void lastModified() {
         final CommitPage commits = api.commitsApi().list(projectKey, repoKey, null, null, null, null, null, null, null, 1, null);
         final Commit commit = commits.values().get(0);
-        final LastModifiedSummary summary = api.fileApi().listLastModified(projectKey, repoKey, branch);
+        final LastModified summary = api.fileApi().listLastModified(projectKey, repoKey, branch);
 
         assertThat(summary).isNotNull();
         assertThat(summary.latestCommit()).isNotNull();
@@ -266,7 +266,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         final String fileContent = UUID.randomUUID().toString();
         final Commit commit = api.fileApi().updateContent(projectKey, repoKey, newDirectory + "/" + readmeFilePath,
                 branch, fileContent, message, null, null);
-        final LastModifiedSummary summary = api.fileApi().listLastModified(projectKey, repoKey, newDirectory, branch);
+        final LastModified summary = api.fileApi().listLastModified(projectKey, repoKey, newDirectory, branch);
 
         assertThat(summary).isNotNull();
         assertThat(summary.latestCommit()).isNotNull();
@@ -280,7 +280,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     public void lastModifiedGivenEmptyRepository() {
         final String emptyRepository = "lastModifiedGivenEmptyRepository";
         api.repositoryApi().create(projectKey, CreateRepository.create(emptyRepository, false));
-        final LastModifiedSummary summary = api.fileApi().listLastModified(projectKey, emptyRepository, branch);
+        final LastModified summary = api.fileApi().listLastModified(projectKey, emptyRepository, branch);
         assertThat(summary).isNotNull();
         assertThat(summary.errors().isEmpty()).isFalse();
 
@@ -289,7 +289,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void lastModifiedAtPathGivenInvalidPath() {
-        final LastModifiedSummary summary = api.fileApi().listLastModified(projectKey, repoKey, readmeFilePath, branch);
+        final LastModified summary = api.fileApi().listLastModified(projectKey, repoKey, readmeFilePath, branch);
         assertThat(summary).isNotNull();
         assertThat(summary.errors().isEmpty()).isFalse();
     }
