@@ -1,0 +1,67 @@
+{
+  "files": {
+    "pom.xml": {
+      "id": "def0123abcdef4567abcdef8987abcdef6543abc",
+      "displayId": "def0123abcd",
+      "author": {
+        "name": "charlie",
+        "emailAddress": "charlie@example.com"
+      },
+      "authorTimestamp": 1549862602763,
+      "committer": {
+        "name": "charlie",
+        "emailAddress": "charlie@example.com"
+      },
+      "committerTimestamp": 1549862602763,
+      "message": "More work on feature 1",
+      "parents": [
+        {
+          "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
+          "displayId": "abcdef0"
+        }
+      ]
+    },
+    "README.md": {
+      "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
+      "displayId": "abcdef0123a",
+      "author": {
+        "name": "charlie",
+        "emailAddress": "charlie@example.com"
+      },
+      "authorTimestamp": 1549862602763,
+      "committer": {
+        "name": "charlie",
+        "emailAddress": "charlie@example.com"
+      },
+      "committerTimestamp": 1549862602763,
+      "message": "WIP on feature 1",
+      "parents": [
+        {
+          "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
+          "displayId": "abcdef0"
+        }
+      ]
+    }
+  },
+  "latestCommit": {
+    "id": "def0123abcdef4567abcdef8987abcdef6543abc",
+    "displayId": "def0123abcd",
+    "author": {
+      "name": "charlie",
+      "emailAddress": "charlie@example.com"
+    },
+    "authorTimestamp": 1549862602763,
+    "committer": {
+      "name": "charlie",
+      "emailAddress": "charlie@example.com"
+    },
+    "committerTimestamp": 1549862602763,
+    "message": "More work on feature 1",
+    "parents": [
+      {
+        "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
+        "displayId": "abcdef0"
+      }
+    ]
+  }
+}

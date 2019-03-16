@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
+import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
@@ -27,6 +28,8 @@ import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+
+import java.util.Collections;
 import java.util.Map;
 import org.testng.annotations.Test;
 
@@ -38,6 +41,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
     private final String projectKey = "PRJ";
     private final String repoKey = "myrepo";
     private final String filePath = "some/random/path/MyFile.txt";
+    private final String directoryPath = "some/random/path";
     private final String restApiPath = "/rest/api/";
     private final String branch = "myBranch";
     private final String content = "file contents";
@@ -224,6 +228,72 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
                     + "/projects/PRJ/repos/myrepo/files", queryParams);
         } finally {
             baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testLastModified() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/last-modified-summary.json")).setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, branch);
+            assertThat(summary).isNotNull();
+            assertThat(summary.latestCommit()).isNotNull();
+            assertThat(summary.files().isEmpty()).isFalse();
+            assertThat(summary.errors().isEmpty()).isTrue();
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/last-modified", Collections.singletonMap("at", branch));
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testLastModifiedAtPath() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/last-modified-summary.json")).setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, directoryPath, branch);
+            assertThat(summary).isNotNull();
+            assertThat(summary.latestCommit()).isNotNull();
+            assertThat(summary.files().isEmpty()).isFalse();
+            assertThat(summary.errors().isEmpty()).isTrue();
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/last-modified/" + directoryPath, Collections.singletonMap("at", branch));
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testLastModifiedBadRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, branch);
+            assertThat(summary).isNotNull();
+            assertThat(summary.files().isEmpty()).isTrue();
+            assertThat(summary.errors().isEmpty()).isFalse();
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/last-modified", Collections.singletonMap("at", branch));
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testLastModifiedAtPathBadRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
+            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, directoryPath, branch);
+            assertThat(summary).isNotNull();
+            assertThat(summary.files().isEmpty()).isTrue();
+            assertThat(summary.errors().isEmpty()).isFalse();
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/projects/" + projectKey + "/repos/" + repoKey + "/last-modified/" + directoryPath, Collections.singletonMap("at", branch));
+        } finally {
             server.shutdown();
         }
     }

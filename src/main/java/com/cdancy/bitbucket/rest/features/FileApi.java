@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.file.FilesPage;
+import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
@@ -103,4 +104,27 @@ public interface FileApi {
                            @Nullable @QueryParam("at") String commitIdOrRef,
                            @Nullable @QueryParam("start") Integer start,
                            @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("file:last-modified")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/6.0.0/bitbucket-rest.html#idp231"})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/last-modified")
+    @Fallback(BitbucketFallbacks.LastModifiedSummaryOnError.class)
+    @GET
+    LastModified listLastModified(@PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @QueryParam("at") String commitIdOrRef);
+
+    @Named("file:last-modified")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/6.0.0/bitbucket-rest.html#idp233"})
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/last-modified/{path}")
+    @Fallback(BitbucketFallbacks.LastModifiedSummaryOnError.class)
+    @GET
+    LastModified listLastModified(@PathParam("project") String project,
+            @PathParam("repo") String repo,
+            @PathParam("path") String path,
+            @QueryParam("at") String commitIdOrRef);
 }

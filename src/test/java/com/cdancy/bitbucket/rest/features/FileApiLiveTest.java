@@ -26,10 +26,12 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
 import com.cdancy.bitbucket.rest.domain.file.FilesPage;
+import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.Line;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.google.common.collect.Lists;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -57,9 +59,9 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     @BeforeClass
     public void init() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
-        this.projectKey = "test";
-        this.repoKey = "yvbvgbmzdz";
-        
+        this.projectKey = generatedTestContents.project.name();
+        this.repoKey = generatedTestContents.repository.name();
+
         final CommitPage commitPage = api.commitsApi().list(projectKey, repoKey, true, null, null, null, null, null, null, 10, null);
         assertThat(commitPage).isNotNull();
         assertThat(commitPage.errors().isEmpty()).isTrue();
@@ -243,6 +245,53 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(possibleContent.value()).isNull();
         assertThat(possibleContent.errors().isEmpty()).isFalse();
         assertThat(possibleContent.errors().get(0).message()).isEqualTo("Failed retrieving raw content");
+    }
+
+    @Test (dependsOnMethods = "updateContentCreateFile")
+    public void lastModified() {
+        final CommitPage commits = api.commitsApi().list(projectKey, repoKey, null, null, null, null, null, null, null, 1, null);
+        final Commit commit = commits.values().get(0);
+        final LastModified summary = api.fileApi().listLastModified(projectKey, repoKey, branch);
+
+        assertThat(summary).isNotNull();
+        assertThat(summary.latestCommit()).isNotNull();
+        assertThat(summary.latestCommit().id()).isEqualTo(commit.id());
+        assertThat(summary.files()).isNotEmpty();
+        assertThat(summary.files().keySet().contains(readmeFilePath)).isTrue();
+    }
+
+    @Test (dependsOnMethods = "updateContentCreateFile")
+    public void lastModifiedAtPath() {
+        final String newDirectory = "newDirectory";
+        final String fileContent = UUID.randomUUID().toString();
+        final Commit commit = api.fileApi().updateContent(projectKey, repoKey, newDirectory + "/" + readmeFilePath,
+                branch, fileContent, message, null, null);
+        final LastModified summary = api.fileApi().listLastModified(projectKey, repoKey, newDirectory, branch);
+
+        assertThat(summary).isNotNull();
+        assertThat(summary.latestCommit()).isNotNull();
+        assertThat(summary.latestCommit().id()).isEqualTo(commit.id());
+        assertThat(summary.files()).isNotEmpty();
+        assertThat(summary.files().keySet().contains(readmeFilePath)).isTrue();
+        assertThat(summary.files().get(readmeFilePath).id()).isEqualTo(commit.id());
+    }
+
+    @Test
+    public void lastModifiedGivenEmptyRepository() {
+        final String emptyRepository = "lastModifiedGivenEmptyRepository";
+        api.repositoryApi().create(projectKey, CreateRepository.create(emptyRepository, false));
+        final LastModified summary = api.fileApi().listLastModified(projectKey, emptyRepository, branch);
+        assertThat(summary).isNotNull();
+        assertThat(summary.errors().isEmpty()).isFalse();
+
+        generatedTestContents.addRepoForDeletion(projectKey, emptyRepository);
+    }
+
+    @Test
+    public void lastModifiedAtPathGivenInvalidPath() {
+        final LastModified summary = api.fileApi().listLastModified(projectKey, repoKey, readmeFilePath, branch);
+        assertThat(summary).isNotNull();
+        assertThat(summary.errors().isEmpty()).isFalse();
     }
     
     @AfterClass
