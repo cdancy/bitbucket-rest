@@ -110,9 +110,9 @@ public interface FileApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/last-modified")
-    @Fallback(BitbucketFallbacks.LastModifiedSummaryOnError.class)
+    @Fallback(BitbucketFallbacks.LastModifiedOnError.class)
     @GET
-    LastModified listLastModified(@PathParam("project") String project,
+    LastModified lastModified(@PathParam("project") String project,
             @PathParam("repo") String repo,
             @QueryParam("at") String commitIdOrRef);
 
@@ -121,9 +121,9 @@ public interface FileApi {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/last-modified/{path}")
-    @Fallback(BitbucketFallbacks.LastModifiedSummaryOnError.class)
+    @Fallback(BitbucketFallbacks.LastModifiedOnError.class)
     @GET
-    LastModified listLastModified(@PathParam("project") String project,
+    LastModified lastModified(@PathParam("project") String project,
             @PathParam("repo") String repo,
             @PathParam("path") String path,
             @QueryParam("at") String commitIdOrRef);

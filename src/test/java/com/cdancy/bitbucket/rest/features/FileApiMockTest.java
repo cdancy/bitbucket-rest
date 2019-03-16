@@ -237,7 +237,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/last-modified-summary.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
-            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, branch);
+            LastModified summary = baseApi.fileApi().lastModified(projectKey, repoKey, branch);
             assertThat(summary).isNotNull();
             assertThat(summary.latestCommit()).isNotNull();
             assertThat(summary.files().isEmpty()).isFalse();
@@ -254,7 +254,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/last-modified-summary.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
-            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, directoryPath, branch);
+            LastModified summary = baseApi.fileApi().lastModified(projectKey, repoKey, directoryPath, branch);
             assertThat(summary).isNotNull();
             assertThat(summary.latestCommit()).isNotNull();
             assertThat(summary.files().isEmpty()).isFalse();
@@ -271,7 +271,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
-            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, branch);
+            LastModified summary = baseApi.fileApi().lastModified(projectKey, repoKey, branch);
             assertThat(summary).isNotNull();
             assertThat(summary.files().isEmpty()).isTrue();
             assertThat(summary.errors().isEmpty()).isFalse();
@@ -287,7 +287,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(400));
         try (final BitbucketApi baseApi = api(server.getUrl("/"));) {
-            LastModified summary = baseApi.fileApi().listLastModified(projectKey, repoKey, directoryPath, branch);
+            LastModified summary = baseApi.fileApi().lastModified(projectKey, repoKey, directoryPath, branch);
             assertThat(summary).isNotNull();
             assertThat(summary.files().isEmpty()).isTrue();
             assertThat(summary.errors().isEmpty()).isFalse();

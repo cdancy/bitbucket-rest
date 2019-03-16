@@ -474,10 +474,10 @@ public final class BitbucketFallbacks {
         }
     }
 
-    public static final class LastModifiedSummaryOnError implements Fallback<Object> {
+    public static final class LastModifiedOnError implements Fallback<Object> {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
-                return createLastModifiedSummaryFromErrors(getErrors(throwable.getMessage()));
+                return createLastModifiedFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -548,7 +548,7 @@ public final class BitbucketFallbacks {
         return FilesPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
-    public static LastModified createLastModifiedSummaryFromErrors(final List<Error> errors) {
+    public static LastModified createLastModifiedFromErrors(final List<Error> errors) {
         return LastModified.create(null, null, errors);
     }
 
