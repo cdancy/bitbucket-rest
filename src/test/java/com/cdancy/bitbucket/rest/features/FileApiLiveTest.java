@@ -251,7 +251,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     public void lastModified() {
         final CommitPage commits = api.commitsApi().list(projectKey, repoKey, null, null, null, null, null, null, null, 1, null);
         final Commit commit = commits.values().get(0);
-        final LastModified summary = api.fileApi().lastModified(projectKey, repoKey, branch);
+        final LastModified summary = api.fileApi().lastModified(projectKey, repoKey, null, branch);
 
         assertThat(summary).isNotNull();
         assertThat(summary.latestCommit()).isNotNull();
@@ -280,7 +280,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     public void lastModifiedGivenEmptyRepository() {
         final String emptyRepository = "lastModifiedGivenEmptyRepository";
         api.repositoryApi().create(projectKey, CreateRepository.create(emptyRepository, false));
-        final LastModified summary = api.fileApi().lastModified(projectKey, emptyRepository, branch);
+        final LastModified summary = api.fileApi().lastModified(projectKey, emptyRepository, null, branch);
         assertThat(summary).isNotNull();
         assertThat(summary.errors().isEmpty()).isFalse();
 
