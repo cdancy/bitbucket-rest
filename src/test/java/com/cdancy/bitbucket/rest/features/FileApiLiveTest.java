@@ -260,7 +260,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(summary.files().keySet().contains(readmeFilePath)).isTrue();
     }
 
-    @Test (dependsOnMethods = "updateContentCreateFile")
+    @Test
     public void lastModifiedAtPath() {
         final String newDirectory = "newDirectory";
         final String fileContent = UUID.randomUUID().toString();
