@@ -38,8 +38,12 @@ public abstract class CreateTaskUpdate {
     CreateTaskUpdate() {
     }
 
-    @SerializedNames({"anchor", "id", "pullRequestId", "repositoryId" })
-    public static CreateTaskUpdate update(final MinimalAnchor anchor, final int id, final String state, final int pullRequestId, final int repositoryId) {
+    @SerializedNames({"anchor", "id", "state", "pullRequestId", "repositoryId" })
+    public static CreateTaskUpdate update(final MinimalAnchor anchor,
+                                          final int id,
+                                          final String state,
+                                          final int pullRequestId,
+                                          final int repositoryId) {
         return new AutoValue_CreateTaskUpdate(anchor, id, state, pullRequestId, repositoryId);
     }
 }
