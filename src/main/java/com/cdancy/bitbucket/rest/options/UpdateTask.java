@@ -22,7 +22,7 @@ import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class CreateTaskUpdate {
+public abstract class UpdateTask {
 
     public abstract MinimalAnchor anchor();
 
@@ -35,15 +35,15 @@ public abstract class CreateTaskUpdate {
     public abstract int repositoryId();
 
 
-    CreateTaskUpdate() {
+    UpdateTask() {
     }
 
     @SerializedNames({"anchor", "id", "state", "pullRequestId", "repositoryId" })
-    public static CreateTaskUpdate update(final MinimalAnchor anchor,
-                                          final int id,
-                                          final String state,
-                                          final int pullRequestId,
-                                          final int repositoryId) {
-        return new AutoValue_CreateTaskUpdate(anchor, id, state, pullRequestId, repositoryId);
+    public static UpdateTask update(final MinimalAnchor anchor,
+                                    final int id,
+                                    final String state,
+                                    final int pullRequestId,
+                                    final int repositoryId) {
+        return new AutoValue_UpdateTask(anchor, id, state, pullRequestId, repositoryId);
     }
 }
