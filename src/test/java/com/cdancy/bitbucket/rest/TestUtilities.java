@@ -17,11 +17,7 @@
 
 package com.cdancy.bitbucket.rest;
 
-import static com.google.common.io.BaseEncoding.base64;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;
-
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.project.Project;
@@ -30,6 +26,9 @@ import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.options.CreateProject;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
 import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
+import org.jclouds.util.Strings2;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -40,8 +39,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import org.apache.commons.io.FileUtils;
-import org.jclouds.util.Strings2;
+
+import static com.google.common.io.BaseEncoding.base64;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Static methods for generating test data.
@@ -79,7 +79,7 @@ public class TestUtilities extends BitbucketUtils {
                 assertThat(userPage).isNotNull();
                 assertThat(userPage.size() > 0).isTrue();
                 for (final User user : userPage.values()) {
-                    if (username.equals(user.slug())) {
+                    if (username.toLowerCase().equals(user.slug().toLowerCase())) {
                         defaultUser = user;
                         break;
                     }
@@ -187,14 +187,13 @@ public class TestUtilities extends BitbucketUtils {
         assertThat(gitDirectory.mkdirs()).isTrue();
 
         try {
-            final String foundCredential = getDefaultUser(credential, api).slug();
             final URL endpointURL = new URL(endpoint);
             final int index = endpointURL.toString().indexOf(endpointURL.getHost());
             final String preCredentialPart = endpointURL.toString().substring(0, index);
             final String postCredentialPart = endpointURL.toString().substring(index, endpointURL.toString().length());
 
             final String generatedEndpoint = preCredentialPart
-                    + foundCredential + "@"
+                    + new String(base64().decode(credential.authValue())) + "@"
                     + postCredentialPart + "/scm/"
                     + projectKey.toLowerCase() + "/"
                     + repoKey.toLowerCase() + ".git";
