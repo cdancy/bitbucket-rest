@@ -17,8 +17,6 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.GeneratedTestContents;
 import com.cdancy.bitbucket.rest.TestUtilities;
@@ -27,18 +25,19 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.MinimalAnchor;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
+import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.common.Reference;
-
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.cdancy.bitbucket.rest.options.CreateTask;
 import com.cdancy.bitbucket.rest.options.CreateTaskUpdate;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Test(groups = "live", testName = "TasksApiLiveTest", singleThreaded = true)
 public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -131,21 +130,21 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(instance.errors().isEmpty()).isFalse();
     }
 
-    @Test
+    @Test (dependsOnMethods = "testCreateTask")
     public void testTaskStatusUpdate() {
         final MinimalAnchor anchor = MinimalAnchor.create(commentId, "COMMENT");
         final CreateTaskUpdate createTaskUpdateResolved = CreateTaskUpdate.update(anchor, this.taskId, TASK_OPEN, pullRequestId, repositoryId);
-        final Task instanceResolved = api().update(createTaskUpdateResolved);
+        final Task instanceResolved = api().update(createTaskUpdateResolved.id(), createTaskUpdateResolved);
         assertThat(instanceResolved).isNotNull();
         assertThat(instanceResolved.errors().isEmpty()).isTrue();
         assertThat(instanceResolved.state()).isEqualTo("OPEN");
 
         final CreateTaskUpdate createTaskUpdateOpen = CreateTaskUpdate.update(anchor, this.taskId, TASK_RESOLVED, pullRequestId, repositoryId);
-        final Task instanceOpen = api().update(createTaskUpdateOpen);
+        final Task instanceOpen = api().update(createTaskUpdateOpen.id(), createTaskUpdateOpen);
         assertThat(instanceOpen.state()).isEqualTo("RESOLVED");
     }
-    
-    @Test (dependsOnMethods = "testGetTask")
+
+    @Test (dependsOnMethods = "testTaskStatusUpdate")
     public void testDeleteTask() {
         final RequestStatus instance = api().delete(this.taskId);
         assertThat(instance).isNotNull();
