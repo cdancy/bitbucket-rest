@@ -94,14 +94,16 @@ public interface FileApi {
                          @Nullable @FormParam("sourceBranch") String sourceBranch);
 
     @Named("file:list-files")
-    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.1.0/bitbucket-rest.html#idm45588159557712"})
+    @RequestFilters(ScrubNullFromPathFilter.class)
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/6.0.0/bitbucket-rest.html#idp222"})
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/files")
+    @Path("/rest/api/{jclouds.api-version}/projects/{project}/repos/{repo}/files/{path}")
     @Fallback(BitbucketFallbacks.FilesPageOnError.class)
     @GET
     FilesPage listFiles(@PathParam("project") String project,
                            @PathParam("repo") String repo,
+                           @Nullable @PathParam("path") String path,
                            @Nullable @QueryParam("at") String commitIdOrRef,
                            @Nullable @QueryParam("start") Integer start,
                            @Nullable @QueryParam("limit") Integer limit);

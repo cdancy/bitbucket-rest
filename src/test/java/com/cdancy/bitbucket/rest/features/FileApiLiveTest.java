@@ -83,6 +83,15 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(content).isNotNull();
         assertThat(content.errors().isEmpty()).isTrue();
     }
+
+    @Test
+    public void getContentOnNotFound() {
+        final RawContent possibleContent = api().raw(projectKey, repoKey,TestUtilities.randomString() + ".txt", null);
+        assertThat(possibleContent).isNotNull();
+        assertThat(possibleContent.value()).isNull();
+        assertThat(possibleContent.errors().isEmpty()).isFalse();
+        assertThat(possibleContent.errors().get(0).message()).isEqualTo("Failed retrieving raw content");
+    }
     
     @Test (dependsOnMethods = "getContent")
     public void listLines() throws Exception {
@@ -150,7 +159,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         final List<String> allFiles = Lists.newArrayList();
         Integer start = null;
         while (true) {
-            final FilesPage ref = api().listFiles(projectKey, repoKey, this.commitHashTwo, start, 100);
+            final FilesPage ref = api().listFiles(projectKey, repoKey, null, this.commitHashTwo, start, 100);
             assertThat(ref.errors().isEmpty()).isTrue();
             
             allFiles.addAll(ref.values());
@@ -163,6 +172,26 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
             }
         }
         assertThat(allFiles.size() > 0).isEqualTo(true);
+    }
+
+    @Test
+    public void listFilesAtPath() {
+        final String newDirectory = "listFilesAtPath";
+        api.fileApi().updateContent(projectKey, repoKey, newDirectory + "/" + readmeFilePath,
+                branch, TestUtilities.randomString(), message, null, null);
+        final FilesPage files = api.fileApi().listFiles(projectKey, repoKey, newDirectory, null, null, null);
+
+        assertThat(files).isNotNull();
+        assertThat(files.values()).isNotNull();
+        assertThat(files.values().get(0)).isEqualTo(readmeFilePath);
+        assertThat(files.errors().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void listFilesOnError() {
+        final FilesPage ref = api().listFiles(projectKey, repoKey, null, TestUtilities.randomString(), null, 100);
+        assertThat(ref).isNotNull();
+        assertThat(ref.errors().isEmpty()).isFalse();
     }
 
     @Test
@@ -225,26 +254,6 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         final RawContent newFile = api().raw(projectKey, repoKey, readmeFilePath, commit.id());
         assertThat(newFile).isNotNull();
         assertThat(newFile.value()).isEqualTo(fileContent);
-    }
-    
-    @Test 
-    public void listFilesOnError() {
-        final FilesPage ref = api().listFiles(projectKey, 
-                repoKey, 
-                TestUtilities.randomString(), null, 100);
-        assertThat(ref).isNotNull();
-        assertThat(ref.errors().isEmpty()).isFalse();
-    }
-
-    @Test
-    public void getContentOnNotFound() {
-        final RawContent possibleContent = api().raw(projectKey, 
-                repoKey, 
-                TestUtilities.randomString() + ".txt", null);
-        assertThat(possibleContent).isNotNull();
-        assertThat(possibleContent.value()).isNull();
-        assertThat(possibleContent.errors().isEmpty()).isFalse();
-        assertThat(possibleContent.errors().get(0).message()).isEqualTo("Failed retrieving raw content");
     }
 
     @Test (dependsOnMethods = "updateContentCreateFile")
