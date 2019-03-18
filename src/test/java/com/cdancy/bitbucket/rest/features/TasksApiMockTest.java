@@ -17,16 +17,18 @@
 
 package com.cdancy.bitbucket.rest.features;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
+import com.cdancy.bitbucket.rest.domain.comment.MinimalAnchor;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
-import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.options.CreateTask;
+import com.cdancy.bitbucket.rest.options.UpdateTask;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Mock tests for the {@link TasksApi} class.
@@ -36,6 +38,8 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
 
     private final String tasksEndpoint = "/rest/api/1.0/tasks";
     private final int taskId = 99;
+    private static final String TASK_RESOLVED = "RESOLVED";
+    private static final String TASK_OPEN = "OPEN";
 
     public void testCreateTask() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -97,7 +101,55 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
+    public void testResolveTask() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/task-resolved.json")).setResponseCode(201));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final TasksApi api = baseApi.tasksApi();
+        try {
+
+            final MinimalAnchor anchor = MinimalAnchor.create(1, "COMMENT");
+            final UpdateTask updateTaskResolved = UpdateTask.update(anchor, taskId, TASK_RESOLVED, 1, 1);
+
+            final Task instanceNowResolved = api.update(updateTaskResolved.id(), updateTaskResolved);
+            assertThat(instanceNowResolved).isNotNull();
+            assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
+            assertThat(instanceNowResolved.state()).isEqualTo(TASK_RESOLVED);
+
+            String json = getTaskUpdateRequestPayload(taskId, TASK_RESOLVED);
+            assertSent(server, "PUT", tasksEndpoint + "/" + taskId, json);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testOpenTask() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/task-open.json")).setResponseCode(201));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final TasksApi api = baseApi.tasksApi();
+        try {
+
+            final MinimalAnchor anchor = MinimalAnchor.create(1, "COMMENT");
+            final UpdateTask updateTaskOpen = UpdateTask.update(anchor, taskId, TASK_OPEN, 1, 1);
+
+            final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
+            assertThat(instanceNowOpen).isNotNull();
+            assertThat(instanceNowOpen.errors().isEmpty()).isTrue();
+            assertThat(instanceNowOpen.state()).isEqualTo(TASK_OPEN);
+
+            String json = getTaskUpdateRequestPayload(taskId, TASK_OPEN);
+            assertSent(server, "PUT", tasksEndpoint + "/" + taskId, json);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
     public void testGetTaskOnErrors() throws Exception {
         final MockWebServer server = mockWebServer();
 
@@ -153,5 +205,12 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             baseApi.close();
             server.shutdown();
         }
+    }
+
+    private String getTaskUpdateRequestPayload(int taskId, String state) {
+        return String.format(
+            "{\"anchor\":{\"id\": 1,\"type\":\"COMMENT\"},\"id\":%s,\"state\":\"%s\",\"pullRequestId\":1,\"repositoryId\":1}",
+            taskId, state
+        );
     }
 }
