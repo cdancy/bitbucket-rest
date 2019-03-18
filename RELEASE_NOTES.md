@@ -1,4 +1,5 @@
 ### Version 2.5.1 (TBA)
+* ADDED: `FileApi` gained endpoint `lastModified`. - [PR 180](https://github.com/cdancy/bitbucket-rest/pull/180)
 
 ### Version 2.5.0 (3/3/2019)
 * ADDED: Bump `jclouds` to `2.1.2`.
