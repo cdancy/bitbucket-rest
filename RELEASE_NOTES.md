@@ -1,4 +1,5 @@
 ### Version 2.5.2 (TBA)
+* ADDED: Bump `gradle` to `4.10.3`.
 
 ### Version 2.5.1 (3/19/2019)
 * ADDED: `FileApi` gained endpoint `lastModified`. - [PR 180](https://github.com/cdancy/bitbucket-rest/pull/180)
