@@ -1,4 +1,4 @@
-### Version 2.5.1 (TBA)
+### Version 2.5.1 (3/19/2019)
 * ADDED: `FileApi` gained endpoint `lastModified`. - [PR 180](https://github.com/cdancy/bitbucket-rest/pull/180)
 * REFACTOR: `FileApi.listFiles` gained optional `path` param. - [PR 187](https://github.com/cdancy/bitbucket-rest/pull/187)
 
