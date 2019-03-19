@@ -195,7 +195,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
         try {
 
             final String gitRef = "some-existing-commit-or-tag-or-branch";
-            final FilesPage ref = api.listFiles(projectKey, repoKey, gitRef, null, null);
+            final FilesPage ref = api.listFiles(projectKey, repoKey, null, gitRef, null, null);
             assertThat(ref).isNotNull();
             assertThat(ref.errors().isEmpty()).isTrue();
             assertThat(ref.values().isEmpty()).isFalse();
@@ -203,6 +203,31 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
 
             final Map<String, ?> queryParams = ImmutableMap.of("at", gitRef);
             assertSent(server, getMethod, filesPath, queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListFilesAtPath() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/files-page.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final FileApi api = baseApi.fileApi();
+        try {
+
+            final String gitRef = "some-existing-commit-or-tag-or-branch";
+            final int start = 10;
+            final int limit = 25;
+            final FilesPage ref = api.listFiles(projectKey, repoKey, directoryPath, gitRef, start, limit);
+            assertThat(ref).isNotNull();
+            assertThat(ref.errors().isEmpty()).isTrue();
+            assertThat(ref.values().isEmpty()).isFalse();
+            assertThat(ref.values().get(0)).isEqualTo("path/to/file.txt");
+
+            final Map<String, ?> queryParams = ImmutableMap.of("at", gitRef, "start", start, "limit", limit);
+            assertSent(server, getMethod, filesPath + "/" + directoryPath, queryParams);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -218,7 +243,7 @@ public class FileApiMockTest extends BaseBitbucketMockTest {
         try {
 
             final String gitRef = "some-NON-existing-commit-or-tag-or-branch";
-            final FilesPage ref = api.listFiles(projectKey, repoKey, gitRef, null, null);
+            final FilesPage ref = api.listFiles(projectKey, repoKey, null, gitRef, null, null);
             assertThat(ref).isNotNull();
             assertThat(ref.errors().isEmpty()).isFalse();
             assertThat(ref.values().isEmpty()).isTrue();
