@@ -79,7 +79,7 @@ public class TestUtilities extends BitbucketUtils {
                 assertThat(userPage).isNotNull();
                 assertThat(userPage.size() > 0).isTrue();
                 for (final User user : userPage.values()) {
-                    if (username.toLowerCase().equals(user.slug().toLowerCase())) {
+                    if (username.equalsIgnoreCase(user.slug())) {
                         defaultUser = user;
                         break;
                     }

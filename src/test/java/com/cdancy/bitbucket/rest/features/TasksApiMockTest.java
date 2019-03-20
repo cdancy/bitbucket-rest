@@ -118,7 +118,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
             assertThat(instanceNowResolved.state()).isEqualTo(TASK_RESOLVED);
 
-            String json = getTaskUpdateRequestPayload(taskId, TASK_RESOLVED);
+            final String json = getTaskUpdateRequestPayload(taskId, TASK_RESOLVED);
             assertSent(server, "PUT", tasksEndpoint + "/" + taskId, json);
         } finally {
             baseApi.close();
@@ -142,7 +142,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(instanceNowOpen.errors().isEmpty()).isTrue();
             assertThat(instanceNowOpen.state()).isEqualTo(TASK_OPEN);
 
-            String json = getTaskUpdateRequestPayload(taskId, TASK_OPEN);
+            final String json = getTaskUpdateRequestPayload(taskId, TASK_OPEN);
             assertSent(server, "PUT", tasksEndpoint + "/" + taskId, json);
         } finally {
             baseApi.close();
@@ -207,7 +207,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    private String getTaskUpdateRequestPayload(int taskId, String state) {
+    private String getTaskUpdateRequestPayload(final int taskId, final String state) {
         return String.format(
             "{\"anchor\":{\"id\": 1,\"type\":\"COMMENT\"},\"id\":%s,\"state\":\"%s\",\"pullRequestId\":1,\"repositoryId\":1}",
             taskId, state
