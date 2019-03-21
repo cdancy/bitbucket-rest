@@ -23,8 +23,8 @@ import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
-import com.cdancy.bitbucket.rest.domain.comment.MinimalAnchor;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
+import com.cdancy.bitbucket.rest.domain.comment.TaskAnchor;
 import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
@@ -134,7 +134,7 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testTaskStatusUpdate() {
         final CreateTask createTask = CreateTask.create(commentId, taskComment);
         final Task instanceAlreadyOpen = api().create(createTask);
-        final MinimalAnchor anchor = MinimalAnchor.create(commentId, "COMMENT");
+        final TaskAnchor anchor = instanceAlreadyOpen.anchor();
 
         final UpdateTask updateTaskAlreadyOpen = UpdateTask.update(anchor, instanceAlreadyOpen.id(), TASK_RESOLVED, pullRequestId, repositoryId);
         final Task instanceNowResolved = api().update(updateTaskAlreadyOpen.id(), updateTaskAlreadyOpen);

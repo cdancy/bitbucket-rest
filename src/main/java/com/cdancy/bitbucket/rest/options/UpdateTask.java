@@ -17,14 +17,14 @@
 
 package com.cdancy.bitbucket.rest.options;
 
-import com.cdancy.bitbucket.rest.domain.comment.MinimalAnchor;
+import com.cdancy.bitbucket.rest.domain.comment.TaskAnchor;
 import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
 public abstract class UpdateTask {
 
-    public abstract MinimalAnchor anchor();
+    public abstract TaskAnchor anchor();
 
     public abstract int id();
 
@@ -39,7 +39,7 @@ public abstract class UpdateTask {
     }
 
     @SerializedNames({"anchor", "id", "state", "pullRequestId", "repositoryId" })
-    public static UpdateTask update(final MinimalAnchor anchor,
+    public static UpdateTask update(final TaskAnchor anchor,
                                     final int id,
                                     final String state,
                                     final int pullRequestId,
