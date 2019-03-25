@@ -179,8 +179,11 @@ Running integration tests can be done like so (requires Bitbucket instance):
 
     ./gradlew integTest
 
-Various [properties](https://github.com/cdancy/bitbucket-rest/tree/master/gradle.properties) exist for you to configure how the `integTest` task can be run should the defaults not suffice.
-	
+Various [properties](https://github.com/cdancy/bitbucket-rest/tree/master/gradle.properties) exist for you to configure
+how the `integTest` task can be run should the defaults not suffice. These properties can be overridden by specifying
+`-Pproperty=value` on the commandline. For example, to override the integTest credentials, `./gradlew
+-PtestBitbucketRestCredentials=user:pass integTest`.
+
 # Additional Resources
 
 * [Bitbucket docker setup](https://bitbucket.org/atlassian/docker-atlassian-bitbucket-server)
