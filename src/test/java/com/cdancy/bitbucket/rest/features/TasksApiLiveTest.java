@@ -53,9 +53,6 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     private int pullRequestId = -1;
     private int repositoryId = -1;
 
-    private static final String TASK_OPEN = "OPEN";
-    private static final String TASK_RESOLVED = "RESOLVED";
-
     @BeforeClass
     public void init() {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
@@ -136,13 +133,13 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         final Task instanceAlreadyOpen = api().create(createTask);
         final TaskAnchor anchor = instanceAlreadyOpen.anchor();
 
-        final UpdateTask updateTaskAlreadyOpen = UpdateTask.update(anchor, instanceAlreadyOpen.id(), TASK_RESOLVED, pullRequestId, repositoryId);
+        final UpdateTask updateTaskAlreadyOpen = UpdateTask.update(anchor, instanceAlreadyOpen.id(), "RESOLVED", pullRequestId, repositoryId);
         final Task instanceNowResolved = api().update(updateTaskAlreadyOpen.id(), updateTaskAlreadyOpen);
         assertThat(instanceNowResolved).isNotNull();
         assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
         assertThat(instanceNowResolved.state()).isEqualTo("RESOLVED");
 
-        final UpdateTask updateTaskBackToOpen = UpdateTask.update(anchor, instanceNowResolved.id(), TASK_OPEN, pullRequestId, repositoryId);
+        final UpdateTask updateTaskBackToOpen = UpdateTask.update(anchor, instanceNowResolved.id(), "OPEN", pullRequestId, repositoryId);
         final Task instanceReopened = api().update(updateTaskBackToOpen.id(), updateTaskBackToOpen);
         assertThat(instanceReopened).isNotNull();
         assertThat(instanceReopened.errors().isEmpty()).isTrue();
