@@ -25,8 +25,6 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class MinimalRepository {
 
-    public abstract int id();
-
     public abstract String slug();
 
     @Nullable
@@ -37,12 +35,11 @@ public abstract class MinimalRepository {
     MinimalRepository() {
     }
 
-    @SerializedNames({ "id", "slug", "name", "project" })
-    public static MinimalRepository create(final int id,
-            final String slug,
+    @SerializedNames({ "slug", "name", "project" })
+    public static MinimalRepository create(final String slug, 
             final String name, 
             final ProjectKey project) {
         
-        return new AutoValue_MinimalRepository(id, slug, name, project);
+        return new AutoValue_MinimalRepository(slug, name, project);
     }
 }
