@@ -30,20 +30,13 @@ public abstract class UpdateTask {
 
     public abstract String state();
 
-    public abstract int pullRequestId();
-
-    public abstract int repositoryId();
-
-
     UpdateTask() {
     }
 
-    @SerializedNames({"anchor", "id", "state", "pullRequestId", "repositoryId" })
+    @SerializedNames({"anchor", "id", "state" })
     public static UpdateTask update(final TaskAnchor anchor,
                                     final int id,
-                                    final String state,
-                                    final int pullRequestId,
-                                    final int repositoryId) {
-        return new AutoValue_UpdateTask(anchor, id, state, pullRequestId, repositoryId);
+                                    final String state) {
+        return new AutoValue_UpdateTask(anchor, id, state);
     }
 }

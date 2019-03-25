@@ -115,7 +115,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         final TasksApi api = baseApi.tasksApi();
         try {
             final TaskAnchor taskAnchor = api.get(taskId).anchor();
-            final UpdateTask updateTaskResolved = UpdateTask.update(taskAnchor, taskId, taskResolved, 1, 1);
+            final UpdateTask updateTaskResolved = UpdateTask.update(taskAnchor, taskId, taskResolved);
 
             final Task instanceNowResolved = api.update(updateTaskResolved.id(), updateTaskResolved);
             assertThat(instanceNowResolved).isNotNull();
@@ -143,7 +143,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         final TasksApi api = baseApi.tasksApi();
         try {
             final TaskAnchor taskAnchor = api.get(taskId).anchor();
-            final UpdateTask updateTaskOpen = UpdateTask.update(taskAnchor, taskId, taskOpen, 1, 1);
+            final UpdateTask updateTaskOpen = UpdateTask.update(taskAnchor, taskId, taskOpen);
 
             final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
             assertThat(instanceNowOpen).isNotNull();
@@ -171,7 +171,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         try {
 
             final TaskAnchor taskAnchor = api.get(taskId).anchor();
-            final UpdateTask updateTaskOpen = UpdateTask.update(taskAnchor, taskId, taskOpen, 1, 1);
+            final UpdateTask updateTaskOpen = UpdateTask.update(taskAnchor, taskId, taskOpen);
 
             final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
             assertThat(instanceNowOpen).isNotNull();
