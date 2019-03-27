@@ -129,15 +129,14 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testTaskStatusUpdate() {
         final CreateTask createTask = CreateTask.create(commentId, taskComment);
         final Task instanceAlreadyOpen = api().create(createTask);
-        final TaskAnchor anchor = instanceAlreadyOpen.anchor();
 
-        final UpdateTask updateTaskAlreadyOpen = UpdateTask.update(anchor, instanceAlreadyOpen.id(), "RESOLVED");
+        final UpdateTask updateTaskAlreadyOpen = UpdateTask.update(instanceAlreadyOpen.id(), "RESOLVED");
         final Task instanceNowResolved = api().update(updateTaskAlreadyOpen.id(), updateTaskAlreadyOpen);
         assertThat(instanceNowResolved).isNotNull();
         assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
         assertThat(instanceNowResolved.state()).isEqualTo("RESOLVED");
 
-        final UpdateTask updateTaskBackToOpen = UpdateTask.update(anchor, instanceNowResolved.id(), "OPEN");
+        final UpdateTask updateTaskBackToOpen = UpdateTask.update(instanceNowResolved.id(), "OPEN");
         final Task instanceReopened = api().update(updateTaskBackToOpen.id(), updateTaskBackToOpen);
         assertThat(instanceReopened).isNotNull();
         assertThat(instanceReopened.errors().isEmpty()).isTrue();

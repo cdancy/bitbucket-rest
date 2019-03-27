@@ -109,24 +109,21 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
     public void testResolveTask() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(taskJson)).setResponseCode(200));
         server.enqueue(new MockResponse().setBody(payloadFromResource("/task-resolved.json")).setResponseCode(201));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final TasksApi api = baseApi.tasksApi();
         try {
-            final TaskAnchor taskAnchor = api.get(taskId).anchor();
-            final UpdateTask updateTaskResolved = UpdateTask.update(taskAnchor, taskId, taskResolved);
+            final UpdateTask updateTaskResolved = UpdateTask.update(taskId, taskResolved);
 
             final Task instanceNowResolved = api.update(updateTaskResolved.id(), updateTaskResolved);
             assertThat(instanceNowResolved).isNotNull();
             assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
             assertThat(instanceNowResolved.state()).isEqualTo(taskResolved);
 
-            server.takeRequest();
             final RecordedRequest putRequest = server.takeRequest();
             assertThat(putRequest.getRequestLine()).isEqualTo(String.format("PUT %s/%s HTTP/1.1", tasksEndpoint, taskId));
-            final String json = payloadFromResource("/task-anchor-resolved.json");
-            assertThat(putRequest.getBody().readUtf8()).isEqualTo(json);
+            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{\"id\":99,\"state\":\"RESOLVED\"}");
+
         } finally {
             baseApi.close();
             server.shutdown();
@@ -137,24 +134,20 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
     public void testOpenTask() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(taskJson)).setResponseCode(200));
         server.enqueue(new MockResponse().setBody(payloadFromResource("/task-open.json")).setResponseCode(201));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final TasksApi api = baseApi.tasksApi();
         try {
-            final TaskAnchor taskAnchor = api.get(taskId).anchor();
-            final UpdateTask updateTaskOpen = UpdateTask.update(taskAnchor, taskId, taskOpen);
+            final UpdateTask updateTaskOpen = UpdateTask.update(taskId, taskOpen);
 
             final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
             assertThat(instanceNowOpen).isNotNull();
             assertThat(instanceNowOpen.errors().isEmpty()).isTrue();
             assertThat(instanceNowOpen.state()).isEqualTo(taskOpen);
 
-            server.takeRequest();
             final RecordedRequest putRequest = server.takeRequest();
             assertThat(putRequest.getRequestLine()).isEqualTo(String.format("PUT %s/%s HTTP/1.1", tasksEndpoint, taskId));
-            final String json = payloadFromResource("/task-anchor-open.json");
-            assertThat(putRequest.getBody().readUtf8()).isEqualTo(json);
+            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{\"id\":99,\"state\":\"OPEN\"}");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -164,14 +157,11 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
     public void testOpenTaskOnErrors() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource(taskJson)).setResponseCode(200));
         server.enqueue(new MockResponse().setBody(payloadFromResource(errorsJson)).setResponseCode(404));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final TasksApi api = baseApi.tasksApi();
         try {
-
-            final TaskAnchor taskAnchor = api.get(taskId).anchor();
-            final UpdateTask updateTaskOpen = UpdateTask.update(taskAnchor, taskId, taskOpen);
+            final UpdateTask updateTaskOpen = UpdateTask.update(taskId, taskOpen);
 
             final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
             assertThat(instanceNowOpen).isNotNull();
@@ -179,11 +169,9 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
             assertThat(instanceNowOpen.anchor()).isNull();
             assertThat(instanceNowOpen.state()).isNull();
 
-            server.takeRequest();
             final RecordedRequest putRequest = server.takeRequest();
             assertThat(putRequest.getRequestLine()).isEqualTo(String.format("PUT %s/%s HTTP/1.1", tasksEndpoint, taskId));
-            final String json = payloadFromResource("/task-anchor-open.json");
-            assertThat(putRequest.getBody().readUtf8()).isEqualTo(json);
+            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{\"id\":99,\"state\":\"OPEN\"}");
 
         } finally {
             baseApi.close();
