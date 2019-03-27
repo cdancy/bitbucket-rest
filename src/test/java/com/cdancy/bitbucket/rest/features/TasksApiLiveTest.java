@@ -48,7 +48,6 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     private final String taskComment = TestUtilities.randomString();
     private int commentId = -1;
     private int taskId = -1;
-    private int pullRequestId = -1;
 
     @BeforeClass
     public void init() {
@@ -77,7 +76,6 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         final Reference toRef = Reference.create(null, repository);
         final CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         final PullRequest pr = api.pullRequestApi().create(projectKey, repoKey, cpr);
-        pullRequestId = pr.id();
         
         assertThat(pr).isNotNull();
         assertThat(projectKey).isEqualTo(pr.fromRef().repository().project().key());
