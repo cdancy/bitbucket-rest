@@ -51,7 +51,6 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
     private int commentId = -1;
     private int taskId = -1;
     private int pullRequestId = -1;
-    private int repositoryId = -1;
 
     @BeforeClass
     public void init() {
@@ -75,13 +74,12 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         
         final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(projectKey);
-        final MinimalRepository repository = MinimalRepository.create(42, repoKey, null, proj);
+        final MinimalRepository repository = MinimalRepository.create(repoKey, null, proj);
         final Reference fromRef = Reference.create(branchToMerge, repository, branchToMerge);
         final Reference toRef = Reference.create(null, repository);
         final CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         final PullRequest pr = api.pullRequestApi().create(projectKey, repoKey, cpr);
         pullRequestId = pr.id();
-        repositoryId = repository.id();
         
         assertThat(pr).isNotNull();
         assertThat(projectKey).isEqualTo(pr.fromRef().repository().project().key());
