@@ -24,7 +24,6 @@ import com.cdancy.bitbucket.rest.domain.branch.Branch;
 import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
-import com.cdancy.bitbucket.rest.domain.comment.TaskAnchor;
 import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.MinimalRepository;
@@ -32,7 +31,6 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.ProjectKey;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.cdancy.bitbucket.rest.options.CreateTask;
-import com.cdancy.bitbucket.rest.options.UpdateTask;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -130,14 +128,12 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         final CreateTask createTask = CreateTask.create(commentId, taskComment);
         final Task instanceAlreadyOpen = api().create(createTask);
 
-        final UpdateTask updateTaskAlreadyOpen = UpdateTask.update(instanceAlreadyOpen.id(), "RESOLVED");
-        final Task instanceNowResolved = api().update(updateTaskAlreadyOpen.id(), updateTaskAlreadyOpen);
+        final Task instanceNowResolved = api().update(instanceAlreadyOpen.id(),"RESOLVED");
         assertThat(instanceNowResolved).isNotNull();
         assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
         assertThat(instanceNowResolved.state()).isEqualTo("RESOLVED");
 
-        final UpdateTask updateTaskBackToOpen = UpdateTask.update(instanceNowResolved.id(), "OPEN");
-        final Task instanceReopened = api().update(updateTaskBackToOpen.id(), updateTaskBackToOpen);
+        final Task instanceReopened = api().update(instanceNowResolved.id(),"OPEN");
         assertThat(instanceReopened).isNotNull();
         assertThat(instanceReopened.errors().isEmpty()).isTrue();
         assertThat(instanceReopened.state()).isEqualTo("OPEN");

@@ -20,10 +20,8 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
-import com.cdancy.bitbucket.rest.domain.comment.TaskAnchor;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.options.CreateTask;
-import com.cdancy.bitbucket.rest.options.UpdateTask;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -113,16 +111,15 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final TasksApi api = baseApi.tasksApi();
         try {
-            final UpdateTask updateTaskResolved = UpdateTask.update(taskId, taskResolved);
 
-            final Task instanceNowResolved = api.update(updateTaskResolved.id(), updateTaskResolved);
+            final Task instanceNowResolved = api.update(taskId,"RESOLVED");
             assertThat(instanceNowResolved).isNotNull();
             assertThat(instanceNowResolved.errors().isEmpty()).isTrue();
             assertThat(instanceNowResolved.state()).isEqualTo(taskResolved);
 
             final RecordedRequest putRequest = server.takeRequest();
             assertThat(putRequest.getRequestLine()).isEqualTo(String.format("PUT %s/%s HTTP/1.1", tasksEndpoint, taskId));
-            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{\"id\":99,\"state\":\"RESOLVED\"}");
+            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{ \"state\": \"RESOLVED\" }");
 
         } finally {
             baseApi.close();
@@ -138,16 +135,15 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final TasksApi api = baseApi.tasksApi();
         try {
-            final UpdateTask updateTaskOpen = UpdateTask.update(taskId, taskOpen);
 
-            final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
+            final Task instanceNowOpen = api.update(taskId,"OPEN");
             assertThat(instanceNowOpen).isNotNull();
             assertThat(instanceNowOpen.errors().isEmpty()).isTrue();
             assertThat(instanceNowOpen.state()).isEqualTo(taskOpen);
 
             final RecordedRequest putRequest = server.takeRequest();
             assertThat(putRequest.getRequestLine()).isEqualTo(String.format("PUT %s/%s HTTP/1.1", tasksEndpoint, taskId));
-            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{\"id\":99,\"state\":\"OPEN\"}");
+            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{ \"state\": \"OPEN\" }");
         } finally {
             baseApi.close();
             server.shutdown();
@@ -161,9 +157,8 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final TasksApi api = baseApi.tasksApi();
         try {
-            final UpdateTask updateTaskOpen = UpdateTask.update(taskId, taskOpen);
 
-            final Task instanceNowOpen = api.update(updateTaskOpen.id(), updateTaskOpen);
+            final Task instanceNowOpen = api.update(taskId,"OPEN");
             assertThat(instanceNowOpen).isNotNull();
             assertThat(instanceNowOpen.errors().isEmpty()).isFalse();
             assertThat(instanceNowOpen.anchor()).isNull();
@@ -171,7 +166,7 @@ public class TasksApiMockTest extends BaseBitbucketMockTest {
 
             final RecordedRequest putRequest = server.takeRequest();
             assertThat(putRequest.getRequestLine()).isEqualTo(String.format("PUT %s/%s HTTP/1.1", tasksEndpoint, taskId));
-            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{\"id\":99,\"state\":\"OPEN\"}");
+            assertThat(putRequest.getBody().readUtf8()).isEqualTo("{ \"state\": \"OPEN\" }");
 
         } finally {
             baseApi.close();

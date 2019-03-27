@@ -23,7 +23,6 @@ import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreateTask;
-import com.cdancy.bitbucket.rest.options.UpdateTask;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -59,8 +58,9 @@ public interface TasksApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{taskId}")
     @Fallback(BitbucketFallbacks.TaskOnError.class)
+    @Payload("%7B \"state\": \"{state}\" %7D")
     @PUT
-    Task update(@PathParam("taskId") int taskId, @BinderParam(BindToJsonPayload.class) UpdateTask updateTask);
+    Task update(@PathParam("taskId") int taskId, @PayloadParam("state") String state);
     
 
     @Named("tasks:get")
