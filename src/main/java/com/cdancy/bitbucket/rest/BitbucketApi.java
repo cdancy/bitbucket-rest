@@ -34,6 +34,7 @@ import com.cdancy.bitbucket.rest.features.SyncApi;
 import com.cdancy.bitbucket.rest.features.SystemApi;
 import com.cdancy.bitbucket.rest.features.TagApi;
 import com.cdancy.bitbucket.rest.features.TasksApi;
+import com.cdancy.bitbucket.rest.features.UserApi;
 import com.cdancy.bitbucket.rest.features.WebHookApi;
 
 
@@ -88,4 +89,8 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     TasksApi tasksApi();
+    
+    @Delegate
+    UserApi userApi();
+   
 }
