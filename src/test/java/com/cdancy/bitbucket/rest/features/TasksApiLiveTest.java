@@ -137,6 +137,14 @@ public class TasksApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(instanceReopened.state()).isEqualTo("OPEN");
     }
 
+    @Test
+    public void testTaskStatusUpdateOnError() {
+        final Task instanceNowResolved = api().update(9999999,"RESOLVED");
+        assertThat(instanceNowResolved).isNotNull();
+        assertThat(instanceNowResolved.errors().isEmpty()).isFalse();
+        assertThat(instanceNowResolved.state()).isNull();
+    }
+
     @Test (dependsOnMethods = "testGetTask")
     public void testDeleteTask() {
         final RequestStatus instance = api().delete(this.taskId);
