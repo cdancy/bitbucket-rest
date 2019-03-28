@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
-//import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -34,11 +34,10 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 @Test(groups = "unit", testName = "UserApiMockTest")
 public class UserApiMockTest extends BaseBitbucketMockTest {
 
-    private final String localGroup = "test";
-    private final String limitKeyword = "limit";
-    private final String startKeyword = "start";
     private final String restApiPath = "/rest/api/";
     private final String getMethod = "GET";
+    private final String admin = "ADMIN";
+    private final String group = "stash-users";
 
 
     public void testUserListUsers() throws Exception {
@@ -51,7 +50,7 @@ public class UserApiMockTest extends BaseBitbucketMockTest {
                 .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
 
-            final UserPage up = baseApi.userApi().users("jcitizen", "stash-users", "ADMIN", null,
+            final UserPage up = baseApi.userApi().users("jcitizen", group, admin, null,
                     null, null, null, null, null, 0, 2);
             assertThat(up).isNotNull();
             assertThat(up.errors()).isEmpty();
@@ -59,9 +58,9 @@ public class UserApiMockTest extends BaseBitbucketMockTest {
             assertThat(up.values().get(0).slug().equals("jcitizen")).isTrue();
 
             final Map<String, ?> queryParams = ImmutableMap.of("filter", "jcitizen",
-                    "group","stash-users" , "permission", "ADMIN","start",0,"limit",2);
-            //assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-            //        + "/users", queryParams);
+                    "group", group, "permission", admin,"start",0,"limit",2);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/users", queryParams);
         } finally {
             server.shutdown();
         }
@@ -73,15 +72,15 @@ public class UserApiMockTest extends BaseBitbucketMockTest {
         server.enqueue(new MockResponse().setBody(payloadFromResource("/user-list-users-error.json")).setResponseCode(401));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         try {
-            final UserPage up = baseApi.userApi().users("blah blah", "stash-users", "ADMIN", null,
+            final UserPage up = baseApi.userApi().users("blah blah", group, admin, null,
                     null, null, null, null, null, 0, 2);            
             assertThat(up).isNotNull();
             assertThat(up.errors()).isNotEmpty();
 
             final Map<String, ?> queryParams = ImmutableMap.of("filter", "blah%20blah",
-                    "group","stash-users" , "permission", "ADMIN","start",0,"limit",2);
-            //assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-            //        + "/users", queryParams);
+                    "group", group, "permission", admin,"start",0,"limit",2);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + "/users", queryParams);
         } finally {
             baseApi.close();
             server.shutdown();

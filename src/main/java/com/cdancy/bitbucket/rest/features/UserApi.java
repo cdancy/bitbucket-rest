@@ -35,14 +35,14 @@ import javax.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
-@Path("/rest/api/{jclouds.api-version}/user")
+@Path("/rest/api/{jclouds.api-version}/users")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface UserApi {
 
     @Named("user:get-user")
     @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/6.0.0/bitbucket-rest.html#idp362"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/groups/more-members")
+    @Path("")
     @Fallback(BitbucketFallbacks.UserPageOnError.class)
     @GET
     UserPage users(@Nullable @QueryParam("filter") String filter,
