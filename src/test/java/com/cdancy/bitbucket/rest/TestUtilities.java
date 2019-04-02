@@ -79,7 +79,7 @@ public class TestUtilities extends BitbucketUtils {
                 assertThat(userPage).isNotNull();
                 assertThat(userPage.size() > 0).isTrue();
                 for (final User user : userPage.values()) {
-                    if (username.equalsIgnoreCase(user.slug())) {
+                    if (username.equals(user.slug())) {
                         defaultUser = user;
                         break;
                     }
@@ -187,13 +187,14 @@ public class TestUtilities extends BitbucketUtils {
         assertThat(gitDirectory.mkdirs()).isTrue();
 
         try {
+            final String foundCredential = getDefaultUser(credential, api).slug();
             final URL endpointURL = new URL(endpoint);
             final int index = endpointURL.toString().indexOf(endpointURL.getHost());
             final String preCredentialPart = endpointURL.toString().substring(0, index);
             final String postCredentialPart = endpointURL.toString().substring(index, endpointURL.toString().length());
 
             final String generatedEndpoint = preCredentialPart
-                    + new String(base64().decode(credential.authValue())) + "@"
+                    + foundCredential + "@"
                     + postCredentialPart + "/scm/"
                     + projectKey.toLowerCase() + "/"
                     + repoKey.toLowerCase() + ".git";
