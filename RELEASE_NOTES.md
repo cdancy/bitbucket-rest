@@ -1,3 +1,5 @@
+### Version 2.5.3 (TBA)
+
 ### Version 2.5.2 (4/2/2019)
 * ADDED: Bump `gradle` to `4.10.3`.
 * ADDED: `TasksApi` gained endpoint `update`. - [PR 188](https://github.com/cdancy/bitbucket-rest/pull/188)
