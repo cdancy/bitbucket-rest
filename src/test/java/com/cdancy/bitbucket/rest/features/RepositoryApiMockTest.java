@@ -325,6 +325,68 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
+    public void testGetAllRepositories() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-full.json"))
+                .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            final RepositoryApi api = baseApi.repositoryApi();
+
+            final RepositoryPage repositoryPage = api.listAll(null, null, null, null, null, null);
+
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + reposEndpoint);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            final int size = repositoryPage.size();
+            final int limit = repositoryPage.limit();
+
+            assertThat(size).isLessThanOrEqualTo(limit);
+            assertThat(repositoryPage.start()).isEqualTo(0);
+            assertThat(repositoryPage.isLastPage()).isTrue();
+            assertThat(repositoryPage.values()).hasSize(size);
+            assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetAllRepositoriesWithLimit() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(
+                new MockResponse().setBody(payloadFromResource("/repository-page-truncated.json"))
+                        .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            final RepositoryApi api = baseApi.repositoryApi();
+
+            final int start = 0;
+            final int limit = 2;
+            final RepositoryPage repositoryPage = api.listAll(null, null, null, null, start, limit);
+
+            final Map<String, ?> queryParams =
+                    ImmutableMap.of(startKeyword, start, limitKeyword, limit);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                    + reposEndpoint, queryParams);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            final int size = repositoryPage.size();
+
+            assertThat(size).isEqualTo(limit);
+            assertThat(repositoryPage.start()).isEqualTo(start);
+            assertThat(repositoryPage.limit()).isEqualTo(limit);
+            assertThat(repositoryPage.isLastPage()).isFalse();
+            assertThat(repositoryPage.nextPageStart()).isEqualTo(size);
+            assertThat(repositoryPage.values()).hasSize(size);
+            assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
+        } finally {
+            server.shutdown();
+        }
+    }
+
     public void testGetPullRequestSettings() throws Exception {
         final MockWebServer server = mockWebServer();
 

@@ -106,6 +106,25 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
     }
 
     @Test
+    public void testListAllRepositories() {
+        final RepositoryPage repositoryPage = api().listAll(null, null, null, null, 0, 100);
+
+        assertThat(repositoryPage).isNotNull();
+        assertThat(repositoryPage.errors()).isEmpty();
+        assertThat(repositoryPage.size()).isGreaterThan(0);
+
+        assertThat(repositoryPage.values()).isNotEmpty();
+        boolean found = false;
+        for (final Repository possibleRepo : repositoryPage.values()) {
+            if (possibleRepo.name().equals(repoKey)) {
+                found = true;
+                break;
+            }
+        }
+        assertThat(found).isTrue();
+    }
+
+    @Test
     public void testDeleteRepositoryNonExistent() {
         final String random = randomStringLettersOnly();
         final RequestStatus success = api().delete(projectKey, random);
