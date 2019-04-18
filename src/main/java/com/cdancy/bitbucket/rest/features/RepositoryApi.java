@@ -111,8 +111,8 @@ public interface RepositoryApi {
     @Path("/repos")
     @Fallback(BitbucketFallbacks.RepositoryPageOnError.class)
     @GET
-    RepositoryPage listAll(@Nullable @QueryParam("name") String name,
-                           @Nullable @QueryParam("projectname") String projectName,
+    RepositoryPage listAll(@Nullable @QueryParam("projectname") String project,
+                           @Nullable @QueryParam("name") String repo,
                            @Nullable @QueryParam("permission") String permission,
                            @Nullable @QueryParam("visibility") String visibility,
                            @Nullable @QueryParam("start") Integer start,
