@@ -54,7 +54,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     private final String deleteMethod = "DELETE";
     private final String putMethod = "PUT";
 
-    private final String restApiPath = "/rest/api/";    
+    private final String restApiPath = "/rest/api/";
     private final String projectsPath = "/projects/";
     private final String permissionsPath = "/permissions/";
     private final String usersPath = permissionsPath + "users";
@@ -64,6 +64,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     private final String reposPath = "/repos/";
     private final String reposEndpoint = "/repos";
 
+    private final String projectKeyword = "projectname";
     private final String limitKeyword = "limit";
     private final String startKeyword = "start";
     private final String nameKeyword = "name";
@@ -144,11 +145,11 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final Repository repository = api.get(projectKey, nonExistentRepoKey);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isNotEmpty();
-            assertSent(server, getMethod, restApiPath 
-                    + BitbucketApiMetadata.API_VERSION 
-                    + projectsPath 
-                    + projectKey 
-                    + reposPath 
+            assertSent(server, getMethod, restApiPath
+                    + BitbucketApiMetadata.API_VERSION
+                    + projectsPath
+                    + projectKey
+                    + reposPath
                     + nonExistentRepoKey);
         } finally {
             baseApi.close();
@@ -233,17 +234,17 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final RepositoryApi api = baseApi.repositoryApi();
         try {
-            
+
             final String nonExistentRepoKey = "notexist";
             final RequestStatus success = api.delete(projectKey, nonExistentRepoKey);
             assertThat(success).isNotNull();
             assertThat(success.value()).isFalse();
             assertThat(success.errors()).isNotEmpty();
-            assertSent(server, deleteMethod, restApiPath 
-                    + BitbucketApiMetadata.API_VERSION 
-                    + projectsPath 
-                    + projectKey 
-                    + reposPath 
+            assertSent(server, deleteMethod, restApiPath
+                    + BitbucketApiMetadata.API_VERSION
+                    + projectsPath
+                    + projectKey
+                    + reposPath
                     + nonExistentRepoKey);
         } finally {
             baseApi.close();
@@ -325,7 +326,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testGetAllRepositories() throws Exception {
+    public void testListAllRepositories() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-full.json"))
@@ -353,7 +354,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
-    public void testGetAllRepositoriesWithLimit() throws Exception {
+    public void testListAllRepositoriesWithLimit() throws Exception {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(
@@ -382,6 +383,111 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertThat(repositoryPage.nextPageStart()).isEqualTo(size);
             assertThat(repositoryPage.values()).hasSize(size);
             assertThat(repositoryPage.values()).hasOnlyElementsOfType(Repository.class);
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testListAllRepositoriesByProject() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-single.json"))
+            .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            final RepositoryApi api = baseApi.repositoryApi();
+
+            final RepositoryPage repositoryPage = api.listAll(projectKey, null, null, null, null, null);
+
+            final Map<String, ?> queryParams =
+                ImmutableMap.of(projectKeyword, projectKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                + reposEndpoint, queryParams);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            assertThat(repositoryPage.size()).isEqualTo(1);
+            assertThat(repositoryPage.start()).isEqualTo(0);
+            assertThat(repositoryPage.isLastPage()).isTrue();
+            assertThat(repositoryPage.values()).isNotEmpty();
+        } finally {
+            server.shutdown();
+        }
+    }
+
+
+    public void testListAllRepositoriesByRepository() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-single.json"))
+            .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            final RepositoryApi api = baseApi.repositoryApi();
+
+            final RepositoryPage repositoryPage = api.listAll(null, repoKey, null, null, null, null);
+
+            final Map<String, ?> queryParams =
+                ImmutableMap.of(nameKeyword, repoKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                + reposEndpoint, queryParams);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            assertThat(repositoryPage.size()).isEqualTo(1);
+            assertThat(repositoryPage.start()).isEqualTo(0);
+            assertThat(repositoryPage.isLastPage()).isTrue();
+            assertThat(repositoryPage.values()).isNotEmpty();
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testListAllRepositoriesByProjectNonExistent() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-empty.json"))
+            .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            final RepositoryApi api = baseApi.repositoryApi();
+
+            final RepositoryPage repositoryPage = api.listAll(projectKey, null, null, null, null, null);
+
+            final Map<String, ?> queryParams =
+                ImmutableMap.of(projectKeyword, projectKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                + reposEndpoint, queryParams);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            assertThat(repositoryPage.size()).isEqualTo(0);
+            assertThat(repositoryPage.start()).isEqualTo(0);
+            assertThat(repositoryPage.isLastPage()).isTrue();
+            assertThat(repositoryPage.values()).isEmpty();
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testListAllRepositoriesByRepositoryNonExistent() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-empty.json"))
+            .setResponseCode(200));
+        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+            final RepositoryApi api = baseApi.repositoryApi();
+
+            final RepositoryPage repositoryPage = api.listAll(null, repoKey, null, null, null, null);
+
+            final Map<String, ?> queryParams =
+                ImmutableMap.of(nameKeyword, repoKey);
+            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                + reposEndpoint, queryParams);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+
+            assertThat(repositoryPage.size()).isEqualTo(0);
+            assertThat(repositoryPage.start()).isEqualTo(0);
+            assertThat(repositoryPage.isLastPage()).isTrue();
+            assertThat(repositoryPage.values()).isEmpty();
         } finally {
             server.shutdown();
         }
