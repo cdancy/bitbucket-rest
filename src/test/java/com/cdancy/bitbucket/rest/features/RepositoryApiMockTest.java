@@ -392,16 +392,15 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-single.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             final RepositoryApi api = baseApi.repositoryApi();
 
             final RepositoryPage repositoryPage = api.listAll(projectKey, null, null, null, null, null);
 
-            final Map<String, ?> queryParams =
-                ImmutableMap.of(projectKeyword, projectKey);
+            final Map<String, ?> queryParams = ImmutableMap.of(projectKeyword, projectKey);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + reposEndpoint, queryParams);
+                    + reposEndpoint, queryParams);
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isEmpty();
 
@@ -419,16 +418,15 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-single.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             final RepositoryApi api = baseApi.repositoryApi();
 
             final RepositoryPage repositoryPage = api.listAll(null, repoKey, null, null, null, null);
 
-            final Map<String, ?> queryParams =
-                ImmutableMap.of(nameKeyword, repoKey);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, repoKey);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + reposEndpoint, queryParams);
+                    + reposEndpoint, queryParams);
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isEmpty();
 
@@ -445,16 +443,15 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-empty.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             final RepositoryApi api = baseApi.repositoryApi();
 
             final RepositoryPage repositoryPage = api.listAll(projectKey, null, null, null, null, null);
 
-            final Map<String, ?> queryParams =
-                ImmutableMap.of(projectKeyword, projectKey);
+            final Map<String, ?> queryParams = ImmutableMap.of(projectKeyword, projectKey);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + reposEndpoint, queryParams);
+                    + reposEndpoint, queryParams);
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isEmpty();
 
@@ -471,16 +468,15 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-page-empty.json"))
-            .setResponseCode(200));
+                .setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
             final RepositoryApi api = baseApi.repositoryApi();
 
             final RepositoryPage repositoryPage = api.listAll(null, repoKey, null, null, null, null);
 
-            final Map<String, ?> queryParams =
-                ImmutableMap.of(nameKeyword, repoKey);
+            final Map<String, ?> queryParams = ImmutableMap.of(nameKeyword, repoKey);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + reposEndpoint, queryParams);
+                    + reposEndpoint, queryParams);
             assertThat(repositoryPage).isNotNull();
             assertThat(repositoryPage.errors()).isEmpty();
 
