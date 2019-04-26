@@ -32,6 +32,7 @@ import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.options.CreatePullRequestSettings;
 import com.cdancy.bitbucket.rest.options.CreateRepository;
+import com.google.common.collect.Lists;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -107,15 +108,26 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testListAllRepositories() {
-        final RepositoryPage repositoryPage = api().listAll(null, null, null, null, 0, 100);
 
-        assertThat(repositoryPage).isNotNull();
-        assertThat(repositoryPage.errors()).isEmpty();
-        assertThat(repositoryPage.size()).isGreaterThan(0);
+        final List<Repository> foundRepos = Lists.newArrayList();
 
-        assertThat(repositoryPage.values()).isNotEmpty();
+        int start = 0;
+        int limit = 100;
+        RepositoryPage repositoryPage;
+        while(!(repositoryPage = api().listAll(null, null, null, null, start, limit)).isLastPage()) {
+            start += limit;
+
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+            assertThat(repositoryPage.size()).isGreaterThan(0);
+
+            foundRepos.addAll(repositoryPage.values());
+        }
+
+        assertThat(foundRepos).isNotEmpty();
+
         boolean found = false;
-        for (final Repository possibleRepo : repositoryPage.values()) {
+        for (final Repository possibleRepo : foundRepos) {
             if (possibleRepo.name().equals(repoKey)) {
                 found = true;
                 break;
@@ -126,14 +138,24 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testListAllRepositoriesByRepository() {
-        final RepositoryPage repositoryPage = api().listAll(null, repoKey, null, null, 0, 100);
+        final List<Repository> foundRepos = Lists.newArrayList();
 
-        assertThat(repositoryPage).isNotNull();
-        assertThat(repositoryPage.errors()).isEmpty();
-        assertThat(repositoryPage.size()).isEqualTo(1);
+        int start = 0;
+        int limit = 100;
+        RepositoryPage repositoryPage;
+        while(!(repositoryPage = api().listAll(null, repoKey, null, null, start, limit)).isLastPage()) {
+            start += limit;
 
-        assertThat(repositoryPage.values()).isNotEmpty();
-        assertThat(repositoryPage.values().get(0).name()).isEqualTo(repoKey);
+            assertThat(repositoryPage).isNotNull();
+            assertThat(repositoryPage.errors()).isEmpty();
+            assertThat(repositoryPage.size()).isGreaterThan(0);
+
+            foundRepos.addAll(repositoryPage.values());
+        }
+
+        assertThat(foundRepos).isNotEmpty();
+        assertThat(foundRepos.size()).isEqualTo(1);
+        assertThat(foundRepos.get(0).name()).isEqualTo(repoKey);
     }
 
     @Test
