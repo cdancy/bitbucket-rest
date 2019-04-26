@@ -1,4 +1,5 @@
-### Version 2.5.3 (TBA)
+### Version 2.5.3 (4/26/2019)
+* ADDED: `RepositoryApi` gained endpoint `listAll`. - [PR 192](https://github.com/cdancy/bitbucket-rest/pull/192)
 
 ### Version 2.5.2 (4/2/2019)
 * ADDED: Bump `gradle` to `4.10.3`.
