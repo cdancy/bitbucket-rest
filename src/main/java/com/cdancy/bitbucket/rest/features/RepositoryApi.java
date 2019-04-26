@@ -51,14 +51,14 @@ import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
-@Path("/rest/api/{jclouds.api-version}/projects")
+@Path("/rest/api/{jclouds.api-version}")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface RepositoryApi {
 
     @Named("repository:create")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277587248"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos")
+    @Path("/projects/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
     @POST
     Repository create(@PathParam("project") String project,
@@ -67,7 +67,7 @@ public interface RepositoryApi {
     @Named("repository:get")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277593152"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}")
+    @Path("/projects/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
     @GET
     Repository get(@PathParam("project") String project,
@@ -76,7 +76,7 @@ public interface RepositoryApi {
     @Named("repository:fork")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277587248"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}")
+    @Path("/projects/{project}/repos/{repo}")
     @Payload("%7B \"name\": \"{newRepo}\", \"project\": %7B \"key\": \"{newProject}\" %7D %7D")
     @Fallback(BitbucketFallbacks.RepositoryOnError.class)
     @POST
@@ -88,7 +88,7 @@ public interface RepositoryApi {
     @Named("repository:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277567792"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}")
+    @Path("/projects/{project}/repos/{repo}")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(DeleteRepositoryParser.class)
     @DELETE
@@ -98,17 +98,30 @@ public interface RepositoryApi {
     @Named("repository:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277593152"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos")
+    @Path("/projects/{project}/repos")
     @Fallback(BitbucketFallbacks.RepositoryPageOnError.class)
     @GET
     RepositoryPage list(@PathParam("project") String project,
                         @Nullable @QueryParam("start") Integer start,
                         @Nullable @QueryParam("limit") Integer limit);
 
+    @Named("repository:list-all")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.0.0/bitbucket-rest.html#idm45659055274784"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/repos")
+    @Fallback(BitbucketFallbacks.RepositoryPageOnError.class)
+    @GET
+    RepositoryPage listAll(@Nullable @QueryParam("projectname") String project,
+                           @Nullable @QueryParam("name") String repo,
+                           @Nullable @QueryParam("permission") String permission,
+                           @Nullable @QueryParam("visibility") String visibility,
+                           @Nullable @QueryParam("start") Integer start,
+                           @Nullable @QueryParam("limit") Integer limit);
+
     @Named("repository:get-pullrequest-settings")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054915136"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/pull-requests")
+    @Path("/projects/{project}/repos/{repo}/settings/pull-requests")
     @Fallback(BitbucketFallbacks.PullRequestSettingsOnError.class)
     @GET
     PullRequestSettings getPullRequestSettings(@PathParam("project") String project,
@@ -117,7 +130,7 @@ public interface RepositoryApi {
     @Named("repository:update-pullrequest-settings")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054915136"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/settings/pull-requests")
+    @Path("/projects/{project}/repos/{repo}/settings/pull-requests")
     @Fallback(BitbucketFallbacks.PullRequestSettingsOnError.class)
     @POST
     PullRequestSettings updatePullRequestSettings(@PathParam("project") String project,
@@ -127,7 +140,7 @@ public interface RepositoryApi {
     @Named("repository:create-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/permissions/users")
+    @Path("/projects/{project}/repos/{repo}/permissions/users")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @PUT
@@ -139,7 +152,7 @@ public interface RepositoryApi {
     @Named("repository:delete-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/permissions/users")
+    @Path("/projects/{project}/repos/{repo}/permissions/users")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
@@ -150,7 +163,7 @@ public interface RepositoryApi {
     @Named("repository:list-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/permissions/users")
+    @Path("/projects/{project}/repos/{repo}/permissions/users")
     @Fallback(BitbucketFallbacks.PermissionsPageOnError.class)
     @GET
     PermissionsPage listPermissionsByUser(@PathParam("project") String project,
@@ -161,7 +174,7 @@ public interface RepositoryApi {
     @Named("repository:create-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/permissions/groups")
+    @Path("/projects/{project}/repos/{repo}/permissions/groups")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @PUT
@@ -173,7 +186,7 @@ public interface RepositoryApi {
     @Named("repository:delete-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/permissions/groups")
+    @Path("/projects/{project}/repos/{repo}/permissions/groups")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
@@ -184,7 +197,7 @@ public interface RepositoryApi {
     @Named("repository:list-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/repos/{repo}/permissions/groups")
+    @Path("/projects/{project}/repos/{repo}/permissions/groups")
     @Fallback(BitbucketFallbacks.PermissionsPageOnError.class)
     @GET
     PermissionsPage listPermissionsByGroup(@PathParam("project") String project,
