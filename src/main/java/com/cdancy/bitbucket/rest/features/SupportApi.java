@@ -1,5 +1,6 @@
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.domain.support.SupportZip;
 import com.cdancy.bitbucket.rest.domain.support.SupportZipTask;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
@@ -19,4 +20,10 @@ public interface SupportApi {
     @Path("/local")
     @POST
     SupportZipTask createSupportZip();
+
+    @Named("support-zip:status")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/status/task/{taskId}")
+    @GET
+    SupportZip getSupportZip(final String taskId);
 }

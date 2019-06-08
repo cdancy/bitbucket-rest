@@ -1,6 +1,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketClient;
+import com.cdancy.bitbucket.rest.domain.support.SupportZip;
 import com.cdancy.bitbucket.rest.domain.support.SupportZipTask;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -12,7 +13,7 @@ public class SupportApiLiveTest {
     private SupportApi api() {
         BitbucketClient client = BitbucketClient.builder()
             .endPoint("http://127.0.0.1:7990")
-            .credentials("admin-user:admin-pwd")
+            .credentials("engadmin:Pega2014")
             .build();
 
         return client.api().supportApi();
@@ -22,6 +23,21 @@ public class SupportApiLiveTest {
     public void testSupportZipCreation() {
         SupportZipTask supportZipTask = api().createSupportZip();
         assertIntegrity(supportZipTask);
+    }
+
+    @Test
+    public void testSupportZip() {
+        SupportZipTask supportZipTask = api().createSupportZip();
+        SupportZip supportZip = api().getSupportZip(supportZipTask.taskId());
+        assertIntegrity(supportZip);
+    }
+
+    private void assertIntegrity(SupportZip supportZip) {
+        assertTaskId(supportZip.taskId());
+        assertTaskProgressMessage(supportZip.progressMessage());
+        assertTaskProgressPercentage(supportZip.progressPercentage());
+        assertTaskStatus(supportZip.status());
+        Assert.assertNotNull(supportZip.fileName());
     }
 
     private void assertIntegrity(SupportZipTask supportZipTask) {
