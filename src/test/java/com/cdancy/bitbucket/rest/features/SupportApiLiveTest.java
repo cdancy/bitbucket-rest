@@ -12,7 +12,7 @@ public class SupportApiLiveTest {
     private SupportApi api() {
         BitbucketClient client = BitbucketClient.builder()
             .endPoint("http://127.0.0.1:7990")
-            .credentials("engadmin:Pega2014")
+            .credentials("admin-user:admin-pwd")
             .build();
 
         return client.api().supportApi();
