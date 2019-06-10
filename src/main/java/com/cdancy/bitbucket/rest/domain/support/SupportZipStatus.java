@@ -3,7 +3,6 @@ package com.cdancy.bitbucket.rest.domain.support;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
-
 import java.util.List;
 
 @AutoValue
