@@ -1,7 +1,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.support.SupportZip;
+import com.cdancy.bitbucket.rest.domain.support.SupportZipStatus;
 import com.cdancy.bitbucket.rest.domain.support.SupportZipDetails;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -14,22 +14,22 @@ public class SupportApiLiveTest extends BaseBitbucketApiLiveTest{
 
     @Test
     public void testSupportZipCreation() {
-        SupportZipDetails supportZipDetails = api().createSupportZip();
-        assertIntegrity(supportZipDetails);
+        SupportZipDetails details = api().createSupportZip();
+        assertIntegrity(details);
     }
 
     @Test
-    public void testSupportZip() {
-        SupportZipDetails supportZipDetails = api().createSupportZip();
-        SupportZip supportZip = api().getSupportZip(supportZipDetails.taskId());
+    public void testSupportZipStatus() {
+        SupportZipDetails details = api().createSupportZip();
+        SupportZipStatus supportZip = api().getSupportZipStatus(details.taskId());
         assertIntegrity(supportZip);
     }
 
-    private void assertIntegrity(SupportZip supportZip) {
-        /*assertTaskId(supportZip.details().taskId());
-        assertTaskProgressMessage(supportZip.details().progressMessage());
-        assertTaskProgressPercentage(supportZip.details().progressPercentage());
-        assertTaskStatus(supportZip.details().status());*/
+    private void assertIntegrity(SupportZipStatus supportZip) {
+        assertTaskId(supportZip.taskId());
+        assertTaskProgressMessage(supportZip.progressMessage());
+        assertTaskProgressPercentage(supportZip.progressPercentage());
+        assertTaskStatus(supportZip.status());
         Assert.assertNotNull(supportZip.fileName());
     }
 
