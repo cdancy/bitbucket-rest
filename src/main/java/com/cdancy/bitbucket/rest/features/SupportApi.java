@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.support.SupportZipStatus;
 import com.cdancy.bitbucket.rest.domain.support.SupportZipDetails;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
@@ -35,13 +36,16 @@ import javax.ws.rs.core.MediaType;
 @Path("/rest/troubleshooting/latest/support-zip")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface SupportApi {
+
     @Named("support-zip:create")
+    @Documentation("https://confluence.atlassian.com/support/create-a-support-zip-using-the-rest-api-in-server-applications-947857090.html#CreateasupportzipusingtheRESTAPIinServerapplications-Generateasupportzip")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/local")
     @POST
     SupportZipDetails createSupportZip();
 
     @Named("support-zip:status")
+    @Documentation("https://confluence.atlassian.com/support/create-a-support-zip-using-the-rest-api-in-server-applications-947857090.html#CreateasupportzipusingtheRESTAPIinServerapplications-Checktheprogressofthetask")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/status/task/{taskId}")
     @GET
