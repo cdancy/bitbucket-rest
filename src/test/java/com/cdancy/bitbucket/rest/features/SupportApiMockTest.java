@@ -35,9 +35,8 @@ public class SupportApiMockTest extends BaseBitbucketMockTest {
     private String supportZipRestApiPath = "/rest/troubleshooting/latest/support-zip" ;
 
     public void testSupportZipCreation() throws Exception {
-        MockWebServer mockWebServer = mockWebServer();
+        final MockWebServer mockWebServer = mockWebServer();
         mockWebServer.enqueue(new MockResponse().setBody(payloadFromResource("/support-zip-create.json")).setResponseCode(200));
-
         try {
             final SupportApi supportApi = api(mockWebServer.getUrl("/")).supportApi() ;
             final SupportZip supportZip = supportApi.createSupportZip();
@@ -50,10 +49,9 @@ public class SupportApiMockTest extends BaseBitbucketMockTest {
     }
 
     public void testSupportZipStatus() throws Exception {
-        MockWebServer mockWebServer = mockWebServer();
+        final MockWebServer mockWebServer = mockWebServer();
         mockWebServer.enqueue(new MockResponse().setBody(payloadFromResource("/support-zip-create.json")).setResponseCode(200));
         mockWebServer.enqueue(new MockResponse().setBody(payloadFromResource("/support-zip-request-status.json")).setResponseCode(200));
-
         try {
             final SupportApi supportApi = api(mockWebServer.getUrl("/")).supportApi() ;
             SupportZip supportZip = supportApi.createSupportZip();
@@ -84,8 +82,8 @@ public class SupportApiMockTest extends BaseBitbucketMockTest {
         assertSent(mockWebServer, "POST", supportZipRestApiPath + "/local");
     }
 
-    private void assertSupportZipStatusRequest(final MockWebServer mockWebServer,
-                                              final String taskId) throws InterruptedException {
+    private void assertSupportZipStatusRequest(final MockWebServer mockWebServer, final String taskId)
+        throws InterruptedException {
         assertSent(mockWebServer, "GET", supportZipRestApiPath + "/status/task/" + taskId);
     }
 }
