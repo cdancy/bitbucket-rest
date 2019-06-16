@@ -17,40 +17,35 @@
 
 package com.cdancy.bitbucket.rest.features;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
-import com.cdancy.bitbucket.rest.domain.support.SupportZipStatus;
-import com.cdancy.bitbucket.rest.domain.support.SupportZipDetails;
+import com.cdancy.bitbucket.rest.domain.support.SupportZip;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "SupportApiLiveTest", singleThreaded = true)
 public class SupportApiLiveTest extends BaseBitbucketApiLiveTest {
+    private String taskIdRegex = "^\\w+\\-+\\w+\\-+\\w+\\-+\\w+\\-+\\w+$";
+
     private SupportApi api() {
         return api.supportApi();
     }
 
     @Test
     public void testSupportZipCreation() {
-        final SupportZipDetails details = api().createSupportZip();
-        assertIntegrity(details);
+        final SupportZip supportZip = api().createSupportZip();
+        assertIntegrity(supportZip);
     }
 
     @Test
     public void testSupportZipStatus() {
-        final SupportZipDetails details = api().createSupportZip();
-        final SupportZipStatus supportZip = api().getSupportZipStatus(details.taskId());
+        SupportZip supportZip = api().createSupportZip();
+        supportZip = api().getSupportZipStatus(supportZip.taskId());
         assertIntegrity(supportZip);
-    }
-
-    private void assertIntegrity(final SupportZipStatus supportZip) {
-        assertTaskId(supportZip.taskId());
-        assertTaskProgressMessage(supportZip.progressMessage());
-        assertTaskProgressPercentage(supportZip.progressPercentage());
-        assertTaskStatus(supportZip.status());
         Assert.assertNotNull(supportZip.fileName());
     }
 
-    private void assertIntegrity(final SupportZipDetails supportZipTask) {
+    private void assertIntegrity(final SupportZip supportZipTask) {
         assertTaskId(supportZipTask.taskId());
         assertTaskProgressPercentage(supportZipTask.progressPercentage());
         assertTaskProgressMessage(supportZipTask.progressMessage());
@@ -67,6 +62,7 @@ public class SupportApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private void assertTaskId(final String taskId) {
         Assert.assertNotNull(taskId);
+        assertThat(taskId.matches(taskIdRegex)).isTrue();
     }
 
     private void assertTaskProgressPercentage(final Integer progressPercentage) {
