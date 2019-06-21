@@ -26,7 +26,7 @@ import org.jclouds.json.SerializedNames;
 import java.util.List;
 
 @AutoValue
-public abstract class SupportZip implements ErrorsHolder{
+public abstract class SupportZip implements ErrorsHolder {
     public abstract String taskId();
 
     public abstract Integer progressPercentage();
