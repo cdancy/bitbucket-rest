@@ -20,7 +20,6 @@ package com.cdancy.bitbucket.rest.features;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.cdancy.bitbucket.rest.BaseBitbucketApiLiveTest;
 import com.cdancy.bitbucket.rest.domain.support.SupportZip;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = "live", testName = "SupportApiLiveTest", singleThreaded = true)
@@ -33,16 +32,16 @@ public class SupportApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testSupportZipCreation() {
-        final SupportZip supportZip = api().createSupportZip();
-        assertIntegrity(supportZip);
+        final SupportZip supportZipTask = api().createSupportZip();
+        assertIntegrity(supportZipTask);
     }
 
     @Test
     public void testSupportZipStatus() {
-        SupportZip supportZip = api().createSupportZip();
-        supportZip = api().getSupportZipStatus(supportZip.taskId());
-        assertIntegrity(supportZip);
-        Assert.assertNotNull(supportZip.fileName());
+        SupportZip supportZipTask = api().createSupportZip();
+        supportZipTask = api().getSupportZipStatus(supportZipTask.taskId());
+        assertIntegrity(supportZipTask);
+        assertThat(supportZipTask.fileName()).isNotNull();
     }
 
     private void assertIntegrity(final SupportZip supportZipTask) {
@@ -50,22 +49,27 @@ public class SupportApiLiveTest extends BaseBitbucketApiLiveTest {
         assertTaskProgressPercentage(supportZipTask.progressPercentage());
         assertTaskProgressMessage(supportZipTask.progressMessage());
         assertTaskStatus(supportZipTask.status());
+        assertErrors(supportZipTask);
+    }
+
+    private void assertErrors(final SupportZip supportZip) {
+        assertThat(supportZip.errors().isEmpty()).isTrue();
     }
 
     private void assertTaskProgressMessage(final String progressMessage) {
-        Assert.assertNotNull(progressMessage);
+        assertThat(progressMessage).isNotNull();
     }
 
     private void assertTaskStatus(final String status) {
-        Assert.assertTrue(!status.isEmpty());
+        assertThat(!status.isEmpty()).isTrue();
     }
 
     private void assertTaskId(final String taskId) {
-        Assert.assertNotNull(taskId);
+        assertThat(taskId).isNotNull();
         assertThat(taskId.matches(taskIdRegex)).isTrue();
     }
 
     private void assertTaskProgressPercentage(final Integer progressPercentage) {
-        Assert.assertNotNull(progressPercentage);
+        assertThat(progressPercentage).isNotNull();
     }
 }

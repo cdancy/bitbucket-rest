@@ -20,6 +20,8 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.support.SupportZip;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
+import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks.SupportZipOnError;
+import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -40,6 +42,7 @@ public interface SupportApi {
     @Documentation("https://confluence.atlassian.com/support/create-a-support-zip-using-the-rest-api-in-server-applications-947857090.html#CreateasupportzipusingtheRESTAPIinServerapplications-Generateasupportzip")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/local")
+    @Fallback(SupportZipOnError.class)
     @POST
     SupportZip createSupportZip();
 
@@ -47,6 +50,7 @@ public interface SupportApi {
     @Documentation("https://confluence.atlassian.com/support/create-a-support-zip-using-the-rest-api-in-server-applications-947857090.html#CreateasupportzipusingtheRESTAPIinServerapplications-Checktheprogressofthetask")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/status/task/{taskId}")
+    @Fallback(SupportZipOnError.class)
     @GET
     SupportZip getSupportZipStatus(@PathParam("taskId") String taskId);
 }

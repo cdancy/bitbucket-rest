@@ -66,6 +66,7 @@ import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.domain.repository.WebHook;
 import com.cdancy.bitbucket.rest.domain.repository.WebHookPage;
+import com.cdancy.bitbucket.rest.domain.support.SupportZip;
 import com.cdancy.bitbucket.rest.domain.sync.SyncState;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
@@ -356,6 +357,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createPullRequestFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class SupportZipOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createSupportZipFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -661,6 +672,11 @@ public final class BitbucketFallbacks {
                 false, false, 0, 0, null,
                 null, false, null, null, null,
                 null, null, errors);
+    }
+
+    public static SupportZip createSupportZipFromErrors(final List<Error> errors) {
+        return SupportZip.create(null, 0, null,
+                               null, null, null, errors);
     }
 
     public static SyncState createSyncStateFromErrors(final List<Error> errors) {
