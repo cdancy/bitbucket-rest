@@ -105,6 +105,7 @@ public class TestUtilities extends BitbucketUtils {
         assertThat(workingDir.toFile().isDirectory()).isTrue();
 
         final Process process = new ProcessBuilder(args)
+                .redirectErrorStream(true)
                 .directory(workingDir.toFile())
                 .start();
 

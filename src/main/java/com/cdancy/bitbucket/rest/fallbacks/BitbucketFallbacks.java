@@ -44,6 +44,9 @@ import com.cdancy.bitbucket.rest.domain.file.FilesPage;
 import com.cdancy.bitbucket.rest.domain.file.LastModified;
 import com.cdancy.bitbucket.rest.domain.file.LinePage;
 import com.cdancy.bitbucket.rest.domain.file.RawContent;
+import com.cdancy.bitbucket.rest.domain.insights.AnnotationsResponse;
+import com.cdancy.bitbucket.rest.domain.insights.InsightReport;
+import com.cdancy.bitbucket.rest.domain.insights.InsightReportPage;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
@@ -76,6 +79,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jclouds.Fallback;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -306,6 +310,36 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createHookSettingsFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class AnnotationsResponseOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createAnnotationsResponseFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class InsightReportOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createInsightReportFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class InsightReportPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createInsightReportPageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -639,6 +673,12 @@ public final class BitbucketFallbacks {
     public static HookSettings createHookSettingsFromErrors(final List<Error> errors) {
         return HookSettings.create(null, errors);
     }
+
+    public static AnnotationsResponse createAnnotationsResponseFromErrors(final List<Error> errors) { return AnnotationsResponse.create(0, null, errors); }
+
+    public static InsightReportPage createInsightReportPageFromErrors(final List<Error> errors) { return InsightReportPage.create(-1, -1, -1, -1, true, null, errors); }
+
+    public static InsightReport createInsightReportFromErrors(final List<Error> errors) { return InsightReport.create(-1, null, null, null, null, null, null, null, null, errors); }
 
     public static Project createProjectFromErrors(final List<Error> errors) {
         return Project.create(null, -1, null, null, false, null, null, errors);
