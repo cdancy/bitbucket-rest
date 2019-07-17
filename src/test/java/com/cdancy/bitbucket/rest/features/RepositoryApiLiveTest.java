@@ -114,7 +114,8 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         int start = 0;
         final int limit = 100;
         RepositoryPage repositoryPage;
-        while (!(repositoryPage = api().listAll(null, null, null, null, start, limit)).isLastPage()) {
+        do {
+            repositoryPage = api().listAll(null, null, null, null, start, limit);
             start += limit;
 
             assertThat(repositoryPage).isNotNull();
@@ -122,7 +123,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
             assertThat(repositoryPage.size()).isGreaterThan(0);
 
             foundRepos.addAll(repositoryPage.values());
-        }
+        } while (!repositoryPage.isLastPage());
 
         assertThat(foundRepos).isNotEmpty();
 
@@ -143,7 +144,8 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         int start = 0;
         final int limit = 100;
         RepositoryPage repositoryPage;
-        while (!(repositoryPage = api().listAll(null, repoKey, null, null, start, limit)).isLastPage()) {
+        do {
+            repositoryPage = api().listAll(null, repoKey, null, null, start, limit);
             start += limit;
 
             assertThat(repositoryPage).isNotNull();
@@ -151,7 +153,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
             assertThat(repositoryPage.size()).isGreaterThan(0);
 
             foundRepos.addAll(repositoryPage.values());
-        }
+        } while (!repositoryPage.isLastPage());
 
         assertThat(foundRepos).isNotEmpty();
         assertThat(foundRepos.size()).isEqualTo(1);
