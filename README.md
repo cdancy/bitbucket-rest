@@ -39,6 +39,25 @@ Can be sourced from jcenter like so:
       <classifier>sources|tests|javadoc|all</classifier> (Optional)
     </dependency>
 	
+**Note**: You need to have bintray maven repository configured to be able to pull bitbucket-rest dependency.
+
+### Maven repository Configuration:
+
+1. You can download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fcdancy%2Fjava-libraries)
+
+2. Add the following repository to the project pom.xml file under project tag:
+```
+    <repositories>
+      <repository>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+        <id>bintray-cdancy-java-libraries</id>
+        <name>bintray</name>
+        <url>https://dl.bintray.com/cdancy/java-libraries</url>
+      </repository>
+    </repositories>
+```
 ## Documentation
 
 javadocs can be found via [github pages here](http://cdancy.github.io/bitbucket-rest/docs/javadoc/)
