@@ -39,8 +39,6 @@ Can be sourced from jcenter like so:
       <classifier>sources|tests|javadoc|all</classifier> (Optional)
     </dependency>
 	
-**Note**: You need to have bintray maven repository configured to be able to pull bitbucket-rest dependency.
-
 ### Maven repository Configuration:
 
 * Download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fcdancy%2Fjava-libraries)
