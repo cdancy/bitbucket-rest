@@ -43,9 +43,11 @@ Can be sourced from jcenter like so:
 
 ### Maven repository Configuration:
 
-1. You can download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fcdancy%2Fjava-libraries)
+* Download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fcdancy%2Fjava-libraries)
 
-2. Add the following repository to the project pom.xml file under project tag:
+**OR**
+
+* Add the following repository to the project pom.xml file under project tag:
 ```
     <repositories>
       <repository>
