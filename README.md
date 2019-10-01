@@ -41,7 +41,7 @@ Can be sourced from jcenter like so:
 	
 ### Maven repository Configuration:
 
-* Download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fcdancy%2Fjava-libraries)
+* Download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fbintray%2Fjcenter)
 
 **OR**
 
@@ -52,9 +52,9 @@ Can be sourced from jcenter like so:
         <snapshots>
           <enabled>false</enabled>
         </snapshots>
-        <id>bintray-cdancy-java-libraries</id>
+        <id>jcenter</id>
         <name>bintray</name>
-        <url>https://dl.bintray.com/cdancy/java-libraries</url>
+        <url>http://jcenter.bintray.com</url>
       </repository>
     </repositories>
 ```
