@@ -30,7 +30,7 @@ contributors to take up the work.
 
 ## Latest Release
 
-Can be sourced from jcenter like so:
+Can be sourced from jcenter/bintray like so:
 
     <dependency>
       <groupId>com.cdancy</groupId>
