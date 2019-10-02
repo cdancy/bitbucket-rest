@@ -1,0 +1,26 @@
+
+{
+    "size": 1,
+    "limit": 25,
+    "isLastPage": true,
+    "values": [
+	        {
+	            "name": "jcitizen",
+	            "emailAddress": "jane@example.com",
+	            "id": 101,
+	            "displayName": "Jane Citizen",
+	            "active": true,
+	            "slug": "jcitizen",
+	            "type": "NORMAL",
+	            "links": {
+	        		"self": [
+	          			{
+	            		"href": "https://bitbucket.acme.com/users/jcitizen"
+	          			}
+	       	 		]
+	      		}
+      		}
+        
+    		],
+    "start": 0
+}

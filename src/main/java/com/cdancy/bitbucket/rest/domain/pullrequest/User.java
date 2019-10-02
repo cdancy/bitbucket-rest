@@ -87,9 +87,9 @@ public abstract class User implements ErrorsHolder {
             final String emailAddress, final int id,
             final String displayName,final boolean active,
             final String slug, final String type,
-            final String directoryName, final boolean deletable,
-            final long lastAuthenticationTimestamp, final boolean mutableDetails,
-            final boolean mutableGroups) {
+            @Nullable final String directoryName, @Nullable final boolean deletable,
+            @Nullable final long lastAuthenticationTimestamp, @Nullable final boolean mutableDetails,
+            @Nullable final boolean mutableGroups) {
 
         return new AutoValue_User(BitbucketUtils.nullToEmpty(errors), name, emailAddress, id, displayName,
             active, slug, type, directoryName, deletable, lastAuthenticationTimestamp, mutableDetails, mutableGroups);
