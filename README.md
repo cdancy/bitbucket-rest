@@ -39,6 +39,25 @@ Can be sourced from jcenter/bintray like so:
       <classifier>sources|tests|javadoc|all</classifier> (Optional)
     </dependency>
 	
+### Maven repository Configuration:
+
+* Download a sample settings.xml file that has configured profile to pull from the correct maven repository using this link: [settings.xml](https://bintray.com/repo/downloadMavenRepoSettingsFile/downloadSettings?repoPath=%2Fbintray%2Fjcenter)
+
+**OR**
+
+* Add the following repository to the project pom.xml file under project tag:
+```
+    <repositories>
+      <repository>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+        <id>jcenter</id>
+        <name>bintray</name>
+        <url>http://jcenter.bintray.com</url>
+      </repository>
+    </repositories>
+```
 ## Documentation
 
 javadocs can be found via [github pages here](http://cdancy.github.io/bitbucket-rest/docs/javadoc/)
