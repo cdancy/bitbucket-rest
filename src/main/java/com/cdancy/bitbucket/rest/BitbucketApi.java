@@ -35,12 +35,10 @@ import com.cdancy.bitbucket.rest.features.SystemApi;
 import com.cdancy.bitbucket.rest.features.TagApi;
 import com.cdancy.bitbucket.rest.features.TasksApi;
 import com.cdancy.bitbucket.rest.features.WebHookApi;
-
-
+import com.cdancy.bitbucket.rest.features.SupportApi;
 import org.jclouds.rest.annotations.Delegate;
 
 public interface BitbucketApi extends Closeable {
-
     @Delegate
     AdminApi adminApi();
 
@@ -82,6 +80,9 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     SystemApi systemApi();
+
+    @Delegate
+    SupportApi supportApi();
 
     @Delegate
     TagApi tagApi();
