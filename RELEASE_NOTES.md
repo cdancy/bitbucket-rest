@@ -1,4 +1,6 @@
-### Version 2.6.0 (10/23/2019)
+### Version 2.6.2 (TBA)
+
+### Version 2.6.1 (10/23/2019)
 * BUG: Bumped `guice` dependency to account for classloader leak bug with older version of guice. 
 * ADDED: Bumped `jclouds` and `autovalue` dependencies.
 
