@@ -44,9 +44,6 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private GeneratedTestContents generatedTestContents;
 
-    private final String testGetRepoKeyword = "testGetRepository";
-    private final String repoWriteKeyword = "REPO_WRITE";
-
     private String projectKey;
     private String repoKey;
     private User user;
