@@ -1,4 +1,8 @@
 ### Version 2.6.0 (10/23/2019)
+* BUG: Bumped `guice` dependency to account for classloader leak bug with older version of guice. 
+* ADDED: Bumped `jclouds` and `autovalue` dependencies.
+
+### Version 2.6.0 (10/23/2019)
 * ADDED: `InsightsApi`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
 * ADDED: `InsightsApi` gained endpoint `listAnnotations`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
 * ADDED: `InsightsApi` gained endpoint `listReports`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
