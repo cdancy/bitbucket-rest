@@ -25,11 +25,11 @@ import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.TestUtilities;
 import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.internal.LinkedTreeMap;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +46,7 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
     private final String deleteMethod = "DELETE";
     private final String putMethod = "PUT";
 
-    private final String restApiPath = "/rest/api/";    
+    private final String restApiPath = "/rest/api/";
     private final String projectsPath = "/projects/";
     private final String settingsPath = "/settings/";
     private final String hooksPath = settingsPath + "hooks";
@@ -317,10 +317,10 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
         final HookApi api = baseApi.hookApi();
         try {
 
-            final LinkedTreeMap settings = new LinkedTreeMap();
+            final Map settings = new HashMap();
             settings.put(testKey, testValue);
             final HookSettings updateHook = HookSettings.of(settings);
-            
+
             final String hookKey = qwertyKeyword;
             final HookSettings hookSettings = api.update(projectKey, repoKey, hookKey, updateHook);
             assertThat(hookSettings).isNotNull();
@@ -349,7 +349,7 @@ public class HookApiMockTest extends BaseBitbucketMockTest {
         final HookApi api = baseApi.hookApi();
         try {
 
-            final LinkedTreeMap settings = new LinkedTreeMap();
+            final Map settings = new HashMap();
             settings.put(testKey, testValue);
             final HookSettings updateHook = HookSettings.of(settings);
 

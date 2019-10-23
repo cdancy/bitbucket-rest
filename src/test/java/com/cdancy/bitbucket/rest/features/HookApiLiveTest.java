@@ -27,10 +27,12 @@ import com.cdancy.bitbucket.rest.domain.repository.HookPage;
 import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
-import com.google.gson.internal.LinkedTreeMap;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Test(groups = "live", testName = "HookApiLiveTest", singleThreaded = true)
 public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
@@ -50,7 +52,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
         this.repoKey = generatedTestContents.repository.name();
     }
 
-    @Test 
+    @Test
     public void testGetRepository() {
         final Repository repository = api.repositoryApi().get(projectKey, repoKey);
         assertThat(repository).isNotNull();
@@ -131,8 +133,8 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testGetHookSettingsOnNonExistentHookKey() {
-        final HookSettings hookSettings = api().settings(projectKey, 
-                repoKey, 
+        final HookSettings hookSettings = api().settings(projectKey,
+                repoKey,
                 TestUtilities.randomStringLettersOnly());
         assertThat(hookSettings).isNotNull();
         assertThat(hookSettings.errors()).isEmpty();
@@ -142,7 +144,7 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
     public void testUpdateHookSettingsWithRandomData() {
         final String key = "Hello";
         final String randomValue = TestUtilities.randomString();
-        final LinkedTreeMap settings = new LinkedTreeMap();
+        final Map settings = new HashMap();
         settings.put(key, randomValue);
         final HookSettings updateHook = HookSettings.of(settings);
         final HookSettings hookSettings = api().update(projectKey,
@@ -175,10 +177,10 @@ public class HookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = {testGetRepoKeyword})
     public void testGetHookOnError() {
-        final Hook hook = api().get(projectKey, 
-                repoKey, 
-                TestUtilities.randomStringLettersOnly() 
-                        + ":" 
+        final Hook hook = api().get(projectKey,
+                repoKey,
+                TestUtilities.randomStringLettersOnly()
+                        + ":"
                         + TestUtilities.randomStringLettersOnly());
         assertThat(hook).isNotNull();
         assertThat(hook.errors()).isNotEmpty();
