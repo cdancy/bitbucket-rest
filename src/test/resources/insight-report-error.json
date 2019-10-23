@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": "reportKey",
+      "message": "No report found with key: qwerty",
+      "exceptionName": null
+    }
+  ]
+}

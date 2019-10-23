@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "title": "THIS_IS_A_TITLE",
+      "value": "THIS_IS_A_VALUE",
+      "type": "TEXT"
+    },
+    {
+      "title": "Code Coverage",
+      "value": 3,
+      "type": "PERCENTAGE"
+    }
+  ],
+  "createdDate": 1562578136068,
+  "details": "details",
+  "key": "qwerty",
+  "result": "FAIL",
+  "title": "THIS_IS_THE_REPORT_TITLE",
+  "reporter": "TEST_REPORTER"
+}
