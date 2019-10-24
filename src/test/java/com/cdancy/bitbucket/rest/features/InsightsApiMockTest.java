@@ -60,6 +60,8 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
     private final String qwertyKeyword = "qwerty";
     private final String limitKeyword = "limit";
     private final String startKeyword = "start";
+    private final String annotationsJsonFile = "/annotations.json";
+    private final String mockPath = ".gitignore";
 
     public void testListReports() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -166,14 +168,13 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
 
             final String reportKey = qwertyKeyword;
             final InsightReportData reportData = InsightReportData.create("Code Coverage", InsightReportData.DataType.PERCENTAGE, "15");
-            final CreateInsightReport createInsightReport = CreateInsightReport.create(
-                    "details",
-                    "http://example.com",
-                    "http://example.com/logourl",
-                    CreateInsightReport.RESULT.PASS,
-                    "reportTitle",
-                    "Bitbucket-rest",
-                    Collections.singletonList(reportData));
+            final CreateInsightReport createInsightReport = CreateInsightReport.create("details",
+                                                                                       "http://example.com",
+                                                                                       "http://example.com/logourl",
+                                                                                       CreateInsightReport.RESULT.PASS,
+                                                                                       "reportTitle",
+                                                                                       "Bitbucket-rest",
+                                                                                       Collections.singletonList(reportData));
             final InsightReport report = api.createReport(projectKey, repoKey, commitHash, reportKey, createInsightReport);
             assertThat(report).isNotNull();
             assertThat(report.key()).isEqualTo(reportKey);
@@ -212,7 +213,7 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
     public void testGetAnnotations() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/annotations.json")).setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(annotationsJsonFile)).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final InsightsApi api = baseApi.insightsApi();
         try {
@@ -225,7 +226,11 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server,
                        getMethod,
                        restApiPath + BitbucketApiMetadata.API_VERSION
-                           + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword);
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -248,7 +253,11 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server,
                        getMethod,
                        restApiPath + BitbucketApiMetadata.API_VERSION
-                           + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword);
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -258,7 +267,7 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
     public void testListAnnotations() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/annotations.json")).setResponseCode(200));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(annotationsJsonFile)).setResponseCode(200));
         final BitbucketApi baseApi = api(server.getUrl("/"));
         final InsightsApi api = baseApi.insightsApi();
         try {
@@ -266,8 +275,13 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
             assertThat(annotations).isNotNull();
             assertThat(annotations.totalCount()).isEqualTo(3);
 
-            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + annotationsKeyword);
+            assertSent(server,
+                       getMethod,
+                       restApiPath + BitbucketApiMetadata.API_VERSION
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + annotationsKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -286,8 +300,13 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
             assertThat(annotations).isNotNull();
             assertThat(annotations.errors()).isNotEmpty();
 
-            assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + annotationsKeyword);
+            assertSent(server,
+                       getMethod,
+                       restApiPath + BitbucketApiMetadata.API_VERSION
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + annotationsKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -297,26 +316,31 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
     public void testCreateAnnotation() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/annotations.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(annotationsJsonFile)).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.url("/").url());
         final InsightsApi api = baseApi.insightsApi();
         try {
             final String reportKey = qwertyKeyword;
-            final Annotation annotation = Annotation.create(
-                    reportKey,
-                    null,
-                    3,
-                    "",
-                    "",
-                    ".gitignore",
-                    Annotation.AnnotationSeverity.LOW,
-                    Annotation.AnnotationType.BUG);
+            final Annotation annotation = Annotation.create(reportKey,
+                                                            null,
+                                                            3,
+                                                            "",
+                                                            "",
+                                                            mockPath,
+                                                            Annotation.AnnotationSeverity.LOW,
+                                                            Annotation.AnnotationType.BUG);
             final RequestStatus requestStatus = api.createAnnotation(projectKey, repoKey, commitHash, reportKey, qwertyKeyword, annotation);
             assertThat(requestStatus).isNotNull();
             assertThat(requestStatus.value()).isTrue();
 
-            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                    + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword + "/" + qwertyKeyword);
+            assertSent(server,
+                       putMethod,
+                       restApiPath + BitbucketApiMetadata.API_VERSION
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword + "/" + qwertyKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -327,25 +351,30 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/insight-report-error.json")).setResponseCode(404));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.url("/").url());
         final InsightsApi api = baseApi.insightsApi();
         try {
             final String reportKey = qwertyKeyword;
-            final Annotation annotation = Annotation.create(
-                reportKey,
-                null,
-                3,
-                "",
-                "",
-                ".gitignore",
-                Annotation.AnnotationSeverity.LOW,
-                Annotation.AnnotationType.BUG);
+            final Annotation annotation = Annotation.create(reportKey,
+                                                            null,
+                                                            3,
+                                                            "",
+                                                            "",
+                                                            mockPath,
+                                                            Annotation.AnnotationSeverity.LOW,
+                                                            Annotation.AnnotationType.BUG);
             final RequestStatus requestStatus = api.createAnnotation(projectKey, repoKey, commitHash, reportKey, qwertyKeyword, annotation);
             assertThat(requestStatus).isNotNull();
             assertThat(requestStatus.errors()).isNotEmpty();
 
-            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword + "/" + qwertyKeyword);
+            assertSent(server,
+                       putMethod,
+                       restApiPath + BitbucketApiMetadata.API_VERSION
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword + "/" + qwertyKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -355,27 +384,32 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
     public void testCreateAnnotations() throws Exception {
         final MockWebServer server = mockWebServer();
 
-        server.enqueue(new MockResponse().setBody(payloadFromResource("/annotations.json")).setResponseCode(200));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
+        server.enqueue(new MockResponse().setBody(payloadFromResource(annotationsJsonFile)).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.url("/").url());
         final InsightsApi api = baseApi.insightsApi();
         try {
             final String reportKey = qwertyKeyword;
-            final Annotation annotation = Annotation.create(
-                reportKey,
-                null,
-                3,
-                "",
-                "",
-                ".gitignore",
-                Annotation.AnnotationSeverity.LOW,
-                Annotation.AnnotationType.BUG);
+            final Annotation annotation = Annotation.create(reportKey,
+                                                            null,
+                                                            3,
+                                                            "",
+                                                            "",
+                                                            mockPath,
+                                                            Annotation.AnnotationSeverity.LOW,
+                                                            Annotation.AnnotationType.BUG);
             final CreateAnnotations createAnnotations = CreateAnnotations.create(Collections.singletonList(annotation));
             final RequestStatus requestStatus = api.createAnnotations(projectKey, repoKey, commitHash, reportKey, createAnnotations);
             assertThat(requestStatus).isNotNull();
             assertThat(requestStatus.value()).isTrue();
 
-            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword);
+            assertSent(server,
+                       postMethod,
+                       restApiPath + BitbucketApiMetadata.API_VERSION
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -386,26 +420,31 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/insight-report-error.json")).setResponseCode(404));
-        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final BitbucketApi baseApi = api(server.url("/").url());
         final InsightsApi api = baseApi.insightsApi();
         try {
             final String reportKey = qwertyKeyword;
-            final Annotation annotation = Annotation.create(
-                reportKey,
-                null,
-                3,
-                "",
-                "",
-                ".gitignore",
-                Annotation.AnnotationSeverity.LOW,
-                Annotation.AnnotationType.BUG);
+            final Annotation annotation = Annotation.create(reportKey,
+                                                            null,
+                                                            3,
+                                                            "",
+                                                            "",
+                                                            mockPath,
+                                                            Annotation.AnnotationSeverity.LOW,
+                                                            Annotation.AnnotationType.BUG);
             final CreateAnnotations createAnnotations = CreateAnnotations.create(Collections.singletonList(annotation));
             final RequestStatus requestStatus = api.createAnnotations(projectKey, repoKey, commitHash, reportKey, createAnnotations);
             assertThat(requestStatus).isNotNull();
             assertThat(requestStatus.errors()).isNotEmpty();
 
-            assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
-                + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword);
+            assertSent(server,
+                       postMethod,
+                       restApiPath + BitbucketApiMetadata.API_VERSION
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword);
         } finally {
             baseApi.close();
             server.shutdown();
@@ -416,7 +455,7 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
         final MockWebServer server = mockWebServer();
 
         server.enqueue(new MockResponse().setResponseCode(204));
-        try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
+        try (final BitbucketApi baseApi = api(server.url("/").url())) {
 
             final String reportKey = qwertyKeyword;
             final RequestStatus success = baseApi.insightsApi().deleteAnnotation(projectKey, repoKey, commitHash, reportKey, null);
@@ -427,7 +466,11 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
             assertSent(server,
                        deleteMethod,
                        restApiPath + BitbucketApiMetadata.API_VERSION
-                           + projectsKeyword + projectKey + repoKeyword + repoKey + commitKeyword + commitHash + reportsKeyword + "/" + reportKey + annotationsKeyword);
+                           + projectsKeyword + projectKey
+                           + repoKeyword + repoKey
+                           + commitKeyword + commitHash
+                           + reportsKeyword + "/" + reportKey
+                           + annotationsKeyword);
         } finally {
             server.shutdown();
         }
