@@ -1,4 +1,7 @@
 ### Version 2.6.2 (TBA)
+* ADDED: Bumped `autovalue` to `1.7`. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
+* ADDED: Bumped `gradle` to `5.6.2`. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
+* ADDED: Added compile dependency on `jaxb-api` to make library work with jdk12. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
 
 ### Version 2.6.1 (10/23/2019)
 * BUG: Bumped `guice` dependency to account for classloader leak bug with older version of guice. 
