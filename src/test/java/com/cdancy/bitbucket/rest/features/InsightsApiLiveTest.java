@@ -27,7 +27,6 @@ import com.cdancy.bitbucket.rest.domain.insights.AnnotationsResponse;
 import com.cdancy.bitbucket.rest.domain.insights.InsightReport;
 import com.cdancy.bitbucket.rest.domain.insights.InsightReportData;
 import com.cdancy.bitbucket.rest.domain.insights.InsightReportPage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateAnnotations;
 import com.cdancy.bitbucket.rest.options.CreateInsightReport;
 import org.testng.annotations.AfterClass;
@@ -46,7 +45,6 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private String projectKey;
     private String repoKey;
-    private User user;
     private String commitHash;
     private String reportKey = TestUtilities.randomStringLettersOnly();
 
@@ -60,15 +58,15 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
         projectKey = generatedTestContents.project.key();
         repoKey = generatedTestContents.repository.name();
-        user = TestUtilities.getDefaultUser(this.bitbucketAuthentication, this.api);
         final Branch branch = api.branchApi().getDefault(projectKey, repoKey);
         assertThat(branch).isNotNull();
         assertThat(branch.errors().isEmpty()).isTrue();
         commitHash = branch.latestCommit();
 
+        final String linkFormat = "https://%s";
         createInsightReport = CreateInsightReport.create(TestUtilities.randomString(),
-                                                         String.format("https://%s", TestUtilities.randomString()),
-                                                         String.format("https://%s", TestUtilities.randomString()),
+                                                         String.format(linkFormat, TestUtilities.randomString()),
+                                                         String.format(linkFormat, TestUtilities.randomString()),
                                                          CreateInsightReport.RESULT.PASS,
                                                          TestUtilities.randomStringLettersOnly(),
                                                          TestUtilities.randomString(),
@@ -83,7 +81,7 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
             Annotation.create(reportKey,
                               annotationId,
                               0,
-                              String.format("https://%s", TestUtilities.randomString()),
+                              String.format(linkFormat, TestUtilities.randomString()),
                               TestUtilities.randomStringLettersOnly(),
                               TestUtilities.randomStringLettersOnly(),
                               Annotation.AnnotationSeverity.LOW,
@@ -94,7 +92,7 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
         annotation = Annotation.create(reportKey,
                                        TestUtilities.randomStringLettersOnly(),
                                        0,
-                                       String.format("https://%s", TestUtilities.randomString()),
+                                       String.format(linkFormat, TestUtilities.randomString()),
                                        TestUtilities.randomStringLettersOnly(),
                                        TestUtilities.randomStringLettersOnly(),
                                        Annotation.AnnotationSeverity.LOW,
@@ -110,7 +108,7 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(reportKey.equalsIgnoreCase(report.key())).isTrue();
     }
 
-    @Test(dependsOnMethods = "testCreateReport")
+    @Test(dependsOnMethods = "testCreateReport") //NOPMD
     public void testGetReport() {
         final InsightReport report = api().getReport(projectKey, repoKey, commitHash, reportKey);
         assertThat(report).isNotNull();
@@ -131,7 +129,10 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testDeleteReportNonExistent() {
-        final RequestStatus success = api().deleteReport(projectKey, repoKey, TestUtilities.randomStringLettersOnly(), TestUtilities.randomStringLettersOnly());
+        final RequestStatus success = api().deleteReport(projectKey,
+                                                         repoKey,
+                                                         TestUtilities.randomStringLettersOnly(),
+                                                         TestUtilities.randomStringLettersOnly());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -153,7 +154,12 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = "testCreateReport")
     public void testCreateAnnotation() {
-        final RequestStatus success = api().createAnnotation(projectKey, repoKey, commitHash, reportKey, TestUtilities.randomStringLettersOnly(), annotation);
+        final RequestStatus success = api().createAnnotation(projectKey,
+                                                             repoKey,
+                                                             commitHash,
+                                                             reportKey,
+                                                             TestUtilities.randomStringLettersOnly(),
+                                                             annotation);
         assertThat(success).isNotNull();
         assertThat(success.errors().isEmpty()).isTrue();
     }
@@ -169,7 +175,13 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = "testCreateAnnotations")
     public void testListAnnotation() {
-        final AnnotationsResponse annotations = api().listAnnotations(projectKey, repoKey, commitHash, annotationId, null, null, null);
+        final AnnotationsResponse annotations = api().listAnnotations(projectKey,
+                                                                      repoKey,
+                                                                      commitHash,
+                                                                      annotationId,
+                                                                      null,
+                                                                      null,
+                                                                      null);
         assertThat(annotations).isNotNull();
         assertThat(annotations.errors().isEmpty()).isTrue();
         assertThat(annotations.totalCount()).isGreaterThan(0);
@@ -178,7 +190,11 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testDeleteAnnotationNonExistent() {
-        final RequestStatus success = api().deleteAnnotation(projectKey, TestUtilities.randomStringLettersOnly(), commitHash, TestUtilities.randomStringLettersOnly(), TestUtilities.randomStringLettersOnly());
+        final RequestStatus success = api().deleteAnnotation(projectKey,
+                                                             TestUtilities.randomStringLettersOnly(),
+                                                             commitHash,
+                                                             TestUtilities.randomStringLettersOnly(),
+                                                             TestUtilities.randomStringLettersOnly());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
