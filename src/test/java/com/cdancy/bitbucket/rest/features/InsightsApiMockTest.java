@@ -167,7 +167,7 @@ public class InsightsApiMockTest extends BaseBitbucketMockTest {
         try {
 
             final String reportKey = qwertyKeyword;
-            final InsightReportData reportData = InsightReportData.create("Code Coverage", InsightReportData.DataType.PERCENTAGE, "15");
+            final InsightReportData reportData = InsightReportData.createPercentage("Code Coverage", (byte) 15);
             final CreateInsightReport createInsightReport = CreateInsightReport.create("details",
                                                                                        "http://example.com",
                                                                                        "http://example.com/logourl",

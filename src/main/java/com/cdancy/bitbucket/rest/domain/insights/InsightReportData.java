@@ -20,6 +20,11 @@ package com.cdancy.bitbucket.rest.domain.insights;
 import com.google.auto.value.AutoValue;
 import org.jclouds.json.SerializedNames;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @AutoValue
 public abstract class InsightReportData {
     public enum DataType {
@@ -36,12 +41,60 @@ public abstract class InsightReportData {
 
     public abstract DataType type();
 
-    public abstract String value();
+    public abstract Object value();
 
     @SerializedNames({"title", "type", "value"})
-    public static InsightReportData create(final String title,
-                                           final InsightReportData.DataType type,
-                                           final String value) {
+    private static InsightReportData create(final String title,
+            final DataType type,
+            final Object value) {
         return new AutoValue_InsightReportData(title, type, value);
+    }
+
+    public static InsightReportData createBoolean(final String title, final boolean value) {
+        return create(title, DataType.BOOLEAN, value);
+    }
+
+    public static InsightReportData createDate(final String title, final LocalDate value) {
+        return createDate(title, value.atStartOfDay());
+    }
+
+    public static InsightReportData createDate(final String title, final LocalDateTime value) {
+        final long epochMilli = value.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return createDate(title, epochMilli);
+    }
+
+    public static InsightReportData createDate(final String title, final long epochMilli) {
+        return create(title, DataType.DATE, epochMilli);
+    }
+
+    public static InsightReportData createDuration(final String title, final Duration duration) {
+        return create(title, DataType.DURATION, duration.toMillis());
+    }
+
+    public static InsightReportData createDuration(final String title, final long millis) {
+        return create(title, DataType.DURATION, millis);
+    }
+
+    public static InsightReportData createLink(final String title, final String href) {
+        return createLink(title, href, href);
+    }
+
+    public static InsightReportData createLink(final String title,
+            final String href,
+            final String linkText) {
+        final InsightReportDataLink link = InsightReportDataLink.create(linkText, href);
+        return create(title, DataType.LINK, link);
+    }
+
+    public static InsightReportData createNumber(final String title, final long number) {
+        return create(title, DataType.NUMBER, number);
+    }
+
+    public static InsightReportData createPercentage(final String title, final byte percentage) {
+        return create(title, DataType.PERCENTAGE, percentage);
+    }
+
+    public static InsightReportData createText(final String title, final String text) {
+        return create(title, DataType.TEXT, text);
     }
 }
