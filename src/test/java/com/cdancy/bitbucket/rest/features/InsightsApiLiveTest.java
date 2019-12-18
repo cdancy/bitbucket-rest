@@ -33,6 +33,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,17 +67,29 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
         commitHash = branch.latestCommit();
 
         final String linkFormat = "https://%s";
+        final List<InsightReportData> data = Arrays.asList(InsightReportData.createBoolean(TestUtilities.randomStringLettersOnly(),
+                                                                                           true),
+                                                           InsightReportData.createDate(TestUtilities.randomStringLettersOnly(),
+                                                                                        LocalDate.of(2019, 12, 18)),
+                                                           InsightReportData.createDuration(TestUtilities.randomStringLettersOnly(),
+                                                                                            Duration.ofSeconds(25)),
+                                                           InsightReportData.createLink(TestUtilities.randomStringLettersOnly(),
+                                                                                        String.format(linkFormat, TestUtilities.randomString()),
+                                                                                        TestUtilities.randomString()),
+                                                           InsightReportData.createNumber(TestUtilities.randomStringLettersOnly(),
+                                                                                          54321),
+                                                           InsightReportData.createPercentage(TestUtilities.randomStringLettersOnly(),
+                                                                                              (byte) 42),
+                                                           InsightReportData.createText(TestUtilities.randomStringLettersOnly(),
+                                                                                        TestUtilities.randomString())
+        );
         createInsightReport = CreateInsightReport.create(TestUtilities.randomString(),
                                                          String.format(linkFormat, TestUtilities.randomString()),
                                                          String.format(linkFormat, TestUtilities.randomString()),
                                                          CreateInsightReport.RESULT.PASS,
                                                          TestUtilities.randomStringLettersOnly(),
                                                          TestUtilities.randomString(),
-                                                         Collections.singletonList(
-                                                             InsightReportData.create(TestUtilities.randomStringLettersOnly(),
-                                                                                      InsightReportData.DataType.TEXT,
-                                                                                      TestUtilities.randomString())
-                                                         ));
+                                                         data);
 
         annotationId = TestUtilities.randomStringLettersOnly();
         createAnnotations = CreateAnnotations.create(Collections.singletonList(
