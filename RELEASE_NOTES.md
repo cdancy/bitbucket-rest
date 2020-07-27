@@ -1,6 +1,7 @@
-### Version 2.6.3 (TBA)
+### Version 2.6.3 (7/27/2020)
+* ADDED: `MergeConfigType.PROJECT`. - [PR 228](https://github.com/cdancy/bitbucket-rest/pull/228)
 
-### Version 2.6.2 (TBA)
+### Version 2.6.2 (12/18/2019)
 * ADDED: Bumped `autovalue` to `1.7`. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
 * ADDED: Bumped `gradle` to `5.6.2`. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
 * ADDED: Added compile dependency on `jaxb-api` to make library work with jdk12. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
