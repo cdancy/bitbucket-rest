@@ -28,7 +28,7 @@ public abstract class MergeConfig {
     public enum MergeConfigType {
         REPOSITORY,
         DEFAULT,
-		PROJECT
+        PROJECT
     }
 
     public abstract MergeStrategy defaultStrategy();
