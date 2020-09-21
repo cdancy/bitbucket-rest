@@ -71,6 +71,8 @@ import com.cdancy.bitbucket.rest.domain.repository.WebHook;
 import com.cdancy.bitbucket.rest.domain.repository.WebHookPage;
 import com.cdancy.bitbucket.rest.domain.sync.SyncState;
 import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
+import com.cdancy.bitbucket.rest.domain.sshkey.AccessKey;
+import com.cdancy.bitbucket.rest.domain.sshkey.AccessKeyPage;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.google.common.collect.Lists;
@@ -565,6 +567,26 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class AccessKeyOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createAccessKeyFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class AccessKeyPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createAccessKeyPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static RequestStatus createRequestStatusFromErrors(final List<Error> errors) {
         return RequestStatus.create(false, errors);
     }
@@ -748,6 +770,13 @@ public final class BitbucketFallbacks {
         return WebHook.create(null, null, -1, -1, null , null, null, false, errors);
     }
 
+    public static AccessKey createAccessKeyFromErrors(final List<Error> errors) {
+        return AccessKey.create(null, null, null, null, errors);
+    }
+
+    public static AccessKeyPage createAccessKeyPageFromErrors(final List<Error> errors) {
+        return AccessKeyPage.create(0, 0, 0, 0, false, null, errors);
+    }
 
     /**
      * Parse list of Error's from output.

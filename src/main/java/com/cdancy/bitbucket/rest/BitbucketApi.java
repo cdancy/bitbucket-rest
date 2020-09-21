@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.features.PullRequestApi;
 import com.cdancy.bitbucket.rest.features.RepositoryApi;
 import com.cdancy.bitbucket.rest.features.SyncApi;
 import com.cdancy.bitbucket.rest.features.SystemApi;
+import com.cdancy.bitbucket.rest.features.KeysApi;
 import com.cdancy.bitbucket.rest.features.TagApi;
 import com.cdancy.bitbucket.rest.features.TasksApi;
 import com.cdancy.bitbucket.rest.features.WebHookApi;
@@ -90,4 +91,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     InsightsApi insightsApi();
+
+    @Delegate
+    KeysApi keysApi();
 }
