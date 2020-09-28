@@ -54,6 +54,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
 
     private final String limitKeyword = "limit";
     private final String startKeyword = "start";
+    private final String keyLabel = "abc";
 
     public void testListKeysByRepository() throws Exception {
         final MockWebServer server = mockWebServer();
@@ -67,7 +68,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
             assertThat(accessKeyPage.errors()).isEmpty();
 
             assertThat(accessKeyPage.size() == 1).isTrue();
-            assertThat(accessKeyPage.values().get(0).key().label().equals("abc")).isTrue();
+            assertThat(accessKeyPage.values().get(0).key().label().equals(keyLabel)).isTrue();
             assertThat(accessKeyPage.values().get(0).repository().name().equals(repoKey)).isTrue();
 
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 25, startKeyword, 0);
@@ -111,7 +112,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
                     PermissionType.REPO_READ));
             assertThat(accessKey).isNotNull();
             assertThat(accessKey.errors()).isEmpty();
-            assertThat(accessKey.key().label().equals("abc")).isTrue();
+            assertThat(accessKey.key().label().equals(keyLabel)).isTrue();
             assertThat(accessKey.repository().name().equals(repoKey)).isTrue();
 
             assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
@@ -154,7 +155,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
             assertThat(accessKey).isNotNull();
             assertThat(accessKey.errors()).isEmpty();
 
-            assertThat(accessKey.key().label().equals("abc")).isTrue();
+            assertThat(accessKey.key().label().equals(keyLabel)).isTrue();
             assertThat(accessKey.repository().name().equals(repoKey)).isTrue();
 
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
@@ -239,7 +240,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
             assertThat(accessKeyPage.errors()).isEmpty();
 
             assertThat(accessKeyPage.size() == 1).isTrue();
-            assertThat(accessKeyPage.values().get(0).key().label().equals("abc")).isTrue();
+            assertThat(accessKeyPage.values().get(0).key().label().equals(keyLabel)).isTrue();
             assertThat(accessKeyPage.values().get(0).project().name().equals(projectKey)).isTrue();
 
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 25, startKeyword, 0);
@@ -283,7 +284,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
                     PermissionType.PROJECT_READ));
             assertThat(accessKey).isNotNull();
             assertThat(accessKey.errors()).isEmpty();
-            assertThat(accessKey.key().label().equals("abc")).isTrue();
+            assertThat(accessKey.key().label().equals(keyLabel)).isTrue();
             assertThat(accessKey.project().name().equals(projectKey)).isTrue();
 
             assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
@@ -324,7 +325,7 @@ public class KeysApiMockTest extends BaseBitbucketMockTest {
             final AccessKey accessKey = api.getForProject(projectKey, keyId);
             assertThat(accessKey).isNotNull();
 
-            assertThat(accessKey.key().label().equals("abc")).isTrue();
+            assertThat(accessKey.key().label().equals(keyLabel)).isTrue();
             assertThat(accessKey.project().name().equals(projectKey)).isTrue();
             assertThat(accessKey.errors()).isEmpty();
 

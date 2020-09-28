@@ -97,13 +97,13 @@ public class KeysApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = "testListByRepository")
     public void testDeleteFromRepository() {
-        RequestStatus success = api().deleteFromRepo(projectKey, repoKey, repoKeyId);
+        final RequestStatus success = api().deleteFromRepo(projectKey, repoKey, repoKeyId);
 
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();
 
-        AccessKey missingKey = api().getForRepo(projectKey, repoKey, repoKeyId);
+        final AccessKey missingKey = api().getForRepo(projectKey, repoKey, repoKeyId);
         assertThat(missingKey.errors()).isNotEmpty();
     }
 
@@ -150,13 +150,13 @@ public class KeysApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = "testListByProject")
     public void testDeleteFromProject() {
-        RequestStatus success = api().deleteFromProject(projectKey, projectKeyId);
+        final RequestStatus success = api().deleteFromProject(projectKey, projectKeyId);
 
         assertThat(success).isNotNull();
         assertThat(success.value()).isTrue();
         assertThat(success.errors()).isEmpty();
 
-        AccessKey missingKey = api().getForProject(projectKey, projectKeyId);
+        final AccessKey missingKey = api().getForProject(projectKey, projectKeyId);
         assertThat(missingKey.errors()).isNotEmpty();
     }
 
