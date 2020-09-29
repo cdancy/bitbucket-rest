@@ -19,44 +19,34 @@ package com.cdancy.bitbucket.rest.domain.sshkey;
 
 import java.util.List;
 
-import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
-import com.cdancy.bitbucket.rest.domain.repository.Repository;
-import com.cdancy.bitbucket.rest.domain.project.Project;
+import com.cdancy.bitbucket.rest.domain.common.Page;
 import com.cdancy.bitbucket.rest.BitbucketUtils;
+import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class AccessKey implements ErrorsHolder {
+public abstract class AccessKeyPage implements Page<AccessKey>, ErrorsHolder {
 
-    public enum PermissionType {
-        REPO_WRITE,
-        REPO_READ,
-        PROJECT_WRITE,
-        PROJECT_READ
-    }
+    @SerializedNames({ "start", "limit", "size",
+            "nextPageStart", "isLastPage", "values", "errors" })
+    public static AccessKeyPage create(final int start,
+            final int limit,
+            final int size,
+            final int nextPageStart,
+            final boolean isLastPage,
+            @Nullable final List<AccessKey> values,
+            @Nullable final List<Error> errors) {
 
-    @Nullable
-    public abstract Key key();
-
-    @Nullable
-    public abstract Repository repository();
-
-    @Nullable
-    public abstract Project project();
-
-    @Nullable
-    public abstract PermissionType permission();
-
-    @SerializedNames({"key", "repository", "project", "permission", "errors"})
-    public static AccessKey create(final Key key,
-            final Repository repository,
-            final Project project,
-            final PermissionType permission,
-            final List<Error> errors) {
-        return new AutoValue_AccessKey(BitbucketUtils.nullToEmpty(errors), key, repository, project, permission);
+        return new AutoValue_AccessKeyPage(start,
+                limit,
+                size,
+                nextPageStart,
+                isLastPage,
+                BitbucketUtils.nullToEmpty(values),
+                BitbucketUtils.nullToEmpty(errors));
     }
 }

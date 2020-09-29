@@ -68,15 +68,16 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
         commitHash = branch.latestCommit();
 
         final String linkFormat = "https://%s";
-        final List<InsightReportData> data = Arrays.asList(InsightReportData.createBoolean(TestUtilities.randomStringLettersOnly(),
-            true),
-            InsightReportData.createDate(TestUtilities.randomStringLettersOnly(),
-                LocalDate.of(2019, 12, 18)),
-            InsightReportData.createDuration(TestUtilities.randomStringLettersOnly(),
-                Duration.ofSeconds(25)),
-            InsightReportData.createLink(TestUtilities.randomStringLettersOnly(),
-                String.format(linkFormat, TestUtilities.randomString()),
-                TestUtilities.randomString())
+        final List<InsightReportData> data = Arrays.asList(
+                InsightReportData.createBoolean(TestUtilities.randomStringLettersOnly(),
+                    true),
+                InsightReportData.createDate(TestUtilities.randomStringLettersOnly(),
+                    LocalDate.of(2019, 12, 18)),
+                InsightReportData.createDuration(TestUtilities.randomStringLettersOnly(),
+                    Duration.ofSeconds(25)),
+                InsightReportData.createLink(TestUtilities.randomStringLettersOnly(),
+                    String.format(linkFormat, TestUtilities.randomString()),
+                    TestUtilities.randomString())
         );
         createInsightReport = CreateInsightReport.create(TestUtilities.randomString(),
             String.format(linkFormat, TestUtilities.randomString()),
@@ -86,18 +87,16 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
             TestUtilities.randomString(),
             data);
 
-
-
         final List<InsightReportData> data2 = Arrays.asList(
-            InsightReportData.createLink(TestUtilities.randomStringLettersOnly(),
-                String.format(linkFormat, TestUtilities.randomString()),
-                TestUtilities.randomString()),
-            InsightReportData.createNumber(TestUtilities.randomStringLettersOnly(),
-                54321),
-            InsightReportData.createPercentage(TestUtilities.randomStringLettersOnly(),
-                (byte) 42),
-            InsightReportData.createText(TestUtilities.randomStringLettersOnly(),
-                TestUtilities.randomString())
+                InsightReportData.createLink(TestUtilities.randomStringLettersOnly(),
+                    String.format(linkFormat, TestUtilities.randomString()),
+                    TestUtilities.randomString()),
+                InsightReportData.createNumber(TestUtilities.randomStringLettersOnly(),
+                    54321),
+                InsightReportData.createPercentage(TestUtilities.randomStringLettersOnly(),
+                    (byte) 42),
+                InsightReportData.createText(TestUtilities.randomStringLettersOnly(),
+                    TestUtilities.randomString())
         );
         createInsightReport2 = CreateInsightReport.create(TestUtilities.randomString(),
             String.format(linkFormat, TestUtilities.randomString()),
@@ -165,9 +164,9 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testDeleteReportNonExistent() {
         final RequestStatus success = api().deleteReport(projectKey,
-            repoKey,
-            TestUtilities.randomStringLettersOnly(),
-            TestUtilities.randomStringLettersOnly());
+                repoKey,
+                TestUtilities.randomStringLettersOnly(),
+                TestUtilities.randomStringLettersOnly());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();
@@ -190,11 +189,11 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test(dependsOnMethods = "testCreateReport")
     public void testCreateAnnotation() {
         final RequestStatus success = api().createAnnotation(projectKey,
-            repoKey,
-            commitHash,
-            reportKey,
-            TestUtilities.randomStringLettersOnly(),
-            annotation);
+                repoKey,
+                commitHash,
+                reportKey,
+                TestUtilities.randomStringLettersOnly(),
+                annotation);
         assertThat(success).isNotNull();
         assertThat(success.errors().isEmpty()).isTrue();
     }
@@ -211,12 +210,12 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test(dependsOnMethods = "testCreateAnnotations")
     public void testListAnnotation() {
         final AnnotationsResponse annotations = api().listAnnotations(projectKey,
-            repoKey,
-            commitHash,
-            annotationId,
-            null,
-            null,
-            null);
+                repoKey,
+                commitHash,
+                annotationId,
+                null,
+                null,
+                null);
         assertThat(annotations).isNotNull();
         assertThat(annotations.errors().isEmpty()).isTrue();
         assertThat(annotations.totalCount()).isGreaterThan(0);
@@ -226,10 +225,10 @@ public class InsightsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void testDeleteAnnotationNonExistent() {
         final RequestStatus success = api().deleteAnnotation(projectKey,
-            TestUtilities.randomStringLettersOnly(),
-            commitHash,
-            TestUtilities.randomStringLettersOnly(),
-            TestUtilities.randomStringLettersOnly());
+                TestUtilities.randomStringLettersOnly(),
+                commitHash,
+                TestUtilities.randomStringLettersOnly(),
+                TestUtilities.randomStringLettersOnly());
         assertThat(success).isNotNull();
         assertThat(success.value()).isFalse();
         assertThat(success.errors()).isNotEmpty();

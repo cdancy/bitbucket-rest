@@ -1,0 +1,50 @@
+{
+  "key": {
+    "id": 1,
+    "text": "ssh-rsa abc",
+    "label": "abc"
+  },
+  "repository": {
+    "slug": "my-repo",
+    "id": 1,
+    "name": "my-repo",
+    "scmId": "git",
+    "state": "AVAILABLE",
+    "statusMessage": "Available",
+    "forkable": true,
+    "project": {
+      "key": "MY-PROJECT",
+      "id": 626,
+      "name": "MY-PROJECT",
+      "description": "Example.",
+      "public": false,
+      "type": "NORMAL",
+      "links": {
+        "self": [
+          {
+            "href": "https://my-bitbucket.com/bitbucket/projects/MY-PROJECT"
+          }
+        ]
+      }
+    },
+    "public": false,
+    "links": {
+      "clone": [
+        {
+          "href": "ssh://git@my-bitbucket.com:7999/MY-PROJECT/my-repo.git",
+          "name": "ssh"
+        },
+        {
+          "href": "https://my-bitbucket.com/bitbucket/scm/MY-PROJECT/my-repo.git",
+          "name": "http"
+        }
+      ],
+      "self": [
+        {
+          "href": "https://my-bitbucket.com/bitbucket/projects/MY-PROJECT/repos/my-repo/browse"
+        }
+      ]
+    }
+  },
+  "permission": "REPO_READ"
+}

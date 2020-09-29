@@ -15,26 +15,25 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.domain.sshkey;
+package com.cdancy.bitbucket.rest.options;
+
+import com.cdancy.bitbucket.rest.domain.sshkey.AccessKey.PermissionType;
 
 import com.google.auto.value.AutoValue;
-import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class Key {
+public abstract class CreateAccessKey {
 
-    @Nullable
-    public abstract Long id();
+    public abstract CreateKey key();
 
-    public abstract String text();
+    public abstract PermissionType permission();
 
-    public abstract String label();
+    CreateAccessKey() {
+    }
 
-    @SerializedNames({"id", "text", "label"})
-    public static Key create(@Nullable final Long id,
-            final String text,
-            final String label) {
-        return new AutoValue_Key(id, text, label);
+    @SerializedNames({ "key", "permission" })
+    public static CreateAccessKey create(final CreateKey key, final PermissionType permission) {
+        return new AutoValue_CreateAccessKey(key, permission);
     }
 }

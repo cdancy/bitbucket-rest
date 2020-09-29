@@ -1,0 +1,31 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "key": {
+        "id": 1,
+        "text": "ssh-rsa abc",
+        "label": "abc"
+      },
+      "project": {
+        "key": "MY-PROJECT",
+        "id": 1,
+        "name": "MY-PROJECT",
+        "description": "Example",
+        "public": false,
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "https://my-bitbucket.com/bitbucket/projects/PLAY"
+            }
+          ]
+        }
+      },
+      "permission": "PROJECT_READ"
+    }
+  ],
+  "start": 0
+}
