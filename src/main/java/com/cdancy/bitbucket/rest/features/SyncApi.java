@@ -66,7 +66,7 @@ public interface SyncApi {
     @GET
     SyncStatus status(@PathParam("project") String project,
                       @PathParam("repo") String repo,
-                      @Nullable @QueryParam("at") String at);
+                      @Nullable @QueryParam("at") String branchOrTag);
 
     @Named("sync:synchronize")
     @Documentation({"https://docs.atlassian.com/DAC/rest/stash/3.7.2/stash-repository-ref-sync-rest.html"})
