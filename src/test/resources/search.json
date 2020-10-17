@@ -1,0 +1,513 @@
+{
+  "scope": {
+    "type": "GLOBAL"
+  },
+  "code": {
+    "category": "primary",
+    "isLastPage": false,
+    "count": 314,
+    "start": 0,
+    "nextStart": 25,
+    "values": [
+      {
+        "repository": {
+          "slug": "isis-apps",
+          "id": 276,
+          "name": "isis-apps",
+          "hierarchyId": "49e553511f738643d788",
+          "scmId": "git",
+          "state": "AVAILABLE",
+          "statusMessage": "Available",
+          "forkable": true,
+          "project": {
+            "key": "OB",
+            "id": 164,
+            "name": "Online Booking",
+            "description": "Home of all the 'isis-apps'.",
+            "public": false,
+            "type": "NORMAL"
+          },
+          "public": false
+        },
+        "file": "app/src/main/java/example/common/model/payment/method/makebooking/paymentintent/PaymentIntent.java",
+        "hitContexts": [
+          [
+            {
+              "line": 1,
+              "text": "package example.common.model.payment.method.makebooking.<em>paymentintent</em>;"
+            },
+            {
+              "line": 2,
+              "text": ""
+            },
+            {
+              "line": 3,
+              "text": "import java.util.Objects;"
+            },
+            {
+              "line": 4,
+              "text": ""
+            },
+            {
+              "line": 5,
+              "text": "&#x2F;**"
+            },
+            {
+              "line": 6,
+              "text": " * A payment intent entity."
+            },
+            {
+              "line": 7,
+              "text": " *&#x2F;"
+            },
+            {
+              "line": 8,
+              "text": "public class <em>PaymentIntent</em>"
+            },
+            {
+              "line": 9,
+              "text": "{"
+            },
+            {
+              "line": 10,
+              "text": "  private final String paymentIntentReference;"
+            },
+            {
+              "line": 11,
+              "text": ""
+            },
+            {
+              "line": 12,
+              "text": "  private final String ownerToken;"
+            },
+            {
+              "line": 13,
+              "text": ""
+            },
+            {
+              "line": 14,
+              "text": "  public <em>PaymentIntent</em>(String paymentIntentReference, String ownerToken)"
+            },
+            {
+              "line": 15,
+              "text": "  {"
+            },
+            {
+              "line": 16,
+              "text": "    this.paymentIntentReference = paymentIntentReference;"
+            },
+            {
+              "line": 17,
+              "text": "    this.ownerToken = ownerToken;"
+            },
+            {
+              "line": 18,
+              "text": "  }"
+            },
+            {
+              "line": 19,
+              "text": ""
+            },
+            {
+              "line": 20,
+              "text": "  public String getPaymentIntentReference()"
+            },
+            {
+              "line": 21,
+              "text": "  {"
+            },
+            {
+              "line": 22,
+              "text": "    return paymentIntentReference;"
+            },
+            {
+              "line": 23,
+              "text": "  }"
+            },
+            {
+              "line": 24,
+              "text": ""
+            },
+            {
+              "line": 25,
+              "text": "  public String getOwnerToken()"
+            },
+            {
+              "line": 26,
+              "text": "  {"
+            },
+            {
+              "line": 27,
+              "text": "    return ownerToken;"
+            },
+            {
+              "line": 28,
+              "text": "  }"
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": ""
+            },
+            {
+              "line": 31,
+              "text": "  @Override"
+            },
+            {
+              "line": 32,
+              "text": "  public boolean equals(Object o)"
+            },
+            {
+              "line": 33,
+              "text": "  {"
+            },
+            {
+              "line": 34,
+              "text": "    if (this == o)"
+            },
+            {
+              "line": 35,
+              "text": "    {"
+            },
+            {
+              "line": 36,
+              "text": "      return true;"
+            },
+            {
+              "line": 37,
+              "text": "    }"
+            },
+            {
+              "line": 38,
+              "text": "    if (o == null || getClass() != o.getClass())"
+            },
+            {
+              "line": 39,
+              "text": "    {"
+            },
+            {
+              "line": 40,
+              "text": "      return false;"
+            },
+            {
+              "line": 41,
+              "text": "    }"
+            },
+            {
+              "line": 42,
+              "text": "    <em>PaymentIntent</em> that = (<em>PaymentIntent</em>) o;"
+            },
+            {
+              "line": 43,
+              "text": "    return Objects.equals(paymentIntentReference, that.paymentIntentReference)"
+            }
+          ]
+        ],
+        "pathMatches": [
+          {
+            "text": "app/src/main/java/example/common/model/payment/method/makebooking/"
+          },
+          {
+            "text": "paymentintent",
+            "match": true
+          },
+          {
+            "text": "/"
+          },
+          {
+            "text": "PaymentIntent",
+            "match": true
+          },
+          {
+            "text": ".java"
+          }
+        ],
+        "hitCount": 5
+      },
+      {
+        "repository": {
+          "slug": "payments-api",
+          "id": 2221,
+          "name": "payments-api",
+          "hierarchyId": "c3c9ca5c23af2b993fd2",
+          "scmId": "git",
+          "state": "AVAILABLE",
+          "statusMessage": "Available",
+          "forkable": true,
+          "project": {
+            "key": "CCS",
+            "id": 355,
+            "name": "Payment Services",
+            "description": "Contains repos for credit card services  - part of the overall Customer Shared Services ecosystem.",
+            "public": false,
+            "type": "NORMAL"
+          },
+          "public": false
+        },
+        "file": "src/main/java/example/model/intent/PaymentIntent.java",
+        "hitContexts": [
+          [
+            {
+              "line": 14,
+              "text": " *&#x2F;"
+            },
+            {
+              "line": 15,
+              "text": "public final class <em>PaymentIntent</em>"
+            },
+            {
+              "line": 16,
+              "text": "{"
+            },
+            {
+              "line": 17,
+              "text": "  private final UUID paymentIntentRef;"
+            },
+            {
+              "line": 18,
+              "text": ""
+            },
+            {
+              "line": 19,
+              "text": "  private UUID purchaseTransactionRef;"
+            },
+            {
+              "line": 20,
+              "text": ""
+            },
+            {
+              "line": 21,
+              "text": "  private final BigDecimal amount;"
+            },
+            {
+              "line": 22,
+              "text": ""
+            },
+            {
+              "line": 23,
+              "text": "  private final String currencyCode;"
+            },
+            {
+              "line": 24,
+              "text": ""
+            },
+            {
+              "line": 25,
+              "text": "  private final UUID paymentPartnerId;"
+            },
+            {
+              "line": 26,
+              "text": ""
+            },
+            {
+              "line": 27,
+              "text": "  private final UUID ownerToken;"
+            },
+            {
+              "line": 28,
+              "text": ""
+            },
+            {
+              "line": 29,
+              "text": "  private final String offerReference;"
+            },
+            {
+              "line": 30,
+              "text": ""
+            },
+            {
+              "line": 31,
+              "text": "  private final BigDecimal offerAmount;"
+            },
+            {
+              "line": 32,
+              "text": ""
+            },
+            {
+              "line": 33,
+              "text": "  private final String offerCurrencyCode;"
+            },
+            {
+              "line": 34,
+              "text": ""
+            },
+            {
+              "line": 35,
+              "text": "  private final BigDecimal offerExchangeRate;"
+            },
+            {
+              "line": 36,
+              "text": ""
+            },
+            {
+              "line": 37,
+              "text": "  private final BigDecimal offerMarginPercentage;"
+            },
+            {
+              "line": 38,
+              "text": ""
+            },
+            {
+              "line": 39,
+              "text": "  private final ZonedDateTime dateTimeCreated;"
+            },
+            {
+              "line": 40,
+              "text": ""
+            },
+            {
+              "line": 41,
+              "text": "  private final List&lt;PaymentMethodAttributesJson&gt; paymentMethodsAttributes;"
+            },
+            {
+              "line": 42,
+              "text": ""
+            },
+            {
+              "line": 43,
+              "text": "  private ZonedDateTime dateTimeUpdated;"
+            },
+            {
+              "line": 44,
+              "text": ""
+            },
+            {
+              "line": 45,
+              "text": "  private PaymentIntentState state;"
+            },
+            {
+              "line": 46,
+              "text": ""
+            },
+            {
+              "line": 47,
+              "text": "  private Transaction transaction;"
+            },
+            {
+              "line": 48,
+              "text": ""
+            },
+            {
+              "line": 49,
+              "text": "  private <em>PaymentIntent</em>(<em>PaymentIntent</em>.Builder builder)"
+            },
+            {
+              "line": 50,
+              "text": "  {"
+            }
+          ],
+          [
+            {
+              "line": 292,
+              "text": ""
+            },
+            {
+              "line": 293,
+              "text": "    public <em>PaymentIntent</em>"
+            }
+          ],
+          [
+            {
+              "line": 294,
+              "text": "    {"
+            },
+            {
+              "line": 295,
+              "text": "      return new <em>PaymentIntent</em>(this);"
+            },
+            {
+              "line": 296,
+              "text": "    }"
+            }
+          ]
+        ],
+        "pathMatches": [
+          {
+            "text": "src/main/java/nz/co/airnz/payments/model/intent/"
+          },
+          {
+            "text": "PaymentIntent",
+            "match": true
+          },
+          {
+            "text": ".java"
+          }
+        ],
+        "hitCount": 5
+      },
+      {
+        "repository": {
+          "slug": "isis-apps",
+          "id": 276,
+          "name": "isis-apps",
+          "hierarchyId": "49e553511f738643d788",
+          "scmId": "git",
+          "state": "AVAILABLE",
+          "statusMessage": "Available",
+          "forkable": true,
+          "project": {
+            "key": "OB",
+            "id": 164,
+            "name": "Online Booking",
+            "description": "Home of all the 'isis-apps'.",
+            "public": false,
+            "type": "NORMAL"
+          },
+          "public": false
+        },
+        "file": "domain/src/main/java/example/payment/auth/PaymentIntent.java",
+        "hitContexts": [
+          [
+            {
+              "line": 12,
+              "text": "&#x2F;**"
+            },
+            {
+              "line": 13,
+              "text": " * Base for <em>PaymentIntent</em>."
+            },
+            {
+              "line": 14,
+              "text": " *"
+            },
+            {
+              "line": 15,
+              "text": " * @author ShoreI"
+            },
+            {
+              "line": 16,
+              "text": " *&#x2F;"
+            },
+            {
+              "line": 17,
+              "text": "public class <em>PaymentIntent</em> implements Serializable"
+            },
+            {
+              "line": 18,
+              "text": "{"
+            }
+          ]
+        ],
+        "pathMatches": [
+          {
+            "text": "domain/src/main/java/example/payment/auth/"
+          },
+          {
+            "text": "PaymentIntent",
+            "match": true
+          },
+          {
+            "text": ".java"
+          }
+        ],
+        "hitCount": 2
+      }
+    ]
+  },
+  "query": {
+    "substituted": false
+  }
+}
