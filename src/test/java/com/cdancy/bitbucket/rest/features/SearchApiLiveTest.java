@@ -33,15 +33,11 @@ public class SearchApiLiveTest
     extends BaseBitbucketApiLiveTest {
 
   private GeneratedTestContents generatedTestContents;
-//  private String projectKey;
-//  private User user;
   private final String searchPhrase = "PaymentIntent";
 
   @BeforeClass
   public void init() {
       generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
-//      this.projectKey = generatedTestContents.project.key();
-//      this.user = TestUtilities.getDefaultUser(this.bitbucketAuthentication, this.api);
   }
   
   @AfterClass
