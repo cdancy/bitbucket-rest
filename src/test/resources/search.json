@@ -1,0 +1,235 @@
+{
+  "scope": {
+    "type": "GLOBAL"
+  },
+  "code": {
+    "category": "primary",
+    "isLastPage": false,
+    "count": 314,
+    "start": 0,
+    "nextStart": 25,
+    "values": [
+      {
+        "repository": {
+          "slug": "isis-apps",
+          "id": 276,
+          "name": "isis-apps",
+          "hierarchyId": "49e553511f738643d788",
+          "scmId": "git",
+          "state": "AVAILABLE",
+          "statusMessage": "Available",
+          "forkable": true,
+          "project": {
+            "key": "OB",
+            "id": 164,
+            "name": "Online Booking",
+            "description": "Home of all the 'isis-apps'.",
+            "public": false,
+            "type": "NORMAL"
+          },
+          "public": false
+        },
+        "file": "app/src/main/java/example/common/model/payment/method/makebooking/paymentintent/PaymentIntent.java",
+        "hitContexts": [
+          [
+            {
+              "line": 1,
+              "text": "package example.common.model.payment.method.makebooking.<em>paymentintent</em>;"
+            },
+            {
+              "line": 2,
+              "text": ""
+            },
+            {
+              "line": 3,
+              "text": "import java.util.Objects;"
+            },
+            {
+              "line": 4,
+              "text": ""
+            },
+            {
+              "line": 5,
+              "text": "&#x2F;**"
+            },
+            {
+              "line": 6,
+              "text": " * A payment intent entity."
+            },
+            {
+              "line": 7,
+              "text": " *&#x2F;"
+            },
+            {
+              "line": 8,
+              "text": "public class <em>PaymentIntent</em>"
+            },
+            {
+              "line": 9,
+              "text": "{"
+            },
+            {
+              "line": 10,
+              "text": "  private final String paymentIntentReference;"
+            },
+            {
+              "line": 11,
+              "text": ""
+            },
+            {
+              "line": 12,
+              "text": "  private final String ownerToken;"
+            },
+            {
+              "line": 13,
+              "text": ""
+            },
+            {
+              "line": 14,
+              "text": "  public <em>PaymentIntent</em>(String paymentIntentReference, String ownerToken)"
+            },
+            {
+              "line": 15,
+              "text": "  {"
+            },
+            {
+              "line": 16,
+              "text": "    this.paymentIntentReference = paymentIntentReference;"
+            },
+            {
+              "line": 17,
+              "text": "    this.ownerToken = ownerToken;"
+            },
+            {
+              "line": 18,
+              "text": "  }"
+            },
+            {
+              "line": 19,
+              "text": ""
+            },
+            {
+              "line": 20,
+              "text": "  public String getPaymentIntentReference()"
+            },
+            {
+              "line": 21,
+              "text": "  {"
+            },
+            {
+              "line": 22,
+              "text": "    return paymentIntentReference;"
+            },
+            {
+              "line": 23,
+              "text": "  }"
+            },
+            {
+              "line": 24,
+              "text": ""
+            },
+            {
+              "line": 25,
+              "text": "  public String getOwnerToken()"
+            },
+            {
+              "line": 26,
+              "text": "  {"
+            },
+            {
+              "line": 27,
+              "text": "    return ownerToken;"
+            },
+            {
+              "line": 28,
+              "text": "  }"
+            },
+            {
+              "line": 29,
+              "text": ""
+            },
+            {
+              "line": 30,
+              "text": ""
+            },
+            {
+              "line": 31,
+              "text": "  @Override"
+            },
+            {
+              "line": 32,
+              "text": "  public boolean equals(Object o)"
+            },
+            {
+              "line": 33,
+              "text": "  {"
+            },
+            {
+              "line": 34,
+              "text": "    if (this == o)"
+            },
+            {
+              "line": 35,
+              "text": "    {"
+            },
+            {
+              "line": 36,
+              "text": "      return true;"
+            },
+            {
+              "line": 37,
+              "text": "    }"
+            },
+            {
+              "line": 38,
+              "text": "    if (o == null || getClass() != o.getClass())"
+            },
+            {
+              "line": 39,
+              "text": "    {"
+            },
+            {
+              "line": 40,
+              "text": "      return false;"
+            },
+            {
+              "line": 41,
+              "text": "    }"
+            },
+            {
+              "line": 42,
+              "text": "    <em>PaymentIntent</em> that = (<em>PaymentIntent</em>) o;"
+            },
+            {
+              "line": 43,
+              "text": "    return Objects.equals(paymentIntentReference, that.paymentIntentReference)"
+            }
+          ]
+        ],
+        "pathMatches": [
+          {
+            "text": "app/src/main/java/example/common/model/payment/method/makebooking/"
+          },
+          {
+            "text": "paymentintent",
+            "match": true
+          },
+          {
+            "text": "/"
+          },
+          {
+            "text": "PaymentIntent",
+            "match": true
+          },
+          {
+            "text": ".java"
+          }
+        ],
+        "hitCount": 5
+      }
+    ]
+  },
+  "query": {
+    "substituted": false
+  }
+}
