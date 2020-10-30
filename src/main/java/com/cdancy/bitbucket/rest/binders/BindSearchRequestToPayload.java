@@ -31,9 +31,9 @@ public class BindSearchRequestToPayload implements Binder {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <R extends HttpRequest> R bindToRequest(final R request, final Object SearchRequest) {
-        checkArgument(SearchRequest instanceof SearchRequest, "binder is only valid for SearchRequest");
-        final SearchRequest passedSearchRequest = SearchRequest.class.cast(SearchRequest);
+    public <R extends HttpRequest> R bindToRequest(final R request, final Object searchRequest) {
+        checkArgument(searchRequest instanceof SearchRequest, "binder is only valid for SearchRequest");
+        final SearchRequest passedSearchRequest = SearchRequest.class.cast(searchRequest);
         final String payload = passedSearchRequest.request().toString();
         return (R) request.toBuilder().payload(payload).build();
     }
