@@ -17,6 +17,7 @@ com.cdancy.bitbucket.rest.domain.participants
 com.cdancy.bitbucket.rest.domain.project
 com.cdancy.bitbucket.rest.domain.pullrequest
 com.cdancy.bitbucket.rest.domain.repository
+com.cdancy.bitbucket.rest.domain.search
 com.cdancy.bitbucket.rest.domain.sshkey
 com.cdancy.bitbucket.rest.domain.sync
 com.cdancy.bitbucket.rest.domain.system
