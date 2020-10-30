@@ -1,4 +1,5 @@
-### Version 2.7.1 (TBA)
+### Version 2.7.1 (10/30/2020)
+* ADDED: `SearchApi` with endpoints `search` . - [PR 242](https://github.com/cdancy/bitbucket-rest/pull/242)
 
 ### Version 2.7.0 (9/29/2020)
 * ADDED: `KeysApi` with endpoints `listByRepo, createForRepo, getForRepo, deleteFromRepo, listByProject, createForProject, getForProject, deleteFromProject` . - [PR 238](https://github.com/cdancy/bitbucket-rest/pull/238)
