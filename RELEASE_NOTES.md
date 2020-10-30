@@ -1,3 +1,5 @@
+### Version 2.7.2 (TBA)
+
 ### Version 2.7.1 (10/30/2020)
 * ADDED: `SearchApi` with endpoints `search` . - [PR 242](https://github.com/cdancy/bitbucket-rest/pull/242)
 
