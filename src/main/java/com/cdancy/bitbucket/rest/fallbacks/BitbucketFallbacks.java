@@ -590,7 +590,7 @@ public final class BitbucketFallbacks {
 
     public static final class LabelsOnError implements Fallback<Object> {
         @Override
-        public Object createOrPropagate(Throwable throwable) throws Exception {
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createLabelsPageFromErrors(getErrors(throwable.getMessage()));
             }
