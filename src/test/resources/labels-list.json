@@ -1,0 +1,11 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "name": "labelName"
+    }
+  ],
+  "start": 0
+}
