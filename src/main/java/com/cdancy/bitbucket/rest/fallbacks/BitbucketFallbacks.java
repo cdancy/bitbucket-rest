@@ -47,6 +47,7 @@ import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.cdancy.bitbucket.rest.domain.insights.AnnotationsResponse;
 import com.cdancy.bitbucket.rest.domain.insights.InsightReport;
 import com.cdancy.bitbucket.rest.domain.insights.InsightReportPage;
+import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
@@ -587,6 +588,16 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class LabelsOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createLabelsPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static RequestStatus createRequestStatusFromErrors(final List<Error> errors) {
         return RequestStatus.create(false, errors);
     }
@@ -776,6 +787,10 @@ public final class BitbucketFallbacks {
 
     public static AccessKeyPage createAccessKeyPageFromErrors(final List<Error> errors) {
         return AccessKeyPage.create(0, 0, 0, 0, false, null, errors);
+    }
+
+    public static LabelsPage createLabelsPageFromErrors(final List<Error> errors) {
+        return LabelsPage.create(0, 0, 0, 0, false, null, errors);
     }
 
     /**
