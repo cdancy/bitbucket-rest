@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
+import com.cdancy.bitbucket.rest.domain.labels.Labels;
 import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -60,6 +61,38 @@ public class LabelsApiMockTest extends BaseBitbucketMockTest {
             assertThat(labelsPage.values().size() > 0).isFalse();
 
             assertThat(labelsPage.errors()).hasSizeGreaterThan(0);
+
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetLabelByName() throws IOException {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/labels-get-byname.json")).setResponseCode(201));
+
+        try (final BitbucketApi baseApi = api(server.url("/").url())) {
+            final Labels labels = baseApi.labelsApi().getLabelByName("label");
+            assertThat(labels).isNotNull();
+            assertThat(labels.errors().isEmpty()).isTrue();
+
+            assertThat(labels.name()).isEqualTo("labelName");
+
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetLabelByNameReturnError() throws IOException {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(401));
+
+        try (final BitbucketApi baseApi = api(server.url("/").url())) {
+            final Labels labels = baseApi.labelsApi().getLabelByName("label");
+            assertThat(labels.name()).isEmpty();
+            assertThat(labels.errors()).hasSizeGreaterThan(0);
 
         } finally {
             server.shutdown();
