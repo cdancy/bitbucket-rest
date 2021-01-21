@@ -18,7 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
-import com.cdancy.bitbucket.rest.domain.labels.Labels;
+import com.cdancy.bitbucket.rest.domain.labels.Label;
 import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
@@ -52,7 +52,7 @@ public interface LabelsApi {
     @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/6.0.0/bitbucket-rest.html#idp88"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/api/{jclouds.api-version}/labels/{labelName}")
-    @Fallback(BitbucketFallbacks.LabelsByNameOnError.class)
+    @Fallback(BitbucketFallbacks.LabelByNameOnError.class)
     @GET
-    Labels getLabelByName(@Nullable @PathParam("labelName") String labelName);
+    Label getLabelByName(@PathParam("labelName") String labelName);
 }

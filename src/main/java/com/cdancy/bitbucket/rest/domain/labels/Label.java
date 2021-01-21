@@ -26,15 +26,15 @@ import org.jclouds.json.SerializedNames;
 import java.util.List;
 
 @AutoValue
-public abstract class Labels implements ErrorsHolder {
+public abstract class Label implements ErrorsHolder {
 
     public abstract String name();
 
-    Labels() {
+    Label() {
     }
 
     @SerializedNames({"name", "errors"})
-    public static Labels create(final String name, final List<Error> errors) {
-        return new AutoValue_Labels(BitbucketUtils.nullToEmpty(errors), name);
+    public static Label create(final String name, final List<Error> errors) {
+        return new AutoValue_Label(BitbucketUtils.nullToEmpty(errors), name);
     }
 }
