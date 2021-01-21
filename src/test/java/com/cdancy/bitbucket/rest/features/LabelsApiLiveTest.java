@@ -30,6 +30,11 @@ public class LabelsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(api().list(null).values()).isEmpty();
     }
 
+    @Test
+    public void testLabelByName() {
+        assertThat(api().getLabelByName("labelName").name()).isEmpty();
+    }
+
     private LabelsApi api() {
         return api.labelsApi();
     }

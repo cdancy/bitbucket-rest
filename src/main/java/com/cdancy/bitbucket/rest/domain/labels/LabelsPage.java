@@ -28,7 +28,7 @@ import org.jclouds.json.SerializedNames;
 import java.util.List;
 
 @AutoValue
-public abstract class LabelsPage implements Page<Labels>, ErrorsHolder {
+public abstract class LabelsPage implements Page<Label>, ErrorsHolder {
 
     @SerializedNames({"start", "limit", "size", "nextPageStart", "isLastPage", "values", "errors"})
     public static LabelsPage create(final int start,
@@ -36,7 +36,7 @@ public abstract class LabelsPage implements Page<Labels>, ErrorsHolder {
                                     final int size,
                                     final int nextPageStart,
                                     final boolean isLastPage,
-                                    final List<Labels> values,
+                                    final List<Label> values,
                                     @Nullable final List<Error> errors) {
 
         return new AutoValue_LabelsPage(start,

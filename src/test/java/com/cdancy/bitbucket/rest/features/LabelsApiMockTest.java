@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BaseBitbucketMockTest;
 import com.cdancy.bitbucket.rest.BitbucketApi;
+import com.cdancy.bitbucket.rest.domain.labels.Label;
 import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -61,6 +62,51 @@ public class LabelsApiMockTest extends BaseBitbucketMockTest {
 
             assertThat(labelsPage.errors()).hasSizeGreaterThan(0);
 
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetLabelByName() throws IOException {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/labels-get-byname.json")).setResponseCode(201));
+
+        try (final BitbucketApi baseApi = api(server.url("/").url())) {
+            final Label label = baseApi.labelsApi().getLabelByName("label");
+            assertThat(label).isNotNull();
+            assertThat(label.errors().isEmpty()).isTrue();
+
+            assertThat(label.name()).isEqualTo("labelName");
+
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    public void testGetLabelByNameReturnError() throws IOException {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(401));
+
+        try (final BitbucketApi baseApi = api(server.url("/").url())) {
+            final Label label = baseApi.labelsApi().getLabelByName("label");
+            assertThat(label.name()).isEmpty();
+            assertThat(label.errors()).hasSizeGreaterThan(0);
+
+        } finally {
+            server.shutdown();
+        }
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void testLabelIfNullThrowException() throws IOException {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/errors.json")).setResponseCode(401));
+
+        try (final BitbucketApi baseApi = api(server.url("/").url())) {
+            baseApi.labelsApi().getLabelByName(null);
         } finally {
             server.shutdown();
         }
