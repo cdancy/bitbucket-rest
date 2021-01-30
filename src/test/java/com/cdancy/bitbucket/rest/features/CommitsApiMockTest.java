@@ -45,7 +45,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
     private final String getMethod = "GET";
     private final String restApiPath = "/rest/api/";
     private final String limitKeyword = "limit";
-    
+
     public void testGetCommit() throws Exception {
         final MockWebServer server = mockWebServer();
 
@@ -56,6 +56,10 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(commit).isNotNull();
             assertThat(commit.errors().isEmpty()).isTrue();
             assertThat(commit.id().equalsIgnoreCase(commitHash)).isTrue();
+            assertThat(commit.authorTimestamp()).isNotNull().isNotEqualTo(0);
+            assertThat(commit.author()).isNotNull();
+            assertThat(commit.committerTimestamp()).isNotNull().isNotEqualTo(0);
+            assertThat(commit.committer()).isNotNull();
 
             assertSent(server, getMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);
@@ -121,7 +125,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
-    
+
     public void testListCommits() throws Exception {
         final MockWebServer server = mockWebServer();
 
