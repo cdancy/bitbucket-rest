@@ -45,7 +45,7 @@ public abstract class CreatePullRequestSettings {
     }
 
     @SerializedNames({ "mergeConfig", "requiredAllApprovers", "requiredAllTasksComplete",
-            "requiredApprovers", "requiredSuccessfulBuilds" })
+            "requiredApprovers", "requiredSuccessfulBuilds", "unapproveOnUpdate" })
     public static CreatePullRequestSettings create(final MergeConfig mergeConfig,
             final boolean requiredAllApprovers,
             final boolean requiredAllTasksComplete,
