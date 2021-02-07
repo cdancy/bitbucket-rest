@@ -738,7 +738,7 @@ public final class BitbucketFallbacks {
     }
 
     public static PullRequestSettings createPullRequestSettingsFromErrors(final List<Error> errors) {
-        return PullRequestSettings.create(null, null, null, null, null, errors);
+        return PullRequestSettings.create(null, null, null, null, null, null, errors);
     }
 
     public static ProjectPage createProjectPageFromErrors(final List<Error> errors) {

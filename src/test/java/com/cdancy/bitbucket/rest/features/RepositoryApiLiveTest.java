@@ -210,7 +210,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         final List<MergeStrategy> listStrategy = new ArrayList<>();
         listStrategy.add(strategy);
         final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
-        final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+        final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
 
         final PullRequestSettings settings = api().updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
         assertThat(settings).isNotNull();
