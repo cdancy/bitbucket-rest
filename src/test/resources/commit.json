@@ -3,10 +3,17 @@
     "displayId": "abcdef0123a",
     "author": {
         "name": "charlie",
-        "emailAddress": "charlie@example.com"
+        "emailAddress": "charlie@example.com",
+        "displayName": "Charlie Brown"
     },
     "authorTimestamp": 1484800877151,
     "message": "WIP on feature 1",
+    "committer": {
+        "name": "john",
+        "emailAddress": "john@example.com",
+        "displayName": "John Smith"
+    },
+    "committerTimestamp": 1594900977151,
     "parents": [
         {
             "id": "abcdef0123abcdef4567abcdef8987abcdef6543",

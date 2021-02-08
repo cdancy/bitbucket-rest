@@ -42,6 +42,11 @@ public abstract class Commit implements ErrorsHolder {
     public abstract long authorTimestamp();
 
     @Nullable
+    public abstract Author committer();
+
+    public abstract long committerTimestamp();
+
+    @Nullable
     public abstract String message();
 
     public abstract List<Parents> parents();
@@ -49,22 +54,26 @@ public abstract class Commit implements ErrorsHolder {
     Commit() {
     }
 
-    @SerializedNames({ "id", "displayId", "author", 
-            "authorTimestamp", "message", "parents", "errors" })
-    public static Commit create(final String id, 
-            final String displayId, 
+    @SerializedNames({ "id", "displayId", "author",
+            "authorTimestamp", "committer", "committerTimestamp", "message", "parents", "errors" })
+    public static Commit create(final String id,
+            final String displayId,
             final Author author,
-            final long authorTimestamp, 
-            final String message, 
-            final List<Parents> parents, 
+            final long authorTimestamp,
+            final Author committer,
+            final long committerTimestamp,
+            final String message,
+            final List<Parents> parents,
             final List<Error> errors) {
-        
-        return new AutoValue_Commit(BitbucketUtils.nullToEmpty(errors), 
-                id, 
-                displayId, 
-                author, 
-                authorTimestamp, 
-                message, 
+
+        return new AutoValue_Commit(BitbucketUtils.nullToEmpty(errors),
+                id,
+                displayId,
+                author,
+                authorTimestamp,
+                committer,
+                committerTimestamp,
+                message,
                 BitbucketUtils.nullToEmpty(parents));
     }
 }
