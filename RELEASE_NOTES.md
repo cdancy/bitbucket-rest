@@ -1,3 +1,5 @@
+### Version 2.7.3 (TBA)
+
 ### Version 2.7.2 (02/08/2021)
 * ADDED: `Commit` object gained properties `committer` and `committerTimestamp` . - [PR 261](https://github.com/cdancy/bitbucket-rest/pull/261)
 * ADDED: `PullRequestSettings` object gained property `unapproveOnUpdate` . - [PR 263](https://github.com/cdancy/bitbucket-rest/pull/263)
