@@ -13,6 +13,7 @@ com.cdancy.bitbucket.rest.domain.common
 com.cdancy.bitbucket.rest.domain.defaultreviewers
 com.cdancy.bitbucket.rest.domain.file
 com.cdancy.bitbucket.rest.domain.insights
+com.cdancy.bitbucket.rest.domain.labels
 com.cdancy.bitbucket.rest.domain.participants
 com.cdancy.bitbucket.rest.domain.project
 com.cdancy.bitbucket.rest.domain.pullrequest
