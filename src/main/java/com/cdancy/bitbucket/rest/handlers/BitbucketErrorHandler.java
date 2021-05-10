@@ -17,12 +17,10 @@
 
 package com.cdancy.bitbucket.rest.handlers;
 
-import static org.jclouds.util.Closeables2.closeQuietly;
-
-import java.io.IOException;
-
-import javax.annotation.Resource;
-
+import com.cdancy.bitbucket.rest.exception.ForbiddenException;
+import com.cdancy.bitbucket.rest.exception.MethodNotAllowedException;
+import com.cdancy.bitbucket.rest.exception.UnsupportedMediaTypeException;
+import com.google.common.base.Throwables;
 import org.jclouds.http.HttpCommand;
 import org.jclouds.http.HttpErrorHandler;
 import org.jclouds.http.HttpResponse;
@@ -33,10 +31,10 @@ import org.jclouds.rest.ResourceAlreadyExistsException;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.jclouds.util.Strings2;
 
-import com.cdancy.bitbucket.rest.exception.ForbiddenException;
-import com.cdancy.bitbucket.rest.exception.MethodNotAllowedException;
-import com.cdancy.bitbucket.rest.exception.UnsupportedMediaTypeException;
-import com.google.common.base.Throwables;
+import javax.annotation.Resource;
+import java.io.IOException;
+
+import static org.jclouds.util.Closeables2.closeQuietly;
 
 /**
  * Handle errors and propagate exception.
