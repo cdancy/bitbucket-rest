@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'com.jfrog.artifactory' version '4.23.0'
+    id 'com.jfrog.artifactory' version '4.9.7'
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'checkstyle'
     id 'jacoco'
@@ -14,6 +14,7 @@ apply from: "$rootDir/gradle/dependencies.gradle"
 apply from: "$rootDir/gradle/documentation.gradle"
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/release.gradle"
+
 
 repositories {
     jcenter()

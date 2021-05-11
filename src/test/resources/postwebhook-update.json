@@ -1,0 +1,21 @@
+{
+  "branchCreated": true,
+  "branchDeleted": true,
+  "branchesToIgnore": "release/1.0",
+  "buildStatus": true,
+  "committersToIgnore": "userid",
+  "enabled": true,
+  "id": 1107,
+  "prCommented": true,
+  "prCreated": true,
+  "prDeclined": true,
+  "prMerged": true,
+  "prReopened": true,
+  "prRescoped": true,
+  "prUpdated": true,
+  "repoMirrorSynced": true,
+  "repoPush": true,
+  "tagCreated": true,
+  "title": "new updated title",
+  "url": "new url"
+}

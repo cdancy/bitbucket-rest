@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": null,
+      "message": "A detailed error message.",
+      "exceptionName": null
+    }
+  ]
+}
