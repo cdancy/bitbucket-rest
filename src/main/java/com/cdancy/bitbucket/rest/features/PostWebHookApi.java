@@ -20,14 +20,13 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.postwebhooks.PostWebHook;
+import com.cdancy.bitbucket.rest.domain.postwebhooks.PostWebHooks;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreatePostWebHook;
+import com.cdancy.bitbucket.rest.parsers.PostWebHooksParser;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
-import org.jclouds.rest.annotations.BinderParam;
-import org.jclouds.rest.annotations.Fallback;
-import org.jclouds.rest.annotations.RequestFilters;
-import org.jclouds.rest.annotations.ResponseParser;
+import org.jclouds.rest.annotations.*;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
 import javax.inject.Named;
@@ -51,9 +50,10 @@ public interface PostWebHookApi {
     @Documentation({"https://support.cloudbees.com/hc/en-us/articles/115000083932-Generate-webHooks-in-Bitbucket-Server-via-REST-API-for-Pipeline-Multibranch?page=45#getexistingwebhooks"})
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/webhook/{jclouds.api-version}/projects/{project}/repos/{repo}/webhook/configurations")
+    @ResponseParser(PostWebHooksParser.class)
     @GET
-    List<PostWebHook> list(@PathParam("project") String project,
-                           @PathParam("repo") String repo);
+    PostWebHooks list(@PathParam("project") String project,
+                      @PathParam("repo") String repo);
 
     @Named("postwebhook:update-postwebhook")
     @Documentation({"https://support.cloudbees.com/hc/en-us/articles/115000083932-Generate-webHooks-in-Bitbucket-Server-via-REST-API-for-Pipeline-Multibranch?page=45#updateawebhookbyid"})
