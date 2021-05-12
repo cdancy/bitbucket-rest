@@ -21,8 +21,6 @@ import static org.jclouds.util.Closeables2.closeQuietly;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
-
 import org.jclouds.http.HttpCommand;
 import org.jclouds.http.HttpErrorHandler;
 import org.jclouds.http.HttpResponse;
@@ -42,7 +40,6 @@ import com.google.common.base.Throwables;
  * Handle errors and propagate exception.
  */
 public class BitbucketErrorHandler implements HttpErrorHandler {
-    @Resource
     protected Logger logger = Logger.NULL;
 
     @Override
