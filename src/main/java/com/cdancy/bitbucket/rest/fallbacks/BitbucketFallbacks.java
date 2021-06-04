@@ -682,7 +682,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Commit createCommitFromErrors(final List<Error> errors) {
-        return Commit.create("-1", "-1", null, 0, null, 0, null, null, errors);
+        return Commit.create("-1", "-1", null, 0, null, 0, null,null, null, errors);
     }
 
     public static Tag createTagFromErrors(final List<Error> errors) {

@@ -60,6 +60,7 @@ public class CommitsApiMockTest extends BaseBitbucketMockTest {
             assertThat(commit.author()).isNotNull();
             assertThat(commit.committerTimestamp()).isNotNull().isNotEqualTo(0);
             assertThat(commit.committer()).isNotNull();
+            assertThat(commit.properties()).isNotNull().isNotEqualTo(0);
 
             assertSent(server, getMethod, restBasePath + BitbucketApiMetadata.API_VERSION
                     + "/projects/" + projectKey + "/repos/" + repoKey + "/commits/" + commitHash);

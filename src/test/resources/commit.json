@@ -19,5 +19,10 @@
             "id": "abcdef0123abcdef4567abcdef8987abcdef6543",
             "displayId": "abcdef0"
         }
-    ]
+    ],
+    "properties": {
+        "jira-key": [
+            "IEA-2170"
+        ]
+    }
 }
