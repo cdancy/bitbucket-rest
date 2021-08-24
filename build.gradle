@@ -26,24 +26,24 @@ dependencies {
     ext.autoValueVersion = '1.8.1'
     ext.guiceVersion = '5.0.1'
 
-    implementation("org.apache.jclouds:jclouds-core:${jcloudsVersion}")
-    implementation("com.google.inject:guice:${guiceVersion}")
-    implementation("com.google.inject.extensions:guice-assistedinject:${guiceVersion}")
-    implementation("com.google.auto.value:auto-value-annotations:${autoValueVersion}")
-    annotationProcessor("com.google.auto.value:auto-value:${autoValueVersion}")
-    implementation("com.google.auto.service:auto-service-annotations:${autoServiceVersion}")
-    annotationProcessor("com.google.auto.service:auto-service:${autoServiceVersion}")
+    implementation ("org.apache.jclouds:jclouds-core:${jcloudsVersion}")
+    implementation ("com.google.inject:guice:${guiceVersion}")
+    implementation ("com.google.inject.extensions:guice-assistedinject:${guiceVersion}")
+    implementation ("com.google.auto.value:auto-value-annotations:${autoValueVersion}")
+    annotationProcessor ("com.google.auto.value:auto-value:${autoValueVersion}")
+    implementation ("com.google.auto.service:auto-service-annotations:${autoServiceVersion}")
+    annotationProcessor ("com.google.auto.service:auto-service:${autoServiceVersion}")
 
-    implementation('javax.xml.bind:jaxb-api:2.3.1')
+    implementation ('javax.xml.bind:jaxb-api:2.3.1')
 
-    testImplementation("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
-    testImplementation("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}")
-    testImplementation('org.assertj:assertj-core:3.19.0')
-    testImplementation('org.testng:testng:7.4.0')
-    testImplementation('com.squareup.okhttp:mockwebserver:2.7.5')
-    testImplementation('ch.qos.logback:logback-core:1.2.3')
-    testImplementation('ch.qos.logback:logback-classic:1.2.3')
-    testImplementation('commons-io:commons-io:2.8.0')
+    testImplementation ("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
+    testImplementation ("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}")
+    testImplementation ('org.assertj:assertj-core:3.19.0')
+    testImplementation ('org.testng:testng:7.4.0')
+    testImplementation ('com.squareup.okhttp:mockwebserver:2.7.5')
+    testImplementation ('ch.qos.logback:logback-core:1.2.3')
+    testImplementation ('ch.qos.logback:logback-classic:1.2.3')
+    testImplementation ('commons-io:commons-io:2.8.0')
 }
 
 ext.compatibilityVersion = '1.8'
@@ -53,11 +53,11 @@ targetCompatibility = compatibilityVersion
 jar {
     manifest {
         attributes 'Implementation-Title': 'Bitbucket REST client',
-            'Implementation-Version': archiveVersion,
-            'Built-By': System.getProperty('user.name'),
-            'Built-Date': new Date(),
-            'Built-JDK': System.getProperty('java.version'),
-            'Built-Gradle': gradle.gradleVersion
+                   'Implementation-Version': archiveVersion,
+                   'Built-By': System.getProperty('user.name'),
+                   'Built-Date': new Date(),
+                   'Built-JDK': System.getProperty('java.version'),
+                   'Built-Gradle': gradle.gradleVersion
     }
 }
 
@@ -130,7 +130,7 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
 
     // property 'test.bitbucket.endpoint' needs to be
     // hard-coded in for jclouds test framework
-    systemProperties = ["test.bitbucket.endpoint": "${testBitbucketRestEndpoint}",
+    systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketRestEndpoint}",
                         "test.bitbucket.project" : "${testBitbucketRestProject}",
                         "test.bitbucket.basedir" : "${buildDir}/integ-projects"] << authentication
 }
