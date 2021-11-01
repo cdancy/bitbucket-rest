@@ -22,8 +22,8 @@ repositories {
 
 dependencies {
     ext.jcloudsVersion = '2.4.0'
-    ext.autoValueVersion = '1.8.2'
     ext.autoServiceVersion = '1.0'
+    ext.autoValueVersion = '1.8.2'
     ext.guiceVersion = '5.0.1'
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
