@@ -1,6 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
+        gradlePluginPortal()
+        mavenCentral()
     }
 
     dependencies {
@@ -8,9 +9,10 @@ buildscript {
     }
 }
 
-import org.ajoberstar.grgit.Grgit
+System.setProperty('org.ajoberstar.grgit.auth.username', project.githubUsername)
+System.setProperty('org.ajoberstar.grgit.auth.password', project.githubPassword)
 
-ext.repo = Grgit.open(rootDir)
+ext.repo = org.ajoberstar.grgit.Grgit.open(rootDir)
 
 task createTag {
     description = 'Creates repository tag with current project version.'
@@ -36,8 +38,6 @@ task pushTag {
 
     doLast {
         logger.quiet "Pushing tag '$createTag.tagName' to remote."
-        System.setProperty('org.ajoberstar.grgit.auth.username', project.githubUsername)
-        System.setProperty('org.ajoberstar.grgit.auth.password', project.githubPassword)
         repo.push {
             refsOrSpecs = [createTag.tagName]
         }
@@ -46,10 +46,10 @@ task pushTag {
 
 task tag {
     dependsOn pushTag
-    mustRunAfter bintrayUpload
+    mustRunAfter "publishToSonatype", "closeAndReleaseSonatypeStagingRepository"
 }
 
 task release {
     description = 'Publishes artifacts to Bintray and tags repository with current project version.'
-    dependsOn assemble, publishGhPages, bintrayUpload, tag
+    dependsOn assemble, publishGhPages, "publishToSonatype", "closeAndReleaseSonatypeStagingRepository", tag
 }
