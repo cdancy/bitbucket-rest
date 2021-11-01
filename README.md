@@ -30,10 +30,10 @@ contributors to take up the work.
 
 ## Latest Release
 
-Can be sourced from jcenter/bintray like so:
+Can be sourced from maven like so:
 
     <dependency>
-      <groupId>com.cdancy</groupId>
+      <groupId>io.github.cdancy</groupId>
       <artifactId>bitbucket-rest</artifactId>
       <version>X.Y.Z</version>
       <classifier>sources|tests|javadoc|all</classifier> (Optional)
