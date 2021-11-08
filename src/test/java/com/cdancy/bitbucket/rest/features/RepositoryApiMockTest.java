@@ -80,7 +80,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final RepositoryApi api = baseApi.repositoryApi();
         try {
 
-            final CreateRepository createRepository = CreateRepository.create(repoKey, true);
+            final CreateRepository createRepository = CreateRepository.create(repoKey, null, true);
             final Repository repository = api.create(projectKey, createRepository);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isEmpty();
@@ -102,7 +102,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final RepositoryApi api = baseApi.repositoryApi();
         try {
 
-            final CreateRepository createRepository = CreateRepository.create("!_myrepo", true);
+            final CreateRepository createRepository = CreateRepository.create("!_myrepo", null, true);
             final Repository repository = api.create(projectKey, createRepository);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isNotEmpty();

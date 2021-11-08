@@ -167,14 +167,14 @@ public class TestUtilities extends BitbucketUtils {
 
         // create test repo that remains empty
         final String emptyRepoKey = randomStringLettersOnly();
-        final CreateRepository createEmptyRepository = CreateRepository.create(emptyRepoKey, true);
+        final CreateRepository createEmptyRepository = CreateRepository.create(emptyRepoKey,null, true);
         final Repository emptyRepository = api.repositoryApi().create(projectKey, createEmptyRepository);
         assertThat(emptyRepository).isNotNull();
         assertThat(emptyRepository.errors().isEmpty()).isTrue();
 
         // create test repo
         final String repoKey = randomStringLettersOnly();
-        final CreateRepository createRepository = CreateRepository.create(repoKey, true);
+        final CreateRepository createRepository = CreateRepository.create(repoKey, null, true);
         final Repository repository = api.repositoryApi().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isTrue();
