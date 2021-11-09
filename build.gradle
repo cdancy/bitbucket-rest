@@ -15,6 +15,7 @@ apply from: "$rootDir/gradle/documentation.gradle"
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/release.gradle"
 
+
 repositories {
     gradlePluginPortal()
     mavenCentral()
@@ -138,4 +139,3 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
                         "test.bitbucket.project" : "${testBitbucketRestProject}",
                         "test.bitbucket.basedir" : "${buildDir}/integ-projects"] << authentication
 }
-
