@@ -1,3 +1,6 @@
+### Version 3.0.1 (11/9/2021)
+* Merge lots of long overdue PR's
+
 ### Version 3.0.0 (11/1/2021)
 * Migrate to maven central
 
