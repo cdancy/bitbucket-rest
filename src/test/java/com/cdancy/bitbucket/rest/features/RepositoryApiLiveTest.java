@@ -198,7 +198,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateRepositoryWithIllegalName() {
-        final CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
+        final CreateRepository createRepository = CreateRepository.create("!-_999-9*",null, true);
         final Repository repository = api().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();

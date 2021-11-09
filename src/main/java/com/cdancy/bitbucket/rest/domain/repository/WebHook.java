@@ -62,9 +62,9 @@ public abstract class WebHook implements ErrorsHolder {
         REPO_CHANGED("repo:refs_changed"),
         REPO_MODIFIED("repo:modified"),
 
-        PR_COMENT_ADDED("pr:comment:added"),
-        PR_COMENT_EDITED("pr:comment:edited"),
-        PR_COMENT_DELETED("pr:comment:deleted"),
+        PR_COMMENT_ADDED("pr:comment:added"),
+        PR_COMMENT_EDITED("pr:comment:edited"),
+        PR_COMMENT_DELETED("pr:comment:deleted"),
 
         PR_REVIEWER_UPDATE("pr:reviewer:updated"),
         PR_REVIEWER_UNAPPROVED("pr:reviewer:unapproved"),
@@ -75,7 +75,8 @@ public abstract class WebHook implements ErrorsHolder {
         PR_MERGED("pr:merged"),
         PR_MODIFIED("pr:modified"),
         PR_DECLINED("pr:declined"),
-        PR_OPENED("pr:opened");
+        PR_OPENED("pr:opened"),
+        PR_FROM_REF_UPDATED("pr:from_ref_updated");
 
         private final String apiName;
 

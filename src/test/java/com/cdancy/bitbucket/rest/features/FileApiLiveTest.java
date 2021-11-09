@@ -69,14 +69,14 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(commitPage.totalCount() > 0).isTrue();
         this.commitHashOne = commitPage.values().get(0).id();
         this.commitHashTwo = commitPage.values().get(1).id();
-        
+
         final ChangePage commit = api.commitsApi().listChanges(projectKey, repoKey, commitHashOne, 100, 0);
         assertThat(commit).isNotNull();
         assertThat(commit.errors().isEmpty()).isTrue();
         assertThat(commit.size() > 0).isTrue();
         this.filePath = commit.values().get(0).path()._toString();
     }
-    
+
     @Test
     public void getContent() {
         this.content = api().raw(projectKey, repoKey, filePath, commitHashOne);
@@ -92,7 +92,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(possibleContent.errors().isEmpty()).isFalse();
         assertThat(possibleContent.errors().get(0).message()).isEqualTo("Failed retrieving raw content");
     }
-    
+
     @Test (dependsOnMethods = "getContent")
     public void listLines() throws Exception {
         final List<Line> allLines = Lists.newArrayList();
@@ -100,7 +100,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         while (true) {
             final LinePage linePage = api().listLines(projectKey, repoKey, this.filePath, null, null, null, null, start, 100);
             assertThat(linePage.errors().isEmpty()).isTrue();
-            
+
             allLines.addAll(linePage.values());
             start = linePage.nextPageStart();
             if (linePage.isLastPage()) {
@@ -117,7 +117,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         }
         assertThat(possibleContent.toString().trim()).isEqualTo(this.content.value().trim());
     }
-    
+
     @Test (dependsOnMethods = "getContent")
     public void listLinesAtCommit() throws Exception {
         final List<Line> allLines = Lists.newArrayList();
@@ -126,7 +126,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
             final LinePage linePage = api().listLines(projectKey, repoKey, this.filePath, this.commitHashTwo, null, true, null, start, 100);
             assertThat(linePage.errors().isEmpty()).isTrue();
             assertThat(linePage.blame().isEmpty()).isFalse();
-            
+
             allLines.addAll(linePage.values());
             start = linePage.nextPageStart();
             if (linePage.isLastPage()) {
@@ -143,12 +143,12 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         }
         assertThat(possibleContent.toString()).isNotEqualTo(this.content.value().trim());
     }
-    
-    @Test 
+
+    @Test
     public void listLinesOnError() {
-        final LinePage linePage = api().listLines(projectKey, 
-                repoKey, 
-                TestUtilities.randomString() + ".txt", 
+        final LinePage linePage = api().listLines(projectKey,
+                repoKey,
+                TestUtilities.randomString() + ".txt",
                 null, null, null, null, null, 100);
         assertThat(linePage).isNotNull();
         assertThat(linePage.errors().isEmpty()).isFalse();
@@ -161,7 +161,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         while (true) {
             final FilesPage ref = api().listFiles(projectKey, repoKey, null, this.commitHashTwo, start, 100);
             assertThat(ref.errors().isEmpty()).isTrue();
-            
+
             allFiles.addAll(ref.values());
             start = ref.nextPageStart();
             if (ref.isLastPage()) {
@@ -288,7 +288,7 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test
     public void lastModifiedGivenEmptyRepository() {
         final String emptyRepository = "lastModifiedGivenEmptyRepository";
-        api.repositoryApi().create(projectKey, CreateRepository.create(emptyRepository, false));
+        api.repositoryApi().create(projectKey, CreateRepository.create(emptyRepository, null, false));
         final LastModified summary = api.fileApi().lastModified(projectKey, emptyRepository, null, branch);
         assertThat(summary).isNotNull();
         assertThat(summary.errors().isEmpty()).isFalse();
@@ -302,12 +302,12 @@ public class FileApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(summary).isNotNull();
         assertThat(summary.errors().isEmpty()).isFalse();
     }
-    
+
     @AfterClass
     public void fin() {
         TestUtilities.terminateGeneratedTestContents(this.api, generatedTestContents);
     }
-    
+
     private FileApi api() {
         return api.fileApi();
     }

@@ -42,6 +42,9 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
     public abstract String name();
 
     @Nullable
+    public abstract String description();
+
+    @Nullable
     public abstract String scmId();
 
     @Nullable
@@ -63,33 +66,35 @@ public abstract class Repository implements ErrorsHolder, LinksHolder {
     Repository() {
     }
 
-    @SerializedNames({ "slug", "id", "name", "scmId", 
+    @SerializedNames({ "slug", "id", "name", "description", "scmId",
             "state", "statusMessage", "forkable", "origin",
             "project", "public", "links", "errors" })
-    public static Repository create(final String slug, 
-            final int id, 
-            final String name, 
+    public static Repository create(final String slug,
+            final int id,
+            final String name,
+            final String description,
             final String scmId,
-            final String state, 
-            final String statusMessage, 
+            final String state,
+            final String statusMessage,
             final boolean forkable,
             final Repository origin,
-            final Project project, 
-            final boolean _public, 
-            final Links links, 
+            final Project project,
+            final boolean _public,
+            final Links links,
             final List<Error> errors) {
-        
-        return new AutoValue_Repository(BitbucketUtils.nullToEmpty(errors), 
-                links, 
-                slug, 
-                id, 
-                name, 
-                scmId, 
+
+        return new AutoValue_Repository(BitbucketUtils.nullToEmpty(errors),
+                links,
+                slug,
+                id,
+                name,
+                description,
+                scmId,
                 state,
-                statusMessage, 
+                statusMessage,
                 forkable,
                 origin,
-                project, 
+                project,
                 _public);
     }
 }

@@ -694,7 +694,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Repository createRepositoryFromErrors(final List<Error> errors) {
-        return Repository.create(null, -1, null, null, null, null, false, null, null, false, null, errors);
+        return Repository.create(null, -1, null, null,null, null, null, false, null, null, false, null, errors);
     }
 
     public static RepositoryPage createRepositoryPageFromErrors(final List<Error> errors) {
