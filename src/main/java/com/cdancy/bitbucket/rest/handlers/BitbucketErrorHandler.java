@@ -30,8 +30,6 @@ import org.jclouds.rest.AuthorizationException;
 import org.jclouds.rest.ResourceAlreadyExistsException;
 import org.jclouds.rest.ResourceNotFoundException;
 import org.jclouds.util.Strings2;
-
-import javax.annotation.Resource;
 import java.io.IOException;
 
 import static org.jclouds.util.Closeables2.closeQuietly;
@@ -40,7 +38,6 @@ import static org.jclouds.util.Closeables2.closeQuietly;
  * Handle errors and propagate exception.
  */
 public class BitbucketErrorHandler implements HttpErrorHandler {
-    @Resource
     protected Logger logger = Logger.NULL;
 
     @Override
