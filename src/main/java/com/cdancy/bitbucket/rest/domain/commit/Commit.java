@@ -22,7 +22,9 @@ import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Parents;
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.JsonElement;
 import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.BitbucketUtils;
@@ -49,13 +51,16 @@ public abstract class Commit implements ErrorsHolder {
     @Nullable
     public abstract String message();
 
+    @Nullable
+    public abstract Map<String, JsonElement> properties();
+
     public abstract List<Parents> parents();
 
     Commit() {
     }
 
     @SerializedNames({ "id", "displayId", "author",
-            "authorTimestamp", "committer", "committerTimestamp", "message", "parents", "errors" })
+            "authorTimestamp", "committer", "committerTimestamp", "message", "properties", "parents", "errors" })
     public static Commit create(final String id,
             final String displayId,
             final Author author,
@@ -63,6 +68,7 @@ public abstract class Commit implements ErrorsHolder {
             final Author committer,
             final long committerTimestamp,
             final String message,
+            final Map<String, JsonElement> properties,
             final List<Parents> parents,
             final List<Error> errors) {
 
@@ -74,6 +80,7 @@ public abstract class Commit implements ErrorsHolder {
                 committer,
                 committerTimestamp,
                 message,
+                properties,
                 BitbucketUtils.nullToEmpty(parents));
     }
 }
