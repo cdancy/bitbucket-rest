@@ -79,6 +79,7 @@ public interface ProjectApi {
     @Named("/api/{jclouds.api-version}/projects/project:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277975392"})
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects")
     @Fallback(BitbucketFallbacks.ProjectPageOnError.class)
     @GET
     ProjectPage list(@Nullable @QueryParam("name") String name,
