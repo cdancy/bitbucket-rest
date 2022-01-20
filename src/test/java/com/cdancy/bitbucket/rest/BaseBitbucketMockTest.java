@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
+import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 
 import com.cdancy.bitbucket.rest.config.BitbucketAuthenticationModule;
 
@@ -74,7 +75,7 @@ public class BaseBitbucketMockTest {
         return ContextBuilder.newBuilder(provider)
                 .endpoint(url.toString())
                 .overrides(setupProperties())
-                .modules(Lists.newArrayList(credsModule))
+                .modules(Lists.newArrayList(credsModule, new SLF4JLoggingModule()))
                 .buildApi(BitbucketApi.class);
     }
 
