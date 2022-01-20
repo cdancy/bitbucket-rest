@@ -401,12 +401,13 @@ public final class BitbucketFallbacks {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
+                // if the repo sync is disabled a 204 is returned with 'null' as the content
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
                 final boolean isAvailable = (is204 != null) ? true : false;
                 final List<Error> errors = getErrors(throwable.getMessage());
                 if (errors.size() > 0
                         && errors.get(0).context() != null
-                        && errors.get(0).context().startsWith("Error parsing input: null")) {
+                        && errors.get(0).context().startsWith("Error parsing input: Cannot invoke \"org.jclouds.io.Payload.openStream()\" because the return value of \"org.jclouds.http.HttpResponse.getPayload()\" is null")) {
                     return createSyncStatusFromErrors(isAvailable, null);
                 } else {
                     return createSyncStatusFromErrors(isAvailable, errors);
