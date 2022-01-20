@@ -47,7 +47,7 @@ dependencies {
     testImplementation ('commons-io:commons-io:2.11.0')
 }
 
-ext.compatibilityVersion = '1.8'
+ext.compatibilityVersion = JavaVersion.VERSION_11
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
@@ -136,4 +136,13 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
     systemProperties = ["test.bitbucket.endpoint" : "${testBitbucketRestEndpoint}",
                         "test.bitbucket.project" : "${testBitbucketRestProject}",
                         "test.bitbucket.basedir" : "${buildDir}/integ-projects"] << authentication
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    options.with {
+        links "https://docs.oracle.com/en/java/javase/${compatibilityVersion}/docs/api"
+        links "https://google.github.io/guice/api-docs/${dependencies.guiceVersion}/javadoc/"
+        addStringOption('Xdoclint:none', '-quiet')
+    }
 }
