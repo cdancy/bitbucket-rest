@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.category.RepositoryCategoriesPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -205,6 +206,15 @@ public interface RepositoryApi {
                                          @PathParam("repo") String repo,
                                          @Nullable @QueryParam("start") Integer start,
                                          @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("repository:list-categories")
+    @Documentation({"https://communardo.atlassian.net/wiki/spaces/KB/pages/27687460/REST+API+for+Categories+for+Bitbucket"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/categories/latest/project/{project}/repository/{repositorySlug}")
+    @Fallback(BitbucketFallbacks.RepositoryOnError.class)
+    @GET
+    RepositoryCategoriesPage listCategories(@PathParam("project") String project,
+                                            @PathParam("repositorySlug") String repoSlug);
 
     @Named("repository:getLabels")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idp273"})

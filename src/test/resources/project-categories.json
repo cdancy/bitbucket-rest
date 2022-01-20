@@ -1,0 +1,19 @@
+{
+  "message": "",
+  "result": {
+    "projectId": 1,
+    "projectKey": "PRJ",
+    "projectName": "ProjectName",
+    "publicRepository": false,
+    "categories": [
+      {
+        "id": 1,
+        "title": "cat1"
+      },
+      {
+        "id": 2,
+        "title": "cat2"
+      }
+    ]
+  }
+}

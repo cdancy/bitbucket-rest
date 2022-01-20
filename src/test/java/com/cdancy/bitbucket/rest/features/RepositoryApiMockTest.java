@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
+import com.cdancy.bitbucket.rest.domain.category.RepositoryCategoriesPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
@@ -855,6 +856,29 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             assertSent(server,
                 getMethod,
                 restBasePath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposPath + repoKey + labelsPath);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListCategories() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-categories.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final RepositoryApi api = baseApi.repositoryApi();
+        try {
+            final RepositoryCategoriesPage repositoryCategoriesPage = api.listCategories(projectKey, repoKey);
+            assertThat(repositoryCategoriesPage).isNotNull();
+            assertThat(repositoryCategoriesPage.result()).isNotNull();
+            assertThat(repositoryCategoriesPage.result().categories()).hasSize(2);
+            assertThat(repositoryCategoriesPage.result().projectKey()).isEqualTo(projectKey);
+            assertThat(repositoryCategoriesPage.result().repositorySlug()).isEqualTo(repoKey);
+            assertThat(repositoryCategoriesPage.result().categories().get(0).title()).isEqualTo("cat1");
+            assertThat(repositoryCategoriesPage.result().categories().get(1).title()).isEqualTo("cat2");
+            assertSent(server,
+                getMethod,
+                "/rest/categories/latest/project/" + projectKey + "/repository/" + repoKey);
         } finally {
             baseApi.close();
             server.shutdown();

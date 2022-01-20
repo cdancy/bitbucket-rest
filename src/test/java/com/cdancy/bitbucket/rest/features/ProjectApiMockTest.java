@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
+import com.cdancy.bitbucket.rest.domain.category.ProjectCategoriesPage;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPermissionsPage;
 import org.testng.annotations.Test;
 
@@ -511,6 +512,28 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + groupsPath, queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testListCategories() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/project-categories.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final ProjectApi api = baseApi.projectApi();
+        try {
+            final ProjectCategoriesPage projectCategoriesPage = api.listCategories(projectKey);
+            assertThat(projectCategoriesPage).isNotNull();
+            assertThat(projectCategoriesPage.result()).isNotNull();
+            assertThat(projectCategoriesPage.result().categories()).hasSize(2);
+            assertThat(projectCategoriesPage.result().projectKey()).isEqualTo(projectKey);
+            assertThat(projectCategoriesPage.result().categories().get(0).title()).isEqualTo("cat1");
+            assertThat(projectCategoriesPage.result().categories().get(1).title()).isEqualTo("cat2");
+            assertSent(server,
+                getMethod,
+                "/rest/categories/latest/project/" + projectKey);
         } finally {
             baseApi.close();
             server.shutdown();

@@ -1,0 +1,22 @@
+{
+  "message": "",
+  "result": {
+    "repositoryId": 1,
+    "repositoryName": "repoName",
+    "repositorySlug": "my-repo",
+    "categories": [
+      {
+        "id": 1,
+        "title": "cat1"
+      },
+      {
+        "id": 2,
+        "title": "cat2"
+      }
+    ],
+    "projectId": 1,
+    "projectKey": "PRJ",
+    "projectName": "ProjectName",
+    "publicRepository": false
+  }
+}

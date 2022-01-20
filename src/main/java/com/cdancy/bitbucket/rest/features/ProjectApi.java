@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
+import com.cdancy.bitbucket.rest.domain.category.ProjectCategoriesPage;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import javax.inject.Named;
 import javax.ws.rs.Consumes;
@@ -148,4 +149,12 @@ public interface ProjectApi {
     ProjectPermissionsPage listPermissionsByGroup(@PathParam("project") String project,
                                                   @Nullable @QueryParam("start") Integer start,
                                                   @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("project:list-categories")
+    @Documentation({"https://communardo.atlassian.net/wiki/spaces/KB/pages/27687460/REST+API+for+Categories+for+Bitbucket"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/categories/latest/project/{project}")
+    @Fallback(BitbucketFallbacks.ProjectPermissionsPageOnError.class)
+    @GET
+    ProjectCategoriesPage listCategories(@PathParam("project") String project);
 }
