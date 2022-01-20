@@ -16,7 +16,6 @@ apply from: "$rootDir/gradle/release.gradle"
 
 
 repositories {
-    gradlePluginPortal()
     mavenCentral()
 }
 
