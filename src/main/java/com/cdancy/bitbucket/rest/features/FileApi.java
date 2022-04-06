@@ -59,8 +59,8 @@ public interface FileApi {
     RawContent raw(@PathParam("project") String project,
                 @PathParam("repo") String repo,
                 @PathParam("filePath") String filePath,
-                @Nullable @QueryParam("at") String commitHash);
-    
+                @Nullable @QueryParam("at") String branchOrTag);
+
     @Named("file:list-lines")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.1.0/bitbucket-rest.html#idm45588158357840"})
     @Produces(MediaType.APPLICATION_JSON)
@@ -71,7 +71,7 @@ public interface FileApi {
     LinePage listLines(@PathParam("project") String project,
                            @PathParam("repo") String repo,
                            @PathParam("filePath") String filePath,
-                           @Nullable @QueryParam("at") String commitHash,
+                           @Nullable @QueryParam("at") String branchOrTag,
                            @Nullable @QueryParam("type") Boolean type,
                            @Nullable @QueryParam("blame") Boolean blame,
                            @Nullable @QueryParam("noContent") Boolean noContent,
@@ -104,7 +104,7 @@ public interface FileApi {
     FilesPage listFiles(@PathParam("project") String project,
                            @PathParam("repo") String repo,
                            @Nullable @PathParam("path") String path,
-                           @Nullable @QueryParam("at") String commitIdOrRef,
+                           @Nullable @QueryParam("at") String branchOrTag,
                            @Nullable @QueryParam("start") Integer start,
                            @Nullable @QueryParam("limit") Integer limit);
 
@@ -119,5 +119,5 @@ public interface FileApi {
     LastModified lastModified(@PathParam("project") String project,
             @PathParam("repo") String repo,
             @Nullable @PathParam("path") String path,
-            @QueryParam("at") String commitIdOrRef);
+            @QueryParam("at") String branchOrTag);
 }

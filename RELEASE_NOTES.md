@@ -1,3 +1,44 @@
+### Version 3.0.1 (11/9/2021)
+* Merge lots of long overdue PR's
+
+### Version 3.0.0 (11/1/2021)
+* Migrate to maven central
+
+### Version 2.7.2 (02/08/2021)
+* ADDED: `Commit` object gained properties `committer` and `committerTimestamp` . - [PR 261](https://github.com/cdancy/bitbucket-rest/pull/261)
+* ADDED: `PullRequestSettings` object gained property `unapproveOnUpdate` . - [PR 263](https://github.com/cdancy/bitbucket-rest/pull/263)
+
+### Version 2.7.1 (10/30/2020)
+* ADDED: `SearchApi` with endpoints `search` . - [PR 242](https://github.com/cdancy/bitbucket-rest/pull/242)
+
+### Version 2.7.0 (9/29/2020)
+* ADDED: `KeysApi` with endpoints `listByRepo, createForRepo, getForRepo, deleteFromRepo, listByProject, createForProject, getForProject, deleteFromProject` . - [PR 238](https://github.com/cdancy/bitbucket-rest/pull/238)
+
+### Version 2.6.3 (7/27/2020)
+* ADDED: `MergeConfigType.PROJECT`. - [PR 228](https://github.com/cdancy/bitbucket-rest/pull/228)
+
+### Version 2.6.2 (12/18/2019)
+* ADDED: Bumped `autovalue` to `1.7`. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
+* ADDED: Bumped `gradle` to `5.6.2`. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
+* ADDED: Added compile dependency on `jaxb-api` to make library work with jdk12. - [PR 207](https://github.com/cdancy/bitbucket-rest/pull/207)
+* ADDED: Use correct data formats in `InsightReportData` value. - [PR 209](https://github.com/cdancy/bitbucket-rest/pull/209)
+
+### Version 2.6.1 (10/23/2019)
+* BUG: Bumped `guice` dependency to account for classloader leak bug with older version of guice. 
+* ADDED: Bumped `jclouds` and `autovalue` dependencies.
+
+### Version 2.6.0 (10/23/2019)
+* ADDED: `InsightsApi`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `listAnnotations`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `listReports`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `getReport`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `createReport`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `deleteReport`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `deleteAnnotation`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `createAnnotation`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `getAnnotationsByReport`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+* ADDED: `InsightsApi` gained endpoint `createAnnotations`. - [PR 205](https://github.com/cdancy/bitbucket-rest/pull/205)
+
 ### Version 2.5.3 (4/26/2019)
 * ADDED: `RepositoryApi` gained endpoint `listAll`. - [PR 192](https://github.com/cdancy/bitbucket-rest/pull/192)
 

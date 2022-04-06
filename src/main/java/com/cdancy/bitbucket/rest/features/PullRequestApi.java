@@ -87,7 +87,7 @@ public interface PullRequestApi {
     PullRequestPage list(@PathParam("project") String project,
                     @PathParam("repo") String repo,
                     @Nullable @QueryParam("direction") String direction,
-                    @Nullable @QueryParam("at") String at,
+                    @Nullable @QueryParam("at") String branchOrTag,
                     @Nullable @QueryParam("state") String state,
                     @Nullable @QueryParam("order") String order,
                     @Nullable @QueryParam("withAttributes") Boolean withAttributes,

@@ -22,7 +22,9 @@ import com.cdancy.bitbucket.rest.domain.common.ErrorsHolder;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Author;
 import com.cdancy.bitbucket.rest.domain.pullrequest.Parents;
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.JsonElement;
 import org.jclouds.json.SerializedNames;
 
 import com.cdancy.bitbucket.rest.BitbucketUtils;
@@ -42,29 +44,43 @@ public abstract class Commit implements ErrorsHolder {
     public abstract long authorTimestamp();
 
     @Nullable
+    public abstract Author committer();
+
+    public abstract long committerTimestamp();
+
+    @Nullable
     public abstract String message();
+
+    @Nullable
+    public abstract Map<String, JsonElement> properties();
 
     public abstract List<Parents> parents();
 
     Commit() {
     }
 
-    @SerializedNames({ "id", "displayId", "author", 
-            "authorTimestamp", "message", "parents", "errors" })
-    public static Commit create(final String id, 
-            final String displayId, 
+    @SerializedNames({ "id", "displayId", "author",
+            "authorTimestamp", "committer", "committerTimestamp", "message", "properties", "parents", "errors" })
+    public static Commit create(final String id,
+            final String displayId,
             final Author author,
-            final long authorTimestamp, 
-            final String message, 
-            final List<Parents> parents, 
+            final long authorTimestamp,
+            final Author committer,
+            final long committerTimestamp,
+            final String message,
+            final Map<String, JsonElement> properties,
+            final List<Parents> parents,
             final List<Error> errors) {
-        
-        return new AutoValue_Commit(BitbucketUtils.nullToEmpty(errors), 
-                id, 
-                displayId, 
-                author, 
-                authorTimestamp, 
-                message, 
+
+        return new AutoValue_Commit(BitbucketUtils.nullToEmpty(errors),
+                id,
+                displayId,
+                author,
+                authorTimestamp,
+                committer,
+                committerTimestamp,
+                message,
+                properties,
                 BitbucketUtils.nullToEmpty(parents));
     }
 }

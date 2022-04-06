@@ -112,9 +112,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         final List<Repository> foundRepos = Lists.newArrayList();
 
         int start = 0;
-        int limit = 100;
+        final int limit = 100;
         RepositoryPage repositoryPage;
-        while(!(repositoryPage = api().listAll(null, null, null, null, start, limit)).isLastPage()) {
+        do {
+            repositoryPage = api().listAll(null, null, null, null, start, limit);
             start += limit;
 
             assertThat(repositoryPage).isNotNull();
@@ -122,7 +123,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
             assertThat(repositoryPage.size()).isGreaterThan(0);
 
             foundRepos.addAll(repositoryPage.values());
-        }
+        } while (!repositoryPage.isLastPage());
 
         assertThat(foundRepos).isNotEmpty();
 
@@ -141,9 +142,10 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         final List<Repository> foundRepos = Lists.newArrayList();
 
         int start = 0;
-        int limit = 100;
+        final int limit = 100;
         RepositoryPage repositoryPage;
-        while(!(repositoryPage = api().listAll(null, repoKey, null, null, start, limit)).isLastPage()) {
+        do {
+            repositoryPage = api().listAll(null, repoKey, null, null, start, limit);
             start += limit;
 
             assertThat(repositoryPage).isNotNull();
@@ -151,7 +153,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
             assertThat(repositoryPage.size()).isGreaterThan(0);
 
             foundRepos.addAll(repositoryPage.values());
-        }
+        } while (!repositoryPage.isLastPage());
 
         assertThat(foundRepos).isNotEmpty();
         assertThat(foundRepos.size()).isEqualTo(1);
@@ -196,7 +198,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateRepositoryWithIllegalName() {
-        final CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
+        final CreateRepository createRepository = CreateRepository.create("!-_999-9*",null, true);
         final Repository repository = api().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
@@ -208,7 +210,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         final List<MergeStrategy> listStrategy = new ArrayList<>();
         listStrategy.add(strategy);
         final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
-        final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1);
+        final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
 
         final PullRequestSettings settings = api().updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
         assertThat(settings).isNotNull();

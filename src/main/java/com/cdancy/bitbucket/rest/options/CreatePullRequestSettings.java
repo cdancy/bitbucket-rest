@@ -35,20 +35,24 @@ public abstract class CreatePullRequestSettings {
 
     public abstract long requiredSuccessfulBuilds();
 
+    public abstract boolean unapproveOnUpdate();
+
     public static CreatePullRequestSettings create(final PullRequestSettings pullRequestSettings) {
         return new AutoValue_CreatePullRequestSettings(pullRequestSettings.mergeConfig(),
             pullRequestSettings.requiredAllApprovers(), pullRequestSettings.requiredAllTasksComplete(),
-            pullRequestSettings.requiredApprovers(), pullRequestSettings.requiredSuccessfulBuilds());
+            pullRequestSettings.requiredApprovers(), pullRequestSettings.requiredSuccessfulBuilds(),
+            pullRequestSettings.unapproveOnUpdate());
     }
 
     @SerializedNames({ "mergeConfig", "requiredAllApprovers", "requiredAllTasksComplete",
-            "requiredApprovers", "requiredSuccessfulBuilds" })
-    public static CreatePullRequestSettings create(final MergeConfig mergeConfig, 
+            "requiredApprovers", "requiredSuccessfulBuilds", "unapproveOnUpdate" })
+    public static CreatePullRequestSettings create(final MergeConfig mergeConfig,
             final boolean requiredAllApprovers,
-            final boolean requiredAllTasksComplete, 
+            final boolean requiredAllTasksComplete,
             final long requiredApprovers,
-            final long requiredSuccessfulBuilds) {
+            final long requiredSuccessfulBuilds,
+            final boolean unapproveOnUpdate) {
         return new AutoValue_CreatePullRequestSettings(mergeConfig, requiredAllApprovers, requiredAllTasksComplete,
-            requiredApprovers, requiredSuccessfulBuilds);
+            requiredApprovers, requiredSuccessfulBuilds, unapproveOnUpdate);
     }
 }

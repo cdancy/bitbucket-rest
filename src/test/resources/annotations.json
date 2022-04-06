@@ -1,0 +1,29 @@
+{
+  "totalCount": 3,
+  "annotations": [
+    {
+      "reportKey": "qwerty",
+      "line": 0,
+      "message": "test",
+      "path": ".gitignore",
+      "severity": "HIGH"
+    },
+    {
+      "reportKey": "qwerty",
+      "externalId": "ext-id",
+      "line": 1,
+      "message": "something wrong",
+      "path": ".gitignore",
+      "severity": "MEDIUM",
+      "type": "BUG"
+    },
+    {
+      "reportKey": "qwerty",
+      "line": 2,
+      "message": "is this a whitespace",
+      "path": ".gitignore",
+      "severity": "LOW",
+      "type": "CODE_SMELL"
+    }
+  ]
+}

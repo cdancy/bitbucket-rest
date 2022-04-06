@@ -1,0 +1,9 @@
+{
+  "errors": [
+    {
+      "context": "text",
+      "message": "You must enter a valid public key",
+      "exceptionName": null
+    }
+  ]
+}

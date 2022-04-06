@@ -44,21 +44,26 @@ public abstract class PullRequestSettings implements ErrorsHolder {
     @Nullable
     public abstract Long requiredSuccessfulBuilds();
 
-    @SerializedNames({ "mergeConfig", "requiredAllApprovers", 
+    @Nullable
+    public abstract Boolean unapproveOnUpdate();
+
+    @SerializedNames({ "mergeConfig", "requiredAllApprovers",
             "requiredAllTasksComplete", "requiredApprovers",
-            "requiredSuccessfulBuilds", "errors" })
-    public static PullRequestSettings create(final MergeConfig mergeConfig, 
+            "requiredSuccessfulBuilds", "unapproveOnUpdate", "errors" })
+    public static PullRequestSettings create(final MergeConfig mergeConfig,
             final Boolean requiredAllApprovers,
-            final Boolean requiredAllTasksComplete, 
+            final Boolean requiredAllTasksComplete,
             final Long requiredApprovers,
-            final Long requiredSuccessfulBuilds, 
+            final Long requiredSuccessfulBuilds,
+            final Boolean unapproveOnUpdate,
             @Nullable final List<Error> errors) {
-        
-        return new AutoValue_PullRequestSettings(BitbucketUtils.nullToEmpty(errors), 
-                mergeConfig, 
+
+        return new AutoValue_PullRequestSettings(BitbucketUtils.nullToEmpty(errors),
+                mergeConfig,
                 requiredAllApprovers,
-                requiredAllTasksComplete, 
-                requiredApprovers, 
-                requiredSuccessfulBuilds);
+                requiredAllTasksComplete,
+                requiredApprovers,
+                requiredSuccessfulBuilds,
+                unapproveOnUpdate);
     }
 }

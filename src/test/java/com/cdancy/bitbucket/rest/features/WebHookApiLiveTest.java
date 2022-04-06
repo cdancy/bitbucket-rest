@@ -39,7 +39,7 @@ public class WebHookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     private GeneratedTestContents generatedTestContents;
 
-    private final List<WebHook.EventType> eventTypes = Lists.newArrayList(WebHook.EventType.PR_COMENT_ADDED);
+    private final List<WebHook.EventType> eventTypes = Lists.newArrayList(WebHook.EventType.PR_COMMENT_ADDED);
     private final CreateWebHook createWebHook = CreateWebHook.create(randomStringLettersOnly(),
             eventTypes,
             "http://www.google.com",
@@ -116,7 +116,7 @@ public class WebHookApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test(dependsOnMethods = "testListWebHooks")
     public void testUpdateWebHook() {
-        final List<WebHook.EventType> updateEventTypes = Lists.newArrayList(WebHook.EventType.PR_COMENT_DELETED);
+        final List<WebHook.EventType> updateEventTypes = Lists.newArrayList(WebHook.EventType.PR_COMMENT_DELETED);
         final CreateWebHook updateWebHook = CreateWebHook.create(webHook.name(),
                 updateEventTypes,
                 "http://www.google.com",

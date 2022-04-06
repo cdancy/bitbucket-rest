@@ -1,63 +1,60 @@
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
-    }
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
+    //id 'checkstyle'
+    id 'jacoco'
+    id 'eclipse'
+    id 'pmd'
 }
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'checkstyle'
-apply plugin: 'jacoco'
-apply plugin: 'eclipse'
-apply plugin: 'pmd'
 
 apply from: "$rootDir/gradle/additional-artifacts.gradle"
 apply from: "$rootDir/gradle/dependencies.gradle"
-apply from: "$rootDir/gradle/documentation.gradle"
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/release.gradle"
 
+
 repositories {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    ext.jcloudsVersion = '2.1.2'
-    ext.autoValueVersion = '1.6.2'
+    ext.jcloudsVersion = '2.5.0'
+    ext.autoServiceVersion = '1.0.1'
+    ext.autoValueVersion = '1.9'
+    ext.guiceVersion = '5.1.0'
 
-    compile ("org.apache.jclouds:jclouds-core:${jcloudsVersion}") 
-    compile ('com.google.auto.service:auto-service:1.0-rc3')
-    compile ("com.google.auto.value:auto-value-annotations:${autoValueVersion}")
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation ("org.apache.jclouds:jclouds-core:${jcloudsVersion}")
+    implementation ("com.google.inject:guice:${guiceVersion}")
+    implementation ("com.google.inject.extensions:guice-assistedinject:${guiceVersion}")
+    implementation ("com.google.auto.value:auto-value-annotations:${autoValueVersion}")
+    annotationProcessor ("com.google.auto.value:auto-value:${autoValueVersion}")
+    implementation ("com.google.auto.service:auto-service-annotations:${autoServiceVersion}")
+    annotationProcessor ("com.google.auto.service:auto-service:${autoServiceVersion}")
 
-    compileOnly ("com.google.auto.value:auto-value:${autoValueVersion}")
+    implementation ('javax.xml.bind:jaxb-api:2.3.1')
 
-    testCompile ("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
-    testCompile ("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}") 
-    testCompile ('org.testng:testng:6.11') 
-    testCompile ('org.assertj:assertj-core:3.8.0') 
-    testCompile ('com.squareup.okhttp:mockwebserver:2.7.5') 
-    testCompile ('ch.qos.logback:logback-core:1.2.3') 
-    testCompile ('ch.qos.logback:logback-classic:1.2.3')
-    testCompile ('commons-io:commons-io:2.6')
+    testImplementation ("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
+    testImplementation ("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}")
+    testImplementation ('org.assertj:assertj-core:3.22.0')
+    testImplementation ('org.testng:testng:7.5')
+    testImplementation ('com.squareup.okhttp:mockwebserver:2.7.5')
+    testImplementation ('ch.qos.logback:logback-classic:1.2.11')
+    testImplementation ('ch.qos.logback:logback-core:1.2.11')
+    testImplementation ('commons-io:commons-io:2.11.0')
 }
 
-ext.compatibilityVersion = '1.8'
+ext.compatibilityVersion = JavaVersion.VERSION_11
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
 jar {
     manifest {
         attributes 'Implementation-Title': 'Bitbucket REST client',
-                   'Implementation-Version': version,
+                   'Implementation-Version': archiveVersion,
                    'Built-By': System.getProperty('user.name'),
                    'Built-Date': new Date(),
                    'Built-JDK': System.getProperty('java.version'),
@@ -65,9 +62,11 @@ jar {
     }
 }
 
+/*
 checkstyle {
     toolVersion = "6.13"
 }
+ */
 
 pmd {
     ruleSetConfig = resources.text.fromFile(rootProject.file('config/pmd/pmd.xml'))
@@ -95,7 +94,7 @@ tasks.withType(JavaCompile) {
 }
 
 task mockTest(type: Test) {
-    useTestNG() 
+    useTestNG()
     include '**/**MockTest.class'
     maxParallelForks = 2
     testLogging {
@@ -113,7 +112,7 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
             }
         }
     }
-    useTestNG() 
+    useTestNG()
     include '**/**LiveTest.class'
     testLogging {
         showStandardStreams = true
@@ -139,3 +138,11 @@ task integTest(type: Test, dependsOn: ['mockTest']) {
                         "test.bitbucket.basedir" : "${buildDir}/integ-projects"] << authentication
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+    options.with {
+        links "https://docs.oracle.com/en/java/javase/${compatibilityVersion}/docs/api"
+        links "https://google.github.io/guice/api-docs/${dependencies.guiceVersion}/javadoc/"
+        addStringOption('Xdoclint:none', '-quiet')
+    }
+}

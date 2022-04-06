@@ -49,5 +49,6 @@
   "requiredAllApprovers": false,
   "requiredAllTasksComplete": true,
   "requiredApprovers": 2,
-  "requiredSuccessfulBuilds": 1
+  "requiredSuccessfulBuilds": 1,
+  "unapproveOnUpdate": true
 }

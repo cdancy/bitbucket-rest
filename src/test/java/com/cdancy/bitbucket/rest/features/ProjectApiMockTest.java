@@ -38,7 +38,7 @@ import com.squareup.okhttp.mockwebserver.MockWebServer;
 /**
  * Mock tests for the {@link ProjectApi} class.
  */
-@Test(groups = "unit", testName = "ProjctApiMockTest")
+@Test(groups = "unit", testName = "ProjectApiMockTest")
 public class ProjectApiMockTest extends BaseBitbucketMockTest {
 
     private final String localMethod = "GET";
@@ -516,4 +516,5 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             server.shutdown();
         }
     }
+
 }

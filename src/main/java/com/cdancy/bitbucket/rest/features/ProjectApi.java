@@ -48,13 +48,14 @@ import org.jclouds.rest.annotations.ResponseParser;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
-@Path("/rest/api/{jclouds.api-version}/projects")
+@Path("/rest")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface ProjectApi {
 
-    @Named("project:create")
+    @Named("/api/{jclouds.api-version}/projects:create")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277995712"})
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects")
     @Fallback(BitbucketFallbacks.ProjectOnError.class)
     @POST
     Project create(@BinderParam(BindToJsonPayload.class) CreateProject createProject);
@@ -62,7 +63,7 @@ public interface ProjectApi {
     @Named("project:get")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277922400"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}")
+    @Path("/api/{jclouds.api-version}/projects/{project}")
     @Fallback(BitbucketFallbacks.ProjectOnError.class)
     @GET
     Project get(@PathParam("project") String project);
@@ -70,15 +71,16 @@ public interface ProjectApi {
     @Named("project:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277932528"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}")
+    @Path("/api/{jclouds.api-version}/projects/{project}")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
     RequestStatus delete(@PathParam("project") String project);
 
-    @Named("project:list")
+    @Named("/api/{jclouds.api-version}/projects/project:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277975392"})
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects")
     @Fallback(BitbucketFallbacks.ProjectPageOnError.class)
     @GET
     ProjectPage list(@Nullable @QueryParam("name") String name,
@@ -86,10 +88,10 @@ public interface ProjectApi {
                      @Nullable @QueryParam("start") Integer start,
                      @Nullable @QueryParam("limit") Integer limit);
 
-    @Named("project:create-permissions-by-user")
+    @Named("/api/{jclouds.api-version}/project:create-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/permissions/users")
+    @Path("/api/{jclouds.api-version}/projects/{project}/permissions/users")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @PUT
@@ -100,7 +102,7 @@ public interface ProjectApi {
     @Named("project:delete-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/permissions/users")
+    @Path("/api/{jclouds.api-version}/projects/{project}/permissions/users")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
@@ -110,7 +112,7 @@ public interface ProjectApi {
     @Named("project:list-permissions-by-user")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054938032"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/permissions/users")
+    @Path("/api/{jclouds.api-version}/projects/{project}/permissions/users")
     @Fallback(BitbucketFallbacks.ProjectPermissionsPageOnError.class)
     @GET
     ProjectPermissionsPage listPermissionsByUser(@PathParam("project") String project,
@@ -120,7 +122,7 @@ public interface ProjectApi {
     @Named("project:create-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/permissions/groups")
+    @Path("/api/{jclouds.api-version}/projects/{project}/permissions/groups")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @PUT
@@ -131,7 +133,7 @@ public interface ProjectApi {
     @Named("project:delete-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/permissions/groups")
+    @Path("/api/{jclouds.api-version}/projects/{project}/permissions/groups")
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
@@ -141,7 +143,7 @@ public interface ProjectApi {
     @Named("project:list-permissions-by-group")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/5.0.0/bitbucket-rest.html#idm45659054969200"})
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{project}/permissions/groups")
+    @Path("/api/{jclouds.api-version}/projects/{project}/permissions/groups")
     @Fallback(BitbucketFallbacks.ProjectPermissionsPageOnError.class)
     @GET
     ProjectPermissionsPage listPermissionsByGroup(@PathParam("project") String project,

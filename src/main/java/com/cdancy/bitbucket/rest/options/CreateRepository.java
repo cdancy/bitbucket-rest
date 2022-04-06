@@ -17,6 +17,7 @@
 
 package com.cdancy.bitbucket.rest.options;
 
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import com.google.auto.value.AutoValue;
@@ -26,6 +27,9 @@ public abstract class CreateRepository {
 
     public abstract String name();
 
+    @Nullable
+    public abstract String description();
+
     public abstract String scmId();
 
     public abstract boolean forkable();
@@ -33,8 +37,8 @@ public abstract class CreateRepository {
     CreateRepository() {
     }
 
-    @SerializedNames({ "name", "scmId", "forkable" })
-    public static CreateRepository create(final String name, final boolean forkable) {
-        return new AutoValue_CreateRepository(name, "git", forkable);
+    @SerializedNames({ "name", "description", "scmId", "forkable" })
+    public static CreateRepository create(final String name, final String description, final boolean forkable) {
+        return new AutoValue_CreateRepository(name, description,"git", forkable);
     }
 }
