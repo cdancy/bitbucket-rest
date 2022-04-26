@@ -1,3 +1,6 @@
+### Version 3.0.2 (4/26/2022)
+* Bump jclouds to latest released version
+
 ### Version 3.0.1 (11/9/2021)
 * Merge lots of long overdue PR's
 
