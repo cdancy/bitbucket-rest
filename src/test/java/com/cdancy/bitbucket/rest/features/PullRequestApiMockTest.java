@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.domain.common.Reference;
 import com.cdancy.bitbucket.rest.domain.pullrequest.User;
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
+import com.cdancy.bitbucket.rest.options.EditPullRequest;
 import org.testng.annotations.Test;
 
 import com.cdancy.bitbucket.rest.BitbucketApi;
@@ -64,6 +65,7 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
     private final String restApiPath = "/rest/api/";
     private final String getMethod = "GET";
     private final String postMethod = "POST";
+    private final String putMethod = "PUT";
     private final String deleteMethod = "DELETE";
 
     private final String limitKeyword = "limit";
@@ -105,6 +107,35 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
             assertThat(pr.fromRef().latestCommit().equals(commitId));
             assertSent(server, postMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testEditPullRequest() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource(pullRequestFile)).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final ProjectKey proj = ProjectKey.create(projectKey);
+            final MinimalRepository repository = MinimalRepository.create(repoKey, null, proj);
+
+            final String commitId = "930228bb501e07c2653771858320873d94518e33";
+            final EditPullRequest epr = EditPullRequest.create(101, 1, "Talking Nerdy", "Edited description", null);
+            final PullRequest pr = api.edit(repository.project().key(), repository.slug(), 101, epr);
+
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).isEmpty();
+            assertThat(pr.fromRef().repository().project().key()).isEqualToIgnoringCase(projectKey);
+            assertThat(pr.fromRef().repository().slug()).isEqualToIgnoringCase(repoKey);
+            assertThat(pr.id()).isEqualTo(101);
+            assertThat(pr.links()).isNotNull();
+            assertThat(pr.fromRef().latestCommit().equals(commitId));
+            assertSent(server, putMethod, restApiPath + BitbucketApiMetadata.API_VERSION
+                + specificPullRequestPath);
         } finally {
             baseApi.close();
             server.shutdown();

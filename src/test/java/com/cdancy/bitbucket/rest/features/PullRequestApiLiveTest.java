@@ -33,6 +33,7 @@ import com.cdancy.bitbucket.rest.domain.common.Reference;
 
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
+import com.cdancy.bitbucket.rest.options.EditPullRequest;
 import com.google.common.collect.Lists;
 import org.jclouds.ContextBuilder;
 import org.testng.annotations.Test;
@@ -109,6 +110,15 @@ public class PullRequestApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(repo.equals(pr.fromRef().repository().name())).isTrue();
         prId = pr.id();
         version = pr.version();
+    }
+
+    @Test(dependsOnMethods = "testCreatePullRequest")
+    public void testEditPullRequest() {
+        final PullRequest pr = api().get(project, repo, prId);
+        final EditPullRequest epr = EditPullRequest.create(prId, pr.version(), pr.title(), pr.description() + " [edited]", pr.reviewers());
+        final PullRequest editedPr = api().edit(project, repo, prId, epr);
+        assertThat(editedPr.version()).isEqualTo(pr.version() + 1);
+        assertThat(editedPr.description()).endsWith("[edited]");
     }
 
     @Test

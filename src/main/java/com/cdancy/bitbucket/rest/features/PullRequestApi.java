@@ -37,6 +37,7 @@ import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
 import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
+import com.cdancy.bitbucket.rest.options.EditPullRequest;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
@@ -104,6 +105,17 @@ public interface PullRequestApi {
     PullRequest create(@PathParam("project") String project,
                        @PathParam("repo") String repo,
                        @BinderParam(BindToJsonPayload.class) CreatePullRequest createPullRequest);
+
+    @Named("pull-request:edit")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idp304"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}")
+    @Fallback(PullRequestOnError.class)
+    @PUT
+    PullRequest edit(@PathParam("project") String project,
+                     @PathParam("repo") String repo,
+                     @PathParam("pullRequestId") int pullRequestId,
+                     @BinderParam(BindToJsonPayload.class) EditPullRequest editPullRequest);
 
     @Named("pull-request:delete")
     @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/5.13.0/bitbucket-rest.html?utm_source=%2Fstatic%2Frest%2Fbitbucket-server%2Flatest%2Fbitbucket-rest.html&utm_medium=301#idm46209337261168"})
