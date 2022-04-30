@@ -13,7 +13,7 @@ cache:
 install: true
     
 script:
-  - ./gradlew -s -Dorg.gradle.daemon=false clean build mockTest publishToMavenLocal
+  - ./gradlew -s -Dorg.gradle.daemon=true clean build mockTest publishToMavenLocal
 
 after_script:
   - bash <(curl -s https://codecov.io/bash)
