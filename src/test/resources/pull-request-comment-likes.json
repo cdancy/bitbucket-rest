@@ -1,0 +1,17 @@
+{
+  "size": 1,
+  "limit": 25,
+  "isLastPage": true,
+  "values": [
+    {
+      "name": "jcitizen",
+      "emailAddress": "jane@example.com",
+      "id": 103,
+      "displayName": "Jane Citizen",
+      "active": true,
+      "slug": "jcitizen",
+      "type": "NORMAL"
+    }
+  ],
+  "start": 0
+}

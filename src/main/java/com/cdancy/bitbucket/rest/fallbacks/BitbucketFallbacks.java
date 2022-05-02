@@ -27,6 +27,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.comment.LikePage;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
@@ -132,6 +133,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class LikePageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createLikePageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -668,6 +679,10 @@ public final class BitbucketFallbacks {
 
     public static UserPage createUserPageFromErrors(final List<Error> errors) {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
+    public static LikePage createLikePageFromErrors(final List<Error> errors) {
+        return LikePage.create(-1, -1, -1, -1, true, null, errors);
     }
 
     public static User createUserFromErrors(final List<Error> errors) {

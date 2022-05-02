@@ -29,6 +29,7 @@ import com.cdancy.bitbucket.rest.features.FileApi;
 import com.cdancy.bitbucket.rest.features.HookApi;
 import com.cdancy.bitbucket.rest.features.InsightsApi;
 import com.cdancy.bitbucket.rest.features.LabelsApi;
+import com.cdancy.bitbucket.rest.features.LikesApi;
 import com.cdancy.bitbucket.rest.features.ProjectApi;
 import com.cdancy.bitbucket.rest.features.PullRequestApi;
 import com.cdancy.bitbucket.rest.features.RepositoryApi;
@@ -106,4 +107,7 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     PostWebHookApi postWebHookApi();
+
+    @Delegate
+    LikesApi likesApi();
 }
