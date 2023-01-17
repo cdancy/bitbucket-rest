@@ -631,7 +631,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
             final List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
-            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY, 20);
             final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
             final PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
 
@@ -678,7 +678,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
             final List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
-            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY, 20);
             final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
             final PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
 
