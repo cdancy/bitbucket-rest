@@ -1,3 +1,5 @@
+### Version 3.1.1 (TBA)
+
 ### Version 3.1.0 (1/17/2023)
 * ADDED: `commitSummaries` field to `MergeConfig` model . - [PR 365](https://github.com/cdancy/bitbucket-rest/pull/365)
 
