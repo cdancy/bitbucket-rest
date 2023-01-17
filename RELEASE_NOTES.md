@@ -1,3 +1,6 @@
+### Version 3.1.0 (1/17/2023)
+* ADDED: `commitSummaries` field to `MergeConfig` model . - [PR 365](https://github.com/cdancy/bitbucket-rest/pull/365)
+
 ### Version 3.0.2 (4/26/2022)
 * Bump jclouds to latest released version
 
@@ -27,7 +30,7 @@
 * ADDED: Use correct data formats in `InsightReportData` value. - [PR 209](https://github.com/cdancy/bitbucket-rest/pull/209)
 
 ### Version 2.6.1 (10/23/2019)
-* BUG: Bumped `guice` dependency to account for classloader leak bug with older version of guice. 
+* BUG: Bumped `guice` dependency to account for classloader leak bug with older version of guice.
 * ADDED: Bumped `jclouds` and `autovalue` dependencies.
 
 ### Version 2.6.0 (10/23/2019)
