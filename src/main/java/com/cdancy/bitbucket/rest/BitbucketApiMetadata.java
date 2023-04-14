@@ -17,7 +17,6 @@
 
 package com.cdancy.bitbucket.rest;
 
-//import com.cdancy.bitbucket.rest.config.CortexHttpApiModule;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
