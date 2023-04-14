@@ -203,7 +203,8 @@ public final class BitbucketClient implements Closeable {
          * @return this Builder.
          */
         public Builder modules(final Module... modules) {
-            this.modules.addAll(Arrays.asList(modules));
+            this.
+                modules.addAll(Arrays.asList(modules));
             return this;
         }
 

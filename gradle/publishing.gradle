@@ -1,54 +1,20 @@
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("$sonatypeURL/service/local/"))
-            snapshotRepositoryUrl.set(uri("$sonatypeURL/content/repositories/snapshots/"))
-        }
-    }
-}
 
 publishing {
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/cortexapps/bitbucket-rest")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_PASSWORD")
+            }
+        }
+    }
     publications {
         mavenJava(MavenPublication) {
             from components.java
             artifact sourcesJar
-            artifact testsJar
-            artifact docsJar
-
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('name', 'Bitbucket Rest')
-                root.appendNode('description', 'Java client for working with Bitbucket REST API.')
-                root.appendNode('url', 'https://github.com/cdancy/jenkins-rest')
-                root.appendNode('inceptionYear', '2016')
-
-                def scm = root.appendNode('scm')
-                scm.appendNode('url', 'https://github.com/cdancy/bitbucket-rest')
-                scm.appendNode('connection', 'scm:https://martinda@github.com/cdancy/bitbucket-rest.git')
-                scm.appendNode('developerConnection', 'scm:git://github.com/cdancy/bitbucket-rest.git')
-
-                def license = root.appendNode('licenses').appendNode('license')
-                license.appendNode('name', 'The Apache Software License, Version 2.0')
-                license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
-                license.appendNode('distribution', 'repo')
-
-                def developers = root.appendNode('developers')
-                def cdancy = developers.appendNode('developer')
-                cdancy.appendNode('id', 'cdancy')
-                cdancy.appendNode('name', 'Christopher Dancy')
-                cdancy.appendNode('email', 'christoforever@gmail.com')
-                def martinda = developers.appendNode('developer')
-                martinda.appendNode('id', 'martinda')
-                martinda.appendNode('name', "Martin d'Anjou")
-                martinda.appendNode('email', 'martin.danjou14@gmail.com')
-            }
         }
     }
-}
-
-signing {
-    sign publishing.publications.mavenJava
 }

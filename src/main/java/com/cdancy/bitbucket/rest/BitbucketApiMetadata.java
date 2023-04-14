@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest;
 
-import com.cdancy.bitbucket.rest.config.BitbucketHttpApiModule;
+//import com.cdancy.bitbucket.rest.config.CortexHttpApiModule;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
@@ -65,7 +65,7 @@ public class BitbucketApiMetadata extends BaseHttpApiMetadata<BitbucketApi> {
                     .buildVersion(BUILD_VERSION)
                     .defaultEndpoint("http://127.0.0.1:7990")
                     .defaultProperties(BitbucketApiMetadata.defaultProperties())
-                    .defaultModules(ImmutableSet.<Class<? extends Module>> of(BitbucketHttpApiModule.class));
+                    .defaultModules(ImmutableSet.<Class<? extends Module>> of());
         }
 
         @Override
