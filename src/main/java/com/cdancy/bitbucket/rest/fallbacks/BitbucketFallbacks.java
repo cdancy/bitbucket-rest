@@ -17,12 +17,6 @@
 
 package com.cdancy.bitbucket.rest.fallbacks;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Throwables.propagate;
-import static com.google.common.base.Predicates.equalTo;
-
-import static org.jclouds.http.HttpUtils.returnValueOnCodeOrNull;
-
 import com.cdancy.bitbucket.rest.BitbucketUtils;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
 import com.cdancy.bitbucket.rest.domain.admin.UserPage;
@@ -33,6 +27,7 @@ import com.cdancy.bitbucket.rest.domain.branch.BranchPage;
 import com.cdancy.bitbucket.rest.domain.branch.BranchRestrictionPage;
 import com.cdancy.bitbucket.rest.domain.build.StatusPage;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
+import com.cdancy.bitbucket.rest.domain.comment.LikePage;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
@@ -53,6 +48,7 @@ import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Role;
 import com.cdancy.bitbucket.rest.domain.participants.Participants.Status;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
+import com.cdancy.bitbucket.rest.domain.postwebhooks.PostWebHook;
 import com.cdancy.bitbucket.rest.domain.project.Project;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPage;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPermissionsPage;
@@ -71,22 +67,26 @@ import com.cdancy.bitbucket.rest.domain.repository.Repository;
 import com.cdancy.bitbucket.rest.domain.repository.RepositoryPage;
 import com.cdancy.bitbucket.rest.domain.repository.WebHook;
 import com.cdancy.bitbucket.rest.domain.repository.WebHookPage;
-import com.cdancy.bitbucket.rest.domain.sync.SyncState;
-import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.domain.sshkey.AccessKey;
 import com.cdancy.bitbucket.rest.domain.sshkey.AccessKeyPage;
+import com.cdancy.bitbucket.rest.domain.sync.SyncState;
+import com.cdancy.bitbucket.rest.domain.sync.SyncStatus;
 import com.cdancy.bitbucket.rest.domain.tags.Tag;
 import com.cdancy.bitbucket.rest.domain.tags.TagPage;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import org.jclouds.Fallback;
 
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gson.JsonSyntaxException;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Predicates.equalTo;
+import static com.google.common.base.Throwables.propagate;
+import static org.jclouds.http.HttpUtils.returnValueOnCodeOrNull;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class BitbucketFallbacks {
@@ -133,6 +133,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class LikePageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createLikePageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -402,12 +412,13 @@ public final class BitbucketFallbacks {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
+                // if the repo sync is disabled a 204 is returned with 'null' as the content
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
                 final boolean isAvailable = (is204 != null) ? true : false;
                 final List<Error> errors = getErrors(throwable.getMessage());
                 if (errors.size() > 0
                         && errors.get(0).context() != null
-                        && errors.get(0).context().startsWith("Error parsing input: null")) {
+                        && errors.get(0).context().startsWith("Error parsing input: Cannot invoke \"org.jclouds.io.Payload.openStream()\" because the return value of \"org.jclouds.http.HttpResponse.getPayload()\" is null")) {
                     return createSyncStatusFromErrors(isAvailable, null);
                 } else {
                     return createSyncStatusFromErrors(isAvailable, errors);
@@ -569,6 +580,27 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class PostWebHookOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createPostWebHookFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class PostWebHookListOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createPostWebHookListFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+
     public static final class AccessKeyOnError implements Fallback<Object> {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
@@ -649,6 +681,10 @@ public final class BitbucketFallbacks {
         return UserPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
+    public static LikePage createLikePageFromErrors(final List<Error> errors) {
+        return LikePage.create(-1, -1, -1, -1, true, null, errors);
+    }
+
     public static User createUserFromErrors(final List<Error> errors) {
         return User.create(errors, null, null, -1, null, false, null, null, null, false, -1, false, false);
     }
@@ -682,7 +718,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Commit createCommitFromErrors(final List<Error> errors) {
-        return Commit.create("-1", "-1", null, 0, null, 0, null, null, errors);
+        return Commit.create("-1", "-1", null, 0, null, 0, null,null, null, errors);
     }
 
     public static Tag createTagFromErrors(final List<Error> errors) {
@@ -694,7 +730,7 @@ public final class BitbucketFallbacks {
     }
 
     public static Repository createRepositoryFromErrors(final List<Error> errors) {
-        return Repository.create(null, -1, null, null, null, null, false, null, null, false, null, errors);
+        return Repository.create(null, -1, null, null,null, null, null, false, null, null, false, null, errors);
     }
 
     public static RepositoryPage createRepositoryPageFromErrors(final List<Error> errors) {
@@ -788,8 +824,19 @@ public final class BitbucketFallbacks {
         return WebHookPage.create(-1, -1, -1, -1, true, null, errors);
     }
 
+    public static List<Error> createPostWebHookListFromErrors(final List<Error> errors) {
+        return errors;
+    }
+
     public static WebHook createWebHookFromErrors(final List<Error> errors) {
         return WebHook.create(null, null, -1, -1, null , null, null, false, errors);
+    }
+
+    public static PostWebHook createPostWebHookFromErrors(final List<Error> errors) {
+        return PostWebHook.create(false, false, null, null,
+            false, false, false, false, false, false,
+            false, false,false, false ,false, null,
+            null, errors);
     }
 
     public static AccessKey createAccessKeyFromErrors(final List<Error> errors) {

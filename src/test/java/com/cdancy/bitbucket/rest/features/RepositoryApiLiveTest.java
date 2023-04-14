@@ -198,7 +198,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
 
     @Test
     public void testCreateRepositoryWithIllegalName() {
-        final CreateRepository createRepository = CreateRepository.create("!-_999-9*", true);
+        final CreateRepository createRepository = CreateRepository.create("!-_999-9*",null, true);
         final Repository repository = api().create(projectKey, createRepository);
         assertThat(repository).isNotNull();
         assertThat(repository.errors().isEmpty()).isFalse();
@@ -209,7 +209,7 @@ public class RepositoryApiLiveTest extends BaseBitbucketApiLiveTest {
         final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.SQUASH, null);
         final List<MergeStrategy> listStrategy = new ArrayList<>();
         listStrategy.add(strategy);
-        final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+        final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY, 20);
         final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
 
         final PullRequestSettings settings = api().updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);

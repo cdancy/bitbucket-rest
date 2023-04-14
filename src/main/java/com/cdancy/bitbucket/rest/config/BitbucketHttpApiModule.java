@@ -27,13 +27,13 @@ import org.jclouds.rest.config.HttpApiModule;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.handlers.BitbucketErrorHandler;
 
-@ConfiguresHttpApi
-public class BitbucketHttpApiModule extends HttpApiModule<BitbucketApi> {
-
-    @Override
-    protected void bindErrorHandlers() {
-        bind(HttpErrorHandler.class).annotatedWith(Redirection.class).to(BitbucketErrorHandler.class);
-        bind(HttpErrorHandler.class).annotatedWith(ClientError.class).to(BitbucketErrorHandler.class);
-        bind(HttpErrorHandler.class).annotatedWith(ServerError.class).to(BitbucketErrorHandler.class);
-    }
-}
+//@ConfiguresHttpApi
+//public class BitbucketHttpApiModule extends HttpApiModule<BitbucketApi> {
+//
+//    @Override
+//    protected void bindErrorHandlers() {
+//        bind(HttpErrorHandler.class).annotatedWith(Redirection.class).to(BitbucketErrorHandler.class);
+//        bind(HttpErrorHandler.class).annotatedWith(ClientError.class).to(BitbucketErrorHandler.class);
+//        bind(HttpErrorHandler.class).annotatedWith(ServerError.class).to(BitbucketErrorHandler.class);
+//    }
+//}

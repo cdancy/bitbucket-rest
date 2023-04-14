@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.domain.repository;
 
 import com.google.auto.value.AutoValue;
+import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 import java.util.List;
@@ -37,11 +38,15 @@ public abstract class MergeConfig {
 
     public abstract MergeConfigType type();
 
-    @SerializedNames({ "defaultStrategy", "strategies", "type"})
-    public static MergeConfig create(final MergeStrategy defaultStrategy, 
-            final List<MergeStrategy> strategies, 
-            final MergeConfigType type) {
-        
-        return new AutoValue_MergeConfig(defaultStrategy, strategies, type);
+    @Nullable
+    public abstract Integer commitSummaries();
+
+    @SerializedNames({ "defaultStrategy", "strategies", "type", "commitSummaries"})
+    public static MergeConfig create(final MergeStrategy defaultStrategy,
+            final List<MergeStrategy> strategies,
+            final MergeConfigType type,
+            final Integer commitSummaries) {
+
+        return new AutoValue_MergeConfig(defaultStrategy, strategies, type, commitSummaries);
     }
 }

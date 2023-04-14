@@ -20,6 +20,7 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.BitbucketApi;
 import com.cdancy.bitbucket.rest.BitbucketApiMetadata;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.cdancy.bitbucket.rest.domain.repository.MergeConfig;
 import com.cdancy.bitbucket.rest.domain.repository.MergeStrategy;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
@@ -59,6 +60,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
     private final String permissionsPath = "/permissions/";
     private final String usersPath = permissionsPath + "users";
     private final String groupsPath = permissionsPath + "groups";
+    private final String labelsPath = "/labels";
     private final String settingsPath = "/settings/";
     private final String pullRequestsPath = settingsPath + "pull-requests";
     private final String reposPath = "/repos/";
@@ -80,7 +82,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final RepositoryApi api = baseApi.repositoryApi();
         try {
 
-            final CreateRepository createRepository = CreateRepository.create(repoKey, true);
+            final CreateRepository createRepository = CreateRepository.create(repoKey, null, true);
             final Repository repository = api.create(projectKey, createRepository);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isEmpty();
@@ -102,7 +104,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
         final RepositoryApi api = baseApi.repositoryApi();
         try {
 
-            final CreateRepository createRepository = CreateRepository.create("!_myrepo", true);
+            final CreateRepository createRepository = CreateRepository.create("!_myrepo", null, true);
             final Repository repository = api.create(projectKey, createRepository);
             assertThat(repository).isNotNull();
             assertThat(repository.errors()).isNotEmpty();
@@ -629,7 +631,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
             final List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
-            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY, 20);
             final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
             final PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
 
@@ -676,7 +678,7 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final MergeStrategy strategy = MergeStrategy.create(null, null, null, MergeStrategy.MergeStrategyId.FF, null);
             final List<MergeStrategy> listStrategy = new ArrayList<>();
             listStrategy.add(strategy);
-            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY);
+            final MergeConfig mergeConfig = MergeConfig.create(strategy, listStrategy, MergeConfig.MergeConfigType.REPOSITORY, 20);
             final CreatePullRequestSettings pullRequestSettings = CreatePullRequestSettings.create(mergeConfig, false, false, 0, 1, true);
             final PullRequestSettings settings = api.updatePullRequestSettings(projectKey, repoKey, pullRequestSettings);
 
@@ -834,6 +836,25 @@ public class RepositoryApiMockTest extends BaseBitbucketMockTest {
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
                     + projectsPath + projectKey + reposPath + repoKey + groupsPath, queryParams);
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
+    public void testGetLabels() throws Exception {
+        final MockWebServer server = mockWebServer();
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/repository-labels.json")).setResponseCode(200));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final RepositoryApi api = baseApi.repositoryApi();
+        try {
+            final LabelsPage labelsPage = api.getLabels(projectKey, repoKey);
+            assertThat(labelsPage).isNotNull();
+            assertThat(labelsPage.errors()).isEmpty();
+            assertThat(labelsPage.values()).isNotEmpty();
+            assertSent(server,
+                getMethod,
+                restBasePath + BitbucketApiMetadata.API_VERSION + projectsPath + projectKey + reposPath + repoKey + labelsPath);
         } finally {
             baseApi.close();
             server.shutdown();

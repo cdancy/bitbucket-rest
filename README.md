@@ -1,7 +1,5 @@
 
-[![Build Status](https://travis-ci.org/cdancy/bitbucket-rest.svg?branch=master)](https://travis-ci.org/cdancy/bitbucket-rest)
-[![codecov](https://codecov.io/gh/cdancy/bitbucket-rest/branch/master/graph/badge.svg)](https://codecov.io/gh/cdancy/bitbucket-rest)
-[![Download](https://api.bintray.com/packages/cdancy/java-libraries/bitbucket-rest/images/download.svg) ](https://bintray.com/cdancy/java-libraries/bitbucket-rest/_latestVersion)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.cdancy/bitbucket-rest/badge.png)](https://maven-badges.herokuapp.com/maven-central/io.github.cdancy/bitbucket-rest)
 [![Stack Overflow](https://img.shields.io/badge/stack%20overflow-bitbucket&#8211;rest-4183C4.svg)](https://stackoverflow.com/questions/tagged/bitbucket+rest)
 
 # bitbucket-rest
@@ -30,10 +28,10 @@ contributors to take up the work.
 
 ## Latest Release
 
-Can be sourced from jcenter/bintray like so:
+Can be sourced from maven like so:
 
     <dependency>
-      <groupId>com.cdancy</groupId>
+      <groupId>io.github.cdancy</groupId>
       <artifactId>bitbucket-rest</artifactId>
       <version>X.Y.Z</version>
       <classifier>sources|tests|javadoc|all</classifier> (Optional)

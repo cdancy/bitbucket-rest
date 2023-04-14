@@ -52,9 +52,10 @@ import org.jclouds.rest.annotations.ResponseParser;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public interface ProjectApi {
 
-    @Named("/api/{jclouds.api-version}/projects/project:create")
+    @Named("/api/{jclouds.api-version}/projects:create")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277995712"})
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects")
     @Fallback(BitbucketFallbacks.ProjectOnError.class)
     @POST
     Project create(@BinderParam(BindToJsonPayload.class) CreateProject createProject);
@@ -79,6 +80,7 @@ public interface ProjectApi {
     @Named("/api/{jclouds.api-version}/projects/project:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277975392"})
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects")
     @Fallback(BitbucketFallbacks.ProjectPageOnError.class)
     @GET
     ProjectPage list(@Nullable @QueryParam("name") String name,

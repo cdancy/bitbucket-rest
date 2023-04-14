@@ -19,6 +19,7 @@ package com.cdancy.bitbucket.rest.features;
 
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
+import com.cdancy.bitbucket.rest.domain.labels.LabelsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PermissionsPage;
 import com.cdancy.bitbucket.rest.domain.repository.PullRequestSettings;
 import com.cdancy.bitbucket.rest.domain.repository.Repository;
@@ -204,4 +205,13 @@ public interface RepositoryApi {
                                          @PathParam("repo") String repo,
                                          @Nullable @QueryParam("start") Integer start,
                                          @Nullable @QueryParam("limit") Integer limit);
+
+    @Named("repository:getLabels")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idp273"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}/labels")
+    @Fallback(BitbucketFallbacks.RepositoryOnError.class)
+    @GET
+    LabelsPage getLabels(@PathParam("project") String project,
+                         @PathParam("repo") String repo);
 }
