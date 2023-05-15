@@ -23,7 +23,7 @@ dependencies {
     ext.jcloudsVersion = '2.5.0'
     ext.autoServiceVersion = '1.0.1'
     ext.autoValueVersion = '1.10.1'
-    ext.guiceVersion = '5.1.0'
+    ext.guiceVersion = '7.0.0'
 
     // The transitive dependencies that are exposed via the public API of this project
     api 'com.google.code.gson:gson:2.10.1'
