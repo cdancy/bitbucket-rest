@@ -17,16 +17,6 @@
 
 package com.cdancy.bitbucket.rest.config;
 
-import org.jclouds.http.HttpErrorHandler;
-import org.jclouds.http.annotation.ClientError;
-import org.jclouds.http.annotation.Redirection;
-import org.jclouds.http.annotation.ServerError;
-import org.jclouds.rest.ConfiguresHttpApi;
-import org.jclouds.rest.config.HttpApiModule;
-
-import com.cdancy.bitbucket.rest.BitbucketApi;
-import com.cdancy.bitbucket.rest.handlers.BitbucketErrorHandler;
-
 //@ConfiguresHttpApi
 //public class BitbucketHttpApiModule extends HttpApiModule<BitbucketApi> {
 //
