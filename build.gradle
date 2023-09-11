@@ -22,7 +22,7 @@ repositories {
 dependencies {
     ext.jcloudsVersion = '2.5.0'
     ext.autoServiceVersion = '1.1.1'
-    ext.autoValueVersion = '1.10.2'
+    ext.autoValueVersion = '1.10.4'
     ext.guiceVersion = '5.1.0'
 
     // The transitive dependencies that are exposed via the public API of this project
