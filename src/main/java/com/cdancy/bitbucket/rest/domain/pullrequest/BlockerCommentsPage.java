@@ -33,11 +33,11 @@ public abstract class BlockerCommentsPage implements Page<BlockerComments>, Erro
 
     @SerializedNames({ "start", "limit", "size",
             "nextPageStart", "isLastPage", "values", "errors" })
-    public static BlockerCommentsPage create(@Nullable final Integer start,
-                                             @Nullable final Integer limit,
-                                             @Nullable final Integer size,
-                                             @Nullable final Integer nextPageStart,
-                                             @Nullable final Boolean isLastPage,
+    public static BlockerCommentsPage create(@Nullable final int start,
+                                             @Nullable final int limit,
+                                             @Nullable final int size,
+                                             @Nullable final int nextPageStart,
+                                             @Nullable final boolean isLastPage,
                                              @Nullable final List<BlockerComments> values,
                                              @Nullable final List<Error> errors) {
 

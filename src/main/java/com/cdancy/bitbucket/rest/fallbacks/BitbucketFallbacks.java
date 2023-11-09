@@ -31,6 +31,7 @@ import com.cdancy.bitbucket.rest.domain.comment.LikePage;
 import com.cdancy.bitbucket.rest.domain.comment.Task;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.commit.DiffPage;
 import com.cdancy.bitbucket.rest.domain.common.Error;
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.cdancy.bitbucket.rest.domain.common.Veto;
@@ -243,6 +244,16 @@ public final class BitbucketFallbacks {
         public Object createOrPropagate(final Throwable throwable) throws Exception {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createCommitFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
+    public static final class DiffPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createDiffPageFromErrors(getErrors(throwable.getMessage()));
             }
             throw propagate(throwable);
         }
@@ -729,6 +740,10 @@ public final class BitbucketFallbacks {
 
     public static Commit createCommitFromErrors(final List<Error> errors) {
         return Commit.create("-1", "-1", null, 0, null, 0, null,null, null, errors);
+    }
+
+    public static DiffPage createDiffPageFromErrors(final List<Error> errors) {
+        return DiffPage.create(errors, null, null, -1, null, false, null);
     }
 
     public static Tag createTagFromErrors(final List<Error> errors) {
