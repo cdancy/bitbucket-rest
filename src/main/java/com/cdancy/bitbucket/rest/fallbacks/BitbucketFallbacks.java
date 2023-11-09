@@ -453,6 +453,16 @@ public final class BitbucketFallbacks {
         }
     }
 
+    public static final class BlockerCommentsPageOnError implements Fallback<Object> {
+        @Override
+        public Object createOrPropagate(final Throwable throwable) throws Exception {
+            if (checkNotNull(throwable, "throwable") != null) {
+                return createActivitiesPageFromErrors(getErrors(throwable.getMessage()));
+            }
+            throw propagate(throwable);
+        }
+    }
+
     public static final class ParticipantsPageOnError implements Fallback<Object> {
         @Override
         public Object createOrPropagate(final Throwable throwable) throws Exception {
