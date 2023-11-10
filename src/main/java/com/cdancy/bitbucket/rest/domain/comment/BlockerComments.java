@@ -14,12 +14,6 @@ import java.util.Map;
 
 @AutoValue
 public abstract class BlockerComments implements ErrorsHolder {
-    public enum BlockingCommentState {
-        OPEN,
-        PENDING,
-        RESOLVED
-    }
-
     public abstract Map<String, JsonElement> properties();
 
     public abstract int id();
@@ -36,8 +30,8 @@ public abstract class BlockerComments implements ErrorsHolder {
 
     public abstract long updatedDate();
     public abstract boolean threadResolved();
-    public abstract String severity();
-    public abstract BlockingCommentState state();
+    public abstract Comments.Severity severity();
+    public abstract Comments.TaskState state();
 
     @Nullable
     public abstract PermittedOperations permittedOperations();
@@ -59,8 +53,8 @@ public abstract class BlockerComments implements ErrorsHolder {
                                                                            final long updatedDate,
                                                                           final Author resolver,
                                                                            final Boolean threadResolved,
-                                                                           final BlockingCommentState state,
-                                                                           final String severity,
+                                                                           final Comments.TaskState state,
+                                                                           final Comments.Severity severity,
                                                                            final PermittedOperations permittedOperations,
                                                                            final List<Error> errors) {
 

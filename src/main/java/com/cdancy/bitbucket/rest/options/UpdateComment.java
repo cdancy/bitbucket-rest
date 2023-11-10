@@ -18,6 +18,7 @@
 package com.cdancy.bitbucket.rest.options;
 
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
+import com.cdancy.bitbucket.rest.domain.comment.BlockerComments;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
 import com.google.auto.value.AutoValue;
@@ -25,8 +26,9 @@ import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class CreateComment {
+public abstract class UpdateComment {
 
+    @Nullable
     public abstract String text();
 
     @Nullable
@@ -40,16 +42,15 @@ public abstract class CreateComment {
 
     @Nullable
     public abstract Comments.TaskState state();
-
-    CreateComment() {
+    UpdateComment() {
     }
 
     @SerializedNames({ "text", "parent", "anchor", "severity", "state" })
-    public static CreateComment create(final String text,
-            final Parent parent,
-            final Anchor anchor,
+    public static UpdateComment create(final String text,
+                                       final Parent parent,
+                                       final Anchor anchor,
                                        final Comments.Severity severity,
                                        final Comments.TaskState state) {
-        return new AutoValue_CreateComment(text, parent, anchor, severity, state);
+        return new AutoValue_UpdateComment(text, parent, anchor, severity, state);
     }
 }

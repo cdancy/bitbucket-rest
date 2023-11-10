@@ -53,6 +53,7 @@ public interface TasksApi {
     @Consumes(MediaType.APPLICATION_JSON)
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @POST
+    @Deprecated
     Task create(@BinderParam(BindToJsonPayload.class) CreateTask createTask);
 
     @Named("tasks:update")
@@ -62,8 +63,9 @@ public interface TasksApi {
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @Payload("%7B \"state\": \"{state}\" %7D")
     @PUT
+    @Deprecated
     Task update(@PathParam("taskId") int taskId, @PayloadParam("state") String state);
-    
+
 
     @Named("tasks:get")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45701777641664"})
@@ -71,8 +73,9 @@ public interface TasksApi {
     @Path("/{taskId}")
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @GET
+    @Deprecated
     Task get(@PathParam("taskId") int taskId);
-    
+
     @Named("tasks:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45701777664960"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -80,5 +83,6 @@ public interface TasksApi {
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @DELETE
+    @Deprecated
     RequestStatus delete(@PathParam("taskId") int taskId);
 }

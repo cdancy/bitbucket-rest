@@ -18,16 +18,10 @@
 package com.cdancy.bitbucket.rest.features;
 
 import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.options.UpdateComment;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.Payload;
@@ -77,6 +71,18 @@ public interface CommentsApi {
                     @PathParam("pullRequestId") int pullRequestId,
                     @BinderParam(BindToJsonPayload.class) CreateComment createComment);
 
+    @Named("comments:create")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278076336"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments/{commentId}")
+    @Fallback(CommentsOnError.class)
+    @PUT
+    Comments update(@PathParam("project") String project,
+                    @PathParam("repo") String repo,
+                    @PathParam("pullRequestId") int pullRequestId,
+                    @PathParam("commentId") int commentId,
+                    @BinderParam(BindToJsonPayload.class) UpdateComment updateComment);
+
     @Named("comments:get")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278070112"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -101,7 +107,7 @@ public interface CommentsApi {
                                 @QueryParam("path") String pathToFile,
                                 @Nullable @QueryParam("start") Integer start,
                                 @Nullable @QueryParam("limit") Integer limit);
-    
+
     @Named("comments:file-comments")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278617264"})
     @Consumes(MediaType.APPLICATION_JSON)

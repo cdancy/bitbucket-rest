@@ -53,7 +53,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     private String filePath;
     private final String commentText = TestUtilities.randomString();
     private final String commentReplyText = TestUtilities.randomString();
-    
+
     private int prId = -1;
     private int commentId = -1;
     private int commentReplyId = -1;
@@ -64,12 +64,12 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         generatedTestContents = TestUtilities.initGeneratedTestContents(this.endpoint, this.bitbucketAuthentication, this.api);
         this.project = generatedTestContents.project.key();
         this.repo = generatedTestContents.repository.name();
-        
+
         final BranchPage branchPage = api.branchApi().list(project, repo, null, null, null, null, null, null);
         assertThat(branchPage).isNotNull();
         assertThat(branchPage.errors().isEmpty()).isTrue();
         assertThat(branchPage.values().size()).isEqualTo(2);
-        
+
         String branchToMerge = null;
         for (final Branch branch : branchPage.values()) {
             if (!branch.id().endsWith("master")) {
@@ -78,7 +78,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
             }
         }
         assertThat(branchToMerge).isNotNull();
-        
+
         final String randomChars = TestUtilities.randomString();
         final ProjectKey proj = ProjectKey.create(project);
         final MinimalRepository repository = MinimalRepository.create(repo, null, proj);
@@ -86,13 +86,13 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         final Reference toRef = Reference.create(null, repository);
         final CreatePullRequest cpr = CreatePullRequest.create(randomChars, "Fix for issue " + randomChars, fromRef, toRef, null, null);
         final PullRequest pr = api.pullRequestApi().create(project, repo, cpr);
-        
+
         assertThat(pr).isNotNull();
         assertThat(project).isEqualTo(pr.fromRef().repository().project().key());
         assertThat(repo).isEqualTo(pr.fromRef().repository().name());
         prId = pr.id();
     }
-    
+
     @Test
     public void testComment() {
         final Comments comm = api().comment(project, repo, prId, commentText);
@@ -105,7 +105,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
     @Test (dependsOnMethods = "testComment")
     public void testCreateComment() {
         final Parent parent = Parent.create(commentId);
-        final CreateComment createComment = CreateComment.create(commentReplyText, parent, null);
+        final CreateComment createComment = CreateComment.create(commentReplyText, parent, null, null, null);
 
         final Comments comm = api().create(project, repo, prId, createComment);
         assertThat(comm).isNotNull();
@@ -114,7 +114,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         commentReplyId = comm.id();
         commentReplyIdVersion = comm.version();
     }
-    
+
     @Test (dependsOnMethods = "testCreateComment")
     public void testGetComment() {
         final Comments comm = api().get(project, repo, prId, commentReplyId);
@@ -122,34 +122,34 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text().equals(commentReplyText)).isTrue();
     }
-    
+
     @Test (dependsOnMethods = "testGetComment")
     public void testCreateInlineComment() {
-        
+
         final ChangePage changePage = api.pullRequestApi().changes(project, repo, prId, null, null, null);
         assertThat(changePage).isNotNull();
         assertThat(changePage.errors().isEmpty()).isTrue();
         assertThat(changePage.values().size()).isEqualTo(1);
         final Change change = changePage.values().get(0);
         this.filePath = change.path()._toString();
-        
-        final Anchor anchor = Anchor.create(1, Anchor.LineType.CONTEXT, 
-                        Anchor.FileType.FROM, 
-                        this.filePath, 
+
+        final Anchor anchor = Anchor.create(1, Anchor.LineType.CONTEXT,
+                        Anchor.FileType.FROM,
+                        this.filePath,
                         this.filePath);
-        
+
         final String randomText = TestUtilities.randomString();
-        final CreateComment createComment = CreateComment.create(randomText, null, anchor);
+        final CreateComment createComment = CreateComment.create(randomText, null, anchor, null, null);
 
         final Comments comm = api().create(project, repo, prId, createComment);
         assertThat(comm).isNotNull();
         assertThat(comm.errors().isEmpty()).isTrue();
         assertThat(comm.text()).isEqualTo(randomText);
     }
-    
+
     @Test (dependsOnMethods = "testCreateInlineComment")
     public void testGetFileCommentPage() throws Exception {
-        
+
         final List<Comments> allComments = Lists.newArrayList();
         Integer start = null;
         while (true) {
@@ -165,7 +165,7 @@ public class CommentsApiLiveTest extends BaseBitbucketApiLiveTest {
                 Thread.sleep(1000);
             }
         }
-        
+
         assertThat(allComments.isEmpty()).isFalse();
         boolean foundComment = false;
         for (final Comments comm : allComments) {

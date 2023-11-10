@@ -95,6 +95,7 @@ public interface BitbucketApi extends Closeable {
     TagApi tagApi();
 
     @Delegate
+    @Deprecated
     TasksApi tasksApi();
 
     @Delegate
