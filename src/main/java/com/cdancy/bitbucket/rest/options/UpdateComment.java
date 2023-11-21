@@ -18,7 +18,6 @@
 package com.cdancy.bitbucket.rest.options;
 
 import com.cdancy.bitbucket.rest.domain.comment.Anchor;
-import com.cdancy.bitbucket.rest.domain.comment.BlockerComments;
 import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.comment.Parent;
 import com.google.auto.value.AutoValue;
@@ -42,15 +41,19 @@ public abstract class UpdateComment {
 
     @Nullable
     public abstract Comments.TaskState state();
+
+    public abstract int version();
+
     UpdateComment() {
     }
 
-    @SerializedNames({ "text", "parent", "anchor", "severity", "state" })
+    @SerializedNames({ "text", "parent", "anchor", "severity", "state", "version" })
     public static UpdateComment create(final String text,
                                        final Parent parent,
                                        final Anchor anchor,
                                        final Comments.Severity severity,
-                                       final Comments.TaskState state) {
-        return new AutoValue_UpdateComment(text, parent, anchor, severity, state);
+                                       final Comments.TaskState state,
+                                       final int version) {
+        return new AutoValue_UpdateComment(text, parent, anchor, severity, state, version);
     }
 }
