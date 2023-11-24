@@ -86,6 +86,23 @@ public interface RepositoryApi {
                     @PayloadParam("newProject") String newProject,
                     @PayloadParam("newRepo") String newRepo);
 
+
+    @Named("repository:mode")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277587248"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/api/{jclouds.api-version}/projects/{project}/repos/{repo}")
+    @Payload("%7B \"name\": \"{repo}\", \"forkable\": false, \"project\": %7B \"key\": \"{newProject}\" %7D,\"public\": false %7D")
+    @Fallback(BitbucketFallbacks.RepositoryOnError.class)
+    @POST
+    Repository move(@PathParam("project") String project,
+                    @PathParam("repo") @PayloadParam("repo") String repo,
+                    @PayloadParam("newProject") String newProject
+                    // @PayloadParam("newRepo") String newRepo
+                    );
+
+
+
+
     @Named("repository:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888277567792"})
     @Consumes(MediaType.APPLICATION_JSON)
