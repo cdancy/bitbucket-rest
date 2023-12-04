@@ -1,3 +1,5 @@
+### Version 3.1.2 (TBA)
+
 ### Version 3.1.1 (12/4/2023)
 * ADDED: new API `CompareApi` . - [PR 411](https://github.com/cdancy/bitbucket-rest/pull/411)
 
