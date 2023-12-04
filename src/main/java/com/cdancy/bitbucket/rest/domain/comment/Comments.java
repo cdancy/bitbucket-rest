@@ -34,6 +34,16 @@ import com.google.gson.JsonElement;
 
 @AutoValue
 public abstract class Comments implements ErrorsHolder, LinksHolder {
+    public enum Severity {
+        NORMAL,
+        BLOCKER
+    }
+
+    public enum TaskState {
+        OPEN,
+        PENDING,
+        RESOLVED
+    }
 
     public abstract Map<String, JsonElement> properties();
 
@@ -51,24 +61,35 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
 
     public abstract long updatedDate();
 
+    /**
+     * Not defined for activities
+     * @return
+     */
+    @Nullable
+    public abstract Severity severity();
+    /**
+     * Not defined for activities
+     * @return
+     */
+    @Nullable
+    public abstract TaskState state();
+
     public abstract List<Comments> comments();
-    
-    public abstract List<Task> tasks();
-        
+
     @Nullable
     public abstract Anchor anchor();
-    
+
     @Nullable
     public abstract Link link();
 
     @Nullable
     public abstract PermittedOperations permittedOperations();
-    
+
     Comments() {
     }
 
     @SerializedNames({ "properties", "id", "version", "text", "author",
-            "createdDate", "updatedDate", "comments", "tasks", "anchor", "link", "links", 
+            "createdDate", "updatedDate", "comments", "severity", "state", "anchor", "link", "links",
             "permittedOperations", "errors" })
     public static Comments create(final Map<String, JsonElement> properties,
                                   final int id,
@@ -78,26 +99,28 @@ public abstract class Comments implements ErrorsHolder, LinksHolder {
                                   final long createdDate,
                                   final long updatedDate,
                                   final List<Comments> comments,
-                                  final List<Task> tasks,
+                                  final Severity severity,
+                                  final TaskState state,
                                   final Anchor anchor,
                                   final Link link,
                                   final Links links,
                                   final PermittedOperations permittedOperations,
                                   final List<Error> errors) {
-        
-        return new AutoValue_Comments(BitbucketUtils.nullToEmpty(errors), 
-                links, 
+
+        return new AutoValue_Comments(BitbucketUtils.nullToEmpty(errors),
+                links,
                 BitbucketUtils.nullToEmpty(properties),
-                id, 
-                version, 
-                text, 
-                author, 
-                createdDate, 
-                updatedDate, 
-                BitbucketUtils.nullToEmpty(comments), 
-                BitbucketUtils.nullToEmpty(tasks), 
-                anchor, 
-                link, 
+                id,
+                version,
+                text,
+                author,
+                createdDate,
+                updatedDate,
+                severity,
+                state,
+                BitbucketUtils.nullToEmpty(comments),
+                anchor,
+                link,
                 permittedOperations);
     }
 }

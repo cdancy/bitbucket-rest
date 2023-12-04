@@ -20,7 +20,9 @@ package com.cdancy.bitbucket.rest.features;
 import com.cdancy.bitbucket.rest.annotations.Documentation;
 import com.cdancy.bitbucket.rest.domain.commit.Commit;
 import com.cdancy.bitbucket.rest.domain.commit.CommitPage;
+import com.cdancy.bitbucket.rest.domain.commit.DiffPage;
 import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
 import com.cdancy.bitbucket.rest.fallbacks.BitbucketFallbacks;
 import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import org.jclouds.rest.annotations.Fallback;
@@ -65,7 +67,7 @@ public interface CommitsApi {
                            @PathParam("commitId") String commitId,
                            @Nullable @QueryParam("limit") Integer limit,
                            @Nullable @QueryParam("start") Integer start);
-    
+
     @Named("commits:list")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm140236729804608"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -83,4 +85,36 @@ public interface CommitsApi {
                     @Nullable @QueryParam("until") String until,
                     @Nullable @QueryParam("limit") Integer limit,
                     @Nullable @QueryParam("start") Integer start);
+
+    @Named("commits:pullrequests")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/7.21.0/bitbucket-rest.html#idp251"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/commits/{commitId}/pull-requests")
+    @Fallback(BitbucketFallbacks.PullRequestPageOnError.class)
+    @GET
+    PullRequestPage pullRequests(@PathParam("project") String project,
+                                 @PathParam("repo") String repo,
+                                 @PathParam("commitId") String commitId,
+                                 @Nullable @QueryParam("limit") Integer limit,
+                                 @Nullable @QueryParam("start") Integer start);
+
+    @Named("commits:diff")
+    @Documentation({"https://docs.atlassian.com/bitbucket-server/rest/7.21.0/bitbucket-rest.html#idp248"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/commits/{commitId}/diff/{path}")
+    @Fallback(BitbucketFallbacks.DiffPageOnError.class)
+    @GET
+    DiffPage diffCommits(@PathParam("project") String project,
+                         @PathParam("repo") String repo,
+                         @PathParam("commitId") String commitId,
+                         @PathParam("path") String path,
+                         @Nullable @QueryParam("autoSrcPath") Boolean autoSrcPath,
+                         @Nullable @QueryParam("contextLines") Integer contextLines,
+                         @Nullable @QueryParam("since") String since,
+                         @Nullable @QueryParam("srcPath") String srcPath,
+                         @Nullable @QueryParam("whitespace") String whitespace,
+                         @Nullable @QueryParam("withComments") Boolean withComments,
+                         @Nullable @QueryParam("avatarSize") String avatarSize,
+                         @Nullable @QueryParam("avatarScheme") String avatarScheme);
 }

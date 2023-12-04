@@ -75,7 +75,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
             final Parent parent = Parent.create(1);
             final Anchor anchor = Anchor.create(1, Anchor.LineType.CONTEXT, Anchor.FileType.FROM, "path/to/file", "path/to/file");
-            final CreateComment createComment = CreateComment.create(measuredReplyKeyword, parent, anchor);
+            final CreateComment createComment = CreateComment.create(measuredReplyKeyword, parent, anchor, null, null);
             final Comments pr = baseApi.commentsApi().create(projectKey, repoKey, 101, createComment);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
@@ -93,7 +93,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/comments.json")).setResponseCode(200));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final Comments pr = baseApi.commentsApi().get(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isEmpty();
@@ -111,7 +111,7 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setBody(payloadFromResource("/commit-error.json")).setResponseCode(404));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final Comments pr = baseApi.commentsApi().get(projectKey, repoKey, 101, 1);
             assertThat(pr).isNotNull();
             assertThat(pr.errors()).isNotEmpty();
@@ -184,12 +184,12 @@ public class CommentsApiMockTest extends BaseBitbucketMockTest {
 
         server.enqueue(new MockResponse().setResponseCode(204));
         try (final BitbucketApi baseApi = api(server.getUrl("/"))) {
-            
+
             final RequestStatus success = baseApi.commentsApi().delete(projectKey, repoKey, 101, 1, 1);
             assertThat(success).isNotNull();
             assertThat(success.value()).isTrue();
             assertThat(success.errors()).isEmpty();
-            
+
             final Map<String, ?> queryParams = ImmutableMap.of("version", 1);
             assertSent(server, "DELETE", restApiPath + BitbucketApiMetadata.API_VERSION
                     + "/projects/PRJ/repos/my-repo/pull-requests/101/comments/1", queryParams);

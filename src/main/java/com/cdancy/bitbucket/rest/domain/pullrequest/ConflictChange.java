@@ -15,41 +15,27 @@
  * limitations under the License.
  */
 
-package com.cdancy.bitbucket.rest.options;
+package com.cdancy.bitbucket.rest.domain.pullrequest;
 
-import com.cdancy.bitbucket.rest.domain.comment.Anchor;
-import com.cdancy.bitbucket.rest.domain.comment.Comments;
-import com.cdancy.bitbucket.rest.domain.comment.Parent;
 import com.google.auto.value.AutoValue;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.json.SerializedNames;
 
 @AutoValue
-public abstract class CreateComment {
+public abstract class ConflictChange {
 
-    public abstract String text();
-
-    @Nullable
-    public abstract Parent parent();
-
-    @Nullable
-    public abstract Anchor anchor();
-
-    @Nullable
-    public abstract Comments.Severity severity();
-
-    @Nullable
-    public abstract Comments.TaskState state();
-
-    CreateComment() {
+    ConflictChange() {
     }
 
-    @SerializedNames({ "text", "parent", "anchor", "severity", "state" })
-    public static CreateComment create(final String text,
-            final Parent parent,
-            final Anchor anchor,
-                                       final Comments.Severity severity,
-                                       final Comments.TaskState state) {
-        return new AutoValue_CreateComment(text, parent, anchor, severity, state);
+    @SerializedNames({"path", "type"})
+    public static ConflictChange create(final Path path, final String type) {
+
+        return new AutoValue_ConflictChange(path, type);
     }
+
+    @Nullable
+    public abstract Path path();
+
+    @Nullable
+    public abstract String type();
 }

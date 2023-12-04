@@ -29,13 +29,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.cdancy.bitbucket.rest.domain.comment.Comments;
 import com.cdancy.bitbucket.rest.domain.participants.Participants;
 import com.cdancy.bitbucket.rest.domain.participants.ParticipantsPage;
 import com.cdancy.bitbucket.rest.domain.activities.ActivitiesPage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.ChangePage;
-import com.cdancy.bitbucket.rest.domain.pullrequest.MergeStatus;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequest;
-import com.cdancy.bitbucket.rest.domain.pullrequest.PullRequestPage;
+import com.cdancy.bitbucket.rest.domain.pullrequest.*;
 import com.cdancy.bitbucket.rest.options.CreateParticipants;
 import com.cdancy.bitbucket.rest.options.EditPullRequest;
 import org.jclouds.javax.annotation.Nullable;
@@ -62,6 +60,8 @@ import com.cdancy.bitbucket.rest.filters.BitbucketAuthenticationFilter;
 import com.cdancy.bitbucket.rest.options.CreatePullRequest;
 import com.cdancy.bitbucket.rest.parsers.RequestStatusParser;
 import org.jclouds.rest.annotations.ResponseParser;
+
+import java.util.List;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
@@ -210,6 +210,32 @@ public interface PullRequestApi {
                               @PathParam("pullRequestId") long pullRequestId,
                               @Nullable @QueryParam("limit") Integer limit,
                               @Nullable @QueryParam("start") Integer start);
+
+    @Named("pull-request:list-comments")
+    @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45888278197104"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/comments")
+    @Fallback(BitbucketFallbacks.CommentPageOnError.class)
+    @GET
+    CommentPage listComments(@PathParam("project") String project,
+                                  @PathParam("repo") String repo,
+                                  @PathParam("pullRequestId") long pullRequestId,
+                                  @Nullable @QueryParam("limit") Integer limit,
+                                  @Nullable @QueryParam("start") Integer start);
+
+    @Named("pull-request:list-blocker-comments")
+    @Documentation({"https://developer.atlassian.com/server/bitbucket/rest/v815/api-group-pull-requests/#api-api-latest-projects-projectkey-repos-repositoryslug-pull-requests-pullrequestid-blocker-comments-get"})
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{project}/repos/{repo}/pull-requests/{pullRequestId}/blocker-comments")
+    @Fallback(BitbucketFallbacks.BlockerCommentsPageOnError.class)
+    @GET
+    BlockerCommentsPage listBlockerComments(@PathParam("project") String project,
+                                            @PathParam("repo") String repo,
+                                            @PathParam("pullRequestId") long pullRequestId,
+                                            @Nullable @QueryParam("limit") Integer limit,
+                                            @Nullable @QueryParam("start") Integer start,
+//                                            @Nullable @QueryParam("count") Boolean count,
+                                            @Nullable @QueryParam("state") List<Comments.TaskState> states);
 
     @Named("pull-request:list-participants")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45627978405632"})

@@ -49,33 +49,38 @@ public abstract class Change implements LinksHolder {
 
     public abstract boolean srcExecutable();
 
+    @Nullable
+    public abstract Conflict conflict();
+
     Change() {
     }
 
-    @SerializedNames({ "contentId", "fromContentId", "path", 
-            "executable", "percentUnchanged", "type", 
-            "nodeType", "srcPath", "srcExecutable", 
-            "links" })
-    public static Change create(final String contentId, 
-            final String fromContentId, 
-            final Path path, 
+    @SerializedNames({ "contentId", "fromContentId", "path",
+            "executable", "percentUnchanged", "type",
+            "nodeType", "srcPath", "srcExecutable",
+            "links", "conflict" })
+    public static Change create(final String contentId,
+            final String fromContentId,
+            final Path path,
             final boolean executable,
-            final int percentUnchanged, 
-            final String type, 
-            final String nodeType, 
+            final int percentUnchanged,
+            final String type,
+            final String nodeType,
             final Path srcPath,
-            final boolean srcExecutable, 
-            final Links links) {
-        
-        return new AutoValue_Change(links, 
-                contentId, 
-                fromContentId, 
-                path, 
+            final boolean srcExecutable,
+            final Links links,
+            final Conflict conflict) {
+
+        return new AutoValue_Change(links,
+                contentId,
+                fromContentId,
+                path,
                 executable,
-                percentUnchanged, 
-                type, 
-                nodeType, 
-                srcPath, 
-                srcExecutable);
+                percentUnchanged,
+                type,
+                nodeType,
+                srcPath,
+                srcExecutable,
+                conflict);
     }
 }

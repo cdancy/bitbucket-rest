@@ -24,6 +24,7 @@ import com.cdancy.bitbucket.rest.features.BranchApi;
 import com.cdancy.bitbucket.rest.features.BuildStatusApi;
 import com.cdancy.bitbucket.rest.features.CommentsApi;
 import com.cdancy.bitbucket.rest.features.CommitsApi;
+import com.cdancy.bitbucket.rest.features.CompareApi;
 import com.cdancy.bitbucket.rest.features.DefaultReviewersApi;
 import com.cdancy.bitbucket.rest.features.FileApi;
 import com.cdancy.bitbucket.rest.features.HookApi;
@@ -53,6 +54,9 @@ public interface BitbucketApi extends Closeable {
 
     @Delegate
     BuildStatusApi buildStatusApi();
+
+    @Delegate
+    CompareApi compareApi();
 
     @Delegate
     CommentsApi commentsApi();
@@ -91,6 +95,7 @@ public interface BitbucketApi extends Closeable {
     TagApi tagApi();
 
     @Delegate
+    @Deprecated
     TasksApi tasksApi();
 
     @Delegate
