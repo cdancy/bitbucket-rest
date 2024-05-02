@@ -29,15 +29,18 @@ import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.rest.annotations.Fallback;
 import org.jclouds.rest.annotations.RequestFilters;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Named;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.MediaType;
 import org.jclouds.rest.annotations.BinderParam;
 import org.jclouds.rest.annotations.ResponseParser;
 import org.jclouds.rest.binders.BindToJsonPayload;
@@ -57,7 +60,7 @@ public interface BuildStatusApi {
     StatusPage status(@PathParam("commitId") String commitId,
                       @Nullable @QueryParam("start") Integer start,
                       @Nullable @QueryParam("limit") Integer limit);
-    
+
     @Named("build-status:add")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/4.14.4/bitbucket-build-rest.html#idm44911111500128"})
     @Consumes(MediaType.APPLICATION_JSON)
@@ -65,7 +68,7 @@ public interface BuildStatusApi {
     @Fallback(BitbucketFallbacks.RequestStatusOnError.class)
     @ResponseParser(RequestStatusParser.class)
     @POST
-    RequestStatus add(@PathParam("commitId") String commitId, 
+    RequestStatus add(@PathParam("commitId") String commitId,
                       @BinderParam(BindToJsonPayload.class) CreateBuildStatus createBuildStatus);
 
     @Named("build-status:summary")

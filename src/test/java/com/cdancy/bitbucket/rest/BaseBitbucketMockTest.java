@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jclouds.util.Strings2.toStringAndClose;
 
@@ -26,8 +26,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
@@ -62,7 +62,7 @@ public class BaseBitbucketMockTest {
 
     /**
      * Create API from passed URL.
-     * 
+     *
      * @param url endpoint of instance.
      * @return instance of BitbucketApi.
      */
@@ -133,16 +133,16 @@ public class BaseBitbucketMockTest {
         return builder.build();
     }
 
-    protected RecordedRequest assertSent(final MockWebServer server, 
-            final String method, 
+    protected RecordedRequest assertSent(final MockWebServer server,
+            final String method,
             final String path) throws InterruptedException {
-        
+
         return assertSent(server, method, path, ImmutableMap.<String, Void> of());
     }
 
-    protected RecordedRequest assertSent(final MockWebServer server, 
-            final String method, 
-            final String expectedPath, 
+    protected RecordedRequest assertSent(final MockWebServer server,
+            final String method,
+            final String expectedPath,
             final Map<String, ?> queryParams) throws InterruptedException {
 
 
@@ -160,22 +160,22 @@ public class BaseBitbucketMockTest {
         return request;
     }
 
-    protected RecordedRequest assertSent(final MockWebServer server, 
-            final String method, 
-            final String path, 
+    protected RecordedRequest assertSent(final MockWebServer server,
+            final String method,
+            final String path,
             final String json) throws InterruptedException {
-        
+
         final RecordedRequest request = assertSent(server, method, path);
         assertThat(APPLICATION_JSON).isEqualTo(request.getHeader("Content-Type"));
         assertThat(parser.parse(json)).isEqualTo(parser.parse(request.getUtf8Body()));
         return request;
     }
 
-    protected RecordedRequest assertSentWithFormData(final MockWebServer server, 
-            final String method, 
-            final String path, 
+    protected RecordedRequest assertSentWithFormData(final MockWebServer server,
+            final String method,
+            final String path,
             final String body) throws InterruptedException {
-        
+
         final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
         assertThat(request.getPath()).isEqualTo(path);
@@ -185,10 +185,10 @@ public class BaseBitbucketMockTest {
         return request;
     }
 
-    protected RecordedRequest assertSentAcceptText(final MockWebServer server, 
-            final String method, 
+    protected RecordedRequest assertSentAcceptText(final MockWebServer server,
+            final String method,
             final String path) throws InterruptedException {
-        
+
         final RecordedRequest request = server.takeRequest();
         assertThat(request.getMethod()).isEqualTo(method);
         assertThat(request.getPath()).isEqualTo(path);

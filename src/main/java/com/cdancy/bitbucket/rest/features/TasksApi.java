@@ -32,16 +32,16 @@ import org.jclouds.rest.annotations.RequestFilters;
 import org.jclouds.rest.annotations.ResponseParser;
 import org.jclouds.rest.binders.BindToJsonPayload;
 
-import javax.inject.Named;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import jakarta.inject.Named;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
 @Produces(MediaType.APPLICATION_JSON)
 @RequestFilters(BitbucketAuthenticationFilter.class)
@@ -63,7 +63,7 @@ public interface TasksApi {
     @Payload("%7B \"state\": \"{state}\" %7D")
     @PUT
     Task update(@PathParam("taskId") int taskId, @PayloadParam("state") String state);
-    
+
 
     @Named("tasks:get")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45701777641664"})
@@ -72,7 +72,7 @@ public interface TasksApi {
     @Fallback(BitbucketFallbacks.TaskOnError.class)
     @GET
     Task get(@PathParam("taskId") int taskId);
-    
+
     @Named("tasks:delete")
     @Documentation({"https://developer.atlassian.com/static/rest/bitbucket-server/latest/bitbucket-rest.html#idm45701777664960"})
     @Consumes(MediaType.APPLICATION_JSON)

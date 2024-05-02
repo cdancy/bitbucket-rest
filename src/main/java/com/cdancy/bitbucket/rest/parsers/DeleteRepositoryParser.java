@@ -19,18 +19,18 @@ package com.cdancy.bitbucket.rest.parsers;
 
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.google.common.base.Function;
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.rest.ResourceNotFoundException;
 
 /**
- * When deleting a repository, and it doesn't exist, Bitbucket will return a 204. To account 
- * for this we need to implement a custom parser that handles success, not found (204), 
+ * When deleting a repository, and it doesn't exist, Bitbucket will return a 204. To account
+ * for this we need to implement a custom parser that handles success, not found (204),
  * and all other failures appropriately.
  */
 @Singleton
 public class DeleteRepositoryParser implements Function<HttpResponse, RequestStatus> {
-    
+
     @Override
     public RequestStatus apply(final HttpResponse input) {
         final int statusCode = input.getStatusCode();

@@ -20,6 +20,8 @@ repositories {
     mavenCentral()
 }
 
+
+
 dependencies {
     ext.jcloudsVersion = '2.6.0'
     ext.autoServiceVersion = '1.1.1'
@@ -31,7 +33,8 @@ dependencies {
 
 
     // implementation  'javax.javaee-api:7.0'
-
+    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+    implementation 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
@@ -55,7 +58,7 @@ dependencies {
     testImplementation ('commons-io:commons-io:2.14.0')
 }
 
-ext.compatibilityVersion = JavaVersion.VERSION_11
+ext.compatibilityVersion = JavaVersion.VERSION_17
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
