@@ -37,7 +37,7 @@ public class RawContentParser implements Function<HttpResponse, RawContent> {
             final String value = Strings2.toStringAndClose(inputStream);
             return RawContent.create(value, null);
         } catch (final Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 }

@@ -104,7 +104,7 @@ public final class BitbucketFallbacks {
                     return createBranchFromErrors(getErrors(throwable.getMessage()));
                 }
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -114,7 +114,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchModelFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -124,7 +124,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchModelConfigurationFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -134,7 +134,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPageFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -144,7 +144,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createLikePageFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -154,7 +154,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserPageFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -164,7 +164,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createUserFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -174,7 +174,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createConditionFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -184,7 +184,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createStatusPageFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 
@@ -194,7 +194,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 return createBranchPermissionPageFromErrors(getErrors(throwable.getMessage()));
             }
-            throw propagate(throwable);
+            throw new RuntimeException(throwable);
         }
     }
 

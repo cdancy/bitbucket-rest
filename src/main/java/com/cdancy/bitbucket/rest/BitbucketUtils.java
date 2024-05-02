@@ -60,7 +60,7 @@ public class BitbucketUtils {
 
     /**
      * Convert passed Iterable into an ImmutableList.
-     * 
+     *
      * @param <T> an arbitrary type.
      * @param input the Iterable to copy.
      * @return ImmutableList or empty ImmutableList if `input` is null.
@@ -71,7 +71,7 @@ public class BitbucketUtils {
 
     /**
      * Convert passed Map into an ImmutableMap.
-     * 
+     *
      * @param <K> an arbitrary type.
      * @param <V> an arbitrary type.
      * @param input the Map to copy.
@@ -83,7 +83,7 @@ public class BitbucketUtils {
 
     /**
      * Convert passed Map into a JsonElement.
-     * 
+     *
      * @param input the Map to convert.
      * @return JsonElement or empty JsonElement if `input` is null.
      */
@@ -93,7 +93,7 @@ public class BitbucketUtils {
 
     /**
      * Convert passed Map into a JsonElement.
-     * 
+     *
      * @param input the Map to convert.
      * @return JsonElement or empty JsonElement if `input` is null.
      */
@@ -103,7 +103,7 @@ public class BitbucketUtils {
 
     /**
      * Convert passed String into a JsonElement.
-     * 
+     *
      * @param input the String to convert.
      * @return JsonElement or empty JsonElement if `input` is null.
      */
@@ -117,7 +117,7 @@ public class BitbucketUtils {
      * was found, and environmentVariable is non-null, we will attempt to
      * query the `Environment Variables` for a value and return it. If
      * both are either null or can't be found than null will be returned.
-     * 
+     *
      * @param systemProperty possibly existent System Property.
      * @param environmentVariable possibly existent Environment Variable.
      * @return found external value or null.
@@ -189,7 +189,7 @@ public class BitbucketUtils {
     /**
      * Find jclouds overrides (e.g. Properties) first searching within System
      * Properties and then within Environment Variables (former takes precedance).
-     * 
+     *
      * @return Properties object with populated jclouds properties.
      */
     public static Properties inferOverrides() {
@@ -222,13 +222,13 @@ public class BitbucketUtils {
                 }
             }
         }
-        
+
         return overrides;
     }
 
     /**
      * Add the passed environment variables to the currently existing env-vars.
-     * 
+     *
      * @param addEnvVars the env-vars to add.
      */
     public static void addEnvironmentVariables(final Map<String, String> addEnvVars) {
@@ -240,7 +240,7 @@ public class BitbucketUtils {
 
     /**
      * Remove the passed environment variables keys from the environment.
-     * 
+     *
      * @param removeEnvVars the env-var keys to be removed.
      */
     public static void removeEnvironmentVariables(final Collection<String> removeEnvVars) {
@@ -252,7 +252,7 @@ public class BitbucketUtils {
 
     /**
      * Re-set the environment variables with passed map.
-     * 
+     *
      * @param newEnvVars map to reset env-vars with.
      */
     public static void setEnvironmentVariables(final Map<String, String> newEnvVars) {
@@ -278,10 +278,11 @@ public class BitbucketUtils {
                         field.setAccessible(true);
                         final Object obj = field.get(env);
                         final Map<String, String> map = (Map<String, String>) obj;
+                        // final Map<String, String> map = UncheckedCast.getRawMapWithMixedTipes(Map<String, String>) obj;
                         map.clear();
                         map.putAll(newEnvVars);
                     } catch (final NoSuchFieldException | IllegalAccessException e2) {
-                        throw Throwables.propagate(e2);
+                        throw new RuntimeException(e);
                     }
                 }
             }

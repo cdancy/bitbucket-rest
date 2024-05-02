@@ -6,6 +6,7 @@ out
 src/generated
 .gradle
 test-output
+target
 
 # OS generated files #
 ######################

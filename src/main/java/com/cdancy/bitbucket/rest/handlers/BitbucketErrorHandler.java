@@ -84,7 +84,7 @@ public class BitbucketErrorHandler implements HttpErrorHandler {
             try {
                 return Strings2.toStringAndClose(response.getPayload().openStream());
             } catch (IOException e) {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         } else {
             return new StringBuffer(command.getCurrentRequest().getRequestLine())
