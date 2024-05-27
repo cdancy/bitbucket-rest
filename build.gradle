@@ -53,7 +53,7 @@ dependencies {
 
     testImplementation ("org.apache.jclouds:jclouds-core:${jcloudsVersion}:tests")
     testImplementation ("org.apache.jclouds.driver:jclouds-slf4j:${jcloudsVersion}")
-    testImplementation ('org.assertj:assertj-core:3.25.3')
+    testImplementation ('org.assertj:assertj-core:3.26.0')
     testImplementation ('org.testng:testng:7.10.2')
     testImplementation ('com.squareup.okhttp:mockwebserver:2.7.5')
     testImplementation ('ch.qos.logback:logback-classic:1.5.6')
