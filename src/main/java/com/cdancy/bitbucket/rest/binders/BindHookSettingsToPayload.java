@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.cdancy.bitbucket.rest.domain.repository.HookSettings;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.jclouds.http.HttpRequest;
 import org.jclouds.rest.Binder;
