@@ -17,8 +17,8 @@
 
 package com.cdancy.bitbucket.rest.filters;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import com.cdancy.bitbucket.rest.BitbucketAuthentication;
 import com.cdancy.bitbucket.rest.auth.AuthenticationType;

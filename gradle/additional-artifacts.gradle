@@ -6,16 +6,16 @@ shadowJar {
     def foundName = rootProject.name.replaceAll('-', '.')
     def newBasePackage = "${foundGroup}.${foundName}"
 
-    relocate 'org.aopalliance', "${newBasePackage}.shaded.org.aopalliance"
-    relocate 'org.objectweb', "${newBasePackage}.shaded.org.objectweb"
     relocate 'com.google', "${newBasePackage}.shaded.com.google"
-    relocate 'net.sf', "${newBasePackage}.shaded.net.sf"
-    relocate 'javax.inject', "${newBasePackage}.shaded.javax.inject"
+    relocate 'com.sun', "${newBasePackage}.shaded.com.sun"
+    relocate 'org.aopalliance', "${newBasePackage}.shaded.org.aopalliance"
+    relocate 'org.checkerframework', "${newBasePackage}.shaded.org.checkerframework"
+    relocate 'org.eclipse', "${newBasePackage}.shaded.org.eclipse"
+    relocate 'org.glassfish', "${newBasePackage}.shaded.org.glassfish"
     relocate 'org.jclouds', "${newBasePackage}.shaded.org.jclouds"
-    relocate 'javax.inject', "${newBasePackage}.shaded.javax.inject"
+    relocate 'jakarta', "${newBasePackage}.shaded.jakarta"
+    relocate 'javax.activation', "${newBasePackage}.shaded.javax.activation"
     relocate 'javax.annotation', "${newBasePackage}.shaded.javax.annotation"
-    relocate 'javax.ws.rs', "${newBasePackage}.shaded.javax.ws.rs"
-    relocate 'javax.xml.bind', "${newBasePackage}.shaded.javax.xml.bind"
 }
 
 task sourcesJar(type: Jar) {

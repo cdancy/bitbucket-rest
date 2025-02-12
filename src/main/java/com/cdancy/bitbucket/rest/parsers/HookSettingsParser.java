@@ -23,7 +23,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.gson.JsonElement;
 import java.io.IOException;
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.util.Strings2;
 

@@ -414,7 +414,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 // if the repo sync is disabled a 204 is returned with 'null' as the content
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
-                final boolean isAvailable = (is204 != null) ? true : false;
+                final boolean isAvailable = is204 != null;
                 final List<Error> errors = getErrors(throwable.getMessage());
                 if (errors.size() > 0
                         && errors.get(0).context() != null

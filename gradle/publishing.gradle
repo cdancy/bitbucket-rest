@@ -22,7 +22,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('name', 'Bitbucket Rest')
                 root.appendNode('description', 'Java client for working with Bitbucket REST API.')
-                root.appendNode('url', 'https://github.com/cdancy/jenkins-rest')
+                root.appendNode('url', 'https://github.com/cdancy/bitbucket-rest')
                 root.appendNode('inceptionYear', '2016')
 
                 def scm = root.appendNode('scm')
