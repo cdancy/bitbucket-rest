@@ -1,0 +1,8 @@
+{
+  "errors": [
+    {
+      "message": "Branch \"master\" is already up-to-date with branch \"feature-ABC-123\" in repository \"my-repo\".",
+      "exceptionName": "com.atlassian.bitbucket.pull.EmptyPullRequestException"
+    }
+  ]
+}
