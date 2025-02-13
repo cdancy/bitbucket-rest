@@ -40,7 +40,7 @@ dependencies {
 
     implementation ("com.google.code.gson:gson:${gsonVersion}")
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-    implementation 'jakarta.annotation:jakarta.annotation-api:2.0.0'
+    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
     implementation ("org.apache.jclouds:jclouds-core:${jcloudsVersion}")
     implementation ("com.google.inject:guice:${guiceVersion}")
     implementation ("com.google.inject.extensions:guice-assistedinject:${guiceVersion}")
