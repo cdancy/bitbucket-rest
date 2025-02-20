@@ -37,9 +37,11 @@
           ]
         },
         "com.atlassian.bitbucket.server.bitbucket-build:build-status-metadata": {
+          "cancelled": 0,
           "successful": 1,
           "inProgress": 0,
-          "failed": 0
+          "failed": 0,
+          "unknown": 0
         }
       }
     }

@@ -27,7 +27,9 @@ public abstract class CreateBuildStatus {
     public enum STATE {
         SUCCESSFUL,
         FAILED,
-        INPROGRESS
+        INPROGRESS,
+        CANCELLED,
+        UNKNOWN
     }
 
     public abstract String state();

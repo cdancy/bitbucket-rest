@@ -23,16 +23,22 @@ import org.jclouds.json.SerializedNames;
 @AutoValue
 public abstract class Summary {
 
+    public abstract long cancelled();
+
     public abstract long failed();
 
     public abstract long inProgress();
 
     public abstract long successful();
 
-    @SerializedNames({"failed", "inProgress", "successful"})
-    public static Summary create(final long failed, 
-            final long inProgress, 
-            final long successful) {
-        return new AutoValue_Summary(failed, inProgress, successful);
+    public abstract long unknown();
+
+    @SerializedNames({"cancelled", "failed", "inProgress", "successful", "unknown"})
+    public static Summary create(final long cancelled,
+            final long failed,
+            final long inProgress,
+            final long successful,
+            final long unknown) {
+        return new AutoValue_Summary(cancelled, failed, inProgress, successful, unknown);
     }
 }

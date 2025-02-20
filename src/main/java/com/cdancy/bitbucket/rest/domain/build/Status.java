@@ -27,7 +27,9 @@ public abstract class Status {
     public enum StatusState {
         SUCCESSFUL,
         FAILED,
-        INPROGRESS
+        INPROGRESS,
+        CANCELLED,
+        UNKNOWN
     }
 
     public abstract long dateAdded();
