@@ -1,5 +1,7 @@
 {
-  "failed": 1,
-  "inProgress": 2,
-  "successful": 3
+  "cancelled": 1,
+  "failed": 2,
+  "inProgress": 3,
+  "successful": 4,
+  "unknown": 5
 }

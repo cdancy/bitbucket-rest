@@ -104,6 +104,8 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(summary.successful() == 1).isTrue();
         assertThat(summary.inProgress() == 0).isTrue();
         assertThat(summary.failed() == 0).isTrue();
+        assertThat(summary.cancelled() == 0).isTrue();
+        assertThat(summary.unknown() == 0).isTrue();
     }
     
     @Test
@@ -114,6 +116,8 @@ public class BuildStatusApiLiveTest extends BaseBitbucketApiLiveTest {
         assertThat(summary.successful() == 0).isTrue();
         assertThat(summary.inProgress() == 0).isTrue();
         assertThat(summary.failed() == 0).isTrue();
+        assertThat(summary.cancelled() == 0).isTrue();
+        assertThat(summary.unknown() == 0).isTrue();
     }
 
     @AfterClass
