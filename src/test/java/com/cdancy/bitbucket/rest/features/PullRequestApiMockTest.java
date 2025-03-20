@@ -113,6 +113,31 @@ public class PullRequestApiMockTest extends BaseBitbucketMockTest {
         }
     }
 
+    public void testCreatePullRequestEmpty() throws Exception {
+        final MockWebServer server = mockWebServer();
+
+        server.enqueue(new MockResponse().setBody(payloadFromResource("/pull-request-create-error.json")).setResponseCode(409));
+        final BitbucketApi baseApi = api(server.getUrl("/"));
+        final PullRequestApi api = baseApi.pullRequestApi();
+        try {
+            final ProjectKey proj = ProjectKey.create(projectKey);
+            final MinimalRepository repository = MinimalRepository.create(repoKey, null, proj);
+            final Reference ref = Reference.create("refs/heads/feature-ABC-123", repository, null, null, "feature-ABC-123", null);
+            final CreatePullRequest cpr = CreatePullRequest.create("Talking Nerdy", "Some description", ref, ref, null, null);
+            final PullRequest pr = api.create(projectKey, repoKey, cpr);
+
+            assertThat(pr).isNotNull();
+            assertThat(pr.errors()).hasSize(1);
+            assertThat(pr.errors().get(0).message())
+                .isEqualTo("Branch \"master\" is already up-to-date with branch \"feature-ABC-123\" in repository \"my-repo\".");
+            assertThat(pr.errors().get(0).exceptionName())
+                .isEqualTo("com.atlassian.bitbucket.pull.EmptyPullRequestException");
+        } finally {
+            baseApi.close();
+            server.shutdown();
+        }
+    }
+
     public void testEditPullRequest() throws Exception {
         final MockWebServer server = mockWebServer();
 

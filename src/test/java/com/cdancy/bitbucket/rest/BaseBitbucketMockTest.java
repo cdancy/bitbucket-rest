@@ -17,7 +17,7 @@
 
 package com.cdancy.bitbucket.rest;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jclouds.util.Strings2.toStringAndClose;
 
@@ -26,8 +26,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
 
 import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;

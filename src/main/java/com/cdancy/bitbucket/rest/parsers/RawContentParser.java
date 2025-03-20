@@ -21,7 +21,7 @@ import com.cdancy.bitbucket.rest.domain.file.RawContent;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import java.io.InputStream;
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import org.jclouds.http.HttpResponse;
 import org.jclouds.util.Strings2;
 
