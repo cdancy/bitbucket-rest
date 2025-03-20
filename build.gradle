@@ -18,14 +18,6 @@ apply from: "$rootDir/gradle/release.gradle"
 repositories {
     mavenLocal()
     mavenCentral()
-    maven {
-        name = "Cortex Packages (Jclouds)"
-        url = uri("https://maven.pkg.github.com/cortexapps/jclouds")
-        credentials {
-            username = System.getenv("GITHUB_USERNAME")
-            password = System.getenv("GITHUB_PASSWORD")
-        }
-    }
 }
 
 def gsonVersion = "2.11.0"
