@@ -19,7 +19,7 @@ package com.cdancy.bitbucket.rest.parsers;
 
 import com.cdancy.bitbucket.rest.domain.common.RequestStatus;
 import com.google.common.base.Function;
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import org.jclouds.http.HttpResponse;
 
 /**

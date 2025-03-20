@@ -414,7 +414,7 @@ public final class BitbucketFallbacks {
             if (checkNotNull(throwable, "throwable") != null) {
                 // if the repo sync is disabled a 204 is returned with 'null' as the content
                 final Boolean is204 = returnValueOnCodeOrNull(throwable, true, equalTo(204));
-                final boolean isAvailable = (is204 != null) ? true : false;
+                final boolean isAvailable = is204 != null;
                 final List<Error> errors = getErrors(throwable.getMessage());
                 if (errors.size() > 0
                         && errors.get(0).context() != null
@@ -911,7 +911,7 @@ public final class BitbucketFallbacks {
 
         final List<Veto> vetos = Lists.newArrayList();
         final JsonElement possibleVetoesArray = obj.get("vetoes");
-        if (possibleVetoesArray != null && !possibleVetoesArray.isJsonNull()) {
+        if (isNotJsonNull(possibleVetoesArray)) {
 
             final JsonArray vetoesArray = possibleVetoesArray.getAsJsonArray();
             final Iterator<JsonElement> vetoIterator = vetoesArray.iterator();
@@ -919,16 +919,21 @@ public final class BitbucketFallbacks {
                 final JsonObject vetoObj = vetoIterator.next().getAsJsonObject();
                 final JsonElement summary = vetoObj.get("summaryMessage");
                 final JsonElement detailed = vetoObj.get("detailedMessage");
-                final Veto veto = Veto.create(!summary.isJsonNull() ? summary.getAsString() : null,
-                        !detailed.isJsonNull() ? detailed.getAsString() : null);
+                final Veto veto = Veto.create(isNotJsonNull(summary) ? summary.getAsString() : null,
+                        isNotJsonNull(detailed) ? detailed.getAsString() : null);
                 vetos.add(veto);
             }
         }
 
-        return Error.create(!context.isJsonNull() ? context.getAsString() : null,
-                !message.isJsonNull() ? message.getAsString() : null,
-                !exceptionName.isJsonNull() ? exceptionName.getAsString() : null,
-                conflicted != null && !conflicted.isJsonNull() ? conflicted.getAsBoolean() : false, //NOPMD
+        return Error.create(isNotJsonNull(context) ? context.getAsString() : null,
+                isNotJsonNull(message) ? message.getAsString() : null,
+                isNotJsonNull(exceptionName) ? exceptionName.getAsString() : null,
+                isNotJsonNull(conflicted) ? conflicted.getAsBoolean() : false, //NOPMD
                 vetos);
     }
+
+    private static boolean isNotJsonNull(final JsonElement jsonElement) {
+        return jsonElement != null && !jsonElement.isJsonNull();
+    }
+
 }
