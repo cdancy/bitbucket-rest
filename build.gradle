@@ -55,7 +55,7 @@ dependencies {
     testImplementation ('org.testng:testng:7.10.2')
     testImplementation ('com.squareup.okhttp:mockwebserver:2.7.5')
     testImplementation ('ch.qos.logback:logback-classic:1.5.16')
-    testImplementation ('ch.qos.logback:logback-core:1.5.16')
+    testImplementation ('ch.qos.logback:logback-core:1.5.18')
     testImplementation ('commons-io:commons-io:2.18.0')
 }
 
