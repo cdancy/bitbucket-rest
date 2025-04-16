@@ -783,7 +783,7 @@ public final class BitbucketFallbacks {
 
     public static PullRequest createPullRequestFromErrors(final List<Error> errors) {
         return PullRequest.create(-1, -1, null, null, null,
-                false, false, 0, 0, null,
+                false, false, null, 0, 0, null,
                 null, false, null, null, null,
                 null, null, errors);
     }

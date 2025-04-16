@@ -50,6 +50,9 @@ public abstract class PullRequest implements ErrorsHolder, LinksHolder {
 
     public abstract boolean closed();
 
+    @Nullable
+    public abstract Long closedDate();
+
     public abstract long createdDate();
 
     public abstract long updatedDate();
@@ -75,47 +78,49 @@ public abstract class PullRequest implements ErrorsHolder, LinksHolder {
     PullRequest() {
     }
 
-    @SerializedNames({ "id", "version", "title", "description", 
-            "state", "open", "closed", "createdDate", 
-            "updatedDate", "fromRef", "toRef", "locked", 
-            "author", "reviewers", "participants", "properties", 
+    @SerializedNames({ "id", "version", "title", "description",
+            "state", "open", "closed", "closedDate", "createdDate",
+            "updatedDate", "fromRef", "toRef", "locked",
+            "author", "reviewers", "participants", "properties",
             "links", "errors" })
-    public static PullRequest create(final int id, 
-            final int version, 
-            final String title, 
-            final String description, 
-            final String state, 
+    public static PullRequest create(final int id,
+            final int version,
+            final String title,
+            final String description,
+            final String state,
             final boolean open,
-            final boolean closed, 
-            final long createdDate, 
-            final long updatedDate, 
+            final boolean closed,
+            final Long closedDate,
+            final long createdDate,
+            final long updatedDate,
             final Reference fromRef,
-            final Reference toRef, 
-            final boolean locked, 
-            final Person author, 
+            final Reference toRef,
+            final boolean locked,
+            final Person author,
             final List<Person> reviewers,
-            final List<Person> participants, 
-            final Properties properties, 
+            final List<Person> participants,
+            final Properties properties,
             final Links links,
             final List<Error> errors) {
-        
-        return new AutoValue_PullRequest(BitbucketUtils.nullToEmpty(errors), 
-                links, 
-                id, 
-                version, 
-                title, 
-                description, 
-                state, 
-                open, 
-                closed, 
+
+        return new AutoValue_PullRequest(BitbucketUtils.nullToEmpty(errors),
+                links,
+                id,
+                version,
+                title,
+                description,
+                state,
+                open,
+                closed,
+                closedDate,
                 createdDate,
-                updatedDate, 
-                fromRef, 
-                toRef, 
-                locked, 
-                author, 
-                BitbucketUtils.nullToEmpty(reviewers), 
-                BitbucketUtils.nullToEmpty(participants), 
+                updatedDate,
+                fromRef,
+                toRef,
+                locked,
+                author,
+                BitbucketUtils.nullToEmpty(reviewers),
+                BitbucketUtils.nullToEmpty(participants),
                 properties);
     }
 }
