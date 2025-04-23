@@ -18,9 +18,12 @@
 package com.cdancy.bitbucket.rest.features;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertWith;
 
 import java.util.Map;
 
+import com.cdancy.bitbucket.rest.domain.project.ProjectPermissions;
+import com.cdancy.bitbucket.rest.domain.project.ProjectPermissions.PermissionsType;
 import com.cdancy.bitbucket.rest.domain.project.ProjectPermissionsPage;
 import org.testng.annotations.Test;
 
@@ -334,9 +337,12 @@ public class ProjectApiMockTest extends BaseBitbucketMockTest {
             final ProjectPermissionsPage projectPermissionsPage = api.listPermissionsByGroup(projectKey, 0, 100);
             assertThat(projectPermissionsPage).isNotNull();
             assertThat(projectPermissionsPage.errors()).isEmpty();
-            assertThat(projectPermissionsPage.size() == 1).isTrue();
-            assertThat(projectPermissionsPage.values().get(0).user() == null).isTrue();
-            assertThat(projectPermissionsPage.values().get(0).group().name().equals("test12345")).isTrue();
+            assertWith(projectPermissionsPage.values(), projectPermissions -> {
+                assertThat(projectPermissions).hasSize(2);
+                assertThat(projectPermissions.get(0).user()).isNull();
+                assertThat(projectPermissions.get(0).group().name()).isEqualTo("test12345");
+                assertThat(projectPermissions.get(1).permission()).isEqualTo(PermissionsType.REPO_CREATE);
+            });
 
             final Map<String, ?> queryParams = ImmutableMap.of(limitKeyword, 100, startKeyword, 0);
             assertSent(server, getMethod, restApiPath + BitbucketApiMetadata.API_VERSION
