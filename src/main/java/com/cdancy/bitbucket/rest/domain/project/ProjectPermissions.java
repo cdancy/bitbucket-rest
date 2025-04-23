@@ -28,6 +28,7 @@ public abstract class ProjectPermissions {
 
     public enum PermissionsType {
         PROJECT_ADMIN,
+        REPO_CREATE,
         PROJECT_WRITE,
         PROJECT_READ
     }

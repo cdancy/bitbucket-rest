@@ -1,7 +1,7 @@
 {
   "isLastPage": true,
   "limit": 25,
-  "size": 1,
+  "size": 2,
   "start": 0,
   "values": [
     {
@@ -9,6 +9,12 @@
         "name": "test12345"
       },
       "permission": "PROJECT_WRITE"
+    },
+    {
+      "group": {
+        "name": "repoCreateTest"
+      },
+      "permission": "REPO_CREATE"
     }
   ]
 }
